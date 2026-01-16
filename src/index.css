@@ -1,0 +1,214 @@
+@import 'leaflet/dist/leaflet.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+  MediVisitPro Design System - Emerald/Teal Dark Theme 
+  Note: This file uses Tailwind CSS directives (@tailwind, @apply).
+  IDE warnings about "Unknown at rule" are safe to ignore as they are processed by PostCSS.
+*/
+
+@layer base {
+
+  /* Leaflet Anti-fragmentation Overrides */
+  .leaflet-container img.leaflet-tile {
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  .leaflet-container {
+    overflow: hidden !important;
+  }
+
+  :root {
+    /* Dark Slate Background */
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+
+    /* Emerald Primary */
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Teal Secondary */
+    --secondary: 172 66% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted colors - slate tones */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    /* Accent - slate */
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Cards - dark glass */
+    --card: 217.2 32.6% 12%;
+    --card-foreground: 210 40% 98%;
+
+    /* Popover */
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Interactive */
+    --border: 217.2 32.6% 20%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 160 84% 39%;
+
+    /* Semantic Colors */
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Sidebar - Dark theme matching main */
+    --sidebar-background: 222.2 47.4% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217.2 32.6% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 160 84% 39%;
+
+    --radius: 0.75rem;
+
+    /* Design tokens */
+    --shadow-medical: 0 4px 20px -4px hsl(160 84% 39% / 0.25);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --transition-medical: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Gradients */
+    --gradient-medical: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(172 66% 50%) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(172 66% 50%) 100%);
+    --gradient-subtle: linear-gradient(135deg, hsl(217.2 32.6% 12%) 0%, hsl(217.2 32.6% 17.5%) 100%);
+  }
+
+  /* Dark mode is now the default */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+
+  /* Medical Card Components - Dark Glass Style */
+  .medical-card {
+    @apply bg-card/50 border border-border rounded-xl backdrop-blur-sm;
+  }
+
+  .medical-card-hover {
+    @apply bg-card/50 border border-border rounded-xl backdrop-blur-sm transition-all hover:bg-card/80 hover:border-emerald-500/30 hover:-translate-y-0.5;
+  }
+
+  /* Medical Gradients */
+  .gradient-medical {
+    background: var(--gradient-medical);
+  }
+
+  .gradient-success {
+    background: var(--gradient-success);
+  }
+
+  .gradient-subtle {
+    background: var(--gradient-subtle);
+  }
+
+  /* Medical Button Variants */
+  .btn-medical {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white;
+  }
+
+  /* Medical Icons */
+  .icon-medical {
+    @apply text-emerald-400;
+  }
+
+  .icon-success {
+    @apply text-emerald-400;
+  }
+
+  /* Medical Status Indicators */
+  .status-active {
+    @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+  }
+
+  .status-pending {
+    @apply bg-amber-500/10 text-amber-400 border border-amber-500/20;
+  }
+
+  .status-inactive {
+    @apply bg-slate-500/10 text-slate-400 border border-slate-500/20;
+  }
+
+  /* Custom scrollbar for dark theme */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-800;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-600 rounded-full hover:bg-slate-500;
+  }
+}
+
+/* Leaflet Overrides for Dark Theme */
+.leaflet-container {
+  background: #0f172a !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.leaflet-marker-icon {
+  border: none !important;
+  background: none !important;
+}
+
+.custom-marker {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  background-color: #1e293b !important;
+  color: white !important;
+  border: 1px solid #334155 !important;
+  border-radius: 0.75rem !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.custom-popup .leaflet-popup-tip {
+  background-color: #1e293b !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+.custom-popup .leaflet-popup-content>div {
+  padding: 1rem !important;
+}
+
+.leaflet-control-container .leaflet-control {
+  z-index: 10 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 10 !important;
+}
