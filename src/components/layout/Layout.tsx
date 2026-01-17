@@ -79,8 +79,8 @@ export const Layout = ({ children }: LayoutProps) => {
           {/* Mobile/Tablet Header with hamburger menu */}
           <div className="lg:hidden p-3 border-b border-slate-700/50 flex items-center justify-between bg-slate-900/95 backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-3">
-              {/* <MobileNav /> */} {/* MobileNav removed as per new layout structure */}
               <div className="flex items-center gap-2">
+                <MobileNav />
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
                   <span className="text-xs font-bold text-white">M</span>
                 </div>
