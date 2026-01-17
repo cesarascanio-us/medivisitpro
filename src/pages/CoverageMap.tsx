@@ -14,7 +14,6 @@ import { useMapViewport } from "@/hooks/useMapViewport";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import LeafletMap, { PolylineData } from "@/components/map/LeafletMap";
 import { OptimizedRouteView } from "@/components/map/OptimizedRouteView";
-import { OptimizedRoute } from "@/services/routeOptimizationService";
 import { Activity } from "lucide-react";
 import { VisitHeatmap } from "@/components/map/VisitHeatmap";
 import { PlacesSearch } from "@/components/map/PlacesSearch";
@@ -22,6 +21,20 @@ import { OverpassPlace } from "@/services/overpassService";
 import { PharmacyProximityAnalysis } from "@/components/map/PharmacyProximityAnalysis";
 import { getStateCenter } from "@/utils/stateCoordinates";
 import type { ProximityResult, Location } from "@/utils/proximityCalculations";
+
+// Local interface compatible with OptimizedRouteView's callback
+interface OptimizedRoute {
+    stops: Array<{
+        id: string;
+        name: string;
+        lat: number;
+        lng: number;
+    }>;
+    totalDistance: number;
+    estimatedDuration: number;
+    polyline?: [number, number][];
+    savingsPercent?: number;
+}
 
 const MARKER_COLORS: Record<string, string> = {
     doctor: '#3B82F6',    // Blue
@@ -147,10 +160,10 @@ export default function CoverageMap() {
 
                 const { data, error } = await supabase
                     .from('visits')
-                    .select('id, latitude, longitude, visit_date')
-                    .gte('visit_date', threeMonthsAgo.toISOString())
-                    .not('latitude', 'is', null)
-                    .not('longitude', 'is', null);
+                    .select('id, location_lat, location_lng, scheduled_date')
+                    .gte('scheduled_date', threeMonthsAgo.toISOString())
+                    .not('location_lat', 'is', null)
+                    .not('location_lng', 'is', null);
 
                 if (error) throw error;
 
@@ -158,13 +171,17 @@ export default function CoverageMap() {
                 const locationMap = new Map<string, { lat: number; lng: number; count: number }>();
 
                 (data || []).forEach(visit => {
-                    const key = `${visit.latitude},${visit.longitude}`;
+                    const lat = visit.location_lat;
+                    const lng = visit.location_lng;
+                    if (lat == null || lng == null) return;
+
+                    const key = `${lat},${lng}`;
                     if (locationMap.has(key)) {
                         locationMap.get(key)!.count++;
                     } else {
                         locationMap.set(key, {
-                            lat: visit.latitude,
-                            lng: visit.longitude,
+                            lat: lat,
+                            lng: lng,
                             count: 1
                         });
                     }
