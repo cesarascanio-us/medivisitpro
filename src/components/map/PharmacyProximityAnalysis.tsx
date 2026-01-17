@@ -12,13 +12,16 @@ import {
     getProximityStats,
     formatDistance,
     type Location,
-    type ProximityResult
+    type ProximityResult,
+    exportProximityToExcel
 } from '@/utils/proximityCalculations';
+import { Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PharmacyProximityAnalysisProps {
     pharmacies: Location[];
     hospitals: Location[];
-    onAnalysisChange?: (Results: ProximityResult[], showCircles: boolean) => void;
+    onAnalysisChange?: (results: ProximityResult[], showCircles: boolean, radius: number) => void;
 }
 
 export function PharmacyProximityAnalysis({
@@ -34,10 +37,10 @@ export function PharmacyProximityAnalysis({
         if (showAnalysis && pharmacies.length > 0 && hospitals.length > 0) {
             const proximityResults = findPharmaciesNearHospitals(pharmacies, hospitals, radius);
             setResults(proximityResults);
-            onAnalysisChange?.(proximityResults, showAnalysis);
+            onAnalysisChange?.(proximityResults, showAnalysis, radius);
         } else {
             setResults([]);
-            onAnalysisChange?.([], false);
+            onAnalysisChange?.([], false, radius);
         }
     }, [showAnalysis, radius, pharmacies, hospitals]);
 
@@ -105,6 +108,19 @@ export function PharmacyProximityAnalysis({
                                     <p className="text-2xl font-bold text-green-500">{stats.inZone}</p>
                                     <p className="text-xs text-muted-foreground">En Zona ({stats.percentageInZone}%)</p>
                                 </div>
+                            </div>
+
+                            <div className="pt-2 border-t flex items-center justify-between">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 text-xs gap-1.5"
+                                    onClick={() => exportProximityToExcel(results, radius)}
+                                    disabled={results.length === 0}
+                                >
+                                    <Download className="h-3.5 w-3.5" />
+                                    Exportar Lista
+                                </Button>
                             </div>
 
                             <div className="pt-2 border-t">

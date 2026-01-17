@@ -15,6 +15,8 @@ export interface MapMarker {
     name: string;
     popupContent: ReactNode;
     onClick?: () => void;
+    customColor?: string;
+    opacity?: number;
 }
 
 export interface PolylineData {
@@ -32,26 +34,27 @@ interface LeafletMapProps {
     polylines?: PolylineData[];
     height?: string;
     showInfluenceCircles?: boolean;
+    influenceRadius?: number;
     children?: ReactNode; // Allow custom components like VisitHeatmap
 }
 
 // Custom Icons for different types
-const getIconForType = (type: MapMarker['type']) => {
-    let color = '#3B82F6'; // Default Blue
+const getIconForType = (type: MapMarker['type'], customColor?: string, opacity: number = 1) => {
+    let color = customColor || '#3B82F6'; // Default Blue
     let emoji = '📍';
 
     switch (type) {
         case 'hospital':
         case 'clinic':
-            color = '#EF4444'; // Red
+            color = customColor || '#EF4444'; // Red
             emoji = '🏥';
             break;
         case 'doctor':
-            color = '#3B82F6'; // Blue
+            color = customColor || '#3B82F6'; // Blue
             emoji = '👨‍⚕️';
             break;
         case 'pharmacy':
-            color = '#10B981'; // Green
+            color = customColor || '#10B981'; // Green
             emoji = '💊';
             break;
     }
@@ -71,6 +74,7 @@ const getIconForType = (type: MapMarker['type']) => {
             align-items: center;
             justify-content: center;
             font-size: 16px;
+            opacity: ${opacity};
         ">
             <span style="transform: rotate(45deg);">${emoji}</span>
         </div>`,
@@ -134,7 +138,7 @@ function MapMarkerItem({ marker }: { marker: MapMarker }) {
     return (
         <Marker
             position={marker.position}
-            icon={getIconForType(marker.type)}
+            icon={getIconForType(marker.type, marker.customColor, marker.opacity)}
             eventHandlers={{
                 click: () => {
                     if (marker.onClick) marker.onClick();
@@ -168,6 +172,7 @@ export default function LeafletMap({
     markers,
     height = '600px',
     showInfluenceCircles = false,
+    influenceRadius = 1000,
     children
 }: LeafletMapProps) {
     const [isMounted, setIsMounted] = useState(false);
@@ -221,7 +226,7 @@ export default function LeafletMap({
                                 weight: 1,
                                 dashArray: '5, 5'
                             }}
-                            radius={1000} // 1km
+                            radius={influenceRadius} // Dynamic radius
                         />
                     )
                 ))}

@@ -151,3 +151,39 @@ export function getProximityStats(results: ProximityResult[]) {
         lowPriority: results.filter((r) => r.priority === 'low').length
     };
 }
+
+/**
+ * Exporta los resultados a formato CSV/Excel básico
+ */
+export function exportProximityToExcel(results: ProximityResult[], radius: number) {
+    if (results.length === 0) return;
+
+    const headers = ['Farmacia', 'Estado Proximidad', 'Centros Cercanos', 'Distacia Mínima', 'Detalle Centros'];
+    const rows = results.map(r => {
+        const inZone = r.totalNearby > 0 ? 'EN ZONA' : 'FUERA';
+        const centersLine = r.nearbyHospitals.map(h => `${h.hospital.name} (${formatDistance(h.distance)})`).join('| ');
+        const minDistance = r.totalNearby > 0 ? formatDistance(r.nearbyHospitals[0].distance) : 'N/A';
+
+        return [
+            r.pharmacy.name,
+            inZone,
+            r.totalNearby,
+            minDistance,
+            centersLine
+        ];
+    });
+
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Analisis_Proximidad_${radius}m.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}

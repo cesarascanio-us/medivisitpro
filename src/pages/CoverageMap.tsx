@@ -30,6 +30,26 @@ const MARKER_COLORS: Record<string, string> = {
     clinic: '#F59E0B',    // Amber
 };
 
+const getTypeIcon = (type: string) => {
+    switch (type) {
+        case 'doctor': return <Users className="h-4 w-4" />;
+        case 'pharmacy': return <Building2 className="h-4 w-4" />;
+        case 'hospital': return <Hospital className="h-4 w-4" />;
+        case 'clinic': return <Building className="h-4 w-4" />;
+        default: return <MapPin className="h-4 w-4" />;
+    }
+};
+
+const getTypeLabel = (type: string) => {
+    switch (type) {
+        case 'doctor': return 'Médico';
+        case 'pharmacy': return 'Farmacia';
+        case 'hospital': return 'Hospital';
+        case 'clinic': return 'Clínica';
+        default: return type;
+    }
+};
+
 interface MapContact {
     id: string;
     name: string;
@@ -60,6 +80,7 @@ export default function CoverageMap() {
     const [showHeatmap, setShowHeatmap] = useState(false);
     const [visitHistory, setVisitHistory] = useState<Array<{ latitude: number; longitude: number; intensity: number }>>([]);
     const [proximityResults, setProximityResults] = useState<ProximityResult[]>([]);
+    const [proximityRadius, setProximityRadius] = useState(1000);
     const [showProximityCircles, setShowProximityCircles] = useState(false);
     const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -385,54 +406,73 @@ export default function CoverageMap() {
         : [];
 
     // Convert contacts to map markers - Memoized to prevent re-renders in LeafletMap
-    const mapMarkers = useMemo(() => filteredContacts.map(contact => ({
-        id: contact.id,
-        position: [contact.latitude, contact.longitude] as [number, number],
-        type: contact.type,
-        name: contact.name,
-        onClick: () => setSelectedContact(contact),
-        popupContent: (
-            <div className="min-w-[220px] p-1">
-                <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                        {getTypeIcon(contact.type)}
-                        <Badge variant="outline" className="text-[10px] uppercase font-bold">
-                            {getTypeLabel(contact.type)}
-                        </Badge>
+    const mapMarkers = useMemo(() => filteredContacts.map(contact => {
+        // Determine custom styling for pharmacies during analysis
+        let customColor: string | undefined = undefined;
+        let opacity: number = 1;
+
+        if (showProximityCircles && contact.type === 'pharmacy') {
+            const result = proximityResults.find(r => r.pharmacy.id === contact.id);
+            if (result && result.totalNearby > 0) {
+                customColor = '#10B981'; // Bright Green
+                opacity = 1;
+            } else {
+                customColor = '#94a3b8'; // Grey (slate-400)
+                opacity = 0.5;
+            }
+        }
+
+        return {
+            id: contact.id,
+            position: [contact.latitude, contact.longitude] as [number, number],
+            type: contact.type,
+            name: contact.name,
+            customColor,
+            opacity,
+            onClick: () => setSelectedContact(contact),
+            popupContent: (
+                <div className="min-w-[220px] p-1">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                            {getTypeIcon(contact.type)}
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold">
+                                {getTypeLabel(contact.type)}
+                            </Badge>
+                        </div>
+                    </div>
+                    <h3 className="font-bold text-base leading-tight mb-1">{contact.name}</h3>
+                    <div className="space-y-1 mb-4">
+                        {contact.specialty && (
+                            <p className="text-xs text-muted-foreground flex items-center">
+                                <Users className="h-3 w-3 mr-1" /> {contact.specialty}
+                            </p>
+                        )}
+                        {contact.address && (
+                            <p className="text-[11px] leading-snug">
+                                {contact.address}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="flex gap-2">
+                        <Button
+                            size="sm"
+                            variant="default"
+                            className="w-full text-xs h-8 gradient-medical"
+                            onClick={() => {
+                                const route = contact.type === 'doctor' ? 'doctors' :
+                                    contact.type === 'pharmacy' ? 'pharmacies' :
+                                        'health-centers';
+                                window.location.href = `/${route}?id=${contact.id}`;
+                            }}
+                        >
+                            Ver Perfil
+                        </Button>
                     </div>
                 </div>
-                <h3 className="font-bold text-base leading-tight mb-1">{contact.name}</h3>
-                <div className="space-y-1 mb-4">
-                    {contact.specialty && (
-                        <p className="text-xs text-muted-foreground flex items-center">
-                            <Users className="h-3 w-3 mr-1" /> {contact.specialty}
-                        </p>
-                    )}
-                    {contact.address && (
-                        <p className="text-[11px] leading-snug">
-                            {contact.address}
-                        </p>
-                    )}
-                </div>
-
-                <div className="flex gap-2">
-                    <Button
-                        size="sm"
-                        variant="default"
-                        className="w-full text-xs h-8 gradient-medical"
-                        onClick={() => {
-                            const route = contact.type === 'doctor' ? 'doctors' :
-                                contact.type === 'pharmacy' ? 'pharmacies' :
-                                    'health-centers';
-                            window.location.href = `/${route}?id=${contact.id}`;
-                        }}
-                    >
-                        Ver Perfil
-                    </Button>
-                </div>
-            </div>
-        ),
-    })), [filteredContacts]);
+            ),
+        };
+    }), [filteredContacts, showProximityCircles, proximityResults]);
 
     // Memoize visits for OptimizedRouteView to prevent optimization loops
     const visitsForOptimization = useMemo(() => filteredContacts.map(c => ({
@@ -607,7 +647,13 @@ export default function CoverageMap() {
                                 <Checkbox
                                     id="influence-radios"
                                     checked={showInfluenceCircles}
-                                    onCheckedChange={(c) => setShowInfluenceCircles(!!c)}
+                                    onCheckedChange={(c) => {
+                                        setShowInfluenceCircles(!!c);
+                                        // Also show proximity UI if activating radios
+                                        if (!!c && !showProximityCircles) {
+                                            setShowProximityCircles(true);
+                                        }
+                                    }}
                                 />
                             </div>
                             <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
@@ -692,7 +738,8 @@ export default function CoverageMap() {
                             markers={mapMarkers}
                             polylines={mapPolylines}
                             height="600px"
-                            showInfluenceCircles={showInfluenceCircles}
+                            showInfluenceCircles={showInfluenceCircles || showProximityCircles}
+                            influenceRadius={proximityRadius}
                         >
                             <VisitHeatmap
                                 visits={visitHistory}
@@ -750,9 +797,10 @@ export default function CoverageMap() {
                             longitude: c.longitude,
                             type: c.type
                         }))}
-                    onAnalysisChange={(results, showCircles) => {
+                    onAnalysisChange={(results, showCircles, radius) => {
                         setProximityResults(results);
                         setShowProximityCircles(showCircles);
+                        if (radius) setProximityRadius(radius);
                     }}
                 />
             </div>
