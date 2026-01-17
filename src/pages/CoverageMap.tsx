@@ -55,10 +55,10 @@ const getTypeIcon = (type: string) => {
 
 const getTypeLabel = (type: string) => {
     switch (type) {
-        case 'doctor': return 'Médico';
+        case 'doctor': return 'MÃ©dico';
         case 'pharmacy': return 'Farmacia';
         case 'hospital': return 'Hospital';
-        case 'clinic': return 'Clínica';
+        case 'clinic': return 'ClÃ­nica';
         default: return type;
     }
 };
@@ -389,10 +389,10 @@ export default function CoverageMap() {
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case 'doctor': return 'Médico';
+            case 'doctor': return 'MÃ©dico';
             case 'pharmacy': return 'Farmacia';
             case 'hospital': return 'Hospital';
-            case 'clinic': return 'Clínica';
+            case 'clinic': return 'ClÃ­nica';
             default: return 'Contacto';
         }
     };
@@ -507,7 +507,7 @@ export default function CoverageMap() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-foreground">Mapa de Cobertura</h1>
-                    <p className="text-muted-foreground">Visualiza la ubicación geográfica de tus contactos</p>
+                    <p className="text-muted-foreground">Visualiza la ubicaciÃ³n geogrÃ¡fica de tus contactos</p>
                 </div>
                 <Button onClick={loadData} variant="outline" disabled={loading}>
                     <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -524,7 +524,7 @@ export default function CoverageMap() {
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{stats.doctors}</p>
-                            <p className="text-xs text-muted-foreground">Médicos</p>
+                            <p className="text-xs text-muted-foreground">MÃ©dicos</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -557,7 +557,7 @@ export default function CoverageMap() {
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{stats.clinics}</p>
-                            <p className="text-xs text-muted-foreground">Clínicas</p>
+                            <p className="text-xs text-muted-foreground">ClÃ­nicas</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -612,8 +612,8 @@ export default function CoverageMap() {
                                     <SelectContent>
                                         <SelectItem value="dark">Mapa Oscuro</SelectItem>
                                         <SelectItem value="roadmap">Google Roadmap</SelectItem>
-                                        <SelectItem value="satellite">Google Satélite</SelectItem>
-                                        <SelectItem value="hybrid">Google Híbrido</SelectItem>
+                                        <SelectItem value="satellite">Google SatÃ©lite</SelectItem>
+                                        <SelectItem value="hybrid">Google HÃ­brido</SelectItem>
                                         <SelectItem value="terrain">Google Terreno</SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -628,7 +628,7 @@ export default function CoverageMap() {
                                     <Checkbox id="doctors" checked={showDoctors} onCheckedChange={(c) => setShowDoctors(!!c)} />
                                     <label htmlFor="doctors" className="flex items-center text-sm cursor-pointer">
                                         <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                                        Médicos ({stats.doctors})
+                                        MÃ©dicos ({stats.doctors})
                                     </label>
                                 </div>
                                 <div className="flex items-center space-x-2">
@@ -652,7 +652,7 @@ export default function CoverageMap() {
                         <div className="pt-4 border-t space-y-3">
                             <label className="text-sm font-semibold flex items-center">
                                 <Activity className="mr-2 h-4 w-4 text-emerald-500" />
-                                Herramientas de Análisis
+                                Herramientas de AnÃ¡lisis
                             </label>
                             <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
                                 <div className="space-y-0.5">
@@ -722,7 +722,7 @@ export default function CoverageMap() {
                                     {filteredContacts.length === 0 && (
                                         <div className="text-center py-8 text-muted-foreground">
                                             <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                                            <p className="text-sm">No hay contactos con ubicación</p>
+                                            <p className="text-sm">No hay contactos con ubicaciÃ³n</p>
                                             <p className="text-xs mt-1">Agrega coordenadas a tus contactos</p>
                                         </div>
                                     )}
@@ -780,13 +780,13 @@ export default function CoverageMap() {
                             setMapZoom(16);
                             toast({
                                 title: "Lugar seleccionado",
-                                description: place.tags.name || "Ubicación en el mapa"
+                                description: place.tags.name || "UbicaciÃ³n en el mapa"
                             });
                         }}
                         onAddAsContact={(place) => {
                             toast({
-                                title: "Próximamente",
-                                description: "Función de agregar como contacto en desarrollo",
+                                title: "PrÃ³ximamente",
+                                description: "FunciÃ³n de agregar como contacto en desarrollo",
                             });
                         }}
                     />
