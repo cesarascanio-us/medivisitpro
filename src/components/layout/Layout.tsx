@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { MobileNav } from './MobileNav';
 import { useAuth } from '@/hooks/useAuth';
 import { Rocket, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
