@@ -108,13 +108,36 @@ const navigationGroups = [
 
 interface SidebarProps {
   className?: string;
+  isMobile?: boolean; // New prop for mobile sheet
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const location = useLocation();
-  const { user, signOut, role, isMaster, isAdmin, isManager, isSupervisor, isDemo, canUseSales, canUseWarehouse, canUseEvents } = useAuth();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { user, signOut, role, isMaster, isAdmin, isManager, isSupervisor, isDemo, canUseSales, canUseEvents, canUseWarehouse } = useAuth();
+
+  // Persistent pinned state for desktop
+  const [isPinned, setIsPinned] = useState(() => {
+    if (typeof window !== 'undefined' && !isMobile) {
+      return localStorage.getItem('sidebar-pinned') === 'true';
+    }
+    return false;
+  });
+
+  const [isHovered, setIsHovered] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  // Side effect to update localStorage when pinned state changes
+  const togglePin = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newPinned = !isPinned;
+    setIsPinned(newPinned);
+    if (!isMobile) {
+      localStorage.setItem('sidebar-pinned', String(newPinned));
+    }
+  };
+
+  // Sidebar is expanded if pinned, hovered, or in mobile mode
+  const isExpanded = isMobile || isPinned || isHovered;
 
   const toggleGroup = (title: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent affecting sidebar expansion if needed
@@ -149,23 +172,36 @@ export function Sidebar({ className }: SidebarProps) {
     <div
       className={cn(
         "flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen shadow-2xl z-30 transition-all duration-300 ease-in-out",
-        isExpanded ? "w-56" : "w-16",
+        isExpanded ? "w-64" : "w-16",
         className
       )}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
       {/* Header */}
-      <div className="flex items-center h-14 px-3 border-b border-slate-700/50">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between h-14 px-3 border-b border-slate-700/50">
+        <div className="flex items-center gap-2 overflow-hidden">
           <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
             <Stethoscope className="h-5 w-5 text-white" />
           </div>
-          <div className={cn("transition-all duration-300 overflow-hidden", isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0")}>
+          <div className={cn("transition-all duration-300", isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none")}>
             <h1 className="text-sm font-bold text-white whitespace-nowrap">MediVisitPro</h1>
             <p className="text-[9px] text-slate-400 uppercase tracking-wider">Visitador</p>
           </div>
         </div>
+
+        {/* Pin Toggle - Desktop Only */}
+        {!isMobile && isExpanded && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-slate-500 hover:text-white"
+            onClick={togglePin}
+            title={isPinned ? "Desafijar Menú" : "Fijar Menú"}
+          >
+            <Shield className={cn("h-4 w-4 transition-all", isPinned ? "fill-current text-white rotate-0" : "rotate-45")} />
+          </Button>
+        )}
       </div>
 
       {/* Navigation */}

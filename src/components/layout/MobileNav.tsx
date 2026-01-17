@@ -13,7 +13,7 @@ export function MobileNav() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-white hover:bg-slate-800"
+                    className="lg:hidden text-white hover:bg-slate-800"
                 >
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle menu</span>
@@ -21,9 +21,9 @@ export function MobileNav() {
             </SheetTrigger>
             <SheetContent
                 side="left"
-                className="p-0 bg-sidebar border-r border-sidebar-border w-72 max-w-[85vw]"
+                className="p-0 bg-sidebar border-r border-sidebar-border w-64 max-w-[85vw]"
             >
-                <Sidebar className="border-none shadow-none w-full" />
+                <Sidebar className="border-none shadow-none w-full" isMobile={true} />
             </SheetContent>
         </Sheet>
     );
