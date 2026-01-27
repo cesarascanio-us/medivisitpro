@@ -82,7 +82,7 @@ interface Doctor {
 }
 
 export default function Doctors() {
-    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { user, canViewAllData, isSupervisor, zoneId, organizationId } = useAuth();
     const { toast } = useToast();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
@@ -162,7 +162,8 @@ export default function Doctors() {
 
             let query: any = supabase
                 .from('doctors')
-                .select('*, specialties(name)');
+                .select('*, specialties(name)')
+                .eq('organization_id', organizationId);
 
             // Security and Filtering Logic using AdminFilterState
             if (isSupervisor && zoneId) {
@@ -256,6 +257,7 @@ export default function Doctors() {
         try {
             const dataToSave = {
                 user_id: user.id,
+                organization_id: organizationId,
                 representative_id: formData.representative_id,
                 name: formData.name,
                 birth_date: formData.birth_date || null,
@@ -462,6 +464,7 @@ export default function Doctors() {
 
                     const doctorsToInsert = jsonData.map((row: any) => ({
                         user_id: user?.id,
+                        organization_id: organizationId,
                         representative_id: row['ID Representante'] || row['id_representante'] || null,
 
                         // Personal

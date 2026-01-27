@@ -91,13 +91,13 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
             const { data: doctorsData } = await supabase
                 .from('doctors')
                 .select('id, name, specialty, address')
-                .eq('user_id', user.id)
+                .eq('organization_id', profile?.organization_id)
                 .order('name');
 
             const { data: pharmaciesData } = await supabase
                 .from('pharmacies')
                 .select('id, name, address')
-                .eq('user_id', user.id)
+                .eq('organization_id', profile?.organization_id)
                 .order('name');
 
             const allContacts = [
@@ -123,6 +123,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
                         specialty
                     )
                 `)
+                .eq('organization_id', profile?.organization_id)
                 .order('name');
 
             setProducts(productsData || []);

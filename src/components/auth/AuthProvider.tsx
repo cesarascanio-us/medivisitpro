@@ -99,7 +99,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [role, setRole] = useState<UserRole>('representative');
     const [permissions, setPermissions] = useState<string[]>([]);
-    const [features, setFeatures] = useState<Record<string, boolean>>({});
+    const DEFAULT_FEATURES = {
+        sales_module: true,
+        samples_module: true,
+        pop_module: true,
+        work_processes: true,
+        inventory_module: true,
+        events_module: true,
+        warehouse_module: false,
+        telemarketing_module: false
+    };
+
+    const [features, setFeatures] = useState<Record<string, boolean>>(DEFAULT_FEATURES);
     const [organizationName, setOrganizationName] = useState<string | null>(null);
 
     // Audit/God Mode State
@@ -116,26 +127,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             const { data: orgData } = await supabase
                 .from('organizations')
-                .select('settings')
+                .select('settings, name')
                 .eq('id', orgId)
                 .single();
 
             const orgFeatures = (orgData?.settings as any)?.features || {};
-            setFeatures(orgFeatures);
-        } catch (error) {
-            console.error("Error loading features for Audit Mode:", error);
-        }
-
-        // Fetch organization name for Audit Mode
-        try {
-            const { data: orgData } = await supabase
-                .from('organizations')
-                .select('name')
-                .eq('id', orgId)
-                .single();
+            setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
             setOrganizationName(orgData?.name || null);
         } catch (error) {
-            console.error("Error loading organization name for Audit Mode:", error);
+            console.error("Error loading features for Audit Mode:", error);
         }
 
         // Mock the profile to look like a Manager of that Org
@@ -253,10 +253,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                 setOrganizationName(orgData?.name || null);
                 const orgFeatures = (orgData?.settings as any)?.features || {};
-                setFeatures(orgFeatures);
+                setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
             } else {
                 setOrganizationName(null);
-                setFeatures({});
+                setFeatures(DEFAULT_FEATURES);
             }
         } catch (e) {
             console.error('Error in loadUserRole:', e);
@@ -366,6 +366,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canManageService: isServiceChief || isManager,
         canViewVisitHistory: isSupervisor || isDoctor || isPharmacist,
         zoneId: profile?.zone_id || null,
+        organizationId: profile?.organization_id || null,
         userState: profile?.state || null,
         userRegion: profile?.region || null,
         // Feature Flags (Default logic)

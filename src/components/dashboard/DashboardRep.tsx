@@ -21,8 +21,11 @@ import {
   Bell,
   ChevronRight,
   X,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 
 // =============================================================================
 // MOCK DATA - Structured for easy Supabase integration later
@@ -111,7 +114,7 @@ const MOCK_ALERTS: StockAlert[] = [
 // COMPONENT
 // =============================================================================
 export default function DashboardRep() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, role, organizationName } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -119,6 +122,11 @@ export default function DashboardRep() {
   const [metrics, setMetrics] = useState<DailyMetrics>(MOCK_METRICS);
   const [stockAlerts, setStockAlerts] = useState<StockAlert[]>(MOCK_ALERTS);
   const [alertsOpen, setAlertsOpen] = useState(false);
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [lastSync, setLastSync] = useState<string | null>(localStorage.getItem('lastSyncTime'));
+
+  const { isOnline, pendingCount: syncPendingCount, isSyncing, forceSync } = useOfflineSync();
 
   // Get user's first name from metadata or fallback
   const userName =
@@ -204,6 +212,19 @@ export default function DashboardRep() {
     if (user) {
       loadDashboardData();
     }
+
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    const syncTimer = setInterval(() => {
+      setLastSync(localStorage.getItem('lastSyncTime'));
+    }, 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(syncTimer);
+    };
   }, [user, loadDashboardData]);
 
   // ---------------------------------------------------------------------------
@@ -235,136 +256,188 @@ export default function DashboardRep() {
   // RENDER
   // ---------------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-slate-100">
-      {/* ===================================================================
-          HEADER - Dark with rounded bottom
-          =================================================================== */}
-      <header className="bg-slate-900 text-white px-4 pt-4 pb-14 rounded-b-[2rem]">
-        {/* Top Row: Greeting + Actions */}
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <p className="text-slate-400 text-xs">Hola,</p>
-            <h1 className="text-lg font-bold leading-tight">{userName}</h1>
-          </div>
-          <div className="flex items-center gap-1">
-            {/* Bell with Notification Badge */}
-            <Popover open={alertsOpen} onOpenChange={setAlertsOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-white/10 relative"
-                >
-                  <Bell className="h-5 w-5" />
-                  {alertsCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                      {alertsCount}
-                    </span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-80 p-0"
-                align="end"
-                sideOffset={8}
-              >
-                <div className="bg-slate-900 text-white p-3 rounded-t-lg">
-                  <h3 className="font-semibold text-sm flex items-center gap-2">
-                    <Bell className="h-4 w-4" />
-                    Notificaciones
-                    {alertsCount > 0 && (
-                      <Badge className="bg-red-500 text-white text-xs ml-auto">
-                        {alertsCount}
-                      </Badge>
-                    )}
-                  </h3>
-                </div>
-                <div className="max-h-64 overflow-y-auto">
-                  {stockAlerts.length === 0 ? (
-                    <div className="p-4 text-center text-sm text-muted-foreground">
-                      No tienes alertas pendientes
-                    </div>
-                  ) : (
-                    stockAlerts.map((alert) => (
-                      <div
-                        key={alert.id}
-                        className="flex items-start gap-3 p-3 border-b last:border-b-0 hover:bg-slate-50 transition-colors"
-                      >
-                        <div className="p-1.5 rounded-full bg-amber-100 flex-shrink-0">
-                          <AlertTriangle className="h-4 w-4 text-amber-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-900">
-                            Stock Bajo
-                          </p>
-                          <p className="text-xs text-slate-600 mt-0.5">
-                            <span className="font-medium">
-                              {alert.productName}
-                            </span>
-                            : Solo {alert.currentStock} unidades
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 text-slate-400 hover:text-slate-600 flex-shrink-0"
-                          onClick={() => handleDismissAlert(alert.id)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))
-                  )}
-                </div>
-                {stockAlerts.length > 0 && (
-                  <div className="p-2 border-t bg-slate-50">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                      onClick={() => {
-                        setAlertsOpen(false);
-                        navigate("/rep-inventory");
-                      }}
-                    >
-                      Ver Inventario
-                      <ChevronRight className="h-3 w-3 ml-1" />
-                    </Button>
-                  </div>
+    <div className="min-h-screen bg-slate-100 pb-8">
+      {/* Biofarco Style Header with Clock and Sync */}
+      <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+
+        {/* Top Row: Greeting + Status + Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10">
+              <span className="text-2xl font-bold text-white">
+                {(user?.user_metadata?.first_name || user?.email || "?")[0].toUpperCase()}
+              </span>
+            </div>
+            <div>
+              <p className="text-emerald-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Panel de Control</p>
+              <h1 className="text-2xl font-bold tracking-tight">¡Hola, {userName}!</h1>
+              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
+                  Representante
+                </Badge>
+                {organizationName && (
+                  <Badge variant="outline" className="text-emerald-400 border-emerald-400/30 bg-emerald-400/10 text-[10px] px-2 capitalize">
+                    {organizationName}
+                  </Badge>
                 )}
-              </PopoverContent>
-            </Popover>
+                <Badge
+                  variant="outline"
+                  className={`flex items-center gap-1 border-0 text-[10px] px-2 ${isOnline ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}
+                >
+                  {isOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+                  {isOnline ? 'En línea' : 'Desconectado'}
+                </Badge>
+              </div>
+            </div>
+          </div>
 
-            {/* Refresh */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10"
-              onClick={loadDashboardData}
-              disabled={loading}
-            >
-              <RefreshCcw
-                className={`h-5 w-5 ${loading ? "animate-spin" : ""}`}
-              />
-            </Button>
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-3">
+              {/* Notifications */}
+              <Popover open={alertsOpen} onOpenChange={setAlertsOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white hover:bg-white/10 relative h-10 w-10 rounded-xl border border-white/5"
+                  >
+                    <Bell className="h-5 w-5" />
+                    {alertsCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-md">
+                        {alertsCount}
+                      </span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-80 p-0 overflow-hidden border-white/5 bg-slate-900 text-white shadow-2xl"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-4 border-b border-white/5">
+                    <h3 className="font-semibold text-sm flex items-center gap-2">
+                      <Bell className="h-4 w-4 text-emerald-400" />
+                      Notificaciones
+                      {alertsCount > 0 && (
+                        <Badge className="bg-red-500 text-white text-[10px] ml-auto border-0">
+                          {alertsCount}
+                        </Badge>
+                      )}
+                    </h3>
+                  </div>
+                  <div className="max-h-80 overflow-y-auto custom-scrollbar bg-slate-900/50">
+                    {stockAlerts.length === 0 ? (
+                      <div className="p-8 text-center text-xs text-slate-500 italic">
+                        No hay alertas proyectadas para hoy
+                      </div>
+                    ) : (
+                      stockAlerts.map((alert) => (
+                        <div
+                          key={alert.id}
+                          className="flex items-start gap-4 p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group"
+                        >
+                          <div className="p-2 rounded-xl bg-amber-500/10 flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <AlertTriangle className="h-4 w-4 text-amber-500" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-slate-200 uppercase tracking-tight">
+                              Stock Crítico
+                            </p>
+                            <p className="text-sm text-slate-400 mt-1 leading-tight">
+                              <span className="text-white font-medium">
+                                {alert.productName}
+                              </span>
+                              : Quedan {alert.currentStock} unidades
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-600 hover:text-white hover:bg-white/5 rounded-lg flex-shrink-0"
+                            onClick={() => handleDismissAlert(alert.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {stockAlerts.length > 0 && (
+                    <div className="p-3 border-t border-white/5 bg-slate-900/80 backdrop-blur-md">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full text-xs text-emerald-400 hover:text-emerald-300 hover:bg-emerald-400/10 rounded-lg h-9"
+                        onClick={() => {
+                          setAlertsOpen(false);
+                          navigate("/muestras");
+                        }}
+                      >
+                        Gestionar Inventario
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
 
-            {/* Logout */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-5 w-5" />
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/10 h-10 w-10 rounded-xl border border-white/5"
+                onClick={loadDashboardData}
+                disabled={loading}
+              >
+                <RefreshCcw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-red-400 hover:bg-red-400/10 h-10 w-10 rounded-xl border border-red-400/10"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="text-right">
+              <div className="text-2xl font-mono font-bold tracking-tighter text-white">
+                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </div>
+              <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium">
+                {currentTime.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' })}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Title */}
-        <h2 className="text-xl font-bold mb-4">Tu Resumen Hoy</h2>
+        {/* Sync Info Bar */}
+        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 mb-8 backdrop-blur-sm">
+          <div className="flex items-center gap-2 text-xs">
+            <RefreshCcw className={`h-3 w-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span className="text-white/60">Última Sinc:</span>
+            <span className="text-white font-medium">
+              {lastSync ? new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pendiente'}
+            </span>
+          </div>
+          {syncPendingCount > 0 && (
+            <Badge className="bg-amber-500 text-amber-950 text-[10px] h-5 px-2 font-bold">
+              {syncPendingCount} Pendientes
+            </Badge>
+          )}
+          {!isOnline && (
+            <div className="text-[10px] text-amber-400 flex items-center gap-1.5 ml-auto italic">
+              <AlertTriangle className="h-3 w-3" />
+              Modo Offline activo
+            </div>
+          )}
+        </div>
 
         {/* KPI Progress Bars */}
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
           {/* Route Progress */}
           <div>
             <div className="flex justify-between text-xs mb-1">

@@ -37,7 +37,7 @@ export default function Visits() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { user, canViewAllData, isSupervisor, zoneId, organizationId } = useAuth();
   const { toast } = useToast();
   const [importing, setImporting] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
@@ -76,7 +76,8 @@ export default function Visits() {
         .select(`
           *,
           contacts(name, specialty, address, email, phone)
-        `);
+        `)
+        .eq('organization_id', organizationId);
 
       if (isSupervisor && zoneId) {
         // Supervisor: Base scope is their zone, but AdminFilter can refine it

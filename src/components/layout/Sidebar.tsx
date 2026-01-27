@@ -267,6 +267,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                   const salesItems = ["Agenda", "Planificación", "Planificador", "Visitas", "Objetivos", "Gastos", "Muestras", "Material POP"];
                   if (salesItems.includes(item.name) && !canUseSales) return null;
 
+                  if (item.name === "Procesos" && features.work_processes === false) return null;
                   if (item.name === "Eventos" && !canUseEvents) return null;
                   if (item.name === "Control Almacén" && !canUseWarehouse) return null;
 
@@ -278,7 +279,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                   if (item.repOnly && isSupervisor) return null;
 
                   // Hide specific modules for demo users
-                  const demoHiddenItems = ["Mapa", "Planificador", "Planificación", "Ciclos", "Procesos"];
+                  const demoHiddenItems = ["Mapa", "Planificador", "Planificación", "Ciclos"];
                   if (isDemo && demoHiddenItems.includes(item.name)) return null;
 
                   const isActive = location.pathname === item.href;

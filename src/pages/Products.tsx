@@ -22,7 +22,7 @@ import * as XLSX from 'xlsx';
 import { useDemoData } from "@/contexts/MockDataProvider";
 
 export default function Products() {
-  const { user, isMaster } = useAuth();
+  const { user, isMaster, organizationId } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +57,7 @@ export default function Products() {
       const { data, error } = await supabase
         .from('products')
         .select('*')
+        .eq('organization_id', organizationId)
         .order('name', { ascending: true });
 
       if (error) throw error;

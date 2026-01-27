@@ -37,5 +37,5 @@ export default function DashboardRouter() {
     }
 
     // Representatives (default)
-    return <Dashboard />;
+    return <DashboardRep />;
 }

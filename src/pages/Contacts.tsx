@@ -31,7 +31,7 @@ export default function Contacts() {
   const [contacts, setContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [importing, setImporting] = useState(false);
-  const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [adminFilters, setAdminFilters] = useState<AdminFilterState>({});
@@ -41,10 +41,10 @@ export default function Contacts() {
 
   useEffect(() => {
     loadContacts();
-  }, [user, adminFilters]);
+  }, [user, adminFilters, organizationId]);
 
   const loadContacts = async () => {
-    if (!user) {
+    if (!user || !organizationId) {
       setLoading(false);
       return;
     }
@@ -58,21 +58,19 @@ export default function Contacts() {
     }
 
     try {
-      // Simplified permission check
-      const canViewAll = canViewAllData || user.email === 'cesar@medivisit.pro';
-
       const baseFilter = (query: any, tableName: string = 'contacts') => {
+        query = query.eq('organization_id', organizationId);
+
         // Apply role-based zone/user filtering
         if (isSupervisor && zoneId) {
           // Supervisors see their entire zone by default
-          // If no specific rep filter, show all in zone
           if (adminFilters.repId && adminFilters.repId !== 'all') {
             query = query.eq('user_id', adminFilters.repId);
           } else {
             query = query.eq('zone_id', zoneId);
           }
         }
-        else if (!canViewAll) {
+        else if (!canViewAllData) {
           // Regular reps only see their own data
           query = query.eq('user_id', user.id);
         }
@@ -226,7 +224,8 @@ export default function Contacts() {
       const { error } = await supabase
         .from(table)
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .eq('organization_id', organizationId); // Added organization_id filter
 
       if (error) throw error;
       toast({ title: "Contacto eliminado", description: "El contacto ha sido eliminado." });
