@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductDetailDialog } from "@/components/products/ProductDetailDialog";
 import { ProductSamplesDialog } from "@/components/products/ProductSamplesDialog";
 import { ProductFormDialog } from "@/components/products/ProductFormDialog";
+import { ProductDetailView } from "@/components/catalog/ProductDetailView";
 import { InstructionCard } from "@/components/ui/InstructionCard";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -34,6 +35,8 @@ export default function Products() {
   const [importing, setImporting] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [showProductView, setShowProductView] = useState(false);
   const demoData = useDemoData();
 
   useEffect(() => {
@@ -418,11 +421,32 @@ export default function Products() {
             {filteredProducts.map((product) => (
               <Card key={product.id} className="bg-white border border-slate-200 hover:shadow-lg hover:border-emerald-300 transition-all duration-200 group">
                 <CardContent className="p-4">
-                  {/* Header with icon and actions */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg flex items-center justify-center border border-emerald-100">
-                      <Package className="h-6 w-6 text-emerald-500" />
-                    </div>
+                  {/* Product Image or Placeholder */}
+                  <div className="relative mb-3">
+                    {product.image_url ? (
+                      <div className="aspect-[4/3] w-full rounded-lg overflow-hidden bg-slate-100">
+                        <img
+                          src={product.image_url}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                          }}
+                        />
+                        <div className="hidden w-full h-full bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
+                          <Package className="h-12 w-12 text-emerald-300" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-[4/3] w-full rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center border border-emerald-100">
+                        <Package className="h-12 w-12 text-emerald-300" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Header with actions */}
+                  <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost"
@@ -466,15 +490,25 @@ export default function Products() {
 
                   {/* Action Buttons */}
                   <div className="flex items-center gap-2">
-                    <ProductDetailDialog
-                      trigger={
-                        <Button variant="outline" size="sm" className="flex-1 h-8 text-xs border-slate-200 text-slate-600 hover:bg-slate-50">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 h-8 text-xs border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                          onClick={() => setSelectedProductId(product.id)}
+                        >
                           <Eye className="mr-1.5 h-3 w-3" />
-                          Detalles
+                          Presentación
                         </Button>
-                      }
-                      productData={product}
-                    />
+                      </DialogTrigger>
+                      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden">
+                        <ProductDetailView
+                          productId={product.id}
+                          onBack={() => setSelectedProductId(null)}
+                        />
+                      </DialogContent>
+                    </Dialog>
 
                     <ProductSamplesDialog
                       trigger={

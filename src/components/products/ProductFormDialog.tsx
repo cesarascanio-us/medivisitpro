@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Edit, Check, ChevronsUpDown, X } from "lucide-react";
+import { Loader2, Plus, Edit, Check, ChevronsUpDown, X, Upload, ImageIcon, FileText, Trash2 } from "lucide-react";
 import {
     Command,
     CommandEmpty,
@@ -138,6 +138,8 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
     const [activeTab, setActiveTab] = useState("basic");
 
     const [loading, setLoading] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
+    const [uploadingPdf, setUploadingPdf] = useState(false);
     const { toast } = useToast();
     const [specialtiesList, setSpecialtiesList] = useState<{ label: string, value: string }[]>([]);
 
@@ -227,6 +229,91 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
     const handleChange = (field: string, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    // File upload handler for images
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            toast({ title: "Error", description: "Por favor selecciona una imagen válida", variant: "destructive" });
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            toast({ title: "Error", description: "La imagen no puede superar 5MB", variant: "destructive" });
+            return;
+        }
+
+        setUploadingImage(true);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `product-${Date.now()}.${fileExt}`;
+            const filePath = `products/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('product-assets')
+                .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('product-assets')
+                .getPublicUrl(filePath);
+
+            handleChange('image_url', publicUrl);
+            toast({ title: "Éxito", description: "Imagen subida correctamente" });
+        } catch (error: any) {
+            console.error('Error uploading image:', error);
+            toast({ title: "Error", description: error.message || "Error al subir la imagen", variant: "destructive" });
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+
+    // File upload handler for PDFs
+    const handlePdfUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (file.type !== 'application/pdf') {
+            toast({ title: "Error", description: "Por favor selecciona un archivo PDF", variant: "destructive" });
+            return;
+        }
+
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            toast({ title: "Error", description: "El PDF no puede superar 10MB", variant: "destructive" });
+            return;
+        }
+
+        setUploadingPdf(true);
+        try {
+            const fileName = `ficha-${Date.now()}.pdf`;
+            const filePath = `products/docs/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('product-assets')
+                .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('product-assets')
+                .getPublicUrl(filePath);
+
+            handleChange('pdf_link', publicUrl);
+            toast({ title: "Éxito", description: "PDF subido correctamente" });
+        } catch (error: any) {
+            console.error('Error uploading PDF:', error);
+            toast({ title: "Error", description: error.message || "Error al subir el PDF", variant: "destructive" });
+        } finally {
+            setUploadingPdf(false);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -457,22 +544,115 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                             </div>
 
                             <div className="space-y-2">
-                                <Label>URL de Imagen</Label>
+                                <Label>Imagen del Producto</Label>
+                                {formData.image_url ? (
+                                    <div className="relative">
+                                        <div className="aspect-video w-full max-w-sm rounded-lg overflow-hidden bg-slate-100 border">
+                                            <img
+                                                src={formData.image_url}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="icon"
+                                            className="absolute top-2 right-2 h-8 w-8"
+                                            onClick={() => handleChange('image_url', '')}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <label className="flex-1">
+                                            <div className="flex items-center justify-center h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/50 transition-colors">
+                                                {uploadingImage ? (
+                                                    <Loader2 className="h-8 w-8 text-emerald-500 animate-spin" />
+                                                ) : (
+                                                    <div className="text-center">
+                                                        <ImageIcon className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+                                                        <span className="text-sm text-slate-500">Subir imagen</span>
+                                                        <p className="text-xs text-slate-400 mt-1">JPG, PNG (máx. 5MB)</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={handleImageUpload}
+                                                disabled={uploadingImage}
+                                            />
+                                        </label>
+                                    </div>
+                                )}
                                 <Input
                                     type="url"
                                     value={formData.image_url}
                                     onChange={(e) => handleChange("image_url", e.target.value)}
-                                    placeholder="https://ejemplo.com/imagen-producto.jpg"
+                                    placeholder="O pega una URL directamente..."
+                                    className="mt-2"
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Link a PDF</Label>
+                                <Label>Ficha Técnica (PDF)</Label>
+                                {formData.pdf_link ? (
+                                    <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                                        <FileText className="h-8 w-8 text-emerald-600" />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium text-emerald-800 truncate">Ficha técnica cargada</p>
+                                            <a
+                                                href={formData.pdf_link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-xs text-emerald-600 hover:underline truncate block"
+                                            >
+                                                Ver documento
+                                            </a>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-red-500 hover:bg-red-50"
+                                            onClick={() => handleChange('pdf_link', '')}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <label>
+                                        <div className="flex items-center justify-center h-20 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-colors">
+                                            {uploadingPdf ? (
+                                                <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
+                                            ) : (
+                                                <div className="flex items-center gap-3">
+                                                    <Upload className="h-6 w-6 text-slate-400" />
+                                                    <div>
+                                                        <span className="text-sm text-slate-500">Subir ficha técnica</span>
+                                                        <p className="text-xs text-slate-400">PDF (máx. 10MB)</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <input
+                                            type="file"
+                                            accept="application/pdf"
+                                            className="hidden"
+                                            onChange={handlePdfUpload}
+                                            disabled={uploadingPdf}
+                                        />
+                                    </label>
+                                )}
                                 <Input
                                     type="url"
                                     value={formData.pdf_link}
                                     onChange={(e) => handleChange("pdf_link", e.target.value)}
-                                    placeholder="https://ejemplo.com/ficha-tecnica.pdf"
+                                    placeholder="O pega una URL directamente..."
+                                    className="mt-2"
                                 />
                             </div>
 
