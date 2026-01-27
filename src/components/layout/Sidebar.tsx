@@ -113,7 +113,7 @@ interface SidebarProps {
 
 export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const location = useLocation();
-  const { user, signOut, role, isMaster, isAdmin, isManager, isSupervisor, isDemo, canUseSales, canUseEvents, canUseWarehouse } = useAuth();
+  const { user, signOut, role, isMaster, isAdmin, isManager, isSupervisor, isDemo, canUseSales, canUseEvents, canUseWarehouse, features } = useAuth();
 
   // Persistent pinned state for desktop
   const [isPinned, setIsPinned] = useState(() => {

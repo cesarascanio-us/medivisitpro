@@ -89,6 +89,7 @@ interface AuthContextType {
     canUseWarehouse: boolean;
     canUseTelemarketing: boolean;
     canUseEvents: boolean;
+    features: Record<string, boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -381,6 +382,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         enterAuditMode,
         exitAuditMode,
         organizationName,
+        features,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
