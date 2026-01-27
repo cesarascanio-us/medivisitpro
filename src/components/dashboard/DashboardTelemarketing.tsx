@@ -2,13 +2,73 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, CheckCircle, Clock } from "lucide-react";
+import { Phone, CheckCircle, Clock, Wifi, WifiOff, RefreshCcw } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
 
 export default function DashboardTelemarketing() {
+    const { user, organizationName } = useAuth();
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-bold">Telemarketing Inbox</h1>
-            <p className="text-muted-foreground">Procesamiento rápido de pedidos.</p>
+            {/* Biofarco Style Header with Clock */}
+            <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-6 -mt-6 mb-8">
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+
+                {/* Top Row: Greeting + Status + Actions */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20 border border-white/10">
+                            <span className="text-2xl font-bold text-white">
+                                {(user?.email || "?")[0].toUpperCase()}
+                            </span>
+                        </div>
+                        <div>
+                            <p className="text-orange-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Telemarketing Inbox</p>
+                            <h1 className="text-2xl font-bold tracking-tight">¡Hola, {user?.email?.split('@')[0]}!</h1>
+                            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
+                                    Agente
+                                </Badge>
+                                {organizationName && (
+                                    <Badge variant="outline" className="text-orange-400 border-orange-400/30 bg-orange-400/10 text-[10px] px-2 capitalize">
+                                        {organizationName}
+                                    </Badge>
+                                )}
+                                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] px-2">
+                                    En línea
+                                </Badge>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-2">
+                        <div className="text-right">
+                            <div className="text-3xl font-mono font-bold tracking-tighter text-white">
+                                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                            </div>
+                            <div className="text-[10px] text-orange-400/60 uppercase tracking-widest font-medium">
+                                {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
+                    <p className="text-white/60 text-xs italic">
+                        Procesamiento rápido de pedidos y atención al cliente.
+                    </p>
+                </div>
+            </header>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Column 1: Incoming */}

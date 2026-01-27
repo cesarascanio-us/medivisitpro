@@ -118,9 +118,9 @@ export default function DashboardRep() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [visits, setVisits] = useState<VisitItem[]>(MOCK_VISITS);
-  const [metrics, setMetrics] = useState<DailyMetrics>(MOCK_METRICS);
-  const [stockAlerts, setStockAlerts] = useState<StockAlert[]>(MOCK_ALERTS);
+  const [visits, setVisits] = useState<VisitItem[]>([]);
+  const [metrics, setMetrics] = useState<DailyMetrics>({ visitedToday: 0, totalPlanned: 0, salesAmount: 0, salesQuota: 0 });
+  const [stockAlerts, setStockAlerts] = useState<StockAlert[]>([]);
   const [alertsOpen, setAlertsOpen] = useState(false);
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -176,8 +176,8 @@ export default function DashboardRep() {
         .lt("scheduled_date", `${today}T23:59:59`)
         .order("scheduled_date", { ascending: true });
 
-      if (!error && visitsData && visitsData.length > 0) {
-        const mappedVisits: VisitItem[] = visitsData.map((v: any) => ({
+      if (!error) {
+        const mappedVisits: VisitItem[] = (visitsData || []).map((v: any) => ({
           id: v.id,
           scheduledTime: new Date(v.scheduled_date).toLocaleTimeString([], {
             hour: "2-digit",

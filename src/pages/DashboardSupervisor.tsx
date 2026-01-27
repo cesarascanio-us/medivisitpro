@@ -16,7 +16,11 @@ import {
     Activity,
     Award,
     ChevronRight,
-    BarChart3
+    BarChart3,
+    Wifi,
+    WifiOff,
+    RefreshCcw,
+    Clock
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 
@@ -53,10 +57,18 @@ interface DashboardData {
 const CHART_COLORS = ['#10b981', '#14b8a6', '#0ea5e9', '#6366f1', '#f59e0b', '#ef4444'];
 
 export default function DashboardSupervisor() {
-    const { user, userRegion } = useAuth();
+    const { user, userRegion, organizationName, role } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<DashboardData | null>(null);
     const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month'>('month');
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         if (user) {
@@ -207,28 +219,69 @@ export default function DashboardSupervisor() {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-white">Panel de Supervisor</h1>
-                    <p className="text-slate-400">Vista general del rendimiento de tu equipo</p>
+            {/* Biofarco Style Header with Clock and Sync */}
+            <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-6 -mt-6">
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+
+                {/* Top Row: Greeting + Status + Actions */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 border border-white/10">
+                            <span className="text-2xl font-bold text-white">
+                                {(user?.email || "?")[0].toUpperCase()}
+                            </span>
+                        </div>
+                        <div>
+                            <p className="text-blue-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Panel de Supervisión</p>
+                            <h1 className="text-2xl font-bold tracking-tight">¡Hola, {user?.email?.split('@')[0]}!</h1>
+                            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
+                                    Supervisor
+                                </Badge>
+                                {organizationName && (
+                                    <Badge variant="outline" className="text-blue-400 border-blue-400/30 bg-blue-400/10 text-[10px] px-2 capitalize">
+                                        {organizationName}
+                                    </Badge>
+                                )}
+                                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] px-2">
+                                    <MapPin className="h-3 w-3 mr-1" />
+                                    {userRegion || 'Región'}
+                                </Badge>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-2">
+                        <div className="text-right">
+                            <div className="text-3xl font-mono font-bold tracking-tighter text-white">
+                                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                            </div>
+                            <div className="text-[10px] text-blue-400/60 uppercase tracking-widest font-medium">
+                                {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
-                        <MapPin className="h-3 w-3 mr-1" />
-                        {userRegion || 'Región'}
-                    </Badge>
-                    <Select value={selectedPeriod} onValueChange={(v: 'week' | 'month') => setSelectedPeriod(v)}>
-                        <SelectTrigger className="w-32 bg-slate-800 border-slate-700 text-white">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="week">Esta Semana</SelectItem>
-                            <SelectItem value="month">Este Mes</SelectItem>
-                        </SelectContent>
-                    </Select>
+
+                {/* Filter Bar */}
+                <div className="flex flex-wrap items-center justify-between gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 mb-8 backdrop-blur-sm">
+                    <div className="flex items-center gap-4">
+                        <Select value={selectedPeriod} onValueChange={(v: 'week' | 'month') => setSelectedPeriod(v)}>
+                            <SelectTrigger className="w-40 bg-white/10 border-white/10 text-white h-9">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="week">Esta Semana</SelectItem>
+                                <SelectItem value="month">Este Mes</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <p className="text-white/60 text-xs italic">
+                        Visualizando métricas de {data?.totalReps || 0} representantes activos
+                    </p>
                 </div>
-            </div>
+            </header>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
