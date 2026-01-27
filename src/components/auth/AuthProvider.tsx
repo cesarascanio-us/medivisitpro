@@ -79,6 +79,7 @@ interface AuthContextType {
     enterAuditMode: (orgId: string) => void;
     exitAuditMode: () => void;
     // Zone/Location
+    organizationName: string | null;
     zoneId: string | null;
     userState: string | null;
     userRegion: string | null;
@@ -99,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [role, setRole] = useState<UserRole>('representative');
     const [permissions, setPermissions] = useState<string[]>([]);
     const [features, setFeatures] = useState<Record<string, boolean>>({});
+    const [organizationName, setOrganizationName] = useState<string | null>(null);
 
     // Audit/God Mode State
     const [auditOrgId, setAuditOrgId] = useState<string | null>(null);
@@ -122,6 +124,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setFeatures(orgFeatures);
         } catch (error) {
             console.error("Error loading features for Audit Mode:", error);
+        }
+
+        // Fetch organization name for Audit Mode
+        try {
+            const { data: orgData } = await supabase
+                .from('organizations')
+                .select('name')
+                .eq('id', orgId)
+                .single();
+            setOrganizationName(orgData?.name || null);
+        } catch (error) {
+            console.error("Error loading organization name for Audit Mode:", error);
         }
 
         // Mock the profile to look like a Manager of that Org
@@ -229,17 +243,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             setPermissions(permsData?.map(p => p.permission_code) || []);
 
-            // Load Organization Features
+            // Load Organization Features and Name
             if (finalOrgId) {
                 const { data: orgData } = await supabase
                     .from('organizations')
-                    .select('settings')
+                    .select('name, settings')
                     .eq('id', finalOrgId)
                     .single();
 
+                setOrganizationName(orgData?.name || null);
                 const orgFeatures = (orgData?.settings as any)?.features || {};
                 setFeatures(orgFeatures);
             } else {
+                setOrganizationName(null);
                 setFeatures({});
             }
         } catch (e) {
@@ -362,6 +378,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuditMode: !!auditOrgId,
         enterAuditMode,
         exitAuditMode,
+        organizationName,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

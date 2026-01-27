@@ -16,7 +16,7 @@ import { refreshObjectivesProgress } from "@/services/objectiveService";
 import { useDemoData } from "@/contexts/MockDataProvider";
 
 export default function Dashboard() {
-  const { user, role, isManager, isCoordinator, isAdmin, isMaster } = useAuth();
+  const { user, role, isManager, isCoordinator, isAdmin, isMaster, organizationName } = useAuth();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
 
@@ -213,10 +213,15 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
           <div>
             <h1 className="text-2xl font-bold">¡Bienvenido de vuelta, {getUserName()}!</h1>
-            <div className="flex items-center mt-1">
+            <div className="flex items-center mt-1 gap-2">
               <Badge variant="secondary" className="bg-background text-foreground hover:bg-background/90 border-0">
                 {getRoleLabel(role)}
               </Badge>
+              {organizationName && (
+                <Badge variant="outline" className="text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10">
+                  {organizationName}
+                </Badge>
+              )}
             </div>
           </div>
         </div>
