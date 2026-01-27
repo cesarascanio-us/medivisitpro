@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationBadge } from "@/components/layout/NotificationBadge";
+import { OrganizationSwitcher } from "@/components/organization/OrganizationSwitcher";
 export function Header() {
   const navigate = useNavigate();
   const { user, isMaster } = useAuth();
@@ -27,6 +28,9 @@ export function Header() {
             <span className="hidden sm:inline">{todayFormatted}</span>
           </div>
         </div>
+
+        {/* Organization Switcher (Master Only) */}
+        <OrganizationSwitcher />
 
         {/* Center - Search (hidden on small screens) */}
         <div className="hidden md:block flex-1 max-w-md mx-4">
