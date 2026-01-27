@@ -14,6 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { AutoAssignmentPanel } from "@/components/dashboard/AutoAssignmentPanel";
 import { refreshObjectivesProgress } from "@/services/objectiveService";
 import { useDemoData } from "@/contexts/MockDataProvider";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { Wifi, WifiOff, RefreshCcw } from "lucide-react";
 
 export default function Dashboard() {
   const { user, role, isManager, isCoordinator, isAdmin, isMaster, organizationName } = useAuth();
@@ -30,6 +32,10 @@ export default function Dashboard() {
 
   const [upcomingVisits, setUpcomingVisits] = useState<any[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [lastSync, setLastSync] = useState<string | null>(localStorage.getItem('lastSyncTime'));
+
+  const { isOnline, pendingCount, isSyncing, forceSync } = useOfflineSync();
 
   // Demo mode hook
   const demoData = useDemoData();
@@ -38,6 +44,19 @@ export default function Dashboard() {
     if (user) {
       loadDashboardData();
     }
+
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    const syncTimer = setInterval(() => {
+      setLastSync(localStorage.getItem('lastSyncTime'));
+    }, 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(syncTimer);
+    };
   }, [user]);
 
   const loadDashboardData = async () => {
@@ -213,7 +232,7 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
           <div>
             <h1 className="text-2xl font-bold">¡Bienvenido de vuelta, {getUserName()}!</h1>
-            <div className="flex items-center mt-1 gap-2">
+            <div className="flex items-center mt-1 gap-2 flex-wrap">
               <Badge variant="secondary" className="bg-background text-foreground hover:bg-background/90 border-0">
                 {getRoleLabel(role)}
               </Badge>
@@ -222,17 +241,48 @@ export default function Dashboard() {
                   {organizationName}
                 </Badge>
               )}
+              <Badge
+                variant="outline"
+                className={`flex items-center gap-1 border-0 ${isOnline ? 'bg-success/20 text-success-foreground' : 'bg-destructive/20 text-destructive-foreground'}`}
+              >
+                {isOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+                {isOnline ? 'En línea' : 'Modo Offline'}
+              </Badge>
+            </div>
+          </div>
+          <div className="text-right flex flex-col items-end">
+            <div className="text-xl font-mono font-bold">
+              {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </div>
+            <div className="text-xs text-primary-foreground/70 uppercase tracking-wider">
+              {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
             </div>
           </div>
         </div>
 
-        <p className="text-primary-foreground/80 mt-2">
-          {(isManager || isAdmin || isMaster) ? (
-            `Hay ${stats.visitsToday} visitas programadas hoy en toda la organización.`
-          ) : (
-            `Tienes ${stats.visitsToday} visitas programadas para hoy.${stats.visitsToday > 0 ? " ¡A por ello!" : " Tómalo con calma o planifica nuevas visitas."}`
-          )}
-        </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-4">
+          <p className="text-primary-foreground/80">
+            {(isManager || isAdmin || isMaster) ? (
+              `Hay ${stats.visitsToday} visitas programadas hoy en toda la organización.`
+            ) : (
+              `Tienes ${stats.visitsToday} visitas programadas para hoy.${stats.visitsToday > 0 ? " ¡A por ello!" : " Tómalo con calma o planifica nuevas visitas."}`
+            )}
+          </p>
+
+          <div className="flex items-center gap-3 bg-black/10 px-3 py-1.5 rounded-full text-xs">
+            <div className="flex items-center gap-1.5">
+              <RefreshCcw className={`h-3 w-3 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>
+                Sinc: {lastSync ? new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Nunca'}
+              </span>
+            </div>
+            {pendingCount > 0 && (
+              <Badge className="bg-warning text-warning-foreground text-[10px] h-4 px-1">
+                {pendingCount} pendientes
+              </Badge>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Process Alerts - Ciclos expirados y visitas zombie */}

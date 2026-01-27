@@ -192,6 +192,9 @@ export async function processPendingSync(): Promise<{ success: number; failed: n
         }
     } finally {
         syncInProgress = false;
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('lastSyncTime', new Date().toISOString());
+        }
     }
 
     console.log(`[OfflineSync] Sync complete: ${success} success, ${failed} failed`);
