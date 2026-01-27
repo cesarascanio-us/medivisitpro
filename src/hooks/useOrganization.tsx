@@ -4,9 +4,12 @@ import { Organization, PlanTier, SubscriptionStatus } from '@/types/organization
 
 interface OrganizationContextType {
     organization: Organization | null;
+    allOrganizations: Organization[];
     isLoading: boolean;
     error: Error | null;
     isOrgAdmin: boolean;
+    isMaster: boolean;
+    switchOrganization: (orgId: string) => Promise<void>;
     refetch: () => Promise<void>;
 }
 
@@ -24,11 +27,15 @@ const DEMO_ORG = {
     updated_at: new Date().toISOString()
 };
 
+const MASTER_EMAIL = 'cesar.ascanio@gmail.com';
+
 export function OrganizationProvider({ children }: { children: ReactNode }) {
     const [organization, setOrganization] = useState<Organization | null>(null);
+    const [allOrganizations, setAllOrganizations] = useState<Organization[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
     const [isOrgAdmin, setIsOrgAdmin] = useState(false);
+    const [isMaster, setIsMaster] = useState(false);
 
     const fetchOrganization = async () => {
         try {
@@ -42,26 +49,22 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            // [STRICT FAIL-SAFE] Demo & Master Bypass
-            // We check this BEFORE any DB call to avoid "Infinite Recursion" RLS errors
+            // [STRICT FAIL-SAFE] Demo Bypass
             const lowerEmail = user.email?.trim().toLowerCase();
             if (lowerEmail === 'demo.medivisitpro@gmail.com') {
                 console.log('AuthProvider: Modo Demo detectado (Bypass RLS activo)');
                 setOrganization(DEMO_ORG as any);
+                setAllOrganizations([DEMO_ORG as any]);
                 setIsOrgAdmin(false);
                 setIsLoading(false);
                 return;
             }
 
-            if (lowerEmail === 'cesar.ascanio@gmail.com') {
-                console.log('AuthProvider: Usuario Master detectado (Bypass RLS activo)');
-                setOrganization(DEMO_ORG as any); // Use Demo Org as placeholder for Master to avoid errors
-                setIsOrgAdmin(true);
-                setIsLoading(false);
-                return;
-            }
+            // Check if Master
+            const isMasterUser = lowerEmail === MASTER_EMAIL;
+            setIsMaster(isMasterUser);
 
-            // Get profile with organization - Check both tables for resilience
+            // Get profile and role data
             const [{ data: profile }, { data: userRole }] = await Promise.all([
                 supabase
                     .from('profiles')
@@ -75,38 +78,58 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     .maybeSingle()
             ]);
 
-            let organizationId = profile?.organization_id || userRole?.organization_id;
-
-            // Fail-safe for Demo User
-            if (user.email === 'demo.medivisitpro@gmail.com') {
-                setOrganization(DEMO_ORG as any);
-                setIsOrgAdmin(false);
-                setIsLoading(false);
-                return;
-            }
-
-            if (!organizationId) {
-                setOrganization(null);
-                setIsOrgAdmin(false);
-                return;
-            }
-
             setIsOrgAdmin(profile?.is_org_admin || false);
 
-            // Get organization details
-            const { data: org, error: orgError } = await supabase
-                .from('organizations')
-                .select('*')
-                .eq('id', organizationId)
-                .maybeSingle();
+            if (isMasterUser) {
+                // MASTER FLOW: Load ALL organizations
+                const { data: allOrgs, error: allOrgsError } = await supabase
+                    .from('organizations')
+                    .select('*')
+                    .order('name');
+                
+                if (allOrgsError) console.error('Error fetching all orgs for master:', allOrgsError);
+                
+                const orgs = allOrgs || [];
+                setAllOrganizations(orgs);
 
-            if (orgError) {
-                console.warn('Organization fetch error:', orgError);
-                setOrganization(null);
-                return;
+                // Determine which org to show initially
+                // 1. If we have a stored preference or previous state, use that (TODO: Persist)
+                // 2. Otherwise use their "assigned" org
+                // 3. Fallback to first available
+                const assignedOrgId = profile?.organization_id || userRole?.organization_id;
+                
+                // If we already have an organization selected in state (e.g. from switching), keep it if valid
+                // Otherwise default to assigned
+                if (!organization) {
+                    const initialOrg = orgs.find(o => o.id === assignedOrgId) || orgs[0];
+                    setOrganization(initialOrg || null);
+                }
+            } else {
+                // NORMAL USER FLOW
+                let organizationId = profile?.organization_id || userRole?.organization_id;
+
+                if (!organizationId) {
+                    setOrganization(null);
+                    setAllOrganizations([]);
+                    return;
+                }
+
+                const { data: org, error: orgError } = await supabase
+                    .from('organizations')
+                    .select('*')
+                    .eq('id', organizationId)
+                    .maybeSingle();
+
+                if (orgError) {
+                    console.warn('Organization fetch error:', orgError);
+                    setOrganization(null);
+                    return;
+                }
+
+                setOrganization(org as Organization);
+                setAllOrganizations(org ? [org as Organization] : []);
             }
 
-            setOrganization(org as Organization);
         } catch (err) {
             console.error('Error fetching organization:', err);
             setError(err instanceof Error ? err : new Error('Failed to fetch organization'));
@@ -115,10 +138,26 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    // Allow manual switching of organization (context only)
+    const switchOrganization = async (orgId: string) => {
+        if (!isMaster) return; // Only master can switch
+        
+        const targetOrg = allOrganizations.find(o => o.id === orgId);
+        if (targetOrg) {
+            setOrganization(targetOrg);
+            // Optional: Persist this choice to localStorage so it survives reload
+            localStorage.setItem('medivisit_master_active_org', orgId);
+            
+            // Reload window to ensure all queries re-run with new ID? 
+            // Better to rely on React state updates flushing down.
+            // But since 'organizationId' hook reads from this context, it should trigger re-renders.
+            toast.success(`Organización cambiada a: ${targetOrg.name}`);
+        }
+    };
+
     useEffect(() => {
         fetchOrganization();
 
-        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
             fetchOrganization();
         });
@@ -129,9 +168,12 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     return (
         <OrganizationContext.Provider value={{
             organization,
+            allOrganizations,
             isLoading,
             error,
             isOrgAdmin,
+            isMaster,
+            switchOrganization,
             refetch: fetchOrganization
         }}>
             {children}
