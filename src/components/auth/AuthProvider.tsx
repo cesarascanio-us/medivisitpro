@@ -80,6 +80,7 @@ interface AuthContextType {
     exitAuditMode: () => void;
     // Zone/Location
     organizationName: string | null;
+    organizationId: string | null;
     zoneId: string | null;
     userState: string | null;
     userRegion: string | null;
