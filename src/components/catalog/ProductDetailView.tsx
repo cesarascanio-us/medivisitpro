@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Stethoscope, ShoppingBag, GraduationCap, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Stethoscope, ShoppingBag, GraduationCap, Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { catalogService } from "@/services/catalogService";
 import { ClinicalShowcase, ProductAsset } from "./ClinicalShowcase";
@@ -57,24 +57,24 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 bg-white">
                 <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center animate-pulse">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
                         <Loader2 className="h-8 w-8 text-white animate-spin" />
                     </div>
                 </div>
-                <p className="text-slate-500 font-medium">Cargando presentación...</p>
+                <p className="text-slate-600 font-medium">Cargando presentación...</p>
             </div>
         );
     }
 
     if (!product) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 bg-white">
                 <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center">
-                    <Sparkles className="h-8 w-8 text-red-500" />
+                    <AlertCircle className="h-8 w-8 text-red-500" />
                 </div>
-                <p className="text-red-500 font-medium">Producto no encontrado</p>
+                <p className="text-red-600 font-medium">Producto no encontrado</p>
                 {onBack && (
                     <Button variant="outline" onClick={onBack} className="mt-2">
                         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -98,89 +98,93 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
         : [];
 
     return (
-        <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-white to-emerald-50/20 min-h-screen">
-            {/* Premium Top Bar */}
-            <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10 shadow-sm">
+        <div className="flex flex-col h-full bg-white overflow-y-auto">
+            {/* Clean Top Bar with Product Name */}
+            <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white">
                 <div className="flex items-center gap-3">
                     {onBack && (
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={onBack}
-                            className="rounded-xl hover:bg-slate-100"
+                            className="rounded-xl text-white hover:bg-white/20"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
                     )}
                     <div>
-                        <h1 className="font-bold text-xl text-slate-800">{product.name}</h1>
-                        {product.category && (
-                            <Badge variant="secondary" className="mt-1 bg-emerald-100 text-emerald-700 border-0">
-                                {product.category}
-                            </Badge>
+                        <h1 className="font-bold text-xl">{product.name}</h1>
+                        {product.active_ingredients && (
+                            <p className="text-white/70 text-sm mt-0.5">{product.active_ingredients}</p>
                         )}
                     </div>
                 </div>
+                {product.category && (
+                    <Badge className="bg-white/20 text-white border-0 text-sm">
+                        {product.category}
+                    </Badge>
+                )}
             </div>
 
-            {/* Content Tabs - Premium Style */}
-            <div className="p-4 md:p-6 max-w-7xl mx-auto w-full flex-1">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                    {/* Premium Tab List */}
-                    <TabsList className="grid w-full grid-cols-3 lg:w-[480px] h-14 p-1.5 bg-slate-100/80 rounded-xl">
+            {/* Premium Tab Navigation */}
+            <div className="px-6 py-4 bg-slate-50 border-b">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 max-w-lg h-12 p-1 bg-white rounded-xl shadow-sm border">
                         <TabsTrigger
                             value="clinical"
-                            className="rounded-lg gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-emerald-700 transition-all"
+                            className="rounded-lg gap-2 text-sm font-medium data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
                         >
                             <Stethoscope className="h-4 w-4" />
-                            <span className="hidden sm:inline">Médica</span>
+                            Médica
                         </TabsTrigger>
                         <TabsTrigger
                             value="commercial"
-                            className="rounded-lg gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 transition-all"
+                            className="rounded-lg gap-2 text-sm font-medium data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
                         >
                             <ShoppingBag className="h-4 w-4" />
-                            <span className="hidden sm:inline">Comercial</span>
+                            Comercial
                         </TabsTrigger>
                         <TabsTrigger
                             value="training"
-                            className="rounded-lg gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-purple-700 transition-all"
+                            className="rounded-lg gap-2 text-sm font-medium data-[state=active]:bg-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
                         >
                             <GraduationCap className="h-4 w-4" />
-                            <span className="hidden sm:inline">Entrenamiento</span>
+                            Entrenamiento
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="clinical" className="animate-in fade-in slide-in-from-left-4 duration-300 mt-6">
-                        <ClinicalShowcase
-                            productName={product.name}
-                            description={product.description || "Producto farmacéutico de alta calidad"}
-                            assets={productAssets}
-                            composition={product.composition}
-                            indications={product.indications}
-                            dosage={product.dosage_instructions || product.dosage}
-                            safetyInfo={product.safety_info || product.contraindications}
-                            keyMessage={product.key_message || product.selling_points}
-                            activeIngredients={activeIngredients}
-                            standardDose={product.standard_dose || 15}
-                            concentration={product.concentration || 20}
-                        />
-                    </TabsContent>
+                    {/* Tab Contents */}
+                    <div className="mt-6">
+                        <TabsContent value="clinical" className="mt-0 animate-in fade-in duration-200">
+                            <ClinicalShowcase
+                                productName={product.name}
+                                description={product.description || "Producto farmacéutico de alta calidad"}
+                                assets={productAssets}
+                                composition={product.composition}
+                                indications={product.indications}
+                                dosage={product.dosage_instructions || product.dosage}
+                                safetyInfo={product.safety_info || product.contraindications}
+                                keyMessage={product.key_message || product.selling_points}
+                                activeIngredients={activeIngredients}
+                                standardDose={product.standard_dose || 15}
+                                concentration={product.concentration || 20}
+                            />
+                        </TabsContent>
 
-                    <TabsContent value="commercial" className="animate-in fade-in slide-in-from-right-4 duration-300 mt-6">
-                        <CommercialNegotiator
-                            basePrice={product.price || 100}
-                            offers={offers.length > 0 ? offers : [
-                                // Fallback mock
-                                { id: '1', title: 'Pack Lanzamiento 10+3', min_quantity: 10, bonus_quantity: 3, discount_percentage: 0, description: 'Compra 10 y lleva 3 bonificadas' },
-                                { id: '2', title: 'Descuento Volumétrico', min_quantity: 50, bonus_quantity: 0, discount_percentage: 15, description: '15% Off por caja cerrada' }
-                            ]}
-                        />
-                    </TabsContent>
+                        <TabsContent value="commercial" className="mt-0 animate-in fade-in duration-200">
+                            <CommercialNegotiator
+                                basePrice={product.price || 100}
+                                offers={offers.length > 0 ? offers : [
+                                    { id: '1', title: 'Pack Lanzamiento 10+3', min_quantity: 10, bonus_quantity: 3, discount_percentage: 0, description: 'Compra 10 y lleva 3 bonificadas' },
+                                    { id: '2', title: 'Descuento Volumétrico', min_quantity: 50, bonus_quantity: 0, discount_percentage: 15, description: '15% Off por caja cerrada' }
+                                ]}
+                            />
+                        </TabsContent>
 
-                    <TabsContent value="training" className="animate-in fade-in zoom-in-95 duration-300 mt-6">
-                        <StaffTrainer />
-                    </TabsContent>
+                        <TabsContent value="training" className="mt-0 animate-in fade-in duration-200">
+                            <StaffTrainer />
+                        </TabsContent>
+                    </div>
                 </Tabs>
             </div>
         </div>
