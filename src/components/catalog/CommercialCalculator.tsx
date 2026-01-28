@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calculator, Wallet, ArrowRightLeft, Store, Users, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Calculator, Wallet, ArrowRightLeft, ArrowLeftRight, Store, Users, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
@@ -342,10 +342,10 @@ export function CommercialCalculator({
                 {onSaveAgreement && (
                     <Button
                         className={`w-full font-bold h-12 shadow-sm animate-in slide-in-from-bottom-2 ${isWholesale && requiresApproval
-                                ? "bg-slate-700 hover:bg-slate-800 text-white"
-                                : isWholesale
-                                    ? "bg-amber-600 hover:bg-amber-700 text-white"
-                                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                            ? "bg-slate-700 hover:bg-slate-800 text-white"
+                            : isWholesale
+                                ? "bg-amber-600 hover:bg-amber-700 text-white"
+                                : "bg-blue-600 hover:bg-blue-700 text-white"
                             }`}
                         onClick={() => {
                             const numericPrice = isWholesale ? (priceDronena || 0) : activeBasePrice;
