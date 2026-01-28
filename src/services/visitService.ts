@@ -7,7 +7,8 @@ export const visitService = {
             .from('visits')
             .select(`
                 *,
-                contacts(name, address, specialty)
+                contacts(name, address, specialty),
+                directory_items(name, entity_type)
             `)
             .eq('id', id)
             .single();

@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Input as BaseInput } from "@/components/ui/input";
+import { Textarea as BaseTextarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger as BaseSelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +28,35 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+
+// -- High Contrast Wrappers --
+const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof BaseInput>>((props, ref) => (
+    <BaseInput
+        ref={ref}
+        {...props}
+        className={cn("bg-surface-card text-brand-primary border-slate-300 placeholder:text-slate-500 focus-visible:ring-brand-secondary focus-visible:border-brand-secondary", props.className)}
+    />
+));
+Input.displayName = "HighContrastInput";
+
+const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<typeof BaseTextarea>>((props, ref) => (
+    <BaseTextarea
+        ref={ref}
+        {...props}
+        className={cn("bg-surface-card text-brand-primary border-slate-300 placeholder:text-slate-500 focus-visible:ring-brand-secondary focus-visible:border-brand-secondary", props.className)}
+    />
+));
+Textarea.displayName = "HighContrastTextarea";
+
+const SelectTrigger = React.forwardRef<React.ElementRef<typeof BaseSelectTrigger>, React.ComponentPropsWithoutRef<typeof BaseSelectTrigger>>((props, ref) => (
+    <BaseSelectTrigger
+        ref={ref}
+        {...props}
+        className={cn("bg-surface-card text-brand-primary border-slate-300 placeholder:text-slate-500 focus:ring-brand-secondary focus:border-brand-secondary [&>span]:line-clamp-1", props.className)}
+    />
+));
+SelectTrigger.displayName = "HighContrastSelectTrigger";
+// ----------------------------
 
 // Helper MultiSelect Component
 function MultiSelect({
@@ -433,9 +462,9 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
             <DialogTrigger asChild>
                 {trigger}
             </DialogTrigger>
-            <DialogContent className="max-w-5xl max-h-[95vh] overflow-hidden flex flex-col">
+            <DialogContent className="max-w-5xl max-h-[95vh] overflow-hidden flex flex-col bg-surface-card">
                 <DialogHeader className="pb-2">
-                    <DialogTitle className="flex items-center gap-2 text-xl">
+                    <DialogTitle className="flex items-center gap-2 text-xl text-brand-primary">
                         {productToEdit ? <Edit className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
                         {productToEdit ? "Editar Producto" : "Nuevo Producto"}
                     </DialogTitle>
@@ -443,24 +472,24 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
                 <form onSubmit={handleSubmit} className="flex-1 overflow-hidden flex flex-col">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-                        <TabsList className="grid w-full grid-cols-5 h-12 mb-4">
-                            <TabsTrigger value="basic" className="gap-1.5 text-xs sm:text-sm">
+                        <TabsList className="grid w-full grid-cols-5 h-12 mb-4 bg-muted p-1">
+                            <TabsTrigger value="basic" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm">
                                 <Package className="h-4 w-4" />
                                 <span className="hidden sm:inline">Básico</span>
                             </TabsTrigger>
-                            <TabsTrigger value="medical" className="gap-1.5 text-xs sm:text-sm">
+                            <TabsTrigger value="medical" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm">
                                 <Stethoscope className="h-4 w-4" />
                                 <span className="hidden sm:inline">Médica</span>
                             </TabsTrigger>
-                            <TabsTrigger value="commercial" className="gap-1.5 text-xs sm:text-sm">
+                            <TabsTrigger value="commercial" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm">
                                 <ShoppingBag className="h-4 w-4" />
                                 <span className="hidden sm:inline">Comercial</span>
                             </TabsTrigger>
-                            <TabsTrigger value="training" className="gap-1.5 text-xs sm:text-sm">
+                            <TabsTrigger value="training" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm">
                                 <GraduationCap className="h-4 w-4" />
                                 <span className="hidden sm:inline">Entrenamiento</span>
                             </TabsTrigger>
-                            <TabsTrigger value="resources" className="gap-1.5 text-xs sm:text-sm">
+                            <TabsTrigger value="resources" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-orange-700 data-[state=active]:shadow-sm">
                                 <Files className="h-4 w-4" />
                                 <span className="hidden sm:inline">Recursos</span>
                             </TabsTrigger>

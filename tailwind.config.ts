@@ -79,10 +79,15 @@ export default {
 					500: '#10b981',
 					foreground: '#ffffff',
 				},
+				// Pharma Theme Corporate Palette
+				brand: {
+					primary: '#0f172a',   // Slate-900 (Nav/Titles)
+					secondary: '#0284c7', // Sky-600 (Buttons/Actions)
+				},
 				surface: {
-					ground: '#0f172a',   // slate-900
-					card: '#1e293b',     // slate-800
-					border: '#334155',   // slate-700
+					ground: '#f8fafc',    // Slate-50 (Luminous Background)
+					card: '#ffffff',      // Pure White (Cards/Modals)
+					border: '#e2e8f0',    // Slate-200 (Subtle Borders)
 				},
 
 				// Override blue/indigo -50 shades to white for better readability

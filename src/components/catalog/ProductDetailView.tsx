@@ -6,7 +6,7 @@ import { ArrowLeft, Stethoscope, ShoppingBag, GraduationCap, Loader2, AlertCircl
 import { useToast } from "@/hooks/use-toast";
 import { catalogService } from "@/services/catalogService";
 import { ClinicalShowcase, ProductAsset } from "./ClinicalShowcase";
-import { CommercialNegotiator, CommercialOffer } from "./CommercialNegotiator";
+import { CommercialCalculator } from "./CommercialCalculator";
 import { StaffTrainer } from "./StaffTrainer";
 
 interface ProductDetailViewProps {
@@ -172,12 +172,11 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
                         </TabsContent>
 
                         <TabsContent value="commercial" className="mt-0 animate-in fade-in duration-200">
-                            <CommercialNegotiator
-                                basePrice={product.price || 100}
-                                offers={offers.length > 0 ? offers : [
-                                    { id: '1', title: 'Pack Lanzamiento 10+3', min_quantity: 10, bonus_quantity: 3, discount_percentage: 0, description: 'Compra 10 y lleva 3 bonificadas' },
-                                    { id: '2', title: 'Descuento Volumétrico', min_quantity: 50, bonus_quantity: 0, discount_percentage: 15, description: '15% Off por caja cerrada' }
-                                ]}
+                            <CommercialCalculator
+                                basePrice={product.price || 0}
+                                priceDronena={product.price_dronena || 0}
+                                competitorPrice={product.price_cobeca || 0}
+                                productName={product.name}
                             />
                         </TabsContent>
 

@@ -23,77 +23,87 @@
   }
 
   :root {
-    /* Dark Slate Background */
-    --background: 222.2 47.4% 11.2%;
-    --foreground: 210 40% 98%;
+    /* Light Theme (Clean & Luminous) */
+    --background: 210 40% 98%; /* Slate-50 (#f8fafc) */
+    --foreground: 222.2 47.4% 11.2%; /* Slate-900 (#0f172a) */
 
-    /* Emerald Primary */
-    --primary: 160 84% 39%;
-    --primary-foreground: 0 0% 100%;
+    /* Emerald Primary (Brand) */
+    --primary: 222.2 47.4% 11.2%; /* Brand Primary (Slate-900) for Titles/Nav */
+    --primary-foreground: 210 40% 98%;
 
-    /* Teal Secondary */
-    --secondary: 172 66% 50%;
+    /* Sky/Blue Secondary (Brand) */
+    --secondary: 199 89% 48%; /* Sky-600 (#0284c7) for Actions */
     --secondary-foreground: 0 0% 100%;
 
     /* Muted colors - slate tones */
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent - slate */
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    /* Cards - dark glass */
-    --card: 217.2 32.6% 12%;
-    --card-foreground: 210 40% 98%;
+    /* Cards - Pure White */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
 
     /* Popover */
-    --popover: 222.2 47.4% 11.2%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
     /* Interactive */
-    --border: 217.2 32.6% 20%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 160 84% 39%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 47.4% 11.2%;
 
     /* Semantic Colors */
-    --success: 160 84% 39%;
-    --success-foreground: 0 0% 100%;
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 355.7 100% 97.3%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    /* Sidebar - Dark theme matching main */
-    --sidebar-background: 222.2 47.4% 8%;
+    /* Sidebar - Inverted to Light or Dark? User wants luminous. Keeping sidebar dark is common for contrast, but let's make it match brand-primary (Slate-900) */
+    --sidebar-background: 222.2 47.4% 11.2%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary: 199 89% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217.2 32.6% 15%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 160 84% 39%;
+    --sidebar-border: 217.2 32.6% 20%;
+    --sidebar-ring: 217.2 32.6% 17.5%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     /* Design tokens */
-    --shadow-medical: 0 4px 20px -4px hsl(160 84% 39% / 0.25);
-    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-    --transition-medical: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Gradients */
-    --gradient-medical: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(172 66% 50%) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(172 66% 50%) 100%);
-    --gradient-subtle: linear-gradient(135deg, hsl(217.2 32.6% 12%) 0%, hsl(217.2 32.6% 17.5%) 100%);
+    --shadow-medical: 0 4px 20px -4px rgba(2, 132, 199, 0.25);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
 
-  /* Dark mode is now the default */
-  * {
-    @apply border-border;
+  /* Typography Rules */
+  h1 {
+    @apply text-3xl font-bold tracking-tight text-brand-primary;
+  }
+  
+  h2 {
+    @apply text-xl font-semibold text-brand-primary;
+  }
+
+  h3 {
+    @apply text-lg font-semibold text-brand-primary;
+  }
+
+  p {
+    @apply text-sm text-slate-700 leading-relaxed;
+  }
+
+  label {
+    @apply text-sm font-medium text-slate-700;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-surface-ground text-slate-700 font-sans antialiased;
   }
 }
 

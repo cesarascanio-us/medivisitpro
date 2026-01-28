@@ -76,7 +76,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
     const loadContacts = async () => {
         if (!user) return;
 
-        // DEMO MODE: Use mock data instead of Supabase
+        // DEMO MODE: Use mock data if enabled
         if (demoData) {
             console.log("QuickScheduleWizard: Using mock demo data");
             const allContacts = [
@@ -88,26 +88,27 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
         }
 
         try {
-            const { data: doctorsData } = await supabase
-                .from('doctors')
-                .select('id, name, specialty, address')
+            // Query centralized contacts table to ensure Foreign Key integrity with 'visits' table
+            const { data: contactsData, error } = await supabase
+                .from('contacts')
+                .select('id, name, specialty, address, contact_type')
                 .eq('organization_id', profile?.organization_id)
                 .order('name');
 
-            const { data: pharmaciesData } = await supabase
-                .from('pharmacies')
-                .select('id, name, address')
-                .eq('organization_id', profile?.organization_id)
-                .order('name');
+            if (error) throw error;
 
-            const allContacts = [
-                ...(doctorsData || []).map((d) => ({ ...d, contact_type: 'doctor' })),
-                ...(pharmaciesData || []).map((p) => ({ ...p, contact_type: 'pharmacy', specialty: 'Farmacia' })),
-            ];
+            // Ensure pharmacy contacts have 'Farmacia' specialty for UI logic if missing
+            const processedContacts = (contactsData || []).map(contact => ({
+                ...contact,
+                specialty: contact.contact_type === 'pharmacy' && !contact.specialty
+                    ? 'Farmacia'
+                    : contact.specialty
+            }));
 
-            setContacts(allContacts);
+            setContacts(processedContacts);
         } catch (error) {
             console.error('Error loading contacts:', error);
+            toast({ title: 'Error', description: 'No se pudieron cargar los contactos', variant: 'destructive' });
         }
     };
 
@@ -360,7 +361,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
 
                                 <div className="space-y-3">
                                     <Label>Productos a Presentar</Label>
-                                    <Command className="border rounded-lg border-slate-700 bg-slate-950">
+                                    <Command className="border rounded-lg border-slate-200 bg-white shadow-sm">
                                         <CommandInput placeholder="Buscar productos..." className="h-9 border-none focus:ring-0" />
                                         <CommandList className="max-h-[300px] overflow-y-auto custom-scrollbar">
                                             <CommandEmpty>No se encontraron productos.</CommandEmpty>
@@ -393,7 +394,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
                                                                     setSelectedProducts([...selectedProducts, product.id]);
                                                                 }
                                                             }}
-                                                            className="cursor-pointer hover:bg-slate-800"
+                                                            className="cursor-pointer hover:bg-slate-50 aria-selected:bg-slate-100"
                                                         >
                                                             <div className={cn(
                                                                 "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
@@ -415,7 +416,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
                                             const prod = products.find(p => p.id === id);
                                             if (!prod) return null;
                                             return (
-                                                <Badge key={id} variant="secondary" className="flex items-center gap-1 bg-slate-800 text-slate-200 hover:bg-slate-700">
+                                                <Badge key={id} variant="secondary" className="flex items-center gap-1 bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-200">
                                                     {prod.name}
                                                     <button
                                                         onClick={() => setSelectedProducts(selectedProducts.filter(pid => pid !== id))}

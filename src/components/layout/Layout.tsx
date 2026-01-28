@@ -78,7 +78,7 @@ export const Layout = ({ children }: LayoutProps) => {
         {/* Content area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Mobile/Tablet Header with hamburger menu */}
-          <div className="lg:hidden p-3 border-b border-slate-700/50 flex items-center justify-between bg-slate-900/95 backdrop-blur-md sticky top-0 z-40">
+          <div className="lg:hidden p-3 border-b border-sidebar-border flex items-center justify-between bg-brand-primary/95 backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <MobileNav />

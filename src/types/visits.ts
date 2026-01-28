@@ -2,11 +2,10 @@
 export interface VisitExecution {
     id: string;
     directory_item_id?: string;
-    // directory_item?: {
-    //     name: string;
-    //     address: string;
-    //     entity_type: 'doctor' | 'pharmacy';
-    // };
+    directory_items?: {
+        name: string;
+        entity_type: string;
+    };
     user_id: string;
     scheduled_date: string; // ISO date
     status: 'pending' | 'in_progress' | 'completed' | 'missed';
