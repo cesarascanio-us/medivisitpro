@@ -29,7 +29,7 @@ const DEMO_ORG = {
     updated_at: new Date().toISOString()
 };
 
-const MASTER_EMAIL = 'cesar.ascanio@gmail.com';
+const MASTER_EMAILS = ['cesar.ascanio@gmail.com', 'cesarascanio.edu@gmail.com'];
 
 export function OrganizationProvider({ children }: { children: ReactNode }) {
     const { enterAuditMode, exitAuditMode } = useAuth();
@@ -64,7 +64,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             }
 
             // Check if Master
-            const isMasterUser = lowerEmail === MASTER_EMAIL;
+            const isMasterUser = MASTER_EMAILS.some(m => m.toLowerCase() === lowerEmail);
             setIsMaster(isMasterUser);
 
             // Get profile and role data
@@ -92,7 +92,10 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
                 if (allOrgsError) console.error('Error fetching all orgs for master:', allOrgsError);
 
-                const orgs = allOrgs || [];
+                const orgs = (allOrgs || []).map(o => ({
+                    ...o,
+                    plan_tier: o.plan_tier as PlanTier
+                }));
                 setAllOrganizations(orgs);
 
                 // Determine which org to show initially
@@ -129,8 +132,13 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     return;
                 }
 
-                setOrganization(org as Organization);
-                setAllOrganizations(org ? [org as Organization] : []);
+                const typedOrg = org ? {
+                    ...org,
+                    plan_tier: org.plan_tier as PlanTier
+                } as Organization : null;
+
+                setOrganization(typedOrg);
+                setAllOrganizations(typedOrg ? [typedOrg] : []);
             }
 
         } catch (err) {

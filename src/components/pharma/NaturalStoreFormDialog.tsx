@@ -5,6 +5,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,9 @@ export function NaturalStoreFormDialog({
                         <Leaf className="h-5 w-5" />
                         {isEditing ? "Editar Tienda Naturista" : "Alta Comercial - Tienda Naturista"}
                     </DialogTitle>
+                    <DialogDescription>
+                        Complete la información comercial y de ubicación para la tienda naturista.
+                    </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">

@@ -10,7 +10,17 @@ import {
     Phone,
     Edit,
     Eye,
-    Trash2
+    Trash2,
+    History,
+    Calendar,
+    ShoppingCart,
+    MapPinOff,
+    CheckCircle2,
+    XCircle,
+    Package,
+    Navigation,
+    DollarSign,
+    ExternalLink
 } from "lucide-react";
 import {
     Card,
@@ -43,7 +53,17 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger
+} from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NaturalStoreFormDialog } from "@/components/pharma/NaturalStoreFormDialog";
+import { useNavigate } from "react-router-dom";
 
 export default function NaturalStores() {
     const [naturalStores, setNaturalStores] = useState<any[]>([]);
@@ -56,6 +76,11 @@ export default function NaturalStores() {
     const [formDialogOpen, setFormDialogOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [selectedStore, setSelectedStore] = useState<any>(null);
+    const [viewDialogOpen, setViewDialogOpen] = useState(false);
+    const [historyLoading, setHistoryLoading] = useState(false);
+    const [storeVisits, setStoreVisits] = useState<any[]>([]);
+    const [storeOrders, setStoreOrders] = useState<any[]>([]);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -114,6 +139,7 @@ export default function NaturalStores() {
                     .from('contacts')
                     .update({
                         ...formData,
+                        contact_type: formData.contact_type as any,
                         updated_at: new Date().toISOString()
                     })
                     .eq('id', selectedStore.id);
@@ -123,12 +149,12 @@ export default function NaturalStores() {
             } else {
                 const { error } = await supabase
                     .from('contacts')
-                    .insert([{
+                    .insert({
                         ...formData,
-                        contact_type: 'natural_store', // Garantizar tipo
+                        contact_type: 'natural_store' as any, // Cast to any to bypass strict enum if needed, or just ensure it matches
                         user_id: user?.id,
                         organization_id: organizationId
-                    }]);
+                    });
 
                 if (error) throw error;
                 toast({ title: "Éxito", description: "Alta Comercial completada. Tienda registrada." });
@@ -169,6 +195,80 @@ export default function NaturalStores() {
             loadNaturalStores();
         } catch (error: any) {
             toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    };
+
+    const handleViewDetails = async (store: any) => {
+        setSelectedStore(store);
+        setViewDialogOpen(true);
+        loadStoreHistory(store.id);
+    };
+
+    const loadStoreHistory = async (storeId: string) => {
+        try {
+            setHistoryLoading(true);
+
+            // Load Visits
+            const { data: visits, error: visitsError } = await supabase
+                .from('visits')
+                .select('*')
+                .eq('contact_id', storeId)
+                .order('scheduled_date', { ascending: false });
+
+            if (visitsError) throw visitsError;
+            setStoreVisits(visits || []);
+
+            // Load Orders (Transfer Orders)
+            const { data: orders, error: ordersError } = await supabase
+                .from('transfer_orders')
+                .select('*')
+                .eq('contact_id', storeId)
+                .order('order_date', { ascending: false });
+
+            if (ordersError) throw ordersError;
+            setStoreOrders(orders || []);
+
+        } catch (error: any) {
+            console.error("Error loading history:", error);
+        } finally {
+            setHistoryLoading(false);
+        }
+    };
+
+    const handleRegisterVisit = async () => {
+        if (!selectedStore) return;
+
+        try {
+            // Create a new visit record
+            const { data: visit, error } = await supabase
+                .from('visits')
+                .insert([{
+                    contact_id: selectedStore.id,
+                    user_id: user?.id,
+                    organization_id: organizationId,
+                    status: 'pending',
+                    scheduled_date: new Date().toISOString(),
+                    visit_type: 'natural_store', // Explicit type
+                    visit_objective: 'Reposición de Inventario y Venta'
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            toast({
+                title: "Visita Iniciada",
+                description: "Redirigiendo al formulario de ejecución..."
+            });
+
+            // Navigate to visit execution
+            navigate(`/visits/execution/${visit.id}`);
+        } catch (error: any) {
+            toast({
+                title: "Error al registrar visita",
+                description: error.message,
+                variant: "destructive"
+            });
         }
     };
 
@@ -297,6 +397,9 @@ export default function NaturalStores() {
                                             </TableCell>
                                             <TableCell className="text-right pr-6">
                                                 <div className="flex justify-end gap-2 text-right">
+                                                    <Button variant="ghost" size="sm" onClick={() => handleViewDetails(store)}>
+                                                        <Eye className="h-4 w-4 text-emerald-600" />
+                                                    </Button>
                                                     <Button variant="ghost" size="sm" onClick={() => handleEditStore(store)}>
                                                         <Edit className="h-4 w-4 text-emerald-600" />
                                                     </Button>
@@ -331,6 +434,136 @@ export default function NaturalStores() {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Detail View Dialog */}
+            <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-emerald-900 border-b pb-4">
+                            <Leaf className="h-6 w-6 text-emerald-600" />
+                            {selectedStore?.name}
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    {selectedStore && (
+                        <Tabs defaultValue="overview" className="mt-4">
+                            <TabsList className="grid w-full grid-cols-3 bg-emerald-50/50">
+                                <TabsTrigger value="overview">General</TabsTrigger>
+                                <TabsTrigger value="visits">Visitas</TabsTrigger>
+                                <TabsTrigger value="orders">Pedidos</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="overview" className="space-y-6 py-4">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <div className="bg-white p-4 rounded-xl border border-emerald-50 shadow-sm">
+                                            <h3 className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2 text-muted-foreground uppercase tracking-wider">
+                                                <Building className="h-4 w-4" /> Información Comercial
+                                            </h3>
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between border-b border-emerald-50 pb-2">
+                                                    <span className="text-sm text-muted-foreground">RIF:</span>
+                                                    <span className="text-sm font-mono font-bold text-emerald-800">{selectedStore.rif}</span>
+                                                </div>
+                                                <div className="flex justify-between border-b border-emerald-50 pb-2">
+                                                    <span className="text-sm text-muted-foreground">Dueño/Encargado:</span>
+                                                    <span className="text-sm font-medium">{selectedStore.owner_name || 'No especificado'}</span>
+                                                </div>
+                                                <div className="flex justify-between pt-2">
+                                                    <span className="text-sm text-muted-foreground">Estatus Legal:</span>
+                                                    <Badge className={selectedStore.sanitary_permits ? "bg-emerald-100 text-emerald-800" : "bg-yellow-100 text-yellow-800"}>
+                                                        {selectedStore.sanitary_permits ? "Permisos al día" : "Permisos Pendientes"}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-white p-4 rounded-xl border border-emerald-50 shadow-sm">
+                                            <h3 className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2 text-muted-foreground uppercase tracking-wider">
+                                                <MapPin className="h-4 w-4" /> Ubicación
+                                            </h3>
+                                            <p className="text-sm font-medium">{selectedStore.city}, {selectedStore.state || ''}</p>
+                                            <p className="text-sm text-muted-foreground mt-1">{selectedStore.address}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="bg-emerald-900 text-white p-6 rounded-2xl shadow-xl shadow-emerald-500/10 h-full flex flex-col justify-between">
+                                            <div>
+                                                <h3 className="text-lg font-bold mb-2">Operación Rápida</h3>
+                                                <p className="text-emerald-100/70 text-sm mb-6">Inicia una visita técnica o comercial ahora mismo.</p>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <Button onClick={handleRegisterVisit} className="w-full bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold h-12">
+                                                    <Navigation className="mr-2 h-5 w-5" /> Registrar Visita
+                                                </Button>
+                                                <Button variant="outline" className="w-full border-emerald-700 text-white hover:bg-emerald-800 h-10" onClick={() => handleEditStore(selectedStore)}>
+                                                    <Edit className="mr-2 h-4 w-4" /> Editar Información
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="visits" className="py-4">
+                                <ScrollArea className="h-[400px]">
+                                    {historyLoading ? (
+                                        <div className="flex justify-center p-8"><RefreshCw className="h-6 w-6 animate-spin text-emerald-500" /></div>
+                                    ) : storeVisits.length === 0 ? (
+                                        <div className="text-center py-12 text-muted-foreground bg-slate-50 rounded-xl">
+                                            <Calendar className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                                            <p>No hay registro de visitas previas.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {storeVisits.map(v => (
+                                                <div key={v.id} className="p-3 border rounded-lg flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                                    <div>
+                                                        <p className="font-medium text-sm">{new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                                                        <p className="text-xs text-muted-foreground">{v.visit_objective || 'Sin objetivo definido'}</p>
+                                                    </div>
+                                                    <Badge variant={v.status === 'completed' ? 'default' : 'secondary'} className="text-[10px]">
+                                                        {v.status === 'completed' ? 'Completada' : 'Pendiente'}
+                                                    </Badge>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </ScrollArea>
+                            </TabsContent>
+
+                            <TabsContent value="orders" className="py-4">
+                                <ScrollArea className="h-[400px]">
+                                    {historyLoading ? (
+                                        <div className="flex justify-center p-8"><RefreshCw className="h-6 w-6 animate-spin text-emerald-500" /></div>
+                                    ) : storeOrders.length === 0 ? (
+                                        <div className="text-center py-12 text-muted-foreground bg-slate-50 rounded-xl">
+                                            <ShoppingCart className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                                            <p>Aún no se han registrado pedidos directos.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {storeOrders.map(o => (
+                                                <div key={o.id} className="p-3 border rounded-lg flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                                    <div>
+                                                        <p className="font-bold text-sm">#{o.order_number}</p>
+                                                        <p className="text-xs text-muted-foreground">{new Date(o.order_date).toLocaleDateString()}</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="font-bold text-emerald-700">${o.total?.toFixed(2)}</p>
+                                                        <Badge variant="outline" className="text-[9px]">{o.status}</Badge>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </ScrollArea>
+                            </TabsContent>
+                        </Tabs>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             {/* Form Dialog */}
             <NaturalStoreFormDialog

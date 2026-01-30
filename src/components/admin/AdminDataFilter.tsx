@@ -23,7 +23,7 @@ interface AdminDataFilterProps {
 
 
 export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: AdminDataFilterProps) {
-    const { isMaster, isManager, isSupervisor, isRepresentative, zoneId, profile, userRegion, userState, loading: authLoading } = useAuth();
+    const { isMaster, isAdmin, isManager, isSupervisor, isRepresentative, zoneId, profile, userRegion, userState, loading: authLoading } = useAuth();
     const [filters, setFilters] = useState<AdminFilterState>({});
     const [zones, setZones] = useState<{ id: string; name: string; state: string | null }[]>([]);
     const [representatives, setRepresentatives] = useState<{
@@ -95,7 +95,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
 
             // If Manager, filter zones to only assigned ones (Multi-Zone support)
             if (isManager && profile?.id && !isMaster && !isAdmin) { // Ensure Master/Admin see all
-                const { data: myZones } = await supabase.from('user_zones').select('zone_id').eq('user_id', profile.id);
+                const { data: myZones } = await (supabase as any).from('user_zones').select('zone_id').eq('user_id', profile.id);
                 if (myZones && myZones.length > 0) {
                     const myZoneIds = myZones.map((z: any) => z.zone_id);
                     availableZones = availableZones.filter((z: any) => myZoneIds.includes(z.id));

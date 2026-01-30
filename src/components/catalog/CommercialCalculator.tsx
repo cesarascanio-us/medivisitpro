@@ -34,7 +34,9 @@ export function CommercialCalculator({
     entityType = 'pharmacy'
 }: CommercialCalculatorProps) {
     // States
-    const [mode, setMode] = useState<'transfer' | 'direct'>(entityType === 'doctor' ? 'direct' : 'transfer');
+    const [mode, setMode] = useState<'transfer' | 'direct'>(
+        entityType === 'doctor' || entityType === 'natural_store' ? 'direct' : 'transfer'
+    );
     const [drugstores, setDrugstores] = useState<any[]>([]);
     const [selectedDrugstoreId, setSelectedDrugstoreId] = useState<string>('');
     const [quantity, setQuantity] = useState<number>(1);

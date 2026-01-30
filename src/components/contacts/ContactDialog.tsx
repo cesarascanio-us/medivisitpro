@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -180,6 +180,9 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
             <User className="mr-2 h-5 w-5 icon-medical" />
             {contactData ? "Editar Contacto" : "Nuevo Contacto"}
           </DialogTitle>
+          <DialogDescription>
+            Ingrese los detalles del contacto para mantener su directorio actualizado.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -311,62 +314,64 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
             )}
           </div>
 
-          <Separator />
-
           {/* Health Centers Association */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-foreground">Centros de Salud</h3>
-              <span className="text-sm text-muted-foreground">
-                {selectedCenters.length} seleccionados
-              </span>
-            </div>
-
-            {selectedCenters.length > 0 && (
-              <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
-                {selectedCenters.map(centerId => {
-                  const center = getSelectedCenter(centerId);
-                  return center ? (
-                    <Badge key={centerId} variant="secondary" className="flex items-center gap-1">
-                      <Building className="h-3 w-3" />
-                      {center.name}
-                      <X
-                        className="h-3 w-3 cursor-pointer hover:text-destructive"
-                        onClick={() => toggleCenter(centerId)}
-                      />
-                    </Badge>
-                  ) : null;
-                })}
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-2 border rounded-lg">
-              {healthCenters.map((center) => (
-                <div
-                  key={center.id}
-                  className="flex items-start space-x-2 p-3 rounded-lg hover:bg-accent cursor-pointer"
-                  onClick={() => toggleCenter(center.id)}
-                >
-                  <Checkbox
-                    checked={selectedCenters.includes(center.id)}
-                    onCheckedChange={() => toggleCenter(center.id)}
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium text-sm text-foreground">{center.name}</p>
-                    <p className="text-xs text-muted-foreground">{center.type} - {center.city}</p>
-                  </div>
+          {(formData.contact_type === 'doctor' || formData.contact_type === 'hospital' || formData.contact_type === 'clinic') && (
+            <>
+              <Separator />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-foreground">Centros de Salud</h3>
+                  <span className="text-sm text-muted-foreground">
+                    {selectedCenters.length} seleccionados
+                  </span>
                 </div>
-              ))}
-            </div>
 
-            {healthCenters.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No hay centros de salud disponibles. Crea uno primero en el módulo de Centros de Salud.
-              </p>
-            )}
-          </div>
+                {selectedCenters.length > 0 && (
+                  <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
+                    {selectedCenters.map(centerId => {
+                      const center = getSelectedCenter(centerId);
+                      return center ? (
+                        <Badge key={centerId} variant="secondary" className="flex items-center gap-1">
+                          <Building className="h-3 w-3" />
+                          {center.name}
+                          <X
+                            className="h-3 w-3 cursor-pointer hover:text-destructive"
+                            onClick={() => toggleCenter(centerId)}
+                          />
+                        </Badge>
+                      ) : null;
+                    })}
+                  </div>
+                )}
 
-          <Separator />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-2 border rounded-lg">
+                  {healthCenters.map((center) => (
+                    <div
+                      key={center.id}
+                      className="flex items-start space-x-2 p-3 rounded-lg hover:bg-accent cursor-pointer"
+                      onClick={() => toggleCenter(center.id)}
+                    >
+                      <Checkbox
+                        checked={selectedCenters.includes(center.id)}
+                        onCheckedChange={() => toggleCenter(center.id)}
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-foreground">{center.name}</p>
+                        <p className="text-xs text-muted-foreground">{center.type} - {center.city}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {healthCenters.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No hay centros de salud disponibles. Crea uno primero en el módulo de Centros de Salud.
+                  </p>
+                )}
+              </div>
+              <Separator />
+            </>
+          )}
 
           {/* Contact Information */}
           <div className="space-y-4">

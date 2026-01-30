@@ -438,7 +438,7 @@ export type Database = {
           address: string | null
           city: string | null
           company_id: string | null
-          contact_type: Database["public"]["Enums"]["contact_type"] | "natural_store"
+          contact_type: Database["public"]["Enums"]["contact_type"]
           created_at: string
           email: string | null
           id: string
@@ -5851,7 +5851,7 @@ export type Database = {
       }
     }
     Enums: {
-      contact_type: "doctor" | "pharmacy" | "hospital" | "clinic"
+      contact_type: "doctor" | "pharmacy" | "hospital" | "clinic" | "natural_store" | "drugstore"
       priority_level: "low" | "medium" | "high" | "urgent"
       sample_movement_type:
       | "promotion"
@@ -6001,7 +6001,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      contact_type: ["doctor", "pharmacy", "hospital", "clinic", "natural_store"],
+      contact_type: ["doctor", "pharmacy", "hospital", "clinic", "natural_store", "drugstore"],
       priority_level: ["low", "medium", "high", "urgent"],
       sample_movement_type: [
         "promotion",

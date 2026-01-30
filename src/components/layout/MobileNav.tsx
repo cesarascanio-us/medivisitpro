@@ -3,12 +3,11 @@ import { Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "./Sidebar";
+import { OrganizationSwitcher } from "../organization/OrganizationSwitcher";
 
 export function MobileNav() {
-    const [open, setOpen] = useState(false);
-
     return (
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet>
             <SheetTrigger asChild>
                 <Button
                     variant="ghost"
@@ -21,9 +20,14 @@ export function MobileNav() {
             </SheetTrigger>
             <SheetContent
                 side="left"
-                className="p-0 bg-sidebar border-r border-sidebar-border w-64 max-w-[85vw]"
+                className="p-0 bg-sidebar border-r border-sidebar-border w-64 max-w-[85vw] flex flex-col"
             >
-                <Sidebar className="border-none shadow-none w-full" isMobile={true} />
+                <div className="p-4 border-b border-sidebar-border">
+                    <OrganizationSwitcher />
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                    <Sidebar className="border-none shadow-none w-full" isMobile={true} />
+                </div>
             </SheetContent>
         </Sheet>
     );

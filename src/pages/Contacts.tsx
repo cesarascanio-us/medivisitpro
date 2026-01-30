@@ -3,9 +3,11 @@ import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Buildi
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ContactDialog } from "@/components/contacts/ContactDialog";
+import { useContacts, type Contact } from "@/hooks/useContacts";
 import { VisitDialog } from "@/components/agenda/VisitDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,194 +29,23 @@ interface AdminFilterState {
 }
 
 export default function Contacts() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [contacts, setContacts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [importing, setImporting] = useState(false);
   const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [adminFilters, setAdminFilters] = useState<AdminFilterState>({});
+  const [adminFilters, setAdminFilters] = useState<any>({});
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const { contacts, loading, refresh } = useContacts({
+    searchTerm,
+    typeFilter,
+    adminFilters
+  });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   // Demo mode hook
   const demoData = useDemoData();
-
-  useEffect(() => {
-    loadContacts();
-  }, [user, adminFilters, organizationId]);
-
-  const loadContacts = async () => {
-    if (!user || !organizationId) {
-      setLoading(false);
-      return;
-    }
-
-    // DEMO MODE: Use mock data
-    if (demoData) {
-      console.log("Contacts: Using mock demo data");
-      setContacts(demoData.contacts as any[]);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const baseFilter = (query: any, tableName: string = 'contacts') => {
-        query = query.eq('organization_id', organizationId);
-
-        // Apply role-based zone/user filtering
-        if (isSupervisor && zoneId) {
-          // Supervisors see their entire zone by default
-          if (adminFilters.repId && adminFilters.repId !== 'all') {
-            query = query.eq('user_id', adminFilters.repId);
-          } else {
-            query = query.eq('zone_id', zoneId);
-          }
-        }
-        else if (!canViewAllData) {
-          // Regular reps only see their own data
-          query = query.eq('user_id', user.id);
-        }
-        else {
-          // Master/Manager - apply optional filters
-          if (adminFilters.repId && adminFilters.repId !== 'all') {
-            query = query.eq('user_id', adminFilters.repId);
-          }
-          if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-            query = query.eq('zone_id', adminFilters.zoneId);
-          }
-        }
-
-        // Apply state filter for tables that have a state column
-        // doctors and pharmacies have state column, contacts may not
-        if (adminFilters.state && adminFilters.state !== 'all') {
-          if (tableName === 'pharmacies' || tableName === 'doctors') {
-            // Both have a 'state' column
-            query = query.ilike('state', `%${adminFilters.state}%`);
-          } else {
-            // contacts - try matching on city
-            query = query.ilike('city', `%${adminFilters.state}%`);
-          }
-        }
-
-        return query;
-      };
-
-      // 1. Fetch Generic Contacts
-      let contactsQuery = supabase
-        .from('contacts')
-        .select(`
-          *,
-          contact_health_centers (
-            health_center_id,
-            health_centers (
-              id,
-              name
-            )
-          )
-        `);
-      contactsQuery = baseFilter(contactsQuery, 'contacts');
-
-      // 2. Fetch Doctors
-      let doctorsQuery = supabase.from('doctors').select('*');
-      doctorsQuery = baseFilter(doctorsQuery, 'doctors');
-
-      // 3. Fetch Pharmacies
-      let pharmaciesQuery = supabase.from('pharmacies').select('*');
-      pharmaciesQuery = baseFilter(pharmaciesQuery, 'pharmacies');
-
-      const [contactsRes, doctorsRes, pharmaciesRes] = await Promise.all([
-        contactsQuery,
-        doctorsQuery,
-        pharmaciesQuery
-      ]);
-
-      if (contactsRes.error) console.error('Error fetching contacts:', contactsRes.error);
-      if (doctorsRes.error) console.error('Error fetching doctors:', doctorsRes.error);
-      if (pharmaciesRes.error) console.error('Error fetching pharmacies:', pharmaciesRes.error);
-
-      // Normalize Data
-      const unifiedContacts: any[] = [];
-
-      // Process Generic Contacts
-      if (contactsRes.data) {
-        contactsRes.data.forEach((c: any) => {
-          unifiedContacts.push({
-            ...c,
-            source: 'contacts',
-            displayType: c.contact_type === 'natural_store' ? 'Tienda Naturista' :
-              c.contact_type === 'drugstore' ? 'Droguería' :
-                (c.contact_type || 'Contacto'),
-            visitCount: 0,
-            rating: 0,
-            lastVisit: c.created_at
-          });
-        });
-      }
-
-      // Process Doctors
-      if (doctorsRes.data) {
-        doctorsRes.data.forEach((d: any) => {
-          unifiedContacts.push({
-            id: d.id,
-            user_id: d.user_id,
-            name: d.name,
-            specialty: d.specialty,
-            phone: d.phone,
-            email: d.email,
-            address: d.address || d.office_address,
-            city: d.city,
-            source: 'doctors',
-            displayType: 'Médico',
-            contact_type: 'doctor',
-            priority: d.priority || 'medium',
-            lastVisit: d.last_visit || d.created_at,
-            visitCount: d.visit_count || 0,
-            rating: d.rating || 0,
-            hospital: d.work_center
-          });
-        });
-      }
-
-      // Process Pharmacies
-      if (pharmaciesRes.data) {
-        pharmaciesRes.data.forEach((p: any) => {
-          unifiedContacts.push({
-            id: p.id,
-            user_id: p.user_id,
-            name: p.name,
-            specialty: 'Farmacia',
-            phone: p.phone,
-            email: p.email,
-            address: p.address,
-            city: p.city,
-            source: 'pharmacies',
-            displayType: 'Farmacia',
-            contact_type: 'pharmacy',
-            priority: p.priority || 'medium',
-            lastVisit: p.last_visit || p.created_at,
-            visitCount: 0,
-            rating: 0,
-            status: p.status
-          });
-        });
-      }
-
-      // Sort by Name
-      unifiedContacts.sort((a, b) => a.name.localeCompare(b.name));
-
-      setContacts(unifiedContacts);
-    } catch (error) {
-      console.error('Error loading unified contacts:', error);
-      toast({
-        title: "Error",
-        description: "No se pudieron cargar todos los contactos.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async (contact: any) => {
     try {
@@ -232,7 +63,7 @@ export default function Contacts() {
 
       if (error) throw error;
       toast({ title: "Contacto eliminado", description: "El contacto ha sido eliminado." });
-      loadContacts();
+      refresh();
     } catch (error) {
       console.error('Error deleting contact:', error);
       toast({ title: "Error", description: "No se pudo eliminar el contacto.", variant: "destructive" });
@@ -291,7 +122,7 @@ export default function Contacts() {
             title: "Importación exitosa",
             description: `Se han importado ${contactsToInsert.length} contactos correctamente.`
           });
-          loadContacts();
+          refresh();
         } catch (error: any) {
           console.error("Import parsing error:", error);
           toast({
@@ -454,7 +285,7 @@ export default function Contacts() {
                 Nuevo
               </Button>
             }
-            onContactSaved={loadContacts}
+            onContactSaved={refresh}
           />
         </div>
       </div>
@@ -527,7 +358,7 @@ export default function Contacts() {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-12 w-12 border-2 border-background shadow-sm ring-1 ring-border">
                     <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold">
-                      {contact.contact_type === 'natural_store' || contact.contact_type === 'drugstore' ? <Leaf className="h-6 w-6" /> : contact.name.split(' ').map((n: string) => n[0]).join('')}
+                      {contact.contact_type === 'natural_store' || contact.contact_type === 'drugstore' ? <Leaf className="h-6 w-6" /> : (contact.name || '').split(' ').map((n: string) => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -552,7 +383,7 @@ export default function Contacts() {
                     <div className="flex flex-wrap gap-2 ml-6">
                       {contact.contact_health_centers.map((chc: any) => (
                         <Badge key={chc.health_center_id} variant="secondary" className="text-xs bg-muted text-muted-foreground hover:bg-muted/80">
-                          {chc.health_centers.name}
+                          {chc.health_centers?.name}
                         </Badge>
                       ))}
                     </div>
@@ -606,7 +437,7 @@ export default function Contacts() {
                     </Button>
                   }
                   contactData={contact}
-                  onContactSaved={loadContacts}
+                  onContactSaved={refresh}
                 />
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -631,7 +462,7 @@ export default function Contacts() {
                       Programar Visita
                     </Button>
                   }
-                  onVisitSaved={loadContacts}
+                  onVisitSaved={refresh}
                 />
               </div>
             </CardContent>

@@ -975,6 +975,7 @@ export default function VisitExecutionPage() {
                                 onSaveAgreement={handleSaveAgreement}
                                 isWholesale={isWholesale}
                                 priceDistributor={negotiationProduct.price || 0}
+                                entityType={visit?.visit_type}
                             />
                         )}
                     </div>

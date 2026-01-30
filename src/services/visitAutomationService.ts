@@ -36,12 +36,16 @@ export interface AutoCalculatedFields {
 export function determineScenario(visitCount: number, entityType?: string): VisitScenario {
     if (visitCount === 0) {
         const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
+        const isNaturalStore = entityType === 'natural_store';
+
         return {
             type: 'conquest',
-            label: 'Conquista (Visita 1)',
-            suggestedObjective: isCommerce
-                ? 'Recolección de Documentos y Primer Pedido'
-                : 'Levantamiento de Perfil y Presentación',
+            label: isNaturalStore ? 'Alta Comercial (V1)' : 'Conquista (Visita 1)',
+            suggestedObjective: isNaturalStore
+                ? 'Alta Comercial y Primer Pedido (Venta Directa)'
+                : isCommerce
+                    ? 'Recolección de Documentos y Primer Pedido'
+                    : 'Levantamiento de Perfil y Presentación',
             showMasterDataCard: true,
             showCloseFields: false,
         };
@@ -57,7 +61,9 @@ export function determineScenario(visitCount: number, entityType?: string): Visi
         return {
             type: 'maturity',
             label: 'Mantenimiento (Visita 3+)',
-            suggestedObjective: 'Lograr cierre / Reposición de Inventario',
+            suggestedObjective: entityType === 'natural_store'
+                ? 'Reposición de Inventario y Venta'
+                : 'Lograr cierre / Reposición de Inventario',
             showMasterDataCard: false,
             showCloseFields: true,
         };
