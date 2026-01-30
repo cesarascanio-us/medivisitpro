@@ -31,6 +31,7 @@ import Help from "./pages/Help";
 import Planner from "./pages/Planner";
 import Doctors from "./pages/Doctors";
 import Pharmacies from "./pages/Pharmacies";
+import NaturalStores from "./pages/NaturalStores";
 import Specialties from "./pages/Specialties";
 import Drugstores from "./pages/Drugstores";
 import DemoPage from "./pages/DemoPage";
@@ -170,6 +171,11 @@ const App = () => (
                 <Route path="/pharmacies" element={
                   <ProtectedRoute>
                     <Layout><Pharmacies /></Layout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/natural-stores" element={
+                  <ProtectedRoute>
+                    <Layout><NaturalStores /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/specialties" element={

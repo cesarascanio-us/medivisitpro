@@ -33,7 +33,8 @@ import {
   Layers,
   ChevronLeft,
   ChevronRight,
-  ChevronDown
+  ChevronDown,
+  Leaf
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -57,6 +58,7 @@ const navigationGroups = [
       { name: "Contactos", href: "/contacts", icon: Users },
       { name: "Médicos", href: "/doctors", icon: UserRound },
       { name: "Farmacias", href: "/pharmacies", icon: Store },
+      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
       { name: "Droguerías", href: "/drugstores", icon: Truck },
       { name: "Centros", href: "/health-centers", icon: Building2 },
     ]
