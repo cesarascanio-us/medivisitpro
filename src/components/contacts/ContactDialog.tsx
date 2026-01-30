@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { User, Building, MapPin, X } from "lucide-react";
+import { User, Building, MapPin, X, Leaf } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -22,18 +22,21 @@ interface ContactDialogProps {
 
 export function ContactDialog({ trigger, contactData, onContactSaved, open: controlledOpen, onOpenChange }: ContactDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
-  
+
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
   const [loading, setLoading] = useState(false);
   const [healthCenters, setHealthCenters] = useState<any[]>([]);
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
     name: contactData?.name || "",
     contact_type: contactData?.contact_type || "doctor",
     specialty: contactData?.specialty || "",
+    rif: contactData?.rif || "",
+    owner_name: contactData?.owner_name || "",
+    sanitary_permits: contactData?.sanitary_permits || false,
     address: contactData?.address || "",
     city: contactData?.city || "",
     phone: contactData?.phone || "",
@@ -178,12 +181,12 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
             {contactData ? "Editar Contacto" : "Nuevo Contacto"}
           </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground">Información Básica</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Nombre Completo *</Label>
@@ -195,11 +198,11 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="contact_type">Tipo de Contacto</Label>
-                <Select 
-                  value={formData.contact_type} 
+                <Select
+                  value={formData.contact_type}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, contact_type: value }))}
                 >
                   <SelectTrigger>
@@ -208,6 +211,8 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   <SelectContent>
                     <SelectItem value="doctor">Médico</SelectItem>
                     <SelectItem value="pharmacy">Farmacia</SelectItem>
+                    <SelectItem value="natural_store">Tienda Naturista</SelectItem>
+                    <SelectItem value="drugstore">Droguería</SelectItem>
                     <SelectItem value="hospital">Hospital</SelectItem>
                     <SelectItem value="clinic">Clínica</SelectItem>
                   </SelectContent>
@@ -215,35 +220,95 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="specialty">Especialidad</Label>
-                <Input
-                  id="specialty"
-                  value={formData.specialty}
-                  onChange={(e) => setFormData(prev => ({ ...prev, specialty: e.target.value }))}
-                  placeholder="ej. Cardiología, Neurología..."
-                />
+            {(formData.contact_type === 'doctor' || formData.contact_type === 'hospital' || formData.contact_type === 'clinic') && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="specialty">Especialidad</Label>
+                  <Input
+                    id="specialty"
+                    value={formData.specialty}
+                    onChange={(e) => setFormData(prev => ({ ...prev, specialty: e.target.value }))}
+                    placeholder="ej. Cardiología, Neurología..."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="priority">Prioridad</Label>
+                  <Select
+                    value={formData.priority}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Baja</SelectItem>
+                      <SelectItem value="medium">Media</SelectItem>
+                      <SelectItem value="high">Alta</SelectItem>
+                      <SelectItem value="urgent">Urgente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="priority">Prioridad</Label>
-                <Select 
-                  value={formData.priority} 
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Baja</SelectItem>
-                    <SelectItem value="medium">Media</SelectItem>
-                    <SelectItem value="high">Alta</SelectItem>
-                    <SelectItem value="urgent">Urgente</SelectItem>
-                  </SelectContent>
-                </Select>
+            )}
+
+            {(formData.contact_type === 'natural_store' || formData.contact_type === 'pharmacy' || formData.contact_type === 'drugstore') && (
+              <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
+                <h4 className="text-sm font-semibold flex items-center">
+                  <Leaf className="mr-2 h-4 w-4 text-emerald-600" />
+                  Alta Comercial (Profiling)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rif">RIF *</Label>
+                    <Input
+                      id="rif"
+                      value={formData.rif}
+                      onChange={(e) => setFormData(prev => ({ ...prev, rif: e.target.value }))}
+                      placeholder="J-12345678-9"
+                      required={formData.contact_type === 'natural_store'}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="owner_name">Dueño / Encargado</Label>
+                    <Input
+                      id="owner_name"
+                      value={formData.owner_name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, owner_name: e.target.value }))}
+                      placeholder="Nombre del responsable"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="sanitary_permits"
+                    checked={formData.sanitary_permits}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, sanitary_permits: !!checked }))}
+                  />
+                  <Label htmlFor="sanitary_permits" className="text-sm font-normal cursor-pointer">
+                    Cuenta con Permisos Sanitarios vigentes
+                  </Label>
+                </div>
+
+                <div className="space-y-2 mt-2">
+                  <Label htmlFor="priority">Prioridad Comercial</Label>
+                  <Select
+                    value={formData.priority}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Baja</SelectItem>
+                      <SelectItem value="medium">Media</SelectItem>
+                      <SelectItem value="high">Alta</SelectItem>
+                      <SelectItem value="urgent">Urgente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <Separator />
@@ -256,7 +321,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                 {selectedCenters.length} seleccionados
               </span>
             </div>
-            
+
             {selectedCenters.length > 0 && (
               <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
                 {selectedCenters.map(centerId => {
@@ -265,8 +330,8 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                     <Badge key={centerId} variant="secondary" className="flex items-center gap-1">
                       <Building className="h-3 w-3" />
                       {center.name}
-                      <X 
-                        className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                      <X
+                        className="h-3 w-3 cursor-pointer hover:text-destructive"
                         onClick={() => toggleCenter(centerId)}
                       />
                     </Badge>
@@ -338,7 +403,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   placeholder="+58 XXX XXX XXXX"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

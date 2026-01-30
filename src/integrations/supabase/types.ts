@@ -438,7 +438,7 @@ export type Database = {
           address: string | null
           city: string | null
           company_id: string | null
-          contact_type: Database["public"]["Enums"]["contact_type"]
+          contact_type: Database["public"]["Enums"]["contact_type"] | "natural_store"
           created_at: string
           email: string | null
           id: string
@@ -5795,26 +5795,26 @@ export type Database = {
         Returns: boolean
       }
       warehouse_dispatch:
-        | {
-            Args: {
-              p_batch_id: string
-              p_delivery_method: string
-              p_quantity: number
-              p_request_id: string
-              p_tracking_number: string
-              p_user_id: string
-              p_warehouse_id: string
-            }
-            Returns: boolean
-          }
-        | {
-            Args: {
-              p_items: Json
-              p_request_id: string
-              p_warehouse_id: string
-            }
-            Returns: boolean
-          }
+      | {
+        Args: {
+          p_batch_id: string
+          p_delivery_method: string
+          p_quantity: number
+          p_request_id: string
+          p_tracking_number: string
+          p_user_id: string
+          p_warehouse_id: string
+        }
+        Returns: boolean
+      }
+      | {
+        Args: {
+          p_items: Json
+          p_request_id: string
+          p_warehouse_id: string
+        }
+        Returns: boolean
+      }
       warehouse_fraction_batch: {
         Args: {
           p_notes?: string
@@ -5826,54 +5826,54 @@ export type Database = {
         Returns: undefined
       }
       warehouse_inbound:
-        | {
-            Args: {
-              p_batch_number: string
-              p_expiry_date: string
-              p_organization_id: string
-              p_product_id: string
-              p_quantity: number
-              p_user_id: string
-              p_warehouse_id: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              p_batch_number: string
-              p_expiration_date: string
-              p_notes?: string
-              p_product_id: string
-              p_quantity: number
-              p_warehouse_id: string
-            }
-            Returns: string
-          }
+      | {
+        Args: {
+          p_batch_number: string
+          p_expiry_date: string
+          p_organization_id: string
+          p_product_id: string
+          p_quantity: number
+          p_user_id: string
+          p_warehouse_id: string
+        }
+        Returns: string
+      }
+      | {
+        Args: {
+          p_batch_number: string
+          p_expiration_date: string
+          p_notes?: string
+          p_product_id: string
+          p_quantity: number
+          p_warehouse_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       contact_type: "doctor" | "pharmacy" | "hospital" | "clinic"
       priority_level: "low" | "medium" | "high" | "urgent"
       sample_movement_type:
-        | "promotion"
-        | "transfer_in"
-        | "transfer_out"
-        | "treatment_start"
-        | "bank_delivery"
-        | "adjustment"
-        | "warehouse_in"
-        | "visit_drop"
-        | "bank_deposit"
-        | "bank_audit_consumption"
+      | "promotion"
+      | "transfer_in"
+      | "transfer_out"
+      | "treatment_start"
+      | "bank_delivery"
+      | "adjustment"
+      | "warehouse_in"
+      | "visit_drop"
+      | "bank_deposit"
+      | "bank_audit_consumption"
       transfer_order_type: "transfer" | "direct_sale"
       visit_status: "scheduled" | "completed" | "cancelled" | "no_show"
       warehouse_movement_type:
-        | "inbound_purchase"
-        | "outbound_dispatch"
-        | "adjustment"
-        | "return"
-        | "sale"
-        | "conversion_in"
-        | "conversion_out"
+      | "inbound_purchase"
+      | "outbound_dispatch"
+      | "adjustment"
+      | "return"
+      | "sale"
+      | "conversion_in"
+      | "conversion_out"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5887,121 +5887,121 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+  ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
-    ? R
-    : never
+  ? R
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
-    : never
+    DefaultSchema["Views"])
+  ? (DefaultSchema["Tables"] &
+    DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+      Row: infer R
+    }
+  ? R
+  : never
+  : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
+    Insert: infer I
+  }
+  ? I
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
-    : never
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Insert: infer I
+  }
+  ? I
+  : never
+  : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
-    ? U
-    : never
+    Update: infer U
+  }
+  ? U
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Update: infer U
+  }
+  ? U
+  : never
+  : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Enums"]
+  | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+  : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["CompositeTypes"]
+  | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+  : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : never
 
 export const Constants = {
   public: {
     Enums: {
-      contact_type: ["doctor", "pharmacy", "hospital", "clinic"],
+      contact_type: ["doctor", "pharmacy", "hospital", "clinic", "natural_store"],
       priority_level: ["low", "medium", "high", "urgent"],
       sample_movement_type: [
         "promotion",

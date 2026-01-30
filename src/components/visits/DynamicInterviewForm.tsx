@@ -4,7 +4,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Stethoscope, AlertCircle, Quote, Activity, CheckCircle2, User, BarChart, ShoppingBag, Clock, Tag } from "lucide-react";
+import {
+    Stethoscope, AlertCircle, Quote, Activity, CheckCircle2, User,
+    BarChart, ShoppingBag, Clock, Tag, FileCheck, DollarSign, Users, Scale
+} from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { VisitScenario } from "@/services/visitAutomationService";
 
 // --- Types ---
@@ -34,6 +38,19 @@ export interface ProfilingData {
     manual_classification: string;
 }
 
+export interface CommerceProfilingData {
+    // 1. Estatus Legal (Checklist)
+    legal_docs: string[]; // ['rif', 'sanitary_permit', 'habitability']
+    // 2. Capacidad y Finanzas
+    est_monthly_volume: string;
+    payment_condition: 'cash' | 'credit' | 'mixed' | '';
+    // 3. Decisor
+    decision_maker_role: string; // 'owner', 'manager', 'accountant'
+    // 4. Perfil Comercial
+    store_focus: string; // 'natural', 'pharmacological', 'mixed'
+    delivery_frequency: string;
+}
+
 export interface ValidationData {
     samples_used: 'yes' | 'no' | 'partial' | '';
     flavor_acceptance: string;
@@ -48,7 +65,7 @@ export interface MaintenanceData {
 
 export type DynamicInterviewData = {
     type: 'conquest';
-    data: ProfilingData;
+    data: ProfilingData | CommerceProfilingData;
 } | {
     type: 'development';
     data: ValidationData;
@@ -63,6 +80,7 @@ interface DynamicInterviewFormProps {
     onChange: (data: any) => void;
     errors?: string[];
     lastVisitSamples?: string | null;
+    entityType?: string;
 }
 
 // --- Specific Forms ---
@@ -318,6 +336,135 @@ function ProfilingForm({ data, onChange, errors = [] }: { data: ProfilingData, o
     );
 }
 
+function CommerceProfilingForm({ data, onChange, errors = [] }: { data: CommerceProfilingData, onChange: (d: CommerceProfilingData) => void, errors: string[] }) {
+    const updateField = (field: keyof CommerceProfilingData, value: any) => onChange({ ...data, [field]: value });
+    const hasError = (field: string) => errors.includes(field);
+
+    const toggleLegalDoc = (docId: string) => {
+        const current = data.legal_docs || [];
+        const next = current.includes(docId)
+            ? current.filter(id => id !== docId)
+            : [...current, docId];
+        updateField('legal_docs', next);
+    };
+
+    return (
+        <Accordion type="single" collapsible defaultValue="commerce-1" className="w-full animate-in fade-in slide-in-from-bottom-2">
+
+            {/* 1. Estatus Legal */}
+            <AccordionItem value="commerce-1" className="border-white/10">
+                <AccordionTrigger className="text-white hover:text-emerald-400">
+                    <div className="flex items-center gap-2">
+                        <FileCheck className="h-4 w-4 text-emerald-400" />
+                        <span>1. Documentación Legal</span>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 px-1">
+                    <div className="grid grid-cols-1 gap-3">
+                        <Label className="text-xs font-medium text-slate-300 mb-1">Checklist Obligatorio *</Label>
+                        {[
+                            { id: 'rif', label: 'RIF Vigente' },
+                            { id: 'sanitary_permit', label: 'Permiso Sanitario' },
+                            { id: 'habitability', label: 'Certificado de Habitabilidad' }
+                        ].map(doc => (
+                            <div key={doc.id} className="flex items-center space-x-3 bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                                <Checkbox
+                                    id={doc.id}
+                                    checked={data.legal_docs?.includes(doc.id)}
+                                    onCheckedChange={() => toggleLegalDoc(doc.id)}
+                                    className="border-emerald-500 data-[state=checked]:bg-emerald-500"
+                                />
+                                <label htmlFor={doc.id} className="text-sm text-slate-200 cursor-pointer flex-1">
+                                    {doc.label}
+                                </label>
+                            </div>
+                        ))}
+                        {hasError('legal_docs') && <p className="text-xs text-red-500">Faltan documentos legales críticos</p>}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+
+            {/* 2. Capacidad y Finanzas */}
+            <AccordionItem value="commerce-2" className="border-white/10">
+                <AccordionTrigger className="text-white hover:text-emerald-400">
+                    <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-emerald-400" />
+                        <span>2. Capacidad de Compra</span>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 px-1">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-xs font-medium text-slate-300">Volumen Mensual Est. ($) *</Label>
+                            <Input
+                                type="number"
+                                value={data.est_monthly_volume}
+                                onChange={(e) => updateField('est_monthly_volume', e.target.value)}
+                                className={`bg-slate-900 border-slate-700 text-white ${hasError('est_monthly_volume') ? 'border-red-500' : ''}`}
+                                placeholder="Ej. 1500"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs font-medium text-slate-300">Condición de Pago *</Label>
+                            <Select value={data.payment_condition} onValueChange={(v) => updateField('payment_condition', v)}>
+                                <SelectTrigger className={`bg-slate-900 border-slate-700 text-white ${hasError('payment_condition') ? 'border-red-500' : ''}`}>
+                                    <SelectValue placeholder="Seleccionar..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="cash">Contado</SelectItem>
+                                    <SelectItem value="credit">Crédito (Aprobación Pend.)</SelectItem>
+                                    <SelectItem value="mixed">Mixto</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+
+            {/* 3. Decisor y Foco */}
+            <AccordionItem value="commerce-3" className="border-white/10">
+                <AccordionTrigger className="text-white hover:text-emerald-400">
+                    <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-emerald-400" />
+                        <span>3. Perfil de Negocio</span>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 px-1">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-xs font-medium text-slate-300">Persona que Decide *</Label>
+                            <Select value={data.decision_maker_role} onValueChange={(v) => updateField('decision_maker_role', v)}>
+                                <SelectTrigger className={`bg-slate-900 border-slate-700 text-white ${hasError('decision_maker_role') ? 'border-red-500' : ''}`}>
+                                    <SelectValue placeholder="Seleccionar..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="owner">Dueño / Propietario</SelectItem>
+                                    <SelectItem value="manager">Administrador</SelectItem>
+                                    <SelectItem value="accountant">Contador / Compras</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs font-medium text-slate-300">Enfoque del Establecimiento</Label>
+                            <Select value={data.store_focus} onValueChange={(v) => updateField('store_focus', v)}>
+                                <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                                    <SelectValue placeholder="Seleccionar..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="natural">Tienda Naturista / Natural</SelectItem>
+                                    <SelectItem value="pharmacological">Farmacológico / Clínica</SelectItem>
+                                    <SelectItem value="mixed">Mixto</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+
+        </Accordion>
+    );
+}
+
 function ValidationForm({ data, onChange, errors = [], lastVisitSamples }: { data: ValidationData, onChange: (d: ValidationData) => void, errors: string[], lastVisitSamples?: string | null }) {
     const updateField = (field: keyof ValidationData, value: string) => onChange({ ...data, [field]: value });
     const hasError = (field: string) => errors.includes(field);
@@ -415,24 +562,25 @@ function MaintenanceForm({ data, onChange, errors = [] }: { data: MaintenanceDat
 
 // --- Main Container ---
 
-export function DynamicInterviewForm({ scenario, data, onChange, errors = [], lastVisitSamples }: DynamicInterviewFormProps) {
+export function DynamicInterviewForm({ scenario, data, onChange, errors = [], lastVisitSamples, entityType = 'doctor' }: DynamicInterviewFormProps) {
+    const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
 
     // Determine title and icon based on scenario
-    let title = "Entrevista Clínica";
-    let Icon = Stethoscope;
+    let title = isCommerce ? "Perfilamiento Comercial" : "Entrevista Clínica";
+    let Icon = isCommerce ? (entityType === 'natural_store' ? Leaf : Scale) : Stethoscope;
     let colorClass = "text-purple-400";
 
     if (scenario.type === 'conquest') {
-        title = "Perfilamiento Inicial (Visita 1)";
-        Icon = Activity;
+        title = isCommerce ? "Alta Comercial (Prospecto)" : "Perfilamiento Inicial (Visita 1)";
+        Icon = isCommerce ? FileCheck : Activity;
         colorClass = "text-emerald-400";
     } else if (scenario.type === 'development') {
-        title = "Validación y Seguimiento (Visita 2)";
+        title = isCommerce ? "Validación Comercial" : "Validación y Seguimiento (Visita 2)";
         Icon = CheckCircle2;
         colorClass = "text-blue-400";
     } else if (scenario.type === 'maturity') {
-        title = "Mantenimiento y Cross-Selling";
-        Icon = Stethoscope;
+        title = isCommerce ? "Mantenimiento Ventas" : "Mantenimiento y Cross-Selling";
+        Icon = isCommerce ? ShoppingBag : Stethoscope;
         colorClass = "text-orange-400";
     }
 
@@ -450,16 +598,24 @@ export function DynamicInterviewForm({ scenario, data, onChange, errors = [], la
                 {errors.length > 0 && (
                     <div className="flex items-center gap-2 p-3 mb-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-200 text-sm">
                         <AlertCircle className="h-4 w-4 text-red-400" />
-                        <span>Por favor complete las preguntas obligatorias.</span>
+                        <span>Por favor complete los campos obligatorios para el {isCommerce ? 'alta' : 'registro'}.</span>
                     </div>
                 )}
 
                 {scenario.type === 'conquest' && (
-                    <ProfilingForm
-                        data={data as ProfilingData}
-                        onChange={onChange}
-                        errors={errors}
-                    />
+                    isCommerce ? (
+                        <CommerceProfilingForm
+                            data={data as CommerceProfilingData}
+                            onChange={onChange}
+                            errors={errors}
+                        />
+                    ) : (
+                        <ProfilingForm
+                            data={data as ProfilingData}
+                            onChange={onChange}
+                            errors={errors}
+                        />
+                    )
                 )}
 
                 {scenario.type === 'development' && (
@@ -485,28 +641,53 @@ export function DynamicInterviewForm({ scenario, data, onChange, errors = [], la
 
 // --- Validation Helpers ---
 
-export function validateDynamicInterview(scenario: VisitScenario, data: any): string[] {
+export function validateDynamicInterview(scenario: VisitScenario, data: any, entityType: string = 'doctor'): string[] {
     const errors: string[] = [];
+    const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
 
     if (scenario.type === 'conquest') {
-        const d = data as ProfilingData;
-        if (!d.specialty) errors.push('specialty');
-        if (!d.patients_per_day) errors.push('patients_per_day');
-        if (!d.patient_ses) errors.push('patient_ses');
-        // Validation for array: must ensure it has at least one item
-        if (!d.decision_criteria || d.decision_criteria.length === 0) errors.push('decision_criteria');
-        if (!d.manual_classification) errors.push('manual_classification');
+        if (isCommerce) {
+            const d = data as CommerceProfilingData;
+            const isDoctorSale = entityType === 'doctor'; // If we ever use this for doctors
+
+            // For Doctors, we don't block by documentation
+            if (!isDoctorSale) {
+                if (!d.legal_docs || d.legal_docs.length < 2) errors.push('legal_docs');
+            }
+
+            if (!d.est_monthly_volume) errors.push('est_monthly_volume');
+            if (!d.payment_condition) errors.push('payment_condition');
+            if (!d.decision_maker_role) errors.push('decision_maker_role');
+        } else {
+            const d = data as ProfilingData;
+            if (!d.specialty) errors.push('specialty');
+            if (!d.patients_per_day) errors.push('patients_per_day');
+            if (!d.patient_ses) errors.push('patient_ses');
+            if (!d.decision_criteria || d.decision_criteria.length === 0) errors.push('decision_criteria');
+            if (!d.manual_classification) errors.push('manual_classification');
+        }
     } else if (scenario.type === 'development') {
         const d = data as ValidationData;
         if (!d.samples_used) errors.push('samples_used');
     }
-    // Maturity might not have strict mandatory fields, or add as needed
 
     return errors;
 }
 
-export function getEmptyInterviewData(scenario: VisitScenario): any {
+export function getEmptyInterviewData(scenario: VisitScenario, entityType: string = 'doctor'): any {
+    const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
+
     if (scenario.type === 'conquest') {
+        if (isCommerce) {
+            return {
+                legal_docs: [],
+                est_monthly_volume: '',
+                payment_condition: '',
+                decision_maker_role: '',
+                store_focus: '',
+                delivery_frequency: ''
+            } as CommerceProfilingData;
+        }
         return {
             specialty: '', sub_specialty: '', institution_type: '', positions: '',
             patients_per_day: '', patient_ses: '', age_group: '', top_pathologies: '',

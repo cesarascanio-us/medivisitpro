@@ -39,7 +39,7 @@ interface HealthCenter {
 }
 
 export default function HealthCenters() {
-  const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
   const { toast } = useToast();
   const [healthCenters, setHealthCenters] = useState<HealthCenter[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +73,7 @@ export default function HealthCenters() {
 
   useEffect(() => {
     if (user) loadHealthCenters();
-  }, [user, adminFilters]);
+  }, [user, adminFilters, organizationId]);
 
   const loadHealthCenters = async () => {
     try {
@@ -93,7 +93,8 @@ export default function HealthCenters() {
 
       let query: any = supabase
         .from('health_centers')
-        .select('*');
+        .select('*')
+        .eq('organization_id', organizationId);
 
       if (isSupervisor && zoneId) {
         query = query.eq('zone_id', zoneId);

@@ -1,6 +1,8 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Organization, PlanTier, SubscriptionStatus } from '@/types/organization';
+import { useAuth } from './useAuth';
+import { toast } from 'sonner';
 
 interface OrganizationContextType {
     organization: Organization | null;
@@ -30,6 +32,7 @@ const DEMO_ORG = {
 const MASTER_EMAIL = 'cesar.ascanio@gmail.com';
 
 export function OrganizationProvider({ children }: { children: ReactNode }) {
+    const { enterAuditMode, exitAuditMode } = useAuth();
     const [organization, setOrganization] = useState<Organization | null>(null);
     const [allOrganizations, setAllOrganizations] = useState<Organization[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -86,9 +89,9 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     .from('organizations')
                     .select('*')
                     .order('name');
-                
+
                 if (allOrgsError) console.error('Error fetching all orgs for master:', allOrgsError);
-                
+
                 const orgs = allOrgs || [];
                 setAllOrganizations(orgs);
 
@@ -97,7 +100,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 // 2. Otherwise use their "assigned" org
                 // 3. Fallback to first available
                 const assignedOrgId = profile?.organization_id || userRole?.organization_id;
-                
+
                 // If we already have an organization selected in state (e.g. from switching), keep it if valid
                 // Otherwise default to assigned
                 if (!organization) {
@@ -141,16 +144,15 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     // Allow manual switching of organization (context only)
     const switchOrganization = async (orgId: string) => {
         if (!isMaster) return; // Only master can switch
-        
+
         const targetOrg = allOrganizations.find(o => o.id === orgId);
         if (targetOrg) {
             setOrganization(targetOrg);
-            // Optional: Persist this choice to localStorage so it survives reload
             localStorage.setItem('medivisit_master_active_org', orgId);
-            
-            // Reload window to ensure all queries re-run with new ID? 
-            // Better to rely on React state updates flushing down.
-            // But since 'organizationId' hook reads from this context, it should trigger re-renders.
+
+            // SYNC: Update AuthProvider to reflect this org change
+            await enterAuditMode(orgId);
+
             toast.success(`Organización cambiada a: ${targetOrg.name}`);
         }
     };

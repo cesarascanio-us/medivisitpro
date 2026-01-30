@@ -3,8 +3,8 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 
-// Master user email - has full access
-const MASTER_EMAIL = 'cesar.ascanio@gmail.com';
+// Master user emails - have full access
+const MASTER_EMAILS = ['cesar.ascanio@gmail.com', 'cesarascanio.edu@gmail.com'];
 const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 
@@ -164,10 +164,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!email) return;
 
         const lowerEmail = email.trim().toLowerCase();
-        const masterEmailLower = MASTER_EMAIL.trim().toLowerCase();
+        const isHardcodedMaster = MASTER_EMAILS.some(m => m.toLowerCase() === lowerEmail);
         const demoEmailLower = DEMO_EMAIL.trim().toLowerCase();
 
-        const isHardcodedMaster = lowerEmail === masterEmailLower;
         const isHardcodedDemo = lowerEmail === demoEmailLower;
 
         // [NUCLEAR FAIL-SAFE] Absolute Bypass

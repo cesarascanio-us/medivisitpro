@@ -59,7 +59,8 @@ export default function VisitExecutionPage() {
 
     // Visit Automation: Scenario Detection
     const directoryItemId = (visit as any)?.directory_item_id || null;
-    const { scenario, history, autoFields, loading: scenarioLoading } = useVisitScenario(directoryItemId);
+    const entityType = visit?.directory_items?.entity_type || 'doctor';
+    const { scenario, history, autoFields, loading: scenarioLoading } = useVisitScenario(directoryItemId, entityType);
 
     // Automation state
     const [masterData, setMasterData] = useState<{ email?: string; phone?: string }>({});
@@ -194,9 +195,9 @@ export default function VisitExecutionPage() {
     // Initialize Dynamic Data when scenario is loaded
     useEffect(() => {
         if (scenario && !dynamicInterviewData) {
-            setDynamicInterviewData(getEmptyInterviewData(scenario));
+            setDynamicInterviewData(getEmptyInterviewData(scenario, entityType));
         }
-    }, [scenario]);
+    }, [scenario, entityType]);
 
     // Sample Limit Warning for Conquest (Visit 1)
     useEffect(() => {
@@ -368,18 +369,31 @@ export default function VisitExecutionPage() {
         let interviewValidationErrors: string[] = [];
         let interviewDataToSave: any = {};
 
-        if (entityType === 'doctor') {
+        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore';
+
+        if (isCommerce) {
+            // Priority: Alta Comercial (Profiling) if Visit 1
+            if (scenario?.type === 'conquest') {
+                interviewValidationErrors = validateDynamicInterview(scenario, dynamicInterviewData, entityType);
+                interviewDataToSave = {
+                    type: 'commercial_profiling',
+                    scenario_type: 'conquest',
+                    ...dynamicInterviewData
+                };
+            } else {
+                // Secondary/Legacy: Commercial Audit
+                interviewValidationErrors = validateCommercialAudit(commercialData);
+                interviewDataToSave = { type: 'commercial', ...commercialData };
+            }
+        } else if (entityType === 'doctor') {
             if (scenario) {
-                interviewValidationErrors = validateDynamicInterview(scenario, dynamicInterviewData);
+                interviewValidationErrors = validateDynamicInterview(scenario, dynamicInterviewData, entityType);
                 interviewDataToSave = {
                     type: 'dynamic',
                     scenario_type: scenario.type,
                     ...dynamicInterviewData
                 };
             }
-        } else if (entityType === 'pharmacy') {
-            interviewValidationErrors = validateCommercialAudit(commercialData);
-            interviewDataToSave = { type: 'commercial', ...commercialData };
         }
 
         if (interviewValidationErrors.length > 0) {
@@ -515,7 +529,6 @@ export default function VisitExecutionPage() {
 
     return (
         <div className="max-w-5xl mx-auto p-4 md:p-8 pb-32">
-            {/* Header: Compact & Less Stressful */}
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-xl font-bold text-slate-900">
@@ -525,12 +538,22 @@ export default function VisitExecutionPage() {
                         <MapPin className="h-3 w-3" /> {directoryItem?.address || "Sin dirección"}
                     </p>
                 </div>
-                {isTimerRunning && (
-                    <Badge variant="outline" className="text-xs font-normal text-slate-400 border-slate-200">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {formatTime(timer)}
-                    </Badge>
-                )}
+                <div className="flex items-center gap-2">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => goToTab("negotiation")}
+                        className="bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 font-bold gap-1 shadow-sm"
+                    >
+                        💲 Venta/Negociación
+                    </Button>
+                    {isTimerRunning && (
+                        <Badge variant="outline" className="text-xs font-normal text-slate-400 border-slate-200">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {formatTime(timer)}
+                        </Badge>
+                    )}
+                </div>
             </div>
 
             {!visit.checkin_at ? (
@@ -558,7 +581,6 @@ export default function VisitExecutionPage() {
                     </Button>
                 </div>
             ) : (
-
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8 bg-white/80 p-1.5 h-auto md:h-16 rounded-2xl border border-slate-200 shadow-lg backdrop-blur-xl">
                         <TabsTrigger
@@ -646,20 +668,23 @@ export default function VisitExecutionPage() {
 
                             {/* DYNAMIC FORM INJECTION FOR CONQUEST (VISIT 1) */}
                             {/* For Visit 1, profiling is part of the Strategy/Assessment phase */}
-                            {directoryItem?.entity_type === 'doctor' && scenario?.type === 'conquest' && dynamicInterviewData && (
-                                <div className="col-span-1 lg:col-span-2">
-                                    <DynamicInterviewForm
-                                        scenario={scenario}
-                                        data={dynamicInterviewData}
-                                        onChange={(data) => {
-                                            setDynamicInterviewData(data);
-                                            setInterviewErrors([]);
-                                        }}
-                                        errors={interviewErrors}
-                                        lastVisitSamples={history.lastVisit?.samples_delivered}
-                                    />
-                                </div>
-                            )}
+                            {((entityType === 'doctor' && scenario?.type === 'conquest') ||
+                                ((entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore') && scenario?.type === 'conquest')) &&
+                                dynamicInterviewData && (
+                                    <div className="col-span-1 lg:col-span-2">
+                                        <DynamicInterviewForm
+                                            scenario={scenario!}
+                                            data={dynamicInterviewData}
+                                            onChange={(data) => {
+                                                setDynamicInterviewData(data);
+                                                setInterviewErrors([]);
+                                            }}
+                                            errors={interviewErrors}
+                                            lastVisitSamples={history.lastVisit?.samples_delivered}
+                                            entityType={entityType}
+                                        />
+                                    </div>
+                                )}
 
                         </div>
                         <div className="flex justify-end mt-8">
@@ -754,7 +779,7 @@ export default function VisitExecutionPage() {
                         {/* Entrevistas Estructuradas */}
                         <div className="pt-6">
                             {/* For Development/Maturity, the interview (Validation/Maintenance) happens here in Phase 2 */}
-                            {directoryItem?.entity_type === 'doctor' && scenario && scenario.type !== 'conquest' && dynamicInterviewData && (
+                            {entityType === 'doctor' && scenario && scenario.type !== 'conquest' && dynamicInterviewData && (
                                 <div className="space-y-4">
                                     {scenario.type === 'development' && (
                                         <div className="flex justify-end">
@@ -771,10 +796,11 @@ export default function VisitExecutionPage() {
                                         }}
                                         errors={interviewErrors}
                                         lastVisitSamples={history.lastVisit?.samples_delivered}
+                                        entityType={entityType}
                                     />
                                 </div>
                             )}
-                            {directoryItem?.entity_type === 'pharmacy' && (
+                            {(entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore') && scenario && scenario.type !== 'conquest' && (
                                 <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-lg">
                                     <CommercialAudit
                                         data={commercialData}

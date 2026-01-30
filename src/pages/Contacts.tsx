@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Building2, Edit, Printer, Download, Trash2, Upload, HelpCircle, FileSpreadsheet } from "lucide-react";
+import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Building2, Edit, Printer, Download, Trash2, Upload, HelpCircle, FileSpreadsheet, Leaf } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,7 @@ export default function Contacts() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [adminFilters, setAdminFilters] = useState<AdminFilterState>({});
+  const [typeFilter, setTypeFilter] = useState<string>("all");
 
   // Demo mode hook
   const demoData = useDemoData();
@@ -141,7 +142,9 @@ export default function Contacts() {
           unifiedContacts.push({
             ...c,
             source: 'contacts',
-            displayType: c.contact_type || 'Contacto',
+            displayType: c.contact_type === 'natural_store' ? 'Tienda Naturista' :
+              c.contact_type === 'drugstore' ? 'Droguería' :
+                (c.contact_type || 'Contacto'),
             visitCount: 0,
             rating: 0,
             lastVisit: c.created_at
@@ -308,11 +311,14 @@ export default function Contacts() {
     }
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.specialty?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    false
-  );
+  const filteredContacts = contacts.filter(contact => {
+    const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.specialty?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesType = typeFilter === 'all' || contact.contact_type === typeFilter;
+
+    return matchesSearch && matchesType;
+  });
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -467,10 +473,24 @@ export default function Contacts() {
                 className="pl-10 bg-background border-input focus-visible:ring-ring"
               />
             </div>
-            <Button variant="outline" className="border-border text-foreground hover:bg-muted">
-              <Filter className="mr-2 h-4 w-4" />
-              Filtros
-            </Button>
+
+            <div className="w-full md:w-48">
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="bg-background border-input">
+                  <div className="flex items-center">
+                    <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <SelectValue placeholder="Tipo" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los tipos</SelectItem>
+                  <SelectItem value="doctor">Médicos</SelectItem>
+                  <SelectItem value="pharmacy">Farmacias</SelectItem>
+                  <SelectItem value="natural_store">Tiendas Naturistas</SelectItem>
+                  <SelectItem value="drugstore">Droguerías</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -507,7 +527,7 @@ export default function Contacts() {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-12 w-12 border-2 border-background shadow-sm ring-1 ring-border">
                     <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold">
-                      {contact.name.split(' ').map((n: string) => n[0]).join('')}
+                      {contact.contact_type === 'natural_store' || contact.contact_type === 'drugstore' ? <Leaf className="h-6 w-6" /> : contact.name.split(' ').map((n: string) => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div>

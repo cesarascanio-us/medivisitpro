@@ -22,7 +22,10 @@ export interface UseVisitScenarioResult {
  * Hook that provides lifecycle scenario detection and auto-calculated fields
  * for a visit based on the directory item's history
  */
-export function useVisitScenario(directoryItemId: string | null): UseVisitScenarioResult {
+export function useVisitScenario(
+    directoryItemId: string | null,
+    entityType?: string
+): UseVisitScenarioResult {
     const [loading, setLoading] = useState(true);
     const [scenario, setScenario] = useState<VisitScenario | null>(null);
     const [history, setHistory] = useState<VisitHistory>({ visitCount: 0, lastVisit: null });
@@ -50,8 +53,8 @@ export function useVisitScenario(directoryItemId: string | null): UseVisitScenar
                 isDemo ? Promise.resolve('cycle-001') : getCurrentCycle(),
             ]);
 
-            // Determine scenario based on visit count
-            const visitScenario = determineScenario(visitHistory.visitCount);
+            // Determine scenario based on visit count and entity type
+            const visitScenario = determineScenario(visitHistory.visitCount, entityType);
 
             // Generate smart objective
             const smartObjective = generateSmartObjective(
@@ -74,7 +77,7 @@ export function useVisitScenario(directoryItemId: string | null): UseVisitScenar
         } finally {
             setLoading(false);
         }
-    }, [directoryItemId]);
+    }, [directoryItemId, entityType]);
 
     useEffect(() => {
         loadScenarioData();

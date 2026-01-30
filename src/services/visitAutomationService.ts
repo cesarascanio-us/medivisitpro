@@ -31,14 +31,17 @@ export interface AutoCalculatedFields {
 }
 
 /**
- * Determine the visit scenario based on visit count
+ * Determine the visit scenario based on visit count and entity type
  */
-export function determineScenario(visitCount: number): VisitScenario {
+export function determineScenario(visitCount: number, entityType?: string): VisitScenario {
     if (visitCount === 0) {
+        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
         return {
             type: 'conquest',
             label: 'Conquista (Visita 1)',
-            suggestedObjective: 'Levantamiento de Perfil y Presentación',
+            suggestedObjective: isCommerce
+                ? 'Recolección de Documentos y Primer Pedido'
+                : 'Levantamiento de Perfil y Presentación',
             showMasterDataCard: true,
             showCloseFields: false,
         };

@@ -173,7 +173,7 @@ const ACTION_LABELS: Record<string, { label: string; color: string }> = {
 };
 
 export default function Pharmacies() {
-    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState("pharmacies");
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -291,7 +291,7 @@ export default function Pharmacies() {
 
     useEffect(() => {
         if (user) loadAllData();
-    }, [user, adminFilters, canViewAllData, zoneId]); // Reload when user auth/role state or filters change
+    }, [user, adminFilters, canViewAllData, zoneId, organizationId]); // Reload when user auth/role state, filters or organizationId change
 
     const loadAllData = async () => {
         setLoading(true);
@@ -312,6 +312,11 @@ export default function Pharmacies() {
 
             // Base query filter helper - hasStateColumn indicates if the table has a 'state' column
             const applyFilters = (query: any, userColumn = 'user_id', hasStateColumn = false) => {
+                if (!organizationId) return query;
+
+                // Add mandatory organization_id filter for multi-tenancy
+                query = query.eq('organization_id', organizationId);
+
                 // Hierarchical filtering logic
                 if (isSupervisor && zoneId) {
                     if (adminFilters.repId && adminFilters.repId !== 'all') {

@@ -20,6 +20,7 @@ interface CommercialCalculatorProps {
     // Wholesale Mode Prop
     isWholesale?: boolean;
     priceDistributor?: number;
+    entityType?: string;
 }
 
 export function CommercialCalculator({
@@ -29,10 +30,11 @@ export function CommercialCalculator({
     productName,
     onSaveAgreement,
     isWholesale = false,
-    priceDistributor = 0
+    priceDistributor = 0,
+    entityType = 'pharmacy'
 }: CommercialCalculatorProps) {
     // States
-    const [mode, setMode] = useState<'transfer' | 'direct'>('transfer');
+    const [mode, setMode] = useState<'transfer' | 'direct'>(entityType === 'doctor' ? 'direct' : 'transfer');
     const [drugstores, setDrugstores] = useState<any[]>([]);
     const [selectedDrugstoreId, setSelectedDrugstoreId] = useState<string>('');
     const [quantity, setQuantity] = useState<number>(1);
@@ -358,6 +360,10 @@ export function CommercialCalculator({
                                 notes = "[REQUIERE APROBACIÓN GERENCIAL] ";
                             }
 
+                            // LIGHT ONBOARDING for Doctors: If it's a doctor and we're in direct mode, 
+                            // we might want to flag if RIF is missing, but we don't block here.
+                            // The actual data collection will happen in handleSaveAgreement in VisitExecution.
+
                             onSaveAgreement({
                                 productName,
                                 quantity,
@@ -365,7 +371,8 @@ export function CommercialCalculator({
                                 discountPercent: numericDiscount,
                                 totalUSD,
                                 drugstoreName: isWholesale ? 'DIRECTO (MAYORISTA)' : (mode === 'direct' ? 'Venta Directa' : (drugstores.find(d => d.id === selectedDrugstoreId)?.name || 'N/A')),
-                                notes: notes
+                                notes: notes,
+                                isDirectDoctorSale: entityType === 'doctor' && mode === 'direct'
                             });
                         }}
                     >
