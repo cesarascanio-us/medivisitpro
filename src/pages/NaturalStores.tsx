@@ -26,10 +26,12 @@ import {
     Card,
     CardContent,
     CardHeader,
-    CardTitle
+    CardTitle,
+    CardDescription
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
     Table,
     TableBody,
@@ -61,14 +63,23 @@ import {
 } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { NaturalStoreFormDialog } from "@/components/pharma/NaturalStoreFormDialog";
 import { useNavigate } from "react-router-dom";
+import { useContacts } from "@/hooks/useContacts";
+import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
+import { exportToCSV, handlePrint } from "@/utils/exportUtils";
+import { HelpCircle, Download, Upload, Printer, Filter, Star } from "lucide-react";
 
 export default function NaturalStores() {
-    const [naturalStores, setNaturalStores] = useState<any[]>([]);
+    const [adminFilters, setAdminFilters] = useState<any>({});
     const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(true);
+    const { contacts: naturalStores, loading, refresh: loadNaturalStores } = useContacts({
+        searchTerm,
+        typeFilter: 'natural_store',
+        adminFilters
+    });
+
     const { toast } = useToast();
     const { user, organizationId } = useAuth();
 
@@ -93,35 +104,6 @@ export default function NaturalStores() {
         email: "",
         contact_type: "natural_store"
     });
-
-    useEffect(() => {
-        if (organizationId) {
-            loadNaturalStores();
-        }
-    }, [organizationId]);
-
-    const loadNaturalStores = async () => {
-        try {
-            setLoading(true);
-            const { data, error } = await supabase
-                .from('contacts')
-                .select('*')
-                .eq('contact_type', 'natural_store')
-                .eq('organization_id', organizationId)
-                .order('name');
-
-            if (error) throw error;
-            setNaturalStores(data || []);
-        } catch (error: any) {
-            toast({
-                title: "Error al cargar datos",
-                description: error.message,
-                variant: "destructive"
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleFormSubmit = async () => {
         if (!formData.name || !formData.rif) {
@@ -272,68 +254,110 @@ export default function NaturalStores() {
         }
     };
 
-    const filteredStores = naturalStores.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.rif?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredStores = naturalStores; // Handled by useContacts now
 
     return (
-        <div className="container mx-auto p-4 space-y-6">
+        <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-emerald-50 p-6 rounded-xl border border-emerald-100">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-emerald-600 rounded-lg text-white shadow-lg shadow-emerald-500/20">
-                        <Leaf className="h-6 w-6" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-emerald-900">Tiendas Naturistas</h1>
-                        <p className="text-emerald-600 font-medium">Gestión de Alta Comercial 🌿</p>
-                    </div>
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-2 text-emerald-700">
+                        <Leaf className="h-8 w-8" />
+                        Tiendas Naturistas
+                    </h1>
+                    <p className="text-muted-foreground font-medium">Gestión de Alta Comercial 🌿</p>
                 </div>
-                <Button
-                    onClick={() => {
-                        setIsEditing(false);
-                        setFormData({
-                            name: "",
-                            rif: "",
-                            owner_name: "",
-                            sanitary_permits: false,
-                            address: "",
-                            city: "",
-                            phone: "",
-                            email: "",
-                            contact_type: "natural_store"
-                        });
-                        setFormDialogOpen(true);
-                    }}
-                    className="bg-emerald-600 hover:bg-emerald-700 shadow-md"
-                >
-                    <Plus className="h-4 w-4 mr-2" /> Nueva Tienda
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                    <Button variant="outline" onClick={() => exportToCSV(naturalStores, 'tiendas_naturistas')} className="bg-card border-border text-foreground hover:bg-muted">
+                        <Download className="mr-2 h-4 w-4" />
+                        Exportar
+                    </Button>
+
+                    <Button variant="outline" className="bg-card border-border text-foreground hover:bg-muted">
+                        <Upload className="mr-2 h-4 w-4" />
+                        Importar
+                    </Button>
+
+                    <Button variant="outline" onClick={handlePrint} className="hidden sm:flex bg-card border-border text-foreground hover:bg-muted">
+                        <Printer className="mr-2 h-4 w-4" />
+                        Imprimir
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setIsEditing(false);
+                            setFormData({
+                                name: "",
+                                rif: "",
+                                owner_name: "",
+                                sanitary_permits: false,
+                                address: "",
+                                city: "",
+                                phone: "",
+                                email: "",
+                                contact_type: "natural_store"
+                            });
+                            setFormDialogOpen(true);
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md font-medium"
+                    >
+                        <Plus className="h-4 w-4 mr-2" /> Nueva Tienda
+                    </Button>
+                </div>
             </div>
 
-            {/* List and Search */}
-            <Card className="border-emerald-50 shadow-sm">
-                <CardHeader className="pb-3 border-b border-emerald-50/50">
-                    <div className="flex flex-col md:flex-row justify-between gap-4">
-                        <CardTitle className="text-lg text-emerald-900 flex items-center gap-2">
-                            <Building className="h-4 w-4" /> Directorio Comercial
-                        </CardTitle>
-                        <div className="flex gap-2">
-                            <div className="relative w-full md:w-80">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    placeholder="Buscar por nombre o RIF..."
-                                    className="pl-10 focus-visible:ring-emerald-500"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-                            <Button variant="outline" size="icon" onClick={loadNaturalStores} className="border-emerald-200">
-                                <RefreshCw className="h-4 w-4 text-emerald-600" />
-                            </Button>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="bg-card border border-border rounded-xl shadow-sm text-center p-4">
+                    <div className="text-2xl font-bold text-emerald-600">{naturalStores.length}</div>
+                    <div className="text-sm text-muted-foreground font-medium">Total Tiendas</div>
+                </Card>
+                <Card className="bg-card border border-border rounded-xl shadow-sm text-center p-4">
+                    <div className="text-2xl font-bold text-primary">{naturalStores.filter(s => s.priority === 'high' || s.status === 'high_potential').length}</div>
+                    <div className="text-sm text-muted-foreground font-medium">Alta Prioridad</div>
+                </Card>
+                <Card className="medical-card text-center p-4">
+                    <div className="text-2xl font-bold text-amber-500">{naturalStores.filter(s => s.lastVisit && new Date(s.lastVisit).getMonth() === new Date().getMonth()).length}</div>
+                    <div className="text-sm text-muted-foreground">Visitadas Este Mes</div>
+                </Card>
+                <Card className="medical-card text-center p-4">
+                    <div className="text-2xl font-bold text-foreground">
+                        {naturalStores.length > 0
+                            ? (naturalStores.reduce((acc, s) => acc + (s.rating || 0), 0) / naturalStores.length).toFixed(1)
+                            : "0.0"}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Rating Promedio</div>
+                </Card>
+            </div>
+
+            {/* Search and Filters */}
+            <Card className="bg-card border border-border rounded-xl shadow-sm">
+                <CardContent className="p-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                type="text"
+                                placeholder="Buscar por nombre o RIF..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-10 bg-background border-input focus-visible:ring-emerald-500"
+                            />
                         </div>
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* Admin Filters */}
+            <AdminDataFilter onFilterChange={setAdminFilters} moduleType="contacts" />
+
+            {/* List Table */}
+            <Card className="bg-card border border-border rounded-xl shadow-sm">
+                <CardHeader className="pb-3 border-b border-border">
+                    <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                        <Building className="h-4 w-4 text-emerald-600" />
+                        Directorio Comercial
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6 px-0">
                     <div className="overflow-x-auto">
@@ -358,7 +382,7 @@ export default function NaturalStores() {
                                             <TableCell className="text-right pr-6"><div className="h-8 w-8 ml-auto bg-slate-100 animate-pulse rounded" /></TableCell>
                                         </TableRow>
                                     ))
-                                ) : filteredStores.length === 0 ? (
+                                ) : naturalStores.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={5} className="h-64 text-center">
                                             <div className="flex flex-col items-center justify-center text-muted-foreground">
@@ -369,11 +393,11 @@ export default function NaturalStores() {
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    filteredStores.map(store => (
+                                    naturalStores.map(store => (
                                         <TableRow key={store.id} className="hover:bg-emerald-50/10 transition-colors">
                                             <TableCell className="pl-6 font-medium text-emerald-950">
                                                 <div className="flex flex-col">
-                                                    <span>{store.name}</span>
+                                                    <span className="font-bold text-slate-800">{store.name}</span>
                                                     <span className="text-[10px] text-muted-foreground flex items-center gap-1 font-normal">
                                                         <Phone className="h-2.5 w-2.5" /> {store.phone || 'Sin teléfono'}
                                                     </span>
@@ -381,7 +405,7 @@ export default function NaturalStores() {
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-col max-w-[200px]">
-                                                    <span className="text-xs font-semibold">{store.city || 'S/C'}</span>
+                                                    <span className="text-xs font-semibold text-slate-700">{store.city || 'S/C'}</span>
                                                     <span className="text-xs text-muted-foreground truncate">{store.address || 'Sin dirección'}</span>
                                                 </div>
                                             </TableCell>
@@ -391,8 +415,8 @@ export default function NaturalStores() {
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className={store.sanitary_permits ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-emerald-200" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100 border-yellow-200"}>
-                                                    {store.sanitary_permits ? "Activa" : "Pendiente"}
+                                                <Badge className={store.priority === 'high' || store.status === 'high_potential' ? "bg-rose-100 text-rose-700 border-rose-200" : "bg-emerald-100 text-emerald-800 border-emerald-200"}>
+                                                    {store.priority === 'high' || store.status === 'high_potential' ? "Alta Prioridad" : "Activa"}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right pr-6">
@@ -443,6 +467,9 @@ export default function NaturalStores() {
                             <Leaf className="h-6 w-6 text-emerald-600" />
                             {selectedStore?.name}
                         </DialogTitle>
+                        <DialogDescription>
+                            Detalle completo de la tienda, historial de visitas y pedidos realizados.
+                        </DialogDescription>
                     </DialogHeader>
 
                     {selectedStore && (
@@ -563,10 +590,10 @@ export default function NaturalStores() {
                         </Tabs>
                     )}
                 </DialogContent>
-            </Dialog>
+            </Dialog >
 
             {/* Form Dialog */}
-            <NaturalStoreFormDialog
+            < NaturalStoreFormDialog
                 open={formDialogOpen}
                 onOpenChange={setFormDialogOpen}
                 formData={formData}
@@ -574,6 +601,6 @@ export default function NaturalStores() {
                 onSubmit={handleFormSubmit}
                 isEditing={isEditing}
             />
-        </div>
+        </div >
     );
 }
