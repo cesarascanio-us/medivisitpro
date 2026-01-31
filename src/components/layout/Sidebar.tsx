@@ -74,6 +74,9 @@ const SYSTEM_ADMIN_NAV = [
       { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
       { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
       { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
+      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
+      { name: "Droguerías", href: "/drugstores", icon: Truck },
+      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
       { name: "Rutas y Territorios", href: "/visits", icon: FileText },
       { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
       { name: "Cobertura Global", href: "/coverage-map", icon: Map },
@@ -98,6 +101,8 @@ const MANAGER_NAV = [
       { name: "Mi Dashboard", href: "/dashboard", icon: Home },
       { name: "Mi Equipo", href: "/users", icon: Users },
       { name: "Contactos", href: "/contacts", icon: Users }, // Restored
+      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
+      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
       { name: "Zona / Territorio", href: "/zones", icon: Map },
       { name: "Reportes Venta", href: "/reports", icon: BarChart3 },
     ]
