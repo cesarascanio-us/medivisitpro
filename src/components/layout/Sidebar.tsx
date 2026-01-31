@@ -60,7 +60,7 @@ const SYSTEM_ADMIN_NAV = [
     ]
   },
   {
-    title: "GESTIÓN COMERCIAL & EQUIPO",
+    title: "INTELIGENCIA & EXPLORACIÓN",
     items: [
       { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
       { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
@@ -288,7 +288,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       title: "ADMINISTRACIÓN GLOBAL",
       items: [
         { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
-        { name: "Usuarios Globales", href: "/users", icon: Users },
+        { name: "Gestión de Cuentas", href: "/users", icon: Users },
         { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
       ]
     },
