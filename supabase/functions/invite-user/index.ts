@@ -1,6 +1,5 @@
-// @ts-nocheck
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+import { serve } from "std/http/server.ts"
+import { createClient } from "@supabase/supabase-js"
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -58,8 +57,24 @@ serve(async (req) => {
         }
 
         // 1. Check if user already exists in auth.users
-        const { data: existingUserSearch } = await supabaseAdmin.auth.admin.listUsers();
-        const existingUser = existingUserSearch.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+        console.log(`Checking existence for email: ${email}`);
+
+        let existingUser = null;
+        try {
+            const listUsersResponse = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+            if (listUsersResponse.error) {
+                console.error('List users error:', listUsersResponse.error);
+                throw new Error(`Failed to list users: ${listUsersResponse.error.message}`);
+            }
+            if (!listUsersResponse.data || !listUsersResponse.data.users) {
+                console.error('List users data is null/empty');
+                throw new Error('Failed to list users: No data returned');
+            }
+            existingUser = listUsersResponse.data.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+        } catch (e: any) {
+            console.error('Exception during listUsers:', e);
+            throw new Error(`User search failed: ${e.message}`);
+        }
 
         let targetUserId: string;
 
@@ -68,11 +83,16 @@ serve(async (req) => {
             targetUserId = existingUser.id;
 
             // Optionally update their metadata if needed
-            await supabaseAdmin.auth.admin.updateUserById(targetUserId, {
+            const updateResult = await supabaseAdmin.auth.admin.updateUserById(targetUserId, {
                 user_metadata: { first_name: firstName, last_name: lastName, role: role || 'representative' }
             });
+            if (updateResult.error) {
+                console.error('Update user error:', updateResult.error);
+                throw new Error(`Failed to update existing user: ${updateResult.error.message}`);
+            }
         } else {
             // 2. Invite New User (sends magic link)
+            console.log('Inviting new user...');
             const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
                 data: {
                     first_name: firstName,
@@ -81,8 +101,11 @@ serve(async (req) => {
                 }
             })
 
-            if (inviteError) throw inviteError
-            if (!inviteData.user) throw new Error('Failed to create invitation')
+            if (inviteError) {
+                console.error('Invite error:', inviteError);
+                throw new Error(`Supabase inviteWithEmail failed: ${inviteError.message}`);
+            }
+            if (!inviteData.user) throw new Error('Failed to create invitation: No user returned');
             targetUserId = inviteData.user.id;
         }
 
@@ -128,9 +151,10 @@ serve(async (req) => {
         )
 
     } catch (error) {
+        // Return 200 with error key so client can read the message instead of throwing generic 400
         return new Response(
             JSON.stringify({ error: error.message }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         )
     }
 })

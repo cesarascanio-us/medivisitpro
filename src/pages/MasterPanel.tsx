@@ -380,6 +380,11 @@ export default function MasterPanel() {
 
             console.log("Invitation result:", data);
 
+            // Handle manual error from function (bypass generic 400)
+            if (data && data.error) {
+                throw new Error(data.error);
+            }
+
             toast({
                 title: "Invitación Enviada",
                 description: `Se ha enviado un correo de invitación a ${newUserEmail}.`
