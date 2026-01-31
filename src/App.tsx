@@ -321,7 +321,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/commercial/builder" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'representative']}>
                     <Layout><OrderBuilder /></Layout>
                   </ProtectedRoute>
                 } />
