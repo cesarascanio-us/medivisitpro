@@ -132,6 +132,7 @@ const REPRESENTATIVE_NAV = [
     items: [
       { name: "Dashboard", href: "/dashboard", icon: Home },
       { name: "Agenda", href: "/agenda", icon: Calendar },
+      { name: "Eventos", href: "/events", icon: CalendarCheck },
       { name: "Contactos", href: "/contacts", icon: Users }, // Restored
       { name: "Fichero Médico", href: "/doctors", icon: Stethoscope },
       { name: "Farmacias", href: "/pharmacies", icon: Store },
