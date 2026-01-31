@@ -59,6 +59,7 @@ interface RepPerformance {
     effectiveness: number;
     role?: string;
     is_active?: boolean;
+    invitation_status?: 'pending' | 'active';
 }
 
 interface ItemStat {
@@ -68,7 +69,7 @@ interface ItemStat {
 
 // --- CONSTANTES ---
 const ROLE_LABELS: Record<string, string> = {
-    master: 'Master',
+    master: 'System Admin',
     admin: 'Administrador',
     manager: 'Gerente',
     coordinator: 'Coordinador',
@@ -95,7 +96,7 @@ const ROLE_COLORS: Record<string, string> = {
 
 export default function DashboardMaster() {
     // --- HOOKS ---
-    const { user, role, isManager, isAdmin, isMaster, isSupervisor, isCoordinator, loading: authLoading } = useAuth();
+    const { user, role, isManager, isAdmin, isMaster, isSystemAdmin, isSupervisor, isCoordinator, loading: authLoading } = useAuth();
     const { organization } = useOrganization();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -132,7 +133,7 @@ export default function DashboardMaster() {
     const [openNewUser, setOpenNewUser] = useState(false);
     const [newUserLoading, setNewUserLoading] = useState(false);
     const [newUserForm, setNewUserForm] = useState({
-        email: '', password: '', firstName: '', lastName: '', role: 'representative', zoneId: 'none'
+        email: '', firstName: '', lastName: '', role: 'representative', zoneId: 'none'
     });
 
     // --- ESTADO PARA TRIANGULACIÓN COMERCIAL ---
@@ -185,6 +186,7 @@ export default function DashboardMaster() {
                 state: 'N/A', visits: 0, orders: 0, sales: 0, effectiveness: 0,
                 role: roleInfo?.role || 'representative',
                 is_active: roleInfo?.is_active ?? true,
+                invitation_status: p.invitation_status || 'active',
                 region: roleInfo?.zone_id ? zoneMap[roleInfo.zone_id] : 'N/A'
             };
         });
@@ -295,42 +297,29 @@ export default function DashboardMaster() {
     }, [visitsDataObj, ordersData, profilesRoles, zonesData, kpiDataRaw, filters, loading, user, isMaster, isSupervisor]);
 
 
-    // --- LÓGICA: CREACIÓN DE USUARIO ---
     const handleCreateUser = async () => {
         setNewUserLoading(true);
         try {
-            const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-            const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-            const tempClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
-
-            const { data: authData, error: authError } = await tempClient.auth.signUp({
-                email: newUserForm.email, password: newUserForm.password,
-                options: { data: { first_name: newUserForm.firstName, last_name: newUserForm.lastName } }
+            const { data, error } = await supabase.functions.invoke('invite-user', {
+                body: {
+                    email: newUserForm.email,
+                    firstName: newUserForm.firstName,
+                    lastName: newUserForm.lastName,
+                    role: newUserForm.role,
+                    zoneId: newUserForm.zoneId === 'none' ? null : newUserForm.zoneId,
+                    organizationId: organization?.id
+                }
             });
-            if (authError) throw authError;
-            if (!authData.user) throw new Error("No user returned from SignUp");
-            const newUserId = authData.user.id;
 
-            const { error: profileError } = await supabase.from('profiles').insert({
-                user_id: newUserId, first_name: newUserForm.firstName, last_name: newUserForm.lastName,
-                email: newUserForm.email, organization_id: organization?.id
-            });
-            if (profileError) console.warn("Profile creation warning:", profileError);
+            if (error) throw error;
 
-            const { error: roleError } = await supabase.from('user_roles').insert({
-                user_id: newUserId, role: newUserForm.role,
-                zone_id: newUserForm.zoneId === 'none' ? null : newUserForm.zoneId,
-                organization_id: organization?.id, is_active: true
-            });
-            if (roleError) throw roleError;
-
-            toast({ title: "Usuario Creado e Invitado", description: "El usuario ha sido registrado correctamente.", className: "bg-emerald-50 border-emerald-200 text-emerald-800" });
+            toast({ title: "Invitación Enviada", description: `Se ha enviado un correo de acceso a ${newUserForm.email}.`, className: "bg-emerald-50 border-emerald-200 text-emerald-800" });
             setOpenNewUser(false);
-            setNewUserForm({ email: '', password: '', firstName: '', lastName: '', role: 'representative', zoneId: 'none' });
+            setNewUserForm({ email: '', firstName: '', lastName: '', role: 'representative', zoneId: 'none' });
             queryClient.invalidateQueries({ queryKey: ['dashboard'] });
         } catch (err: any) {
             console.error("Error creating user:", err);
-            toast({ title: "Error", description: err.message || "No se pudo crear el usuario.", variant: "destructive" });
+            toast({ title: "Error", description: err.message || "No se pudo enviar la invitación.", variant: "destructive" });
         } finally {
             setNewUserLoading(false);
         }
@@ -449,7 +438,7 @@ export default function DashboardMaster() {
                             <h1 className="text-2xl font-bold">¡Bienvenido de vuelta, {getUserName()}!</h1>
                             <div className="flex items-center mt-1">
                                 <Badge variant="secondary" className="bg-background text-foreground hover:bg-background/90 border-0">
-                                    {ROLE_LABELS[role] || role}
+                                    {isSystemAdmin ? 'System Admin' : (ROLE_LABELS[role] || role)}
                                 </Badge>
                             </div>
                         </div>
@@ -477,6 +466,13 @@ export default function DashboardMaster() {
                         <Users size={18} /> Equipo
                     </TabsTrigger>
                 </TabsList>
+                {activeTab === 'equipo' && (
+                    <div className="flex justify-end mt-4 px-1">
+                        <Button onClick={() => setOpenNewUser(true)} className="bg-amber-500 hover:bg-amber-600">
+                            <Users className="mr-2 h-4 w-4" /> Invitar Miembro
+                        </Button>
+                    </div>
+                )}
 
                 {/* VISTA DASHBOARD */}
                 <TabsContent value="dashboard" className="space-y-6 animate-in fade-in duration-300">
@@ -585,6 +581,7 @@ export default function DashboardMaster() {
                                         <TableHead className="w-[50px] text-center">#</TableHead>
                                         <TableHead>Usuario</TableHead>
                                         <TableHead>Rol / Zona</TableHead>
+                                        <TableHead className="text-center">Estado</TableHead>
                                         <TableHead className="text-right">Ventas</TableHead>
                                         <TableHead className="text-right">Efec.</TableHead>
                                         <TableHead className="text-center">Editar</TableHead>
@@ -613,6 +610,17 @@ export default function DashboardMaster() {
                                                     <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1"><Globe className="h-3 w-3" /> {rep.region}</span>
                                                 </div>
                                             </TableCell>
+                                            <TableCell className="text-center">
+                                                {rep.invitation_status === 'pending' ? (
+                                                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 animate-pulse">
+                                                        Pendiente
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                                                        Activo
+                                                    </Badge>
+                                                )}
+                                            </TableCell>
                                             <TableCell className="text-right font-bold text-emerald-600">${rep.sales.toLocaleString()}</TableCell>
                                             <TableCell className="text-right"><span className={`font-bold ${rep.effectiveness > 50 ? 'text-emerald-600' : 'text-slate-400'}`}>{rep.effectiveness.toFixed(0)}%</span></TableCell>
                                             <TableCell className="text-center">
@@ -633,14 +641,13 @@ export default function DashboardMaster() {
 
             <Dialog open={openNewUser} onOpenChange={setOpenNewUser}>
                 <DialogContent>
-                    <DialogHeader><DialogTitle>Crear Nuevo Usuario</DialogTitle><DialogDescription>Registra un nuevo miembro del equipo.</DialogDescription></DialogHeader>
+                    <DialogHeader><DialogTitle>Invitar Miembro al Equipo</DialogTitle><DialogDescription>Se enviará un correo electrónico con un enlace de acceso.</DialogDescription></DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="grid gap-2"><label className="text-sm font-medium">Nombre</label><Input placeholder="Juan" value={newUserForm.firstName} onChange={e => setNewUserForm({ ...newUserForm, firstName: e.target.value })} /></div>
                             <div className="grid gap-2"><label className="text-sm font-medium">Apellido</label><Input placeholder="Pérez" value={newUserForm.lastName} onChange={e => setNewUserForm({ ...newUserForm, lastName: e.target.value })} /></div>
                         </div>
-                        <div className="grid gap-2"><label className="text-sm font-medium">Email</label><Input type="email" placeholder="email@biofarco.com" value={newUserForm.email} onChange={e => setNewUserForm({ ...newUserForm, email: e.target.value })} /></div>
-                        <div className="grid gap-2"><label className="text-sm font-medium">Contraseña</label><Input type="password" placeholder="******" value={newUserForm.password} onChange={e => setNewUserForm({ ...newUserForm, password: e.target.value })} /></div>
+                        <div className="grid gap-2"><label className="text-sm font-medium">Email</label><Input type="email" placeholder="email@alphabmt.com" value={newUserForm.email} onChange={e => setNewUserForm({ ...newUserForm, email: e.target.value })} /></div>
                         <div className="grid gap-2"><label className="text-sm font-medium">Rol</label>
                             <Select value={newUserForm.role} onValueChange={val => setNewUserForm({ ...newUserForm, role: val })}>
                                 <SelectTrigger><SelectValue placeholder="Seleccionar Rol" /></SelectTrigger>
@@ -654,7 +661,7 @@ export default function DashboardMaster() {
                             </Select>
                         </div>
                     </div>
-                    <DialogFooter><Button variant="outline" onClick={() => setOpenNewUser(false)}>Cancelar</Button><Button onClick={handleCreateUser} disabled={newUserLoading}>{newUserLoading ? 'Creando...' : 'Crear'}</Button></DialogFooter>
+                    <DialogFooter><Button variant="outline" onClick={() => setOpenNewUser(false)}>Cancelar</Button><Button onClick={handleCreateUser} disabled={newUserLoading}>{newUserLoading ? 'Enviando Invitación...' : 'Enviar Invitación'}</Button></DialogFooter>
                 </DialogContent>
             </Dialog>
 

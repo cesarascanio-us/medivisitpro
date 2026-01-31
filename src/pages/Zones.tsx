@@ -22,7 +22,8 @@ interface Zone {
 }
 
 export default function Zones() {
-    const { canManageZones } = useAuth();
+    const { canManageZones, isMaster, profile } = useAuth();
+    const organizationId = profile?.organization_id;
     const { toast } = useToast();
     const [zones, setZones] = useState<Zone[]>([]);
     const [loading, setLoading] = useState(true);
@@ -42,17 +43,28 @@ export default function Zones() {
         try {
             setLoading(true);
             // Load zones
-            const { data: zonesData, error: zonesError } = await supabase
+            let zonesQuery = supabase
                 .from('zones')
-                .select('*')
-                .order('name');
+                .select('*');
+
+            if (!isMaster && organizationId) {
+                zonesQuery = zonesQuery.eq('organization_id', organizationId);
+            }
+
+            const { data: zonesData, error: zonesError } = await zonesQuery.order('name');
 
             if (zonesError) throw zonesError;
 
             // Count users per zone
-            const { data: userCounts, error: countError } = await supabase
+            let rolesQuery = supabase
                 .from('user_roles')
                 .select('zone_id');
+
+            if (!isMaster && organizationId) {
+                rolesQuery = rolesQuery.eq('organization_id', organizationId);
+            }
+
+            const { data: userCounts, error: countError } = await rolesQuery;
 
             if (countError) {
                 console.warn('Could not load user counts:', countError);
@@ -104,7 +116,8 @@ export default function Zones() {
                     .from('zones')
                     .insert({
                         name: formData.name,
-                        description: formData.description || null
+                        description: formData.description || null,
+                        organization_id: organizationId // Set current org
                     });
 
                 if (error) throw error;

@@ -84,7 +84,8 @@ const ROLE_COLORS: Record<UserRole, string> = {
 
 
 export default function Users() {
-    const { user, canManageUsers, isMaster } = useAuth();
+    const { user, canManageUsers, isMaster, profile } = useAuth();
+    const organizationId = profile?.organization_id;
     const { toast } = useToast();
     const [users, setUsers] = useState<UserWithRole[]>([]);
     const [zones, setZones] = useState<Zone[]>([]);
@@ -167,10 +168,15 @@ export default function Users() {
 
     const loadZones = async () => {
         try {
-            const { data, error } = await supabase
+            let query = supabase
                 .from('zones')
-                .select('*')
-                .order('name');
+                .select('*');
+
+            if (!isMaster && organizationId) {
+                query = query.eq('organization_id', organizationId);
+            }
+
+            const { data, error } = await query.order('name');
 
             if (error) throw error;
             setZones(data || []);
@@ -187,7 +193,7 @@ export default function Users() {
     const loadUsers = async () => {
         try {
             setLoading(true);
-            const { data: rolesData, error: rolesError } = await supabase
+            let query = supabase
                 .from('user_roles')
                 .select(`
                     *,
@@ -197,6 +203,12 @@ export default function Users() {
                         last_name
                     )
                 `);
+
+            if (!isMaster && organizationId) {
+                query = query.eq('organization_id', organizationId);
+            }
+
+            const { data: rolesData, error: rolesError } = await query;
 
             if (rolesError) throw rolesError;
 

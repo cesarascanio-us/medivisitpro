@@ -5,6 +5,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
 serve(async (req) => {
@@ -50,69 +51,60 @@ serve(async (req) => {
             Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
         )
 
-        const { email, password, firstName, lastName, role, zoneId } = await req.json()
+        const { email, firstName, lastName, role, zoneId, organizationId } = await req.json()
 
-        if (!email || !password) {
-            throw new Error('Email and password are required')
+        if (!email) {
+            throw new Error('Email is required')
         }
 
-        // 1. Create User
-        const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
-            email: email,
-            password: password,
-            email_confirm: true, // Auto-confirm
-            user_metadata: {
+        // 1. Invite User (sends magic link)
+        const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+            data: {
                 first_name: firstName,
                 last_name: lastName,
                 role: role || 'representative'
             }
         })
 
-        if (createError) throw createError
+        if (inviteError) throw inviteError
 
-        if (!newUser.user) throw new Error('Failed to create user object')
+        if (!inviteData.user) throw new Error('Failed to create invitation')
 
-        // 2. Insert Profile
-        // Note: If you have a trigger on auth.users -> public.profiles, this might be redundant or fail with unique constraint.
-        // We will attempt to update if exists, or insert if not.
-        // But since it's a new user, upsert is safe.
-
+        // 2. Insert/Update Profile with 'pending' status
         const { error: profileError } = await supabaseAdmin
             .from('profiles')
             .upsert({
-                user_id: newUser.user.id,
+                user_id: inviteData.user.id,
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
                 role: role || 'representative',
+                organization_id: organizationId,
+                invitation_status: 'pending',
                 is_active: true,
                 created_at: new Date().toISOString()
             })
 
         if (profileError) {
-            // If profile creation fails, we might want to delete the user? 
-            // For now let's just log and throw.
             console.error('Profile creation error:', profileError)
-            // Cleanup user maybe? await supabaseAdmin.auth.admin.deleteUser(newUser.user.id)
-            throw new Error(`User created but profile failed: ${profileError.message}`)
+            throw new Error(`Invitation sent but profile failed: ${profileError.message}`)
         }
 
         // 3. Insert Role & Zone
-        if (role || zoneId) {
-            const { error: roleError } = await supabaseAdmin
-                .from('user_roles')
-                .upsert({
-                    user_id: newUser.user.id,
-                    role: role || 'representative',
-                    zone_id: zoneId || null,
-                    updated_at: new Date().toISOString()
-                })
+        const { error: roleError } = await supabaseAdmin
+            .from('user_roles')
+            .upsert({
+                user_id: inviteData.user.id,
+                role: role || 'representative',
+                zone_id: zoneId || null,
+                organization_id: organizationId,
+                updated_at: new Date().toISOString()
+            })
 
-            if (roleError) console.error('Role/Zone assignment error:', roleError)
-        }
+        if (roleError) console.error('Role/Zone assignment error:', roleError)
 
         return new Response(
-            JSON.stringify({ user: newUser.user, message: 'User created successfully' }),
+            JSON.stringify({ user: inviteData.user, message: 'Invitation sent successfully' }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         )
 

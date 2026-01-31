@@ -100,6 +100,7 @@ export default function VisitExecutionPage() {
     // New state for 100% coverage
     const [deliveredSamples, setDeliveredSamples] = useState<DeliveryItem[]>([]);
     const [deliveredPOP, setDeliveredPOP] = useState<POPDeliveryItem[]>([]);
+    const [centralStockAlerts, setCentralStockAlerts] = useState<Array<{ productId: string; status: string }>>([]);
 
     // Photo evidence
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -434,7 +435,8 @@ export default function VisitExecutionPage() {
                         purchase_driver: formData.purchase_driver,
                         next_commitment: formData.next_commitment,
                         notes: formData.notes,
-                        out_of_range: (visit as any).out_of_range
+                        out_of_range: (visit as any).out_of_range,
+                        central_alerts: centralStockAlerts
                     },
                     scenario: scenario?.type,
                     visit_count: history.visitCount,
@@ -831,6 +833,47 @@ export default function VisitExecutionPage() {
                                     <Store className="h-6 w-6 text-purple-600" /> Foco Comercial: Línea Femenina
                                 </h3>
                                 <p className="text-slate-400 mb-6">Selecciona un producto clave para iniciar la negociación y registrar acuerdos.</p>
+
+                                {isWholesale && (
+                                    <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                        <h4 className="font-bold text-red-800 flex items-center gap-2 mb-4">
+                                            <AlertCircle className="h-5 w-5" /> 🚨 Monitor de Inventario Central (Falla)
+                                        </h4>
+                                        <div className="space-y-4">
+                                            {negotiationProducts.slice(0, 5).map(product => (
+                                                <div key={`alert-${product.id}`} className="flex items-center justify-between bg-white p-3 rounded-lg border border-red-100">
+                                                    <span className="text-sm font-medium text-slate-700">{product.name}</span>
+                                                    <Select
+                                                        value={centralStockAlerts.find(a => a.productId === product.id)?.status || 'available'}
+                                                        onValueChange={(v) => {
+                                                            const newAlerts = centralStockAlerts.filter(a => a.productId !== product.id);
+                                                            if (v !== 'available') {
+                                                                newAlerts.push({ productId: product.id, status: v });
+                                                                if (v === 'out_of_stock') {
+                                                                    toast({
+                                                                        title: "🔥 ALERTA DE FALLA",
+                                                                        description: `Se ha registrado agotamiento de ${product.name} en esta droguería.`,
+                                                                        variant: "destructive"
+                                                                    });
+                                                                }
+                                                            }
+                                                            setCentralStockAlerts(newAlerts);
+                                                        }}
+                                                    >
+                                                        <SelectTrigger className="w-[180px] h-9 text-xs">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="available">🟢 Disponible</SelectItem>
+                                                            <SelectItem value="low">🟡 Poca Existencia</SelectItem>
+                                                            <SelectItem value="out_of_stock">🔴 AGOTADO (Falla)</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {negotiationProducts.map(product => (

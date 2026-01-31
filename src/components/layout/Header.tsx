@@ -7,9 +7,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationBadge } from "@/components/layout/NotificationBadge";
 import { OrganizationSwitcher } from "@/components/organization/OrganizationSwitcher";
+import { Badge } from "@/components/ui/badge";
 export function Header() {
   const navigate = useNavigate();
-  const { user, isMaster } = useAuth();
+  const { user, isMaster, isSystemAdmin } = useAuth();
 
   const today = new Date();
   const todayFormatted = today.toLocaleDateString('es-ES', {
@@ -27,6 +28,11 @@ export function Header() {
             <Calendar className="h-4 w-4 text-emerald-400" />
             <span className="hidden sm:inline">{todayFormatted}</span>
           </div>
+          {isSystemAdmin && (
+            <Badge variant="outline" className="ml-2 bg-purple-500/10 text-purple-400 border-purple-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+              System Admin
+            </Badge>
+          )}
         </div>
 
         {/* Organization Switcher (Master Only) */}

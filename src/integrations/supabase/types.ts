@@ -3075,6 +3075,8 @@ export type Database = {
           territory: string | null
           updated_at: string
           user_id: string
+          invitation_status: string | null
+          is_active: boolean | null
         }
         Insert: {
           avatar_url?: string | null
@@ -3095,6 +3097,8 @@ export type Database = {
           territory?: string | null
           updated_at?: string
           user_id: string
+          invitation_status?: string | null
+          is_active?: boolean | null
         }
         Update: {
           avatar_url?: string | null
@@ -3115,6 +3119,8 @@ export type Database = {
           territory?: string | null
           updated_at?: string
           user_id?: string
+          invitation_status?: string | null
+          is_active?: boolean | null
         }
         Relationships: [
           {
@@ -5719,6 +5725,13 @@ export type Database = {
           p_visit_type?: string
         }
         Returns: Json
+      }
+      delete_organization_safely: {
+        Args: {
+          target_org_id: string
+          migration_target_id?: string | null
+        }
+        Returns: void
       }
       delete_series: {
         Args: { p_delete_future_visits?: boolean; p_series_id: string }

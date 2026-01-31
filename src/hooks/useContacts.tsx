@@ -103,15 +103,25 @@ export function useContacts(options: UseContactsOptions = {}) {
             let pharmaciesQuery = supabase.from('pharmacies').select('*');
             pharmaciesQuery = baseFilter(pharmaciesQuery, 'pharmacies');
 
-            const [contactsRes, doctorsRes, pharmaciesRes] = await Promise.all([
+            // 4. Fetch Legacy Drugstores
+            let legacyDrugstoresQuery = supabase.from('drugstores').select('*');
+            // Manual filter for legacy table since it might have different columns
+            legacyDrugstoresQuery = legacyDrugstoresQuery.eq('organization_id', organizationId);
+            if (!canViewAllData) {
+                legacyDrugstoresQuery = legacyDrugstoresQuery.eq('user_id', user.id);
+            }
+
+            const [contactsRes, doctorsRes, pharmaciesRes, legacyDrugstoresRes] = await Promise.all([
                 contactsQuery,
                 doctorsQuery,
-                pharmaciesQuery
+                pharmaciesQuery,
+                legacyDrugstoresQuery
             ]);
 
             if (contactsRes.error) throw contactsRes.error;
             if (doctorsRes.error) throw doctorsRes.error;
             if (pharmaciesRes.error) throw pharmaciesRes.error;
+            if (legacyDrugstoresRes.error) throw legacyDrugstoresRes.error;
 
             const unified: Contact[] = [];
 
@@ -175,6 +185,31 @@ export function useContacts(options: UseContactsOptions = {}) {
                         user_id: p.user_id,
                         organization_id: p.organization_id
                     } as Contact);
+                });
+            }
+
+            if (legacyDrugstoresRes.data) {
+                legacyDrugstoresRes.data.forEach((d: any) => {
+                    // Avoid duplication if already in 'contacts' table (unlikely but safe)
+                    if (!unified.find(u => u.id === d.id)) {
+                        unified.push({
+                            id: d.id,
+                            name: d.name,
+                            phone: d.phone,
+                            email: d.email,
+                            address: d.address || d.location,
+                            city: d.location?.split(',')[0]?.trim() || "",
+                            source: 'contacts', // Map to contacts source for consistency
+                            displayType: 'Droguería',
+                            contact_type: 'drugstore',
+                            priority: 'medium',
+                            lastVisit: d.created_at,
+                            visitCount: 0,
+                            rating: 0,
+                            user_id: d.user_id,
+                            organization_id: d.organization_id
+                        } as Contact);
+                    }
                 });
             }
 

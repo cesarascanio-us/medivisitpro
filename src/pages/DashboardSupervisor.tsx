@@ -57,7 +57,7 @@ interface DashboardData {
 const CHART_COLORS = ['#10b981', '#14b8a6', '#0ea5e9', '#6366f1', '#f59e0b', '#ef4444'];
 
 export default function DashboardSupervisor() {
-    const { user, userRegion, organizationName, role } = useAuth();
+    const { user, userRegion, organizationName, role, isSystemAdmin } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<DashboardData | null>(null);
     const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month'>('month');
@@ -219,7 +219,7 @@ export default function DashboardSupervisor() {
 
     return (
         <div className="space-y-6">
-            {/* Biofarco Style Header with Clock and Sync */}
+            {/* Alpha BMT Style Header with Clock and Sync */}
             <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-6 -mt-6">
                 {/* Decorative background element */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
@@ -239,9 +239,19 @@ export default function DashboardSupervisor() {
                                 <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
                                     Supervisor
                                 </Badge>
-                                {organizationName && (
+                                {isSystemAdmin && (
+                                    <Badge variant="outline" className="bg-purple-500/20 text-purple-400 border-purple-400/40 text-[10px] px-2 uppercase font-bold tracking-tighter">
+                                        Global View
+                                    </Badge>
+                                )}
+                                {organizationName && !isSystemAdmin && (
                                     <Badge variant="outline" className="text-blue-400 border-blue-400/30 bg-blue-400/10 text-[10px] px-2 capitalize">
                                         {organizationName}
+                                    </Badge>
+                                )}
+                                {organizationName && isSystemAdmin && (
+                                    <Badge variant="outline" className="text-purple-400 border-purple-400/30 bg-purple-400/10 text-[10px] px-2 capitalize">
+                                        Auditing: {organizationName}
                                     </Badge>
                                 )}
                                 <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] px-2">

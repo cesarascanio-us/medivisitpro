@@ -76,7 +76,8 @@ const ROLE_LABELS: Record<UserRole, string> = {
     representative: 'Representante',
     doctor: 'Médico',
     pharmacist: 'Farmacéutico',
-    service_chief: 'Jefe de Servicios'
+    service_chief: 'Jefe de Servicios',
+    store_manager: 'Gerente de Tienda'
 };
 
 const ROLE_COLORS: Record<UserRole, string> = {
@@ -90,7 +91,8 @@ const ROLE_COLORS: Record<UserRole, string> = {
     representative: 'bg-gray-100 text-gray-800',
     doctor: 'bg-teal-100 text-teal-800',
     pharmacist: 'bg-amber-100 text-amber-800',
-    service_chief: 'bg-cyan-100 text-cyan-800'
+    service_chief: 'bg-cyan-100 text-cyan-800',
+    store_manager: 'bg-teal-100 text-teal-800'
 };
 
 export default function MasterPanel() {
@@ -131,12 +133,10 @@ export default function MasterPanel() {
     // User creation states
     const [userDialogOpen, setUserDialogOpen] = useState(false);
     const [newUserEmail, setNewUserEmail] = useState('');
-    const [newUserPassword, setNewUserPassword] = useState('');
     const [newUserRole, setNewUserRole] = useState<UserRole>('representative');
     const [newUserOrgId, setNewUserOrgId] = useState<string>('');
     const [newUserFirstName, setNewUserFirstName] = useState('');
     const [newUserLastName, setNewUserLastName] = useState('');
-    const [provisionAdmin, setProvisionAdmin] = useState(false);
     const [isCreatingUser, setIsCreatingUser] = useState(false);
 
     // Redirect non-master/admin users
@@ -290,46 +290,17 @@ export default function MasterPanel() {
 
             if (orgError) throw orgError;
 
-            // Provision admin user if selected
-            if (provisionAdmin && newUserEmail && newUserPassword) {
-                const tempClient = createClient(
-                    import.meta.env.VITE_SUPABASE_URL,
-                    import.meta.env.VITE_SUPABASE_ANON_KEY,
-                    { auth: { persistSession: false } }
-                );
-
-                const { data: authData, error: authError } = await tempClient.auth.signUp({
-                    email: newUserEmail,
-                    password: newUserPassword,
-                });
-
-                if (!authError && authData.user) {
-                    const userId = authData.user.id;
-                    await supabase.from('user_roles').insert({
-                        user_id: userId,
-                        role: 'admin',
-                        organization_id: org.id,
-                        is_active: true
-                    });
-                    await supabase.from('profiles').insert({
-                        id: userId,
-                        user_id: userId,
-                        email: newUserEmail,
-                        first_name: newUserFirstName || 'Admin',
-                        last_name: newUserLastName || org.name,
-                        organization_id: org.id
-                    });
-                }
-            }
 
             toast({ title: "Organización creada", description: `${newOrganizationName} ha sido registrada.` });
             setNewOrganizationName('');
             setNewOrgRif('');
             setNewOrgAddress('');
             setNewOrgPhone('');
-            setProvisionAdmin(false);
+            setNewOrganizationName('');
+            setNewOrgRif('');
+            setNewOrgAddress('');
+            setNewOrgPhone('');
             setNewUserEmail('');
-            setNewUserPassword('');
             setOrganizationDialogOpen(false);
             loadData();
         } catch (error) {
@@ -383,80 +354,62 @@ export default function MasterPanel() {
         setEditOrgFeatures(settings?.features || {});
     };
 
-    const handleCreateUser = async () => {
-        if (!newUserEmail || !newUserPassword || !newUserOrgId || !newUserFirstName || !newUserLastName) {
-            toast({ title: "Error", description: "Faltan campos obligatorios", variant: "destructive" });
+    const handleInviteUser = async () => {
+        if (!newUserEmail || !newUserOrgId || !newUserFirstName || !newUserLastName) {
+            toast({ title: "Error", description: "Faltan campos obligatorios (Email, Nombre, Apellido, Organización)", variant: "destructive" });
             return;
         }
 
         setIsCreatingUser(true);
         try {
-            // Use a temporary client to avoid logging out the Master user
-            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-            const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+            console.log("Invoking invite-user function...");
+            const { data, error } = await supabase.functions.invoke('invite-user', {
+                body: {
+                    email: newUserEmail,
+                    firstName: newUserFirstName,
+                    lastName: newUserLastName,
+                    role: newUserRole,
+                    organizationId: newUserOrgId === 'none' ? null : newUserOrgId
+                }
+            });
 
-            if (!supabaseUrl || !supabaseKey) {
-                throw new Error("Missing Supabase URL or Key");
+            if (error) {
+                console.error("Function error:", error);
+                throw error;
             }
 
-            const tempClient = createClient(
-                supabaseUrl,
-                supabaseKey,
-                { auth: { persistSession: false } }
-            );
-
-            // 1. Sign up the user
-            const { data: authData, error: authError } = await tempClient.auth.signUp({
-                email: newUserEmail,
-                password: newUserPassword,
-            });
-
-            if (authError) throw authError;
-            if (!authData.user) throw new Error("No se pudo crear el usuario en Auth");
-
-            const userId = authData.user.id;
-
-            // 2. Create the user role - The DB Trigger handles metadata sync!
-            const { error: roleError } = await supabase.from('user_roles').insert({
-                user_id: userId,
-                role: newUserRole,
-                organization_id: newUserOrgId,
-                is_active: true
-            });
-
-            if (roleError) throw roleError;
-
-            // 3. Create the profile
-            const { error: profileError } = await supabase.from('profiles').insert({
-                id: userId, // Profile ID is typically same as Auth ID or user_id
-                user_id: userId,
-                email: newUserEmail,
-                first_name: newUserFirstName,
-                last_name: newUserLastName,
-                organization_id: newUserOrgId
-            });
-
-            if (profileError) {
-                console.warn("User created but profile failed. Retrying sync via update...");
-                await supabase.from('profiles').update({ organization_id: newUserOrgId }).eq('user_id', userId);
-            }
+            console.log("Invitation result:", data);
 
             toast({
-                title: "Usuario Creado",
-                description: `Se ha creado el usuario ${newUserEmail} y se ha asignado su rol.`
+                title: "Invitación Enviada",
+                description: `Se ha enviado un correo de invitación a ${newUserEmail}.`
             });
 
             setUserDialogOpen(false);
             setNewUserEmail('');
-            setNewUserPassword('');
             setNewUserFirstName('');
             setNewUserLastName('');
-            loadData();
+            setNewUserRole('representative');
+
+            // Reload data to potentially show the pending user if the function inserts immediately
+            setTimeout(loadData, 1000);
+
         } catch (error: any) {
-            console.error('Create user error:', error);
+            console.error('Invite user error:', error);
+            let errorMessage = "No se pudo enviar la invitación.";
+
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            // Intentar parsear error de cuerpo de respuesta si existe
+            if (error && typeof error === 'object' && 'context' in error) {
+                // Supabase function errors sometimes come in a specific format
+            }
+
             toast({
-                title: "Error al crear usuario",
-                description: error.message || "Error desconocido",
+                title: "Error al invitar",
+                description: errorMessage,
                 variant: "destructive"
             });
         } finally {
@@ -474,6 +427,12 @@ export default function MasterPanel() {
         } catch (error) {
             toast({ title: "Error", description: "No se pudo eliminar la organización.", variant: "destructive" });
         }
+    };
+
+    const enterAuditMode = (orgId: string) => {
+        toast({ title: "Modo Auditor", description: "Cambiando de contexto..." });
+        // Implement actual audit switch logic here if needed
+        window.location.href = `/dashboard?audit_org=${orgId}`;
     };
 
     if (loading) {
@@ -582,11 +541,13 @@ export default function MasterPanel() {
                             </div>
                             <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
                                 <DialogTrigger asChild>
-                                    <Button size="sm"><Plus className="h-4 w-4 mr-2" />Crear Usuario</Button>
+                                    <DialogTrigger asChild>
+                                        <Button size="sm"><Plus className="h-4 w-4 mr-2" />Invitar Usuario</Button>
+                                    </DialogTrigger>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
                                     <DialogHeader>
-                                        <DialogTitle>Aprovisionar Nuevo Usuario</DialogTitle>
+                                        <DialogTitle>Invitar Nuevo Usuario</DialogTitle>
                                     </DialogHeader>
                                     <div className="space-y-4 py-4">
                                         <div className="space-y-2">
@@ -596,15 +557,6 @@ export default function MasterPanel() {
                                                 value={newUserEmail}
                                                 onChange={(e) => setNewUserEmail(e.target.value)}
                                                 placeholder="usuario@ejemplo.com"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Contraseña Inicial</Label>
-                                            <Input
-                                                type="password"
-                                                value={newUserPassword}
-                                                onChange={(e) => setNewUserPassword(e.target.value)}
-                                                placeholder="******"
                                             />
                                         </div>
                                         <div className="grid gap-4 py-4">
@@ -617,10 +569,6 @@ export default function MasterPanel() {
                                                     <Label>Apellido</Label>
                                                     <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} placeholder="Pérez" />
                                                 </div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Email</Label>
-                                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} placeholder="usuario@email.com" />
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
@@ -662,10 +610,10 @@ export default function MasterPanel() {
                                         </div>
                                         <Button
                                             className="w-full"
-                                            onClick={handleCreateUser}
+                                            onClick={handleInviteUser}
                                             disabled={isCreatingUser}
                                         >
-                                            {isCreatingUser ? "Creando..." : "Registrar Usuario"}
+                                            {isCreatingUser ? "Enviando Invitación..." : "Enviar Invitación"}
                                         </Button>
                                     </div>
                                 </DialogContent>
@@ -973,49 +921,6 @@ export default function MasterPanel() {
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        <div className="flex items-center space-x-2 py-2 border-t mt-4">
-                                            <Checkbox
-                                                id="provision-admin"
-                                                checked={provisionAdmin}
-                                                onCheckedChange={(checked) => setProvisionAdmin(!!checked)}
-                                            />
-                                            <Label htmlFor="provision-admin" className="text-sm font-semibold text-purple-600">
-                                                Aprovisionar Administrador Inicial
-                                            </Label>
-                                        </div>
-
-                                        {provisionAdmin && (
-                                            <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-2">
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="space-y-2">
-                                                        <Label>Nombre</Label>
-                                                        <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} placeholder="Juan" />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <Label>Apellido</Label>
-                                                        <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} placeholder="Pérez" />
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>Email Admin</Label>
-                                                    <Input
-                                                        type="email"
-                                                        value={newUserEmail}
-                                                        onChange={(e) => setNewUserEmail(e.target.value)}
-                                                        placeholder="admin@organizacion.com"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>Contraseña Admin</Label>
-                                                    <Input
-                                                        type="password"
-                                                        value={newUserPassword}
-                                                        onChange={(e) => setNewUserPassword(e.target.value)}
-                                                        placeholder="******"
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
                                         <Button className="w-full bg-primary" onClick={handleCreateOrganization}>Crear Organización</Button>
                                     </div>
                                 </DialogContent>

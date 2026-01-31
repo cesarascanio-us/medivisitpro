@@ -18,7 +18,7 @@ import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { Wifi, WifiOff, RefreshCcw } from "lucide-react";
 
 export default function Dashboard() {
-  const { user, role, isManager, isCoordinator, isAdmin, isMaster, organizationName } = useAuth();
+  const { user, role, isManager, isCoordinator, isAdmin, isMaster, isSystemAdmin, organizationName } = useAuth();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
 
@@ -213,7 +213,7 @@ export default function Dashboard() {
 
   const getRoleLabel = (r: string) => {
     switch (r) {
-      case 'master': return 'Master Admin';
+      case 'master': return 'System Admin';
       case 'admin': return 'Administrador';
       case 'manager': return 'Gerente';
       case 'coordinator': return 'Coordinador';
@@ -227,7 +227,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Biofarco Style Header with Clock and Sync */}
+      {/* Alpha BMT Style Header with Clock and Sync */}
       <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-4 -mt-6 mb-8">
         {/* Decorative background element */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
@@ -247,9 +247,19 @@ export default function Dashboard() {
                 <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
                   {getRoleLabel(role)}
                 </Badge>
-                {organizationName && (
+                {isSystemAdmin && (
+                  <Badge variant="outline" className="bg-purple-500/20 text-purple-400 border-purple-500/40 text-[10px] px-2 uppercase font-bold tracking-tighter">
+                    Global View
+                  </Badge>
+                )}
+                {organizationName && !isSystemAdmin && (
                   <Badge variant="outline" className="text-emerald-400 border-emerald-400/30 bg-emerald-400/10 text-[10px] px-2 capitalize">
                     {organizationName}
+                  </Badge>
+                )}
+                {organizationName && isSystemAdmin && (
+                  <Badge variant="outline" className="text-purple-400 border-purple-400/30 bg-purple-400/10 text-[10px] px-2 capitalize">
+                    Auditing: {organizationName}
                   </Badge>
                 )}
                 <Badge

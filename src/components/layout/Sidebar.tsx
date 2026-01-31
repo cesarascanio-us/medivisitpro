@@ -42,68 +42,104 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
 // Navigation Groups
-const navigationGroups = [
+// --- STRICT NAVIGATION CONFIGURATIONS ---
+
+const SYSTEM_ADMIN_NAV = [
   {
-    title: "Inicio",
+    title: "Global Control",
     items: [
-      { name: "Dashboard", href: "/dashboard", icon: Home },
-      { name: "Centro de Mando", href: "/dashboard-master", icon: BarChart3, managerOnly: true },
-      { name: "Panel Master", href: "/master-panel", icon: Crown, adminOnly: true },
-      { name: "Mapa", href: "/coverage-map", icon: Map },
+      { name: "Centro de Mando", href: "/dashboard-master", icon: BarChart3 },
+      { name: "Panel Master", href: "/master-panel", icon: Crown },
+      { name: "Auditoría", href: "/master/logs", icon: Shield },
+      { name: "SaaS & Facturación", href: "/master/billing", icon: DollarSign },
     ]
   },
   {
-    title: "Gestión Clientes",
+    title: "Administración Global",
     items: [
-      { name: "Contactos", href: "/contacts", icon: Users },
-      { name: "Médicos", href: "/doctors", icon: UserRound },
+      { name: "Dashboard", href: "/dashboard", icon: Home },
+      { name: "Usuarios Sistema", href: "/users", icon: UserRound },
+      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 }, // Links to orgs tab
+      { name: "Zonas Globales", href: "/zones", icon: GitBranch },
+      { name: "Alertas Sistema", href: "/master/alerts", icon: Bell },
+    ]
+  },
+  {
+    title: "Exploración",
+    items: [
+      { name: "Mapa de Cobertura", href: "/coverage-map", icon: Map },
+      { name: "Base de Datos I.P", href: "/contacts", icon: Users },
+      { name: "Catálogo Maestro", href: "/products", icon: Package },
+    ]
+  }
+];
+
+const MANAGER_NAV = [
+  {
+    title: "Gestión Local",
+    items: [
+      { name: "Mi Dashboard", href: "/dashboard", icon: Home },
+      { name: "Mi Equipo", href: "/users", icon: Users },
+      { name: "Zona / Territorio", href: "/zones", icon: Map },
+      { name: "Reportes Venta", href: "/reports", icon: BarChart3 },
+    ]
+  },
+  {
+    title: "Operaciones",
+    items: [
+      { name: "Ciclos Promo", href: "/promotional-cycles", icon: RefreshCw },
+      { name: "Planificación", href: "/planning/cycles", icon: Layers },
+      { name: "Control Almacén", href: "/warehouse", icon: Boxes },
+      { name: "Transfer Orders", href: "/transfer-orders", icon: Truck },
+    ]
+  },
+  {
+    title: "Catálogo & Stock",
+    items: [
+      { name: "Productos", href: "/products", icon: Package },
+      { name: "Muestras", href: "/muestras", icon: Pill },
+      { name: "Material POP", href: "/material-pop", icon: Megaphone },
+    ]
+  }
+];
+
+const REPRESENTATIVE_NAV = [
+  {
+    title: "Mi Jornada",
+    items: [
+      { name: "Dashboard", href: "/dashboard", icon: Home },
+      { name: "Mi Agenda", href: "/agenda", icon: Calendar },
+      { name: "Fichero Médico", href: "/doctors", icon: Stethoscope },
       { name: "Farmacias", href: "/pharmacies", icon: Store },
-      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
-      { name: "Droguerías", href: "/drugstores", icon: Truck },
-      { name: "Centros", href: "/health-centers", icon: Building2 },
     ]
   },
   {
     title: "Actividad Comercial",
     items: [
-      { name: "Agenda", href: "/agenda", icon: Calendar, repOnly: true },
-      { name: "Visitas", href: "/visits", icon: FileText },
-      { name: "Planificador", href: "/planner", icon: ClipboardList, repOnly: true },
-      { name: "Planificación", href: "/planning/weekly", icon: CalendarCheck, repOnly: true },
-      { name: "Eventos", href: "/events", icon: CalendarDays },
-      { name: "Ventas", href: "/transfer-orders", icon: Truck, managerOnly: true },
-      { name: "Objetivos", href: "/objectives", icon: Target },
-      { name: "Gastos", href: "/expenses", icon: DollarSign, repOnly: true },
+      { name: "Mis Visitas", href: "/visits", icon: FileText },
+      { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck },
+      { name: "Planificador", href: "/planner", icon: ClipboardList },
+      { name: "Gastos", href: "/expenses", icon: DollarSign },
     ]
   },
   {
-    title: "Inventario",
+    title: "Herramientas",
     items: [
-      { name: "Productos", href: "/products", icon: Package },
       { name: "Muestras", href: "/muestras", icon: Pill },
-      { name: "Material POP", href: "/material-pop", icon: Megaphone },
-      { name: "Almacén", href: "/warehouse", icon: Boxes, managerOnly: true },
+      { name: "Catálogo", href: "/products", icon: Package },
+      { name: "Mapa", href: "/coverage-map", icon: Map },
     ]
-  },
+  }
+];
+
+// Fallback for other roles (supervisor, telemarketing, etc.)
+const DEFAULT_NAV = [
   {
-    title: "Administración",
+    title: "Inicio",
     items: [
-      { name: "Ciclos Promo", href: "/promotional-cycles", icon: RefreshCw, managerOnly: true },
-      { name: "Ciclos", href: "/planning/cycles", icon: Layers, managerOnly: true },
-      { name: "Procesos", href: "/work-processes", icon: GitBranch },
-      { name: "Reportes", href: "/reports", icon: BarChart3, adminOnly: true, managerOnly: true }, // Logic adjusted below to allow managers
-      { name: "Notificaciones", href: "/notifications", icon: Bell },
-      { name: "Especialidades", href: "/specialties", icon: Stethoscope, managerOnly: true },
-      { name: "Usuarios", href: "/users", icon: Shield, adminOnly: true },
-      { name: "Zonas", href: "/zones", icon: Building2, adminOnly: true },
-      { name: "Config", href: "/settings", icon: Settings },
+      { name: "Dashboard", href: "/dashboard", icon: Home },
+      { name: "Contactos", href: "/contacts", icon: Users },
       { name: "Ayuda", href: "/help", icon: HelpCircle },
-      // Master specific mixed in Admin group or separate? Keeping simple for now
-      { name: "Soporte", href: "/master/tickets", icon: HelpCircle, adminOnly: true },
-      { name: "Auditoría", href: "/master/logs", icon: Shield, adminOnly: true },
-      { name: "Facturación", href: "/master/billing", icon: DollarSign, adminOnly: true },
-      { name: "Alertas", href: "/master/alerts", icon: Bell, adminOnly: true },
-      { name: "Planes", href: "/master/plans", icon: Target, adminOnly: true },
     ]
   }
 ];
@@ -115,7 +151,7 @@ interface SidebarProps {
 
 export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const location = useLocation();
-  const { user, signOut, role, isMaster, isAdmin, isManager, isSupervisor, isDemo, canUseSales, canUseEvents, canUseWarehouse, features } = useAuth();
+  const { user, signOut, role, isMaster, isSystemAdmin, isAdmin, isManager, isRepresentative, isSupervisor, isDemo, canUseSales, canUseEvents, canUseWarehouse, features } = useAuth();
 
   // Persistent pinned state for desktop
   const [isPinned, setIsPinned] = useState(() => {
@@ -160,7 +196,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     supervisor: 'Supervisor',
     representative: 'Rep'
   };
-  const roleLabel = roleLabels[role as string] || 'Usuario';
+  const roleLabel = isSystemAdmin ? 'System Admin' : (roleLabels[role as string] || 'Usuario');
 
   const handleSignOut = async () => {
     try {
@@ -169,6 +205,16 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       console.error('Error signing out:', error);
     }
   };
+
+  // --- SELECT NAVIGATION BY ROLE ---
+  const getNavigationGroups = () => {
+    if (isMaster || isSystemAdmin) return SYSTEM_ADMIN_NAV;
+    if (isManager || isAdmin) return MANAGER_NAV;
+    if (role === 'representative' || isRepresentative) return REPRESENTATIVE_NAV;
+    return DEFAULT_NAV;
+  };
+
+  const activeNavGroups = getNavigationGroups();
 
   return (
     <div
@@ -208,23 +254,9 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-2 py-3 space-y-4 overflow-y-auto custom-scrollbar">
-        {navigationGroups.map((group, groupIndex) => {
-          // Check if user has access to at least one item in the group
-          const hasAccessToGroup = group.items.some(item => {
-            // Access logic duplicated for check
-            const salesItems = ["Agenda", "Planificación", "Planificador", "Visitas", "Objetivos", "Gastos", "Muestras", "Material POP"];
-            if (salesItems.includes(item.name) && !canUseSales) return false;
-            if (item.name === "Eventos" && !canUseEvents) return false;
-            if (item.name === "Ciclo Promo" && !isManager) return false; // Fixed name check
-            if (item.name === "Control Almacén" && !canUseWarehouse) return false; // Fixed name check
-
-            if (item.adminOnly && !isAdmin && !isMaster) return false;
-            // Allow managers to see reports
-            if (item.managerOnly && !isManager && !isAdmin && !isMaster && item.name !== "Reportes") return false;
-            if (item.name === "Reportes" && !isManager && !isAdmin && !isMaster) return false;
-            if (item.repOnly && isSupervisor) return false;
-            return true;
-          });
+        {activeNavGroups.map((group, groupIndex) => {
+          // No more internal filtering needed as the arrays are role-specific
+          const hasAccessToGroup = true;
 
           if (!hasAccessToGroup) return null;
 
@@ -265,25 +297,6 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                 isGroupCollapsed ? "hidden" : "block"
               )}>
                 {group.items.map((item: any) => {
-                  // Feature Toggle Checks
-                  const salesItems = ["Agenda", "Planificación", "Planificador", "Visitas", "Objetivos", "Gastos", "Muestras", "Material POP"];
-                  if (salesItems.includes(item.name) && !canUseSales) return null;
-
-                  if (item.name === "Procesos" && features.work_processes === false) return null;
-                  if (item.name === "Eventos" && !canUseEvents) return null;
-                  if (item.name === "Control Almacén" && !canUseWarehouse) return null;
-
-                  // Filter by role/permission
-                  if (item.adminOnly && !isAdmin && !isMaster) return null;
-                  if (item.managerOnly && !isManager && !isAdmin && !isMaster && item.name !== "Reportes") return null;
-                  if (item.name === "Reportes" && !isManager && !isAdmin && !isMaster) return null;
-                  // Hide rep-only items for supervisors
-                  if (item.repOnly && isSupervisor) return null;
-
-                  // Hide specific modules for demo users
-                  const demoHiddenItems = ["Mapa", "Planificador", "Planificación", "Ciclos"];
-                  if (isDemo && demoHiddenItems.includes(item.name)) return null;
-
                   const isActive = location.pathname === item.href;
                   return (
                     <NavLink

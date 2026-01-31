@@ -6,7 +6,7 @@ import { WizardProgress } from '@/components/common/WizardProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Leaf, Truck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -51,7 +51,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
     const demoData = useDemoData();
 
     // Form Data
-    const [visitType, setVisitType] = useState<'doctor' | 'pharmacy'>('doctor');
+    const [visitType, setVisitType] = useState<'doctor' | 'pharmacy' | 'natural_store' | 'drugstore'>('doctor');
     const [contactId, setContactId] = useState('');
     const [scheduledDate, setScheduledDate] = useState('');
     const [scheduledTime, setScheduledTime] = useState('10:00');
@@ -100,8 +100,8 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
             // Ensure pharmacy contacts have 'Farmacia' specialty for UI logic if missing
             const processedContacts = (contactsData || []).map(contact => ({
                 ...contact,
-                specialty: contact.contact_type === 'pharmacy' && !contact.specialty
-                    ? 'Farmacia'
+                specialty: (contact.contact_type === 'pharmacy' || contact.contact_type === 'natural_store' || contact.contact_type === 'drugstore') && !contact.specialty
+                    ? contact.contact_type === 'pharmacy' ? 'Farmacia' : contact.contact_type === 'natural_store' ? 'Punto Natural' : 'Droguería/Logística'
                     : contact.specialty
             }));
 
@@ -225,32 +225,83 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
                                         <Button
                                             type="button"
                                             variant={visitType === 'doctor' ? 'default' : 'outline'}
-                                            className="h-20 flex-col gap-2"
+                                            className={cn(
+                                                "h-24 flex-col gap-2 transition-all border-2",
+                                                visitType === 'doctor' ? "border-primary bg-primary/5 text-primary" : "border-slate-100"
+                                            )}
                                             onClick={() => {
                                                 setVisitType('doctor');
                                                 setContactId('');
                                             }}
                                         >
-                                            <UserRound className="h-8 w-8" />
-                                            <span>Médico</span>
+                                            <div className={cn("p-2 rounded-lg", visitType === 'doctor' ? "bg-primary text-white" : "bg-slate-100 text-slate-500")}>
+                                                <UserRound className="h-6 w-6" />
+                                            </div>
+                                            <span className="font-bold text-xs uppercase tracking-tight">Médico</span>
                                         </Button>
+
                                         <Button
                                             type="button"
                                             variant={visitType === 'pharmacy' ? 'default' : 'outline'}
-                                            className="h-20 flex-col gap-2"
+                                            className={cn(
+                                                "h-24 flex-col gap-2 transition-all border-2",
+                                                visitType === 'pharmacy' ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-100"
+                                            )}
                                             onClick={() => {
                                                 setVisitType('pharmacy');
                                                 setContactId('');
                                             }}
                                         >
-                                            <Store className="h-8 w-8" />
-                                            <span>Farmacia</span>
+                                            <div className={cn("p-2 rounded-lg", visitType === 'pharmacy' ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-500")}>
+                                                <Store className="h-6 w-6" />
+                                            </div>
+                                            <span className="font-bold text-xs uppercase tracking-tight">Farmacia</span>
+                                        </Button>
+
+                                        <Button
+                                            type="button"
+                                            variant={visitType === 'natural_store' ? 'default' : 'outline'}
+                                            className={cn(
+                                                "h-24 flex-col gap-2 transition-all border-2",
+                                                visitType === 'natural_store' ? "border-green-500 bg-green-50 text-green-700" : "border-slate-100"
+                                            )}
+                                            onClick={() => {
+                                                setVisitType('natural_store');
+                                                setContactId('');
+                                            }}
+                                        >
+                                            <div className={cn("p-2 rounded-lg", visitType === 'natural_store' ? "bg-green-500 text-white" : "bg-slate-100 text-slate-500")}>
+                                                <Leaf className="h-6 w-6" />
+                                            </div>
+                                            <span className="font-bold text-xs uppercase tracking-tight">T. Naturista</span>
+                                        </Button>
+
+                                        <Button
+                                            type="button"
+                                            variant={visitType === 'drugstore' ? 'default' : 'outline'}
+                                            className={cn(
+                                                "h-24 flex-col gap-2 transition-all border-2",
+                                                visitType === 'drugstore' ? "border-purple-500 bg-purple-50 text-purple-700" : "border-slate-100"
+                                            )}
+                                            onClick={() => {
+                                                setVisitType('drugstore');
+                                                setContactId('');
+                                            }}
+                                        >
+                                            <div className={cn("p-2 rounded-lg", visitType === 'drugstore' ? "bg-purple-500 text-white" : "bg-slate-100 text-slate-500")}>
+                                                <Truck className="h-6 w-6" />
+                                            </div>
+                                            <span className="font-bold text-xs uppercase tracking-tight">Droguería</span>
                                         </Button>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>{visitType === 'doctor' ? 'Médico' : 'Farmacia'}</Label>
+                                    <Label>
+                                        {visitType === 'doctor' ? 'Médico' :
+                                            visitType === 'pharmacy' ? 'Farmacia' :
+                                                visitType === 'natural_store' ? 'Tienda Naturista' : 'Droguería'}
+                                    </Label>
                                     <Popover open={openContactSelector} onOpenChange={setOpenContactSelector}>
                                         <PopoverTrigger asChild>
                                             <Button
@@ -368,8 +419,9 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
                                             <CommandGroup>
                                                 {products
                                                     .filter(p => {
-                                                        // If no contact selected or pharmacy, or generic specialty, show all
-                                                        if (!selectedContact || visitType === 'pharmacy' ||
+                                                        // If no contact selected or non-doctor type, or generic specialty, show all
+                                                        const isCommercial = visitType === 'pharmacy' || visitType === 'natural_store' || visitType === 'drugstore';
+                                                        if (!selectedContact || isCommercial ||
                                                             !selectedContact.specialty ||
                                                             ['General', 'Medicina General', 'Familiar'].includes(selectedContact.specialty)) {
                                                             return true;

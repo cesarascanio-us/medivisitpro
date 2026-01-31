@@ -3,8 +3,9 @@ import {
   User, Bell, Palette, Settings2, Save, RotateCcw,
   Mail, Smartphone, Clock, AlertTriangle, Sun, Moon,
   Languages, Type, LayoutGrid, Wifi, WifiOff, BarChart3,
-  Camera, Check, MapPin
+  Camera, Check, MapPin, Trash2, Building2, ShieldAlert
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 // Available territories
 const AVAILABLE_TERRITORIES = [
@@ -93,10 +95,16 @@ const defaultSystem: SystemSettings = {
 };
 
 export default function Settings() {
-  const { user, role } = useAuth();
+  const { user, role, isMaster, signOut, organizationId, organizationName } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+
+  // Danger Zone States
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [confirmName, setConfirmName] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Profile state
   const [profile, setProfile] = useState<ProfileData>({
@@ -240,6 +248,40 @@ export default function Settings() {
 
   const userInitials = `${profile.first_name?.charAt(0) || ''}${profile.last_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}`;
 
+  const handleDeleteOrganization = async () => {
+    if (confirmName !== organizationName) {
+      toast({ title: "Error", description: "El nombre de la organización no coincide.", variant: "destructive" });
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      // Execute the RPC (Assuming it will be created by the user)
+      const { error } = await supabase.rpc('delete_organization_safely', {
+        target_org_id: organizationId,
+        migration_target_id: null // User can specify later if needed
+      });
+
+      if (error) throw error;
+
+      toast({ title: "Organización eliminada", description: "La empresa y todos sus datos han sido borrados." });
+
+      // Forced logout and redirect
+      await signOut();
+      navigate('/login');
+    } catch (error: any) {
+      console.error("Delete Error:", error);
+      toast({
+        title: "Error crítico",
+        description: error.message || "No se pudo eliminar la organización.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -265,6 +307,12 @@ export default function Settings() {
             <Settings2 className="h-4 w-4" />
             Sistema
           </TabsTrigger>
+          {isMaster && (
+            <TabsTrigger value="organization" className="flex items-center gap-2 text-rose-600 data-[state=active]:bg-rose-50">
+              <Building2 className="h-4 w-4" />
+              Organización
+            </TabsTrigger>
+          )}
         </TabsList>
 
         {/* Profile Tab */}
@@ -609,6 +657,7 @@ export default function Settings() {
 
         {/* System Tab */}
         <TabsContent value="system">
+          {/* ... existing system content ... */}
           <Card>
             <CardHeader>
               <CardTitle>Configuración del Sistema</CardTitle>
@@ -699,7 +748,95 @@ export default function Settings() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Organization / Danger Zone Tab */}
+        {isMaster && (
+          <TabsContent value="organization">
+            <div className="space-y-6">
+              <Card className="border-rose-200">
+                <CardHeader className="bg-rose-50/50">
+                  <div className="flex items-center gap-3">
+                    <ShieldAlert className="h-6 w-6 text-rose-600" />
+                    <div>
+                      <CardTitle className="text-rose-900">Zona de Peligro (Danger Zone)</CardTitle>
+                      <CardDescription className="text-rose-700">Acciones críticas e irreversibles de la organización</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-4">
+                  <div className="p-4 border border-rose-200 rounded-lg bg-rose-50/30">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <h4 className="font-semibold text-rose-900 text-sm">Eliminar esta organización</h4>
+                        <p className="text-xs text-rose-600">
+                          Esta acción destruirá permanentemente todos los datos de <strong>{organizationName}</strong>,
+                          incluyendo productos, visitas, perfiles y pedidos.
+                          Las droguerías serán migradas a la organización maestra de respaldo.
+                        </p>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setShowDeleteModal(true)}
+                      >
+                        Eliminar Organización
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        )}
       </Tabs>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-rose-600">
+              <AlertTriangle className="h-5 w-5" />
+              ¿Estás absolutamente seguro?
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-slate-700">
+              Esta acción <strong>NO se puede deshacer</strong>. Se borrarán todos los datos operativos y
+              se migrarán las droguerías para mantener la continuidad comercial.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 space-y-4">
+            <p className="text-sm font-medium">
+              Por favor, escribe <span className="font-bold select-none text-rose-600">{organizationName}</span> para confirmar:
+            </p>
+            <Input
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+              placeholder="Nombre de la organización"
+              className="border-rose-200 focus:ring-rose-500"
+            />
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowDeleteModal(false);
+                setConfirmName("");
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteOrganization}
+              disabled={confirmName !== organizationName || isDeleting}
+              className="gap-2"
+            >
+              {isDeleting ? 'Borrando...' : <><Trash2 className="h-4 w-4" /> Eliminar permanentemente</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

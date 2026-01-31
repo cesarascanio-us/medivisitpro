@@ -257,7 +257,7 @@ export default function DashboardRep() {
   // ---------------------------------------------------------------------------
   return (
     <div className="min-h-screen bg-slate-100 pb-8">
-      {/* Biofarco Style Header with Clock and Sync */}
+      {/* Alpha BMT Style Header with Clock and Sync */}
       <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden">
         {/* Decorative background element */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>

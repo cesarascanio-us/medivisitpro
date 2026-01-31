@@ -291,16 +291,25 @@ export default function CoverageMap() {
                 .order('name') as any);
             setZones((zonesData as { id: string; name: string }[]) || []);
 
-            // Determine role-based filters
+            // Determine role-based filters (Territory Hierarchy)
             let query = supabase.from('view_geo_map' as any).select('*');
 
-            if (role === 'supervisor' || role === 'chief' || role === 'coordinator') {
+            // 1. Implementation of God Mode & Hierarchy
+            if (role === 'master' || role === 'admin' || role === 'manager') {
+                // God Mode: No filters for master/manager - See all national territory
+                console.log("CoverageMap: God Mode Active - Fetching all coordinates");
+            } else if (role === 'supervisor' || role === 'chief' || role === 'coordinator') {
+                // Supervisor: Filter by their assigned state/region
                 if (userState) {
                     query = query.eq('state', userState);
                 }
             } else if (role === 'representative') {
-                query = query.eq('assigned_rep_id', user?.id);
+                // Representative: Only see their own contacts or assigned zone
+                query = query.or(`assigned_rep_id.eq.${user?.id},zone_id.eq.${zoneId}`);
             }
+
+            // Always ensure we have coordinates to avoid render errors
+            query = query.not('lat', 'is', null).not('lng', 'is', null);
 
             // Load view data
             const { data: geoData, error } = await query;
@@ -308,39 +317,78 @@ export default function CoverageMap() {
             if (error) {
                 console.warn("Could not load view_geo_map, falling back to contacts table:", error);
 
-                // Fallback to contacts if view is not ready
-                const { data: contactsData, error: contactsError } = await supabase
+                // Fallback to contacts with hierarchy
+                let fallbackQuery = supabase
                     .from('contacts')
-                    .select('id, name, contact_type, specialty, address, city, latitude, longitude, priority')
+                    .select('id, name, contact_type, specialty, address, city, latitude, longitude, priority, user_id, zone_id')
                     .not('latitude', 'is', null)
                     .not('longitude', 'is', null);
 
+                if (role !== 'master' && role !== 'admin' && role !== 'manager') {
+                    if (role === 'representative') {
+                        fallbackQuery = fallbackQuery.eq('user_id', user?.id);
+                    } else if (userState) {
+                        // For fallback, we'd need to join with regions/zones, 
+                        // but keeping it simple for master/manager fix.
+                    }
+                }
+
+                const { data: contactsData, error: contactsError } = await fallbackQuery;
+
                 if (contactsError) throw contactsError;
 
-                const mapped = (contactsData || []).map(c => ({
-                    id: c.id,
-                    name: c.name,
-                    type: c.contact_type as MapContact['type'],
-                    specialty: c.specialty || undefined,
-                    address: c.address || undefined,
-                    city: c.city || undefined,
-                    latitude: c.latitude!,
-                    longitude: c.longitude!,
-                    priority: c.priority || undefined,
-                }));
+                const mapped = (contactsData || [])
+                    .map(c => {
+                        try {
+                            const lat = parseFloat(String(c.latitude));
+                            const lng = parseFloat(String(c.longitude));
+
+                            // Validate coordinates
+                            if (isNaN(lat) || isNaN(lng)) return null;
+
+                            return {
+                                id: c.id,
+                                name: c.name,
+                                type: c.contact_type as MapContact['type'],
+                                specialty: c.specialty || undefined,
+                                address: c.address || undefined,
+                                city: c.city || undefined,
+                                latitude: lat,
+                                longitude: lng,
+                                priority: c.priority || undefined,
+                            };
+                        } catch (e) {
+                            return null;
+                        }
+                    })
+                    .filter(Boolean) as MapContact[];
+
                 setContacts(mapped);
             } else {
-                const mappedContacts: MapContact[] = (geoData || []).map((item: any) => ({
-                    id: item.id,
-                    name: item.name,
-                    type: item.type as MapContact['type'],
-                    specialty: item.detail || undefined,
-                    address: item.address || undefined,
-                    city: item.city || undefined,
-                    latitude: item.lat,
-                    longitude: item.lng,
-                    priority: item.priority || undefined,
-                }));
+                const mappedContacts: MapContact[] = (geoData || [])
+                    .map((item: any) => {
+                        try {
+                            const lat = parseFloat(String(item.lat));
+                            const lng = parseFloat(String(item.lng));
+
+                            if (isNaN(lat) || isNaN(lng)) return null;
+
+                            return {
+                                id: item.id,
+                                name: item.name,
+                                type: item.type as MapContact['type'],
+                                specialty: item.detail || undefined,
+                                address: item.address || undefined,
+                                city: item.city || undefined,
+                                latitude: lat,
+                                longitude: lng,
+                                priority: item.priority || undefined,
+                            };
+                        } catch (e) {
+                            return null;
+                        }
+                    })
+                    .filter(Boolean) as MapContact[];
 
                 setContacts(mappedContacts);
             }

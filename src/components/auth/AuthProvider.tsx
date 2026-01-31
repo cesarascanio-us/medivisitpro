@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 // Master user emails - have full access
-const MASTER_EMAILS = ['cesar.ascanio@gmail.com', 'cesarascanio.edu@gmail.com'];
+const MASTER_EMAILS = ['cesar.ascanio@gmail.com'];
 const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 
@@ -76,6 +76,7 @@ interface AuthContextType {
     canViewVisitHistory: boolean;
     // Audit Mode
     isAuditMode: boolean;
+    isSystemAdmin: boolean; // True if original user is a Master
     enterAuditMode: (orgId: string) => void;
     exitAuditMode: () => void;
     // Zone/Location
@@ -164,16 +165,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!email) return;
 
         const lowerEmail = email.trim().toLowerCase();
-        const isHardcodedMaster = MASTER_EMAILS.some(m => m.toLowerCase() === lowerEmail);
+        const isMasterByEmail = MASTER_EMAILS.some(m => m.toLowerCase() === lowerEmail);
         const demoEmailLower = DEMO_EMAIL.trim().toLowerCase();
 
         const isHardcodedDemo = lowerEmail === demoEmailLower;
 
         // [NUCLEAR FAIL-SAFE] Absolute Bypass
-        if (isHardcodedMaster || isHardcodedDemo) {
+        if (isMasterByEmail || isHardcodedDemo) {
             console.log('AuthProvider: NUCLEAR BYPASS triggered for', lowerEmail);
-            const finalRole = isHardcodedMaster ? 'master' : 'representative';
-            const finalOrgId = isHardcodedMaster ? null : DEMO_ORG_ID;
+            const finalRole = isMasterByEmail ? 'master' : 'representative';
+            const finalOrgId = isMasterByEmail ? null : DEMO_ORG_ID;
 
             const combinedProfile: UserProfile = {
                 id: userId,
@@ -183,7 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 zone_id: null,
                 state: null,
                 region: null,
-                is_master: isHardcodedMaster
+                is_master: isMasterByEmail
             };
 
             setProfile(combinedProfile);
@@ -311,8 +312,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // --- Derived Permissions ---
     const isMaster = role === 'master';
-    const isAdmin = role === 'master' || role === 'admin';
-    const isManager = isAdmin || role === 'manager' || role === 'store_manager';
+    const isAdmin = role === 'admin';
+    const isManager = role === 'manager' || role === 'store_manager';
     const isChief = isManager || role === 'chief';
     const isCoordinator = isChief || role === 'coordinator';
     const isSupervisor = isCoordinator || role === 'supervisor';
@@ -356,16 +357,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canManageUsers: isMaster || role === 'admin',
         canViewAllData: isMaster || role === 'admin' || role === 'manager',
         canManageCompany: isMaster || role === 'admin',
-        canApproveExpenses: isManager || role === 'supervisor' || role === 'coordinator',
-        canAssignObjectives: isManager || role === 'supervisor' || role === 'coordinator',
+        canApproveExpenses: isMaster || isManager || role === 'supervisor' || role === 'coordinator',
+        canAssignObjectives: isMaster || isManager || role === 'supervisor' || role === 'coordinator',
         canManageZones: isMaster || role === 'admin',
-        canViewAnalytics: isManager || role === 'coordinator',
-        canManageProducts: isManager,
-        canViewProducts: isManager || isPharmacist || isDoctor,
-        canManageSamples: isManager || isPharmacist,
-        canViewMedicalInfo: isSupervisor || isDoctor,
-        canManageService: isServiceChief || isManager,
-        canViewVisitHistory: isSupervisor || isDoctor || isPharmacist,
+        canViewAnalytics: isMaster || isManager || role === 'coordinator',
+        canManageProducts: isMaster || isManager,
+        canViewProducts: isMaster || isManager || isPharmacist || isDoctor,
+        canManageSamples: isMaster || isManager || isPharmacist,
+        canViewMedicalInfo: isMaster || isSupervisor || isDoctor,
+        canManageService: isMaster || isServiceChief || isManager,
+        canViewVisitHistory: isMaster || isSupervisor || isDoctor || isPharmacist,
         zoneId: profile?.zone_id || null,
         organizationId: profile?.organization_id || null,
         userState: profile?.state || null,
@@ -378,6 +379,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Audit Mode
         isAuditMode: !!auditOrgId,
+        isSystemAdmin: (user?.email ? MASTER_EMAILS.some(m => m.toLowerCase() === user.email.toLowerCase()) : false) || profile?.is_master === true || originalRole === 'master',
         enterAuditMode,
         exitAuditMode,
         organizationName,

@@ -190,7 +190,7 @@ const App = () => (
                 } />
 
                 <Route path="/warehouse" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'store_manager']}>
                     <Layout><WarehouseLayout /></Layout>
                   </ProtectedRoute>
                 } />
@@ -231,7 +231,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/reports" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><Reports /></Layout>
                   </ProtectedRoute>
                 } />
@@ -251,22 +251,22 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/users" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><Users /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/zones" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><Zones /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/master-panel" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><MasterPanel /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/dashboard-master" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin']}>
                     <Layout><DashboardMaster /></Layout>
                   </ProtectedRoute>
                 } />
@@ -281,7 +281,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/transfer-orders" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
                     <Layout><TransferOrders /></Layout>
                   </ProtectedRoute>
                 } />
@@ -291,7 +291,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/promotional-cycles" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><PromotionalCycles /></Layout>
                   </ProtectedRoute>
                 } />
@@ -301,12 +301,12 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/billing" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><Billing /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/planning/cycles" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><CyclesPage /></Layout>
                   </ProtectedRoute>
                 } />
@@ -340,27 +340,27 @@ const App = () => (
 
                 {/* Master SaaS Modules */}
                 <Route path="/master/tickets" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><TicketList /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/master/logs" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><AuditLogs /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/master/billing" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><BillingManager /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/master/alerts" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><SystemAlerts /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/master/plans" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master']}>
                     <Layout><PlanManager /></Layout>
                   </ProtectedRoute>
                 } />

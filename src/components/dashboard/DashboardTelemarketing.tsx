@@ -19,7 +19,7 @@ export default function DashboardTelemarketing() {
 
     return (
         <div className="space-y-6">
-            {/* Biofarco Style Header with Clock */}
+            {/* Alpha BMT Style Header with Clock */}
             <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-6 -mt-6 mb-8">
                 {/* Decorative background element */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>

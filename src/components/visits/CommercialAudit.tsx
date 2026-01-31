@@ -12,7 +12,10 @@ export interface CommercialAuditData {
     purchase_barrier: string;
     vademecum_status: string; // 'active', 'pending', 'not_listed'
     training_offered: boolean;
+    shelf_photo_url?: string;
 }
+
+import { ImageUploadInput } from "@/components/common/ImageUploadInput";
 
 interface CommercialAuditProps {
     data: CommercialAuditData;
@@ -204,6 +207,23 @@ export function CommercialAudit({ data, onChange, errors = [] }: CommercialAudit
                         </SelectContent>
                     </Select>
                 </div>
+
+                {/* Evidencia Fotográfica (Anaquel) */}
+                <div className="pt-4 border-t border-emerald-100">
+                    <Label className="text-sm font-bold text-emerald-800 mb-2 block">
+                        📸 Evidencia Fotográfica (Anaquel / Exhibición)
+                    </Label>
+                    <ImageUploadInput
+                        value={data.shelf_photo_url || null}
+                        onUpload={(url) => updateField('shelf_photo_url', url)}
+                        onDelete={() => updateField('shelf_photo_url', undefined)}
+                        path="shelf_audits"
+                        label="Foto del Anaquel"
+                    />
+                    <p className="text-[10px] text-muted-foreground mt-1 italic">
+                        La foto es obligatoria para validar precios de competencia y quiebres de stock.
+                    </p>
+                </div>
             </CardContent>
         </Card>
     );
@@ -218,6 +238,7 @@ export function validateCommercialAudit(data: CommercialAuditData): string[] {
     if (data.weekly_rotation === null) errors.push('weekly_rotation');
     if (!data.purchase_barrier) errors.push('purchase_barrier');
     if (!data.vademecum_status) errors.push('vademecum_status');
+    if (!data.shelf_photo_url) errors.push('shelf_photo_url');
     return errors;
 }
 
