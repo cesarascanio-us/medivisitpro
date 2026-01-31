@@ -138,7 +138,7 @@ export default function Objectives() {
     const handleSubmit = async () => {
         if (!user || !formData.title) return;
 
-        const assignedUser = (isLeader && targetUserId) ? targetUserId : user.id;
+        const assignedUser = (canAssign && targetUserId) ? targetUserId : user.id;
 
         try {
             const { error } = await supabase.from('objectives').insert({
@@ -228,7 +228,7 @@ export default function Objectives() {
                             <DialogTitle>Crear Nuevo Objetivo</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
-                            {isLeader && (
+                            {canAssign && (
                                 <div className="space-y-2">
                                     <Label className="text-blue-600 font-semibold">Asignar a (Opcional)</Label>
                                     <Select value={targetUserId} onValueChange={setTargetUserId}>
@@ -400,7 +400,7 @@ export default function Objectives() {
                                                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                                                     <Badge variant="outline">{getCategoryLabel(obj.category)}</Badge>
                                                     <Badge variant="secondary">{getTypeLabel(obj.objective_type)}</Badge>
-                                                    {isLeader && (obj as any).profiles && (
+                                                    {(canAssign || canViewAllData) && (obj as any).profiles && (
                                                         <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-200">
                                                             {(obj as any).profiles?.first_name} {(obj as any).profiles?.last_name}
                                                         </Badge>

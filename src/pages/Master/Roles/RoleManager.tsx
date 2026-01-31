@@ -59,6 +59,43 @@ export default function RoleManager() {
         }
     }, [isMaster, isAdmin]);
 
+    // [AUTO-INIT] Seed default permissions for Manager Controls
+    const seedDefaultPermissions = async () => {
+        try {
+            const newPerms = [
+                { code: 'objectives.assign', name: 'Asignar Objetivos', description: 'Permite asignar objetivos a otros usuarios', module: 'Objectives' },
+                { code: 'orders.approve', name: 'Aprobar Pedidos', description: 'Permite aprobar, rechazar o confirmar pedidos', module: 'Orders' }
+            ];
+
+            let seeded = false;
+
+            for (const p of newPerms) {
+                // Check if exists
+                const { data } = await supabase.from('app_permissions').select('id').eq('code', p.code).maybeSingle();
+                if (!data) {
+                    await supabase.from('app_permissions').insert(p);
+                    seeded = true;
+                    // Auto-assign to Manager, Supervisor, Coordinator
+                    const rolesToAssign = ['manager', 'supervisor', 'coordinator', 'master', 'admin'];
+                    for (const roleSlug of rolesToAssign) {
+                        await supabase.from('role_permissions').insert({ role_slug: roleSlug, permission_code: p.code });
+                    }
+                }
+            }
+
+            if (seeded) {
+                toast({ title: "Sistema Actualizado", description: "Se han registrado nuevos permisos de control gerencial." });
+                loadData();
+            }
+        } catch (e) {
+            console.error("Error seeding perms:", e);
+        }
+    };
+
+    useEffect(() => {
+        seedDefaultPermissions();
+    }, []);
+
     const loadData = async () => {
         setLoading(true);
         try {

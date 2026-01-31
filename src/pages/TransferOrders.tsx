@@ -100,7 +100,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof
 };
 
 export default function TransferOrders() {
-    const { user, canViewAllData, isSupervisor, isManager, zoneId } = useAuth();
+    const { user, canViewAllData, isSupervisor, isManager, zoneId, hasPermission } = useAuth();
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState<TransferOrder[]>([]);
@@ -1054,7 +1054,7 @@ export default function TransferOrders() {
                                             <TableCell>{order.products?.length || 0} items</TableCell>
                                             <TableCell className="font-semibold">${order.total?.toFixed(2)}</TableCell>
                                             <TableCell>
-                                                {isManager || isSupervisor ? (
+                                                {hasPermission('orders.approve') ? (
                                                     <Select value={order.status} onValueChange={(v) => handleUpdateStatus(order.id, v)}>
                                                         <SelectTrigger className="w-32 h-8">
                                                             <Badge className={status.color}>{status.label}</Badge>
