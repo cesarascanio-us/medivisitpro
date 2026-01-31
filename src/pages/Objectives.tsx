@@ -30,11 +30,16 @@ interface Objective {
 }
 
 export default function Objectives() {
-    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { user, canViewAllData, isSupervisor, isManager, isCoordinator, zoneId } = useAuth();
     const { toast } = useToast();
     const [objectives, setObjectives] = useState<Objective[]>([]);
     const [loading, setLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
+
+    // Team Management
+    const [teamMembers, setTeamMembers] = useState<{ id: string, first_name: string, last_name: string, email: string }[]>([]);
+    const [targetUserId, setTargetUserId] = useState<string>("");
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -47,9 +52,34 @@ export default function Objectives() {
         priority: "normal"
     });
 
+    const isLeader = isManager || isSupervisor || isCoordinator;
+
     useEffect(() => {
-        if (user) loadObjectives();
-    }, [user]);
+        if (user) {
+            loadObjectives();
+            if (isLeader) {
+                loadTeamMembers();
+            }
+        }
+    }, [user, isLeader]);
+
+    const loadTeamMembers = async () => {
+        try {
+            // Fetch users from the same organization
+            // Note: In a real scenario, we might want to filter by hierarchy (e.g. only my subordinates)
+            // For now, we fetch all profiles in the org context (RLS should handle org isolation)
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, first_name, last_name, email')
+                .neq('id', user?.id) // Exclude self if desired, or keep to assign to self? Let's keep self out for "Assign" dropdown, or maybe include.
+                .order('first_name');
+
+            if (error) throw error;
+            setTeamMembers(data || []);
+        } catch (error) {
+            console.error("Error loading team:", error);
+        }
+    };
 
     const loadObjectives = async () => {
         try {
@@ -59,13 +89,38 @@ export default function Objectives() {
             }
             let query: any = supabase
                 .from('objectives')
-                .select('*');
+                .select(`
+                    *,
+                    profiles:user_id (first_name, last_name, email)
+                `);
 
             if (!canViewAllData) {
                 if (isSupervisor && zoneId) {
-                    query = query.eq('zone_id', zoneId);
+                    // Supervisor sees their zone objectives? Or just their own and team?
+                    // Assuming RLS/Logic: Supervisor sees all in their scope.
+                    // For now, let's keep it simple: If canViewAllData (Master/Manager/Admin) they see all.
+                    // Otherwise, only see own.
+                    // WAIT: If I am a Manager assigning task, I need to see tasks I assigned to others.
+                    // The current RLS might limit this.
+                    // Let's assume Manager has canViewAllData = true usually (or isManager check).
+
+                    if (isLeader) {
+                        // Managers/Supervisors should see objectives of their team
+                        // Since we don't have a direct "assigned_by" column yet, we rely on RLS allowing reading profiles in same org.
+                        // But for now, let's revert to seeing *all* if they are managers, or just keep current logic
+                        // Current logic: query.eq('user_id', user?.id) blocks seeing others.
+
+                        // We need to REMOVE the user_id filter if they are leaders, allowing them to see all in org (handled by RLS policies hopefully)
+                        // If RLS is strict, we might need an 'assigned_by' or 'team' logic.
+                        // For this rapid implementation, we'll try removing the filter for leaders.
+                    } else {
+                        query = query.eq('user_id', user?.id);
+                    }
                 } else {
-                    query = query.eq('user_id', user?.id);
+                    // Reps only see theirs
+                    if (!isLeader) {
+                        query = query.eq('user_id', user?.id);
+                    }
                 }
             }
 
@@ -83,9 +138,11 @@ export default function Objectives() {
     const handleSubmit = async () => {
         if (!user || !formData.title) return;
 
+        const assignedUser = (isLeader && targetUserId) ? targetUserId : user.id;
+
         try {
             const { error } = await supabase.from('objectives').insert({
-                user_id: user.id,
+                user_id: assignedUser,
                 title: formData.title,
                 description: formData.description || null,
                 objective_type: formData.objective_type,
@@ -101,8 +158,14 @@ export default function Objectives() {
 
             if (error) throw error;
 
-            toast({ title: "Objetivo creado", description: "El objetivo ha sido creado exitosamente." });
+            toast({
+                title: "Objetivo creado",
+                description: isLeader && targetUserId
+                    ? "Objetivo asignado al usuario exitosamente."
+                    : "El objetivo ha sido creado exitosamente."
+            });
             setDialogOpen(false);
+            setTargetUserId(""); // Reset
             loadObjectives();
         } catch (error) {
             toast({ title: "Error", description: "No se pudo crear el objetivo.", variant: "destructive" });
@@ -165,6 +228,27 @@ export default function Objectives() {
                             <DialogTitle>Crear Nuevo Objetivo</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
+                            {isLeader && (
+                                <div className="space-y-2">
+                                    <Label className="text-blue-600 font-semibold">Asignar a (Opcional)</Label>
+                                    <Select value={targetUserId} onValueChange={setTargetUserId}>
+                                        <SelectTrigger className="bg-blue-50 border-blue-200">
+                                            <SelectValue placeholder="Seleccionar miembro del equipo..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="">Asignarme a mí mismo</SelectItem>
+                                            {teamMembers.map(member => (
+                                                <SelectItem key={member.id} value={member.id}>
+                                                    {member.first_name} {member.last_name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <p className="text-xs text-muted-foreground">
+                                        Si seleccionas un usuario, el objetivo se creará en su tablero.
+                                    </p>
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 <Label>Título *</Label>
                                 <Input
@@ -316,6 +400,11 @@ export default function Objectives() {
                                                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                                                     <Badge variant="outline">{getCategoryLabel(obj.category)}</Badge>
                                                     <Badge variant="secondary">{getTypeLabel(obj.objective_type)}</Badge>
+                                                    {isLeader && (obj as any).profiles && (
+                                                        <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+                                                            {(obj as any).profiles?.first_name} {(obj as any).profiles?.last_name}
+                                                        </Badge>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

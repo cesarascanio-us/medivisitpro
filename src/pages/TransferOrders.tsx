@@ -100,7 +100,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof
 };
 
 export default function TransferOrders() {
-    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { user, canViewAllData, isSupervisor, isManager, zoneId } = useAuth();
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState<TransferOrder[]>([]);
@@ -1054,18 +1054,22 @@ export default function TransferOrders() {
                                             <TableCell>{order.products?.length || 0} items</TableCell>
                                             <TableCell className="font-semibold">${order.total?.toFixed(2)}</TableCell>
                                             <TableCell>
-                                                <Select value={order.status} onValueChange={(v) => handleUpdateStatus(order.id, v)}>
-                                                    <SelectTrigger className="w-32 h-8">
-                                                        <Badge className={status.color}>{status.label}</Badge>
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="pending">Pendiente</SelectItem>
-                                                        <SelectItem value="sent">Enviado</SelectItem>
-                                                        <SelectItem value="confirmed">Confirmado</SelectItem>
-                                                        <SelectItem value="delivered">Entregado</SelectItem>
-                                                        <SelectItem value="cancelled">Cancelado</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
+                                                {isManager || isSupervisor ? (
+                                                    <Select value={order.status} onValueChange={(v) => handleUpdateStatus(order.id, v)}>
+                                                        <SelectTrigger className="w-32 h-8">
+                                                            <Badge className={status.color}>{status.label}</Badge>
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="pending">Pendiente</SelectItem>
+                                                            <SelectItem value="sent">Enviado</SelectItem>
+                                                            <SelectItem value="confirmed">Confirmado</SelectItem>
+                                                            <SelectItem value="delivered">Entregado</SelectItem>
+                                                            <SelectItem value="cancelled">Cancelado</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <Badge className={status.color}>{status.label}</Badge>
+                                                )}
                                             </TableCell>
                                             <TableCell>{new Date(order.order_date).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell className="text-right">
