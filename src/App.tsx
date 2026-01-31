@@ -281,7 +281,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/transfer-orders" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor', 'representative']}>
                     <Layout><TransferOrders /></Layout>
                   </ProtectedRoute>
                 } />
