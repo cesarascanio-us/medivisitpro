@@ -272,7 +272,7 @@ export default function DashboardRep() {
             </div>
             <div>
               <p className="text-emerald-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Panel de Control</p>
-              <h1 className="text-2xl font-bold tracking-tight">¡Hola, {userName}!</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-white">¡Hola, {userName}!</h1>
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                 <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
                   Representante
@@ -415,7 +415,7 @@ export default function DashboardRep() {
         </div>
 
         {/* Sync Info Bar */}
-        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 mb-8 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/10 rounded-2xl border border-white/10 mb-8 backdrop-blur-sm">
           <div className="flex items-center gap-2 text-xs">
             <RefreshCcw className={`h-3 w-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
             <span className="text-white/60">Última Sinc:</span>
@@ -437,18 +437,18 @@ export default function DashboardRep() {
         </div>
 
         {/* KPI Progress Bars */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 px-1">
           {/* Route Progress */}
           <div>
-            <div className="flex justify-between text-xs mb-1">
-              <span className="text-slate-400">Ruta Diaria</span>
-              <span className="text-white font-medium">
+            <div className="flex justify-between text-xs mb-2">
+              <span className="text-slate-300 font-medium">Ruta Diaria</span>
+              <span className="text-white font-bold">
                 {metrics.visitedToday} / {metrics.totalPlanned}
               </span>
             </div>
-            <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
               <div
-                className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                className="h-full bg-blue-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
                 style={{ width: `${routeProgress}%` }}
               />
             </div>
@@ -456,16 +456,16 @@ export default function DashboardRep() {
 
           {/* Sales Progress */}
           <div>
-            <div className="flex justify-between text-xs mb-1">
-              <span className="text-slate-400">Cuota Ventas</span>
-              <span className="text-white font-medium">
+            <div className="flex justify-between text-xs mb-2">
+              <span className="text-slate-300 font-medium">Cuota Ventas</span>
+              <span className="text-white font-bold">
                 ${metrics.salesAmount.toLocaleString()} / $
                 {metrics.salesQuota.toLocaleString()}
               </span>
             </div>
-            <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
               <div
-                className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                className="h-full bg-emerald-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
                 style={{ width: `${Math.min(salesProgress, 100)}%` }}
               />
             </div>
