@@ -110,10 +110,13 @@ const MANAGER_NAV = [
   {
     title: "Operaciones",
     items: [
+      { name: "Objetivos & Metas", href: "/objectives", icon: Target }, // Restored
+      { name: "Eventos & Congresos", href: "/events", icon: CalendarCheck }, // Restored
       { name: "Ciclos Promo", href: "/promotional-cycles", icon: RefreshCw },
       { name: "Planificación", href: "/planning/cycles", icon: Layers },
       { name: "Control Almacén", href: "/warehouse", icon: Boxes },
       { name: "Transfer Orders", href: "/transfer-orders", icon: Truck },
+      { name: "Gastos", href: "/expenses", icon: DollarSign }, // Restored
     ]
   },
   {
@@ -122,382 +125,289 @@ const MANAGER_NAV = [
       { name: "Productos", href: "/products", icon: Package },
       { name: "Muestras", href: "/muestras", icon: Pill },
       { name: "Material POP", href: "/material-pop", icon: Megaphone },
+      { name: "Procesos", href: "/work-processes", icon: GitBranch }, // Restored
     ]
   }
 ];
 
-const REPRESENTATIVE_NAV = [
+// ... (Representative Nav is already fixed) ...
+
+const COORDINATOR_NAV = [
   {
-    title: "Mi Jornada",
+    title: "Supervisión",
     items: [
-      { name: "Dashboard", href: "/dashboard", icon: Home },
-      { name: "Agenda", href: "/agenda", icon: Calendar },
-      { name: "Eventos", href: "/events", icon: CalendarCheck },
-      { name: "Contactos", href: "/contacts", icon: Users }, // Restored
-      { name: "Fichero Médico", href: "/doctors", icon: Stethoscope },
-      { name: "Farmacias", href: "/pharmacies", icon: Store },
-      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
-      { name: "Droguerías", href: "/drugstores", icon: Truck },
-      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
+      { name: "Tablero de Mando", href: "/dashboard-supervisor", icon: BarChart3 },
+      { name: "Agenda Equipo", href: "/agenda", icon: Calendar }, // Restored
+      { name: "Mi Equipo", href: "/users", icon: Users },
+      { name: "Rutas de Tropa", href: "/visits", icon: Map },
+      { name: "Cobertura", href: "/coverage-map", icon: Map }, // Restored
     ]
   },
   {
-    title: "Actividad Comercial",
+    title: "Gestión",
     items: [
-      { name: "Mis Visitas", href: "/visits", icon: FileText },
-      { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck },
-      { name: "Objetivos & Metas", href: "/objectives", icon: Target },
-      { name: "Planificador", href: "/planner", icon: ClipboardList },
-      { name: "Gastos", href: "/expenses", icon: DollarSign },
+      { name: "Objetivos Equipo", href: "/objectives", icon: Target }, // Restored
+      { name: "Planificador", href: "/planner", icon: ClipboardList }, // Restored
+      { name: "Eventos", href: "/events", icon: CalendarCheck }, // Restored
+      { name: "Pedidos Especiales", href: "/transfer-orders", icon: ClipboardList },
+      { name: "Reportes", href: "/reports", icon: FileText },
     ]
   },
   {
-    title: "Herramientas",
+    title: "Herramientas de Apoyo", // Restored full tools for support
     items: [
-      { name: "Muestras", href: "/muestras", icon: Pill },
       { name: "Catálogo", href: "/products", icon: Package },
-      { name: "Mis Activos", href: "/resources/assets", icon: Boxes },
+      { name: "Muestras", href: "/muestras", icon: Pill },
       { name: "Procesos", href: "/work-processes", icon: GitBranch },
-      { name: "Mapa", href: "/coverage-map", icon: Map },
+      { name: "Activos", href: "/resources/assets", icon: Boxes },
     ]
   }
 ];
 
-// Fallback for other roles (supervisor, telemarketing, etc.)
-const DEFAULT_NAV = [
+const TELEMARKETING_NAV = [
   {
-    title: "Inicio",
+    title: "Ventas Internas",
     items: [
-      { name: "Dashboard", href: "/dashboard", icon: Home },
-      { name: "Contactos", href: "/contacts", icon: Users },
-      { name: "Ayuda", href: "/help", icon: HelpCircle },
+      { name: "Panel de Ventas", href: "/dashboard", icon: Home },
+      { name: "Lista de Llamadas", href: "/contacts", icon: Users },
+      { name: "Nuevo Pedido", href: "/commercial/builder", icon: DollarSign },
+      { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck }, // Restored
+      { name: "Objetivos Venta", href: "/objectives", icon: Target }, // Restored
+    ]
+  },
+  {
+    title: "Recursos",
+    items: [
+      { name: "Catálogo", href: "/products", icon: Package },
+      { name: "Promociones", href: "/promotional-cycles", icon: Award },
+      { name: "Procesos (Scripts)", href: "/work-processes", icon: GitBranch }, // Restored
     ]
   }
 ];
 
-interface SidebarProps {
-  className?: string;
-  isMobile?: boolean; // New prop for mobile sheet
-}
+// ... (existing constants)
 
-export function Sidebar({ className, isMobile = false }: SidebarProps) {
-  const location = useLocation();
-  const { user, signOut, role, isMaster, isSystemAdmin, isAdmin, isManager, isRepresentative, isSupervisor, isTelemarketing, isCoordinator, isChief, isSpecializedRole, isDemo, canUseSales, canUseEvents, canUseWarehouse, features, organizationId } = useAuth();
+// MASTER SAAS NAV (Default View - No Org Selected)
+const MASTER_SAAS_NAV = [
+  {
+    title: "SAAS CONTROL",
+    items: [
+      { name: "SaaS Dashboard", href: "/dashboard-master", icon: BarChart3 },
+      { name: "Global Audit Logs", href: "/master/logs", icon: Shield },
+      { name: "SaaS Billing", href: "/master/billing", icon: DollarSign },
+      { name: "Alerts & Health", href: "/master/alerts", icon: Bell },
+    ]
+  },
+  {
+    title: "ADMINISTRACIÓN GLOBAL",
+    items: [
+      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
+      { name: "Gestión de Cuentas", href: "/users", icon: Users },
+      { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
+    ]
+  },
+  {
+    title: "SOPORTE & AYUDA",
+    items: [
+      { name: "Tickets de Soporte", href: "/master/tickets", icon: HelpCircle },
+      { name: "Base de Conocimiento", href: "/documentation", icon: FileText },
+    ]
+  }
+];
 
-  // Persistent pinned state for desktop
-  const [isPinned, setIsPinned] = useState(() => {
-    if (typeof window !== 'undefined' && !isMobile) {
-      return localStorage.getItem('sidebar-pinned') === 'true';
+// ... (Existing Constants)
+
+// --- SELECT NAVIGATION BY ROLE ---
+const getNavigationGroups = () => {
+  // 1. MASTER - THE POWER OF ALL (God Mode vs SaaS Mode)
+  if (isMaster || isSystemAdmin) {
+    // If Master has selected an Organization (Drill-down / Impersonation Mode)
+    // Show the full Operational Suite for that Org
+    if (organizationId) {
+      return SYSTEM_ADMIN_NAV;
     }
-    return false;
-  });
+    // Default: Pure SaaS Admin View
+    return MASTER_SAAS_NAV;
+  }
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view
+  if (!organizationId && !isDemo) {
+    return [
+      {
+        title: "CUENTA PENDIENTE",
+        items: [
+          { name: "Asignación Pendiente", href: "/dashboard", icon: Shield },
+          { name: "Contactar Master", href: "mailto:soporte@medivisitpro.com", icon: HelpCircle },
+        ]
+      },
+      ...DEFAULT_NAV
+    ];
+  }
 
-  // Side effect to update localStorage when pinned state changes
-  const togglePin = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const newPinned = !isPinned;
-    setIsPinned(newPinned);
-    if (!isMobile) {
-      localStorage.setItem('sidebar-pinned', String(newPinned));
-    }
-  };
+  // 3. ROLE SPECIFIC NAV
 
-  // Sidebar is expanded if pinned, hovered, or in mobile mode
-  const isExpanded = isMobile || isPinned || isHovered;
+  // Level 2: Manager / General Admin
+  if (isManager || isAdmin || isChief) return MANAGER_NAV;
 
-  const toggleGroup = (title: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent affecting sidebar expansion if needed
-    setCollapsedGroups(prev => ({
-      ...prev,
-      [title]: !prev[title]
-    }));
-  };
+  // Level 3: Coordinator / Supervisor (Team Leaders)
+  if (isCoordinator || isSupervisor) return COORDINATOR_NAV;
 
-  const userEmail = user?.email || '';
-  const userName = userEmail.split('@')[0] || 'Usuario';
-  const userInitials = userName.substring(0, 2).toUpperCase();
+  // Level 4: Desk Users (Telemarketing)
+  if (isTelemarketing) return TELEMARKETING_NAV;
 
-  const roleLabels: Record<string, string> = {
-    master: 'Master',
-    admin: 'Admin',
-    manager: 'Gerente',
-    supervisor: 'Supervisor',
-    representative: 'Rep'
-  };
-  const roleLabel = isSystemAdmin ? 'System Admin' : (roleLabels[role as string] || 'Usuario');
+  // Level 5: Field Users (Representative)
+  // Default fallback for representatives and specialized roles
+  return REPRESENTATIVE_NAV;
+};
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+const activeNavGroups = getNavigationGroups();
 
-  // --- NEW ROLE CONFIGURATIONS ---
-
-  const COORDINATOR_NAV = [
-    {
-      title: "Supervisión",
-      items: [
-        { name: "Tablero de Mando", href: "/dashboard-supervisor", icon: BarChart3 },
-        { name: "Mi Equipo", href: "/users", icon: Users },
-        { name: "Rutas de Tropa", href: "/visits", icon: Map },
-      ]
-    },
-    {
-      title: "Aprobaciones",
-      items: [
-        { name: "Pedidos Especiales", href: "/transfer-orders", icon: ClipboardList },
-        { name: "Reportes", href: "/reports", icon: FileText },
-      ]
-    }
-  ];
-
-  const TELEMARKETING_NAV = [
-    {
-      title: "Ventas Internas",
-      items: [
-        { name: "Panel de Ventas", href: "/dashboard", icon: Home },
-        { name: "Lista de Llamadas", href: "/contacts", icon: Users },
-        { name: "Nuevo Pedido", href: "/commercial/builder", icon: DollarSign },
-      ]
-    },
-    {
-      title: "Catálogo",
-      items: [
-        { name: "Productos", href: "/products", icon: Package },
-        { name: "Promociones", href: "/promotional-cycles", icon: Award },
-      ]
-    }
-  ];
-
-  // ... (existing constants)
-
-  // MASTER SAAS NAV (Default View - No Org Selected)
-  const MASTER_SAAS_NAV = [
-    {
-      title: "SAAS CONTROL",
-      items: [
-        { name: "SaaS Dashboard", href: "/dashboard-master", icon: BarChart3 },
-        { name: "Global Audit Logs", href: "/master/logs", icon: Shield },
-        { name: "SaaS Billing", href: "/master/billing", icon: DollarSign },
-        { name: "Alerts & Health", href: "/master/alerts", icon: Bell },
-      ]
-    },
-    {
-      title: "ADMINISTRACIÓN GLOBAL",
-      items: [
-        { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
-        { name: "Gestión de Cuentas", href: "/users", icon: Users },
-        { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
-      ]
-    },
-    {
-      title: "SOPORTE & AYUDA",
-      items: [
-        { name: "Tickets de Soporte", href: "/master/tickets", icon: HelpCircle },
-        { name: "Base de Conocimiento", href: "/documentation", icon: FileText },
-      ]
-    }
-  ];
-
-  // ... (Existing Constants)
-
-  // --- SELECT NAVIGATION BY ROLE ---
-  const getNavigationGroups = () => {
-    // 1. MASTER - THE POWER OF ALL (God Mode vs SaaS Mode)
-    if (isMaster || isSystemAdmin) {
-      // If Master has selected an Organization (Drill-down / Impersonation Mode)
-      // Show the full Operational Suite for that Org
-      if (organizationId) {
-        return SYSTEM_ADMIN_NAV;
-      }
-      // Default: Pure SaaS Admin View
-      return MASTER_SAAS_NAV;
-    }
-
-    // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view
-    if (!organizationId && !isDemo) {
-      return [
-        {
-          title: "CUENTA PENDIENTE",
-          items: [
-            { name: "Asignación Pendiente", href: "/dashboard", icon: Shield },
-            { name: "Contactar Master", href: "mailto:soporte@medivisitpro.com", icon: HelpCircle },
-          ]
-        },
-        ...DEFAULT_NAV
-      ];
-    }
-
-    // 3. ROLE SPECIFIC NAV
-
-    // Level 2: Manager / General Admin
-    if (isManager || isAdmin || isChief) return MANAGER_NAV;
-
-    // Level 3: Coordinator / Supervisor (Team Leaders)
-    if (isCoordinator || isSupervisor) return COORDINATOR_NAV;
-
-    // Level 4: Desk Users (Telemarketing)
-    if (isTelemarketing) return TELEMARKETING_NAV;
-
-    // Level 5: Field Users (Representative)
-    // Default fallback for representatives and specialized roles
-    return REPRESENTATIVE_NAV;
-  };
-
-  const activeNavGroups = getNavigationGroups();
-
-  return (
-    <div
-      className={cn(
-        "flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen shadow-2xl z-30 transition-all duration-300 ease-in-out",
-        isExpanded ? "w-64" : "w-16",
-        className
-      )}
-      onMouseEnter={() => !isMobile && setIsHovered(true)}
-      onMouseLeave={() => !isMobile && setIsHovered(false)}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between h-14 px-3 border-b border-slate-700/50">
-        <div className="flex items-center gap-2 overflow-hidden">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
-            <Stethoscope className="h-5 w-5 text-white" />
-          </div>
-          <div className={cn("transition-all duration-300", isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none")}>
-            <h1 className="text-sm font-bold text-white whitespace-nowrap">MediVisitPro</h1>
-            <p className="text-[9px] text-slate-400 uppercase tracking-wider">Visitador</p>
-          </div>
+return (
+  <div
+    className={cn(
+      "flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen shadow-2xl z-30 transition-all duration-300 ease-in-out",
+      isExpanded ? "w-64" : "w-16",
+      className
+    )}
+    onMouseEnter={() => !isMobile && setIsHovered(true)}
+    onMouseLeave={() => !isMobile && setIsHovered(false)}
+  >
+    {/* Header */}
+    <div className="flex items-center justify-between h-14 px-3 border-b border-slate-700/50">
+      <div className="flex items-center gap-2 overflow-hidden">
+        <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
+          <Stethoscope className="h-5 w-5 text-white" />
         </div>
+        <div className={cn("transition-all duration-300", isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none")}>
+          <h1 className="text-sm font-bold text-white whitespace-nowrap">MediVisitPro</h1>
+          <p className="text-[9px] text-slate-400 uppercase tracking-wider">Visitador</p>
+        </div>
+      </div>
 
-        {/* Pin Toggle - Desktop Only */}
-        {!isMobile && isExpanded && (
+      {/* Pin Toggle - Desktop Only */}
+      {!isMobile && isExpanded && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-slate-500 hover:text-white"
+          onClick={togglePin}
+          title={isPinned ? "Desafijar Menú" : "Fijar Menú"}
+        >
+          <Shield className={cn("h-4 w-4 transition-all", isPinned ? "fill-current text-white rotate-0" : "rotate-45")} />
+        </Button>
+      )}
+    </div>
+
+    {/* Navigation */}
+    <nav className="flex-1 px-2 py-3 space-y-4 overflow-y-auto custom-scrollbar">
+      {activeNavGroups.map((group, groupIndex) => {
+        // No more internal filtering needed as the arrays are role-specific
+        const hasAccessToGroup = true;
+
+        if (!hasAccessToGroup) return null;
+
+        // Logic to force expand if sidebar is minimized so icons are accessible, 
+        // OR we could just let them trigger it. But with hidden titles, they can't trigger it when minimized.
+        // Best UX: When minimized, ignore collapsed state (always show). When expanded, respect state.
+        const isGroupCollapsed = isExpanded && collapsedGroups[group.title];
+
+        return (
+          <div key={group.title} className="space-y-1">
+            {/* Group Title - Clickable */}
+            <div
+              className={cn(
+                "px-2 flex items-center justify-between cursor-pointer group/header mb-1 transition-all duration-300",
+                isExpanded ? "opacity-100" : "opacity-0 h-0 overflow-hidden"
+              )}
+              onClick={(e) => toggleGroup(group.title, e)}
+            >
+              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ">
+                {group.title}
+              </div>
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 text-slate-600 transition-transform duration-200",
+                  isGroupCollapsed ? "-rotate-90" : ""
+                )}
+              />
+            </div>
+
+            {/* Separator for collapsed mode */}
+            {!isExpanded && groupIndex > 0 && (
+              <div className="my-2 mx-2 border-t border-slate-700/50" />
+            )}
+
+            {/* Group Items Container - Animated Height? keeping simple for now */}
+            <div className={cn(
+              "space-y-1 transition-all duration-300",
+              isGroupCollapsed ? "hidden" : "block"
+            )}>
+              {group.items.map((item: any) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <NavLink
+                    key={item.name}
+                    to={item.href}
+                    title={!isExpanded ? item.name : undefined}
+                    className={cn(
+                      "flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-all group",
+                      isActive
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25"
+                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                    )}
+                  >
+                    <item.icon className="h-5 w-5 flex-shrink-0" />
+                    <span className={cn("ml-3 whitespace-nowrap transition-all duration-300", isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>
+                      {item.name}
+                    </span>
+                  </NavLink>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </nav>
+
+    {/* Footer - User Info */}
+    <div className="p-2 bg-slate-900/50 border-t border-slate-700/50">
+      {isExpanded ? (
+        // Expanded: show user info and logout
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
+              <span className="text-xs font-bold text-white">{userInitials}</span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-white truncate">{userName}</p>
+              <p className="text-[10px] text-slate-400 truncate">{roleLabel}</p>
+            </div>
+          </div>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-slate-500 hover:text-white"
-            onClick={togglePin}
-            title={isPinned ? "Desafijar Menú" : "Fijar Menú"}
+            className="text-slate-400 hover:text-white hover:bg-slate-800 flex-shrink-0 h-8 w-8"
+            onClick={handleSignOut}
+            title="Cerrar Sesión"
           >
-            <Shield className={cn("h-4 w-4 transition-all", isPinned ? "fill-current text-white rotate-0" : "rotate-45")} />
+            <LogOut className="h-4 w-4" />
           </Button>
-        )}
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 px-2 py-3 space-y-4 overflow-y-auto custom-scrollbar">
-        {activeNavGroups.map((group, groupIndex) => {
-          // No more internal filtering needed as the arrays are role-specific
-          const hasAccessToGroup = true;
-
-          if (!hasAccessToGroup) return null;
-
-          // Logic to force expand if sidebar is minimized so icons are accessible, 
-          // OR we could just let them trigger it. But with hidden titles, they can't trigger it when minimized.
-          // Best UX: When minimized, ignore collapsed state (always show). When expanded, respect state.
-          const isGroupCollapsed = isExpanded && collapsedGroups[group.title];
-
-          return (
-            <div key={group.title} className="space-y-1">
-              {/* Group Title - Clickable */}
-              <div
-                className={cn(
-                  "px-2 flex items-center justify-between cursor-pointer group/header mb-1 transition-all duration-300",
-                  isExpanded ? "opacity-100" : "opacity-0 h-0 overflow-hidden"
-                )}
-                onClick={(e) => toggleGroup(group.title, e)}
-              >
-                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ">
-                  {group.title}
-                </div>
-                <ChevronDown
-                  className={cn(
-                    "h-3 w-3 text-slate-600 transition-transform duration-200",
-                    isGroupCollapsed ? "-rotate-90" : ""
-                  )}
-                />
-              </div>
-
-              {/* Separator for collapsed mode */}
-              {!isExpanded && groupIndex > 0 && (
-                <div className="my-2 mx-2 border-t border-slate-700/50" />
-              )}
-
-              {/* Group Items Container - Animated Height? keeping simple for now */}
-              <div className={cn(
-                "space-y-1 transition-all duration-300",
-                isGroupCollapsed ? "hidden" : "block"
-              )}>
-                {group.items.map((item: any) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <NavLink
-                      key={item.name}
-                      to={item.href}
-                      title={!isExpanded ? item.name : undefined}
-                      className={cn(
-                        "flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-all group",
-                        isActive
-                          ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25"
-                          : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                      )}
-                    >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      <span className={cn("ml-3 whitespace-nowrap transition-all duration-300", isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>
-                        {item.name}
-                      </span>
-                    </NavLink>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </nav>
-
-      {/* Footer - User Info */}
-      <div className="p-2 bg-slate-900/50 border-t border-slate-700/50">
-        {isExpanded ? (
-          // Expanded: show user info and logout
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
-                <span className="text-xs font-bold text-white">{userInitials}</span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-white truncate">{userName}</p>
-                <p className="text-[10px] text-slate-400 truncate">{roleLabel}</p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-slate-400 hover:text-white hover:bg-slate-800 flex-shrink-0 h-8 w-8"
-              onClick={handleSignOut}
-              title="Cerrar Sesión"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
-          </div>
-        ) : (
-          // Collapsed: only logout icon centered
-          <div className="flex justify-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-slate-400 hover:text-white hover:bg-slate-800 h-10 w-10"
-              onClick={handleSignOut}
-              title="Cerrar Sesión"
-            >
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        // Collapsed: only logout icon centered
+        <div className="flex justify-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-slate-400 hover:text-white hover:bg-slate-800 h-10 w-10"
+            onClick={handleSignOut}
+            title="Cerrar Sesión"
+          >
+            <LogOut className="h-5 w-5" />
+          </Button>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 }
