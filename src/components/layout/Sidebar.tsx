@@ -270,12 +270,50 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   // ... (existing constants)
 
+  // MASTER SAAS NAV (Default View - No Org Selected)
+  const MASTER_SAAS_NAV = [
+    {
+      title: "SAAS CONTROL",
+      items: [
+        { name: "SaaS Dashboard", href: "/dashboard-master", icon: BarChart3 },
+        { name: "Global Audit Logs", href: "/master/logs", icon: Shield },
+        { name: "SaaS Billing", href: "/master/billing", icon: DollarSign },
+        { name: "Alerts & Health", href: "/master/alerts", icon: Bell },
+      ]
+    },
+    {
+      title: "ADMINISTRACIÓN GLOBAL",
+      items: [
+        { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
+        { name: "Usuarios Globales", href: "/users", icon: Users },
+        { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
+      ]
+    },
+    {
+      title: "SOPORTE & AYUDA",
+      items: [
+        { name: "Tickets de Soporte", href: "/master/tickets", icon: HelpCircle },
+        { name: "Base de Conocimiento", href: "/documentation", icon: FileText },
+      ]
+    }
+  ];
+
+  // ... (Existing Constants)
+
   // --- SELECT NAVIGATION BY ROLE ---
   const getNavigationGroups = () => {
-    // 1. MASTER - THE POWER OF ALL (God Mode)
-    if (isMaster || isSystemAdmin) return SYSTEM_ADMIN_NAV;
+    // 1. MASTER - THE POWER OF ALL (God Mode vs SaaS Mode)
+    if (isMaster || isSystemAdmin) {
+      // If Master has selected an Organization (Drill-down / Impersonation Mode)
+      // Show the full Operational Suite for that Org
+      if (organizationId) {
+        return SYSTEM_ADMIN_NAV;
+      }
+      // Default: Pure SaaS Admin View
+      return MASTER_SAAS_NAV;
+    }
 
-    // 2. SAFETY CHECK: If no Org assigned, restrict view
+    // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view
     if (!organizationId && !isDemo) {
       return [
         {
