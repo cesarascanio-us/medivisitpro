@@ -231,7 +231,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/reports" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
                     <Layout><Reports /></Layout>
                   </ProtectedRoute>
                 } />
@@ -251,7 +251,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/users" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
                     <Layout><Users /></Layout>
                   </ProtectedRoute>
                 } />
@@ -281,7 +281,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/transfer-orders" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor']}>
                     <Layout><TransferOrders /></Layout>
                   </ProtectedRoute>
                 } />
@@ -291,7 +291,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/promotional-cycles" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
                     <Layout><PromotionalCycles /></Layout>
                   </ProtectedRoute>
                 } />
@@ -321,7 +321,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/commercial/builder" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
                     <Layout><OrderBuilder /></Layout>
                   </ProtectedRoute>
                 } />

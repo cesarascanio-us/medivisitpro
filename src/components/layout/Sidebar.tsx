@@ -44,6 +44,9 @@ import { Button } from "@/components/ui/button";
 // Navigation Groups
 // --- STRICT NAVIGATION CONFIGURATIONS ---
 
+// --- STRICT NAVIGATION CONFIGURATIONS ---
+
+// GOD MODE NAV (Merged System Admin + Manager + Rep capabilities)
 const SYSTEM_ADMIN_NAV = [
   {
     title: "CORE SYSTEM",
@@ -57,22 +60,33 @@ const SYSTEM_ADMIN_NAV = [
     ]
   },
   {
+    title: "GESTIÓN COMERCIAL & EQUIPO",
+    items: [
+      { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
+      { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
+      { name: "Planificación & Ciclos", href: "/planning/cycles", icon: Layers },
+      { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
+    ]
+  },
+  {
     title: "OPERACIÓN DE CAMPO",
     items: [
+      { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
       { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
       { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
       { name: "Rutas y Territorios", href: "/visits", icon: FileText },
       { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
-      { name: "Agenda Global", href: "/agenda", icon: Calendar },
+      { name: "Cobertura Global", href: "/coverage-map", icon: Map },
     ]
   },
   {
-    title: "INTELIGENCIA & EXPLORACIÓN",
+    title: "INVENTARIO & RECURSOS",
     items: [
-      { name: "Mapa de Cobertura", href: "/coverage-map", icon: Map },
-      { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
-      { name: "Directorio Global", href: "/contacts", icon: Users },
       { name: "Catálogo Maestro", href: "/products", icon: Package },
+      { name: "Control Almacén", href: "/warehouse", icon: Boxes },
+      { name: "Muestras Médicas", href: "/muestras", icon: Pill },
+      { name: "Material POP", href: "/material-pop", icon: Megaphone },
+      { name: "Agenda Global", href: "/agenda", icon: Calendar },
     ]
   }
 ];
@@ -83,6 +97,7 @@ const MANAGER_NAV = [
     items: [
       { name: "Mi Dashboard", href: "/dashboard", icon: Home },
       { name: "Mi Equipo", href: "/users", icon: Users },
+      { name: "Contactos", href: "/contacts", icon: Users }, // Restored
       { name: "Zona / Territorio", href: "/zones", icon: Map },
       { name: "Reportes Venta", href: "/reports", icon: BarChart3 },
     ]
@@ -111,7 +126,8 @@ const REPRESENTATIVE_NAV = [
     title: "Mi Jornada",
     items: [
       { name: "Dashboard", href: "/dashboard", icon: Home },
-      { name: "Mi Agenda", href: "/agenda", icon: Calendar },
+      { name: "Agenda", href: "/agenda", icon: Calendar },
+      { name: "Contactos", href: "/contacts", icon: Users }, // Restored
       { name: "Fichero Médico", href: "/doctors", icon: Stethoscope },
       { name: "Farmacias", href: "/pharmacies", icon: Store },
     ]
@@ -209,6 +225,46 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     }
   };
 
+  // --- NEW ROLE CONFIGURATIONS ---
+
+  const COORDINATOR_NAV = [
+    {
+      title: "Supervisión",
+      items: [
+        { name: "Tablero de Mando", href: "/dashboard-supervisor", icon: BarChart3 },
+        { name: "Mi Equipo", href: "/users", icon: Users },
+        { name: "Rutas de Tropa", href: "/visits", icon: Map },
+      ]
+    },
+    {
+      title: "Aprobaciones",
+      items: [
+        { name: "Pedidos Especiales", href: "/transfer-orders", icon: ClipboardList },
+        { name: "Reportes", href: "/reports", icon: FileText },
+      ]
+    }
+  ];
+
+  const TELEMARKETING_NAV = [
+    {
+      title: "Ventas Internas",
+      items: [
+        { name: "Panel de Ventas", href: "/dashboard", icon: Home },
+        { name: "Lista de Llamadas", href: "/contacts", icon: Users },
+        { name: "Nuevo Pedido", href: "/commercial/builder", icon: DollarSign },
+      ]
+    },
+    {
+      title: "Catálogo",
+      items: [
+        { name: "Productos", href: "/products", icon: Package },
+        { name: "Promociones", href: "/promotional-cycles", icon: Award },
+      ]
+    }
+  ];
+
+  // ... (existing constants)
+
   // --- SELECT NAVIGATION BY ROLE ---
   const getNavigationGroups = () => {
     // 1. MASTER - THE POWER OF ALL (God Mode)
@@ -229,10 +285,19 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     }
 
     // 3. ROLE SPECIFIC NAV
-    if (isManager || isAdmin || isChief || isCoordinator) return MANAGER_NAV;
-    if (isRepresentative || isSupervisor || isTelemarketing || isSpecializedRole) return REPRESENTATIVE_NAV;
 
-    return DEFAULT_NAV;
+    // Level 2: Manager / General Admin
+    if (isManager || isAdmin || isChief) return MANAGER_NAV;
+
+    // Level 3: Coordinator / Supervisor (Team Leaders)
+    if (isCoordinator || isSupervisor) return COORDINATOR_NAV;
+
+    // Level 4: Desk Users (Telemarketing)
+    if (isTelemarketing) return TELEMARKETING_NAV;
+
+    // Level 5: Field Users (Representative)
+    // Default fallback for representatives and specialized roles
+    return REPRESENTATIVE_NAV;
   };
 
   const activeNavGroups = getNavigationGroups();

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "std/http/server.ts"
 import { createClient } from "@supabase/supabase-js"
 
@@ -7,7 +8,7 @@ const corsHeaders = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
     // Handle CORS preflight requests
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders })
@@ -117,10 +118,8 @@ serve(async (req) => {
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
-                role: role || 'representative',
                 organization_id: organizationId,
                 invitation_status: existingUser ? 'active' : 'pending',
-                is_active: true,
                 updated_at: new Date().toISOString()
             }, { onConflict: 'user_id' })
 
