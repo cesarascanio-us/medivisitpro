@@ -46,29 +46,32 @@ import { Button } from "@/components/ui/button";
 
 const SYSTEM_ADMIN_NAV = [
   {
-    title: "Global Control",
+    title: "CORE SYSTEM",
     items: [
       { name: "Centro de Mando", href: "/dashboard-master", icon: BarChart3 },
+      { name: "Dashboard Operativo", href: "/dashboard", icon: Home },
       { name: "Panel Master", href: "/master-panel", icon: Crown },
-      { name: "Auditoría", href: "/master/logs", icon: Shield },
+      { name: "Control Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
       { name: "SaaS & Facturación", href: "/master/billing", icon: DollarSign },
+      { name: "Auditoría de Sistema", href: "/master/logs", icon: Shield },
     ]
   },
   {
-    title: "Administración Global",
+    title: "OPERACIÓN DE CAMPO",
     items: [
-      { name: "Dashboard", href: "/dashboard", icon: Home },
-      { name: "Usuarios Sistema", href: "/users", icon: UserRound },
-      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 }, // Links to orgs tab
-      { name: "Zonas Globales", href: "/zones", icon: GitBranch },
-      { name: "Alertas Sistema", href: "/master/alerts", icon: Bell },
+      { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
+      { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
+      { name: "Rutas y Territorios", href: "/visits", icon: FileText },
+      { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
+      { name: "Agenda Global", href: "/agenda", icon: Calendar },
     ]
   },
   {
-    title: "Exploración",
+    title: "INTELIGENCIA & EXPLORACIÓN",
     items: [
       { name: "Mapa de Cobertura", href: "/coverage-map", icon: Map },
-      { name: "Base de Datos I.P", href: "/contacts", icon: Users },
+      { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
+      { name: "Directorio Global", href: "/contacts", icon: Users },
       { name: "Catálogo Maestro", href: "/products", icon: Package },
     ]
   }
@@ -151,7 +154,7 @@ interface SidebarProps {
 
 export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const location = useLocation();
-  const { user, signOut, role, isMaster, isSystemAdmin, isAdmin, isManager, isRepresentative, isSupervisor, isDemo, canUseSales, canUseEvents, canUseWarehouse, features } = useAuth();
+  const { user, signOut, role, isMaster, isSystemAdmin, isAdmin, isManager, isRepresentative, isSupervisor, isTelemarketing, isCoordinator, isChief, isSpecializedRole, isDemo, canUseSales, canUseEvents, canUseWarehouse, features, organizationId } = useAuth();
 
   // Persistent pinned state for desktop
   const [isPinned, setIsPinned] = useState(() => {
@@ -208,9 +211,27 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   // --- SELECT NAVIGATION BY ROLE ---
   const getNavigationGroups = () => {
+    // 1. MASTER - THE POWER OF ALL (God Mode)
     if (isMaster || isSystemAdmin) return SYSTEM_ADMIN_NAV;
-    if (isManager || isAdmin) return MANAGER_NAV;
-    if (role === 'representative' || isRepresentative) return REPRESENTATIVE_NAV;
+
+    // 2. SAFETY CHECK: If no Org assigned, restrict view
+    if (!organizationId && !isDemo) {
+      return [
+        {
+          title: "CUENTA PENDIENTE",
+          items: [
+            { name: "Asignación Pendiente", href: "/dashboard", icon: Shield },
+            { name: "Contactar Master", href: "mailto:soporte@medivisitpro.com", icon: HelpCircle },
+          ]
+        },
+        ...DEFAULT_NAV
+      ];
+    }
+
+    // 3. ROLE SPECIFIC NAV
+    if (isManager || isAdmin || isChief || isCoordinator) return MANAGER_NAV;
+    if (isRepresentative || isSupervisor || isTelemarketing || isSpecializedRole) return REPRESENTATIVE_NAV;
+
     return DEFAULT_NAV;
   };
 

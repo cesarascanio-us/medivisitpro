@@ -29,7 +29,7 @@ const DEMO_ORG = {
     updated_at: new Date().toISOString()
 };
 
-const MASTER_EMAILS = ['cesar.ascanio@gmail.com', 'cesarascanio.edu@gmail.com'];
+
 
 export function OrganizationProvider({ children }: { children: ReactNode }) {
     const { enterAuditMode, exitAuditMode } = useAuth();
@@ -63,9 +63,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            // Check if Master
-            const isMasterUser = MASTER_EMAILS.some(m => m.toLowerCase() === lowerEmail);
-            setIsMaster(isMasterUser);
+            // Let isMaster be determined by the actual role in the database
+            let isMasterUser = false;
 
             // Get profile and role data
             const [{ data: profile }, { data: userRole }] = await Promise.all([
@@ -80,6 +79,10 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     .eq('user_id', user.id)
                     .maybeSingle()
             ]);
+
+            const userRoleName = userRole?.role || profile?.role || 'representative';
+            isMasterUser = userRoleName === 'master';
+            setIsMaster(isMasterUser);
 
             setIsOrgAdmin(profile?.is_org_admin || false);
 
@@ -98,14 +101,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 }));
                 setAllOrganizations(orgs);
 
-                // Determine which org to show initially
-                // 1. If we have a stored preference or previous state, use that (TODO: Persist)
-                // 2. Otherwise use their "assigned" org
-                // 3. Fallback to first available
                 const assignedOrgId = profile?.organization_id || userRole?.organization_id;
 
-                // If we already have an organization selected in state (e.g. from switching), keep it if valid
-                // Otherwise default to assigned
                 if (!organization) {
                     const initialOrg = orgs.find(o => o.id === assignedOrgId) || orgs[0];
                     setOrganization(initialOrg || null);

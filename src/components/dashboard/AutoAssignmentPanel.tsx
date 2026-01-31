@@ -22,11 +22,12 @@ export function AutoAssignmentPanel() {
     const loadData = async () => {
         setLoading(true);
         try {
-            // Get unassigned doctors (those whose user_id is the admin or null)
-            const { data: doctors } = await supabase
+            // Get unassigned contacts (those whose user_id is the admin or null)
+            // We fetch all types that might need assignment
+            const { data: contacts } = await supabase
                 .from('contacts')
                 .select('id, name, specialty, zone_id, contact_type')
-                .eq('contact_type', 'doctor');
+                .in('contact_type', ['doctor', 'pharmacy', 'natural_store', 'drugstore']);
 
             // Get all representatives
             const { data: roles } = await supabase
@@ -38,14 +39,15 @@ export function AutoAssignmentPanel() {
                 id: r.user_id,
                 name: `${r.profiles?.first_name || ''} ${r.profiles?.last_name || ''}`.trim() || 'Representante',
                 zone_id: r.zone_id,
-                therapeutic_area: '' // Mocking for now, could be loaded from profile
+                therapeutic_area: '' // Mocking for now
             }));
 
-            setUnassignedDoctors(doctors || []);
+            setUnassignedDoctors(contacts || []);
             setRepresentatives(reps);
         } catch (error) {
             console.error("Error loading auto-assignment data:", error);
         } finally {
+            setLoading(true); // Wait, line 49 says setLoading(false), but I'll keep the logic consistent.
             setLoading(false);
         }
     };
@@ -71,7 +73,6 @@ export function AutoAssignmentPanel() {
     const confirmAssignments = async () => {
         setLoading(true);
         try {
-            // Update each contact with the new user_id
             for (const assignment of previewAssignments) {
                 await supabase
                     .from('contacts')
@@ -81,7 +82,7 @@ export function AutoAssignmentPanel() {
 
             toast({
                 title: "Asignaciones guardadas",
-                description: "Se han actualizado los médicos con los nuevos representantes.",
+                description: "Se han actualizado los contactos con los nuevos representantes.",
             });
 
             setPreviewAssignments([]);
@@ -105,7 +106,7 @@ export function AutoAssignmentPanel() {
                     <div>
                         <CardTitle className="flex items-center">
                             <Sparkles className="mr-2 h-5 w-5 text-primary" />
-                            Asignación Inteligente IA
+                            Asignación Inteligente POS & Médicos
                         </CardTitle>
                         <CardDescription>
                             Match automático basado en zona geográfica y especialidad
@@ -117,7 +118,7 @@ export function AutoAssignmentPanel() {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-3 bg-muted/50 rounded-lg text-center">
                         <p className="text-2xl font-bold">{unassignedDoctors.length}</p>
-                        <p className="text-xs text-muted-foreground">Médicos en Sistema</p>
+                        <p className="text-xs text-muted-foreground">Clientes/Médicos</p>
                     </div>
                     <div className="p-3 bg-muted/50 rounded-lg text-center">
                         <p className="text-2xl font-bold">{representatives.length}</p>
@@ -175,7 +176,7 @@ export function AutoAssignmentPanel() {
                 {unassignedDoctors.length === 0 && (
                     <div className="flex items-center p-3 bg-blue-50 text-blue-800 rounded-lg text-xs">
                         <AlertCircle className="h-4 w-4 mr-2" />
-                        Todos los médicos están actualmente asignados.
+                        Todos los contactos están actualmente asignados.
                     </div>
                 )}
             </CardContent>

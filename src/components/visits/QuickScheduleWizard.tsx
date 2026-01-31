@@ -6,7 +6,7 @@ import { WizardProgress } from '@/components/common/WizardProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Calendar, Leaf, Truck } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Leaf as LeafIcon, Truck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -271,7 +271,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess }: QuickSche
                                             }}
                                         >
                                             <div className={cn("p-2 rounded-lg", visitType === 'natural_store' ? "bg-green-500 text-white" : "bg-slate-100 text-slate-500")}>
-                                                <Leaf className="h-6 w-6" />
+                                                <LeafIcon className="h-6 w-6" />
                                             </div>
                                             <span className="font-bold text-xs uppercase tracking-tight">T. Naturista</span>
                                         </Button>

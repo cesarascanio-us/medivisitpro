@@ -57,54 +57,73 @@ serve(async (req) => {
             throw new Error('Email is required')
         }
 
-        // 1. Invite User (sends magic link)
-        const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-            data: {
-                first_name: firstName,
-                last_name: lastName,
-                role: role || 'representative'
-            }
-        })
+        // 1. Check if user already exists in auth.users
+        const { data: existingUserSearch } = await supabaseAdmin.auth.admin.listUsers();
+        const existingUser = existingUserSearch.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
-        if (inviteError) throw inviteError
+        let targetUserId: string;
 
-        if (!inviteData.user) throw new Error('Failed to create invitation')
+        if (existingUser) {
+            console.log('User already exists, updating existing record:', existingUser.id);
+            targetUserId = existingUser.id;
 
-        // 2. Insert/Update Profile with 'pending' status
+            // Optionally update their metadata if needed
+            await supabaseAdmin.auth.admin.updateUserById(targetUserId, {
+                user_metadata: { first_name: firstName, last_name: lastName, role: role || 'representative' }
+            });
+        } else {
+            // 2. Invite New User (sends magic link)
+            const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    role: role || 'representative'
+                }
+            })
+
+            if (inviteError) throw inviteError
+            if (!inviteData.user) throw new Error('Failed to create invitation')
+            targetUserId = inviteData.user.id;
+        }
+
+        // 3. Insert/Update Profile (using onConflict to avoid duplicate key errors)
         const { error: profileError } = await supabaseAdmin
             .from('profiles')
             .upsert({
-                user_id: inviteData.user.id,
+                user_id: targetUserId,
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
                 role: role || 'representative',
                 organization_id: organizationId,
-                invitation_status: 'pending',
+                invitation_status: existingUser ? 'active' : 'pending',
                 is_active: true,
-                created_at: new Date().toISOString()
-            })
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id' })
 
         if (profileError) {
             console.error('Profile creation error:', profileError)
-            throw new Error(`Invitation sent but profile failed: ${profileError.message}`)
+            throw new Error(`Auth logic success but profile update failed: ${profileError.message}`)
         }
 
-        // 3. Insert Role & Zone
+        // 4. Insert/Update Role & Zone
         const { error: roleError } = await supabaseAdmin
             .from('user_roles')
             .upsert({
-                user_id: inviteData.user.id,
+                user_id: targetUserId,
                 role: role || 'representative',
                 zone_id: zoneId || null,
                 organization_id: organizationId,
                 updated_at: new Date().toISOString()
-            })
+            }, { onConflict: 'user_id' })
 
         if (roleError) console.error('Role/Zone assignment error:', roleError)
 
         return new Response(
-            JSON.stringify({ user: inviteData.user, message: 'Invitation sent successfully' }),
+            JSON.stringify({
+                user: { id: targetUserId, email },
+                message: existingUser ? 'User updated successfully' : 'Invitation sent successfully'
+            }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         )
 

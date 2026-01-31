@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     Stethoscope, AlertCircle, Quote, Activity, CheckCircle2, User,
-    BarChart, ShoppingBag, Clock, Tag, FileCheck, DollarSign, Users, Scale
+    BarChart, ShoppingBag, Clock, Tag, FileCheck, DollarSign, Users as UsersIcon, Scale, Leaf as LeafIcon
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { VisitScenario } from "@/services/visitAutomationService";
@@ -425,7 +425,7 @@ function CommerceProfilingForm({ data, onChange, errors = [] }: { data: Commerce
             <AccordionItem value="commerce-3" className="border-white/10">
                 <AccordionTrigger className="text-white hover:text-emerald-400">
                     <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-emerald-400" />
+                        <UsersIcon className="h-4 w-4 text-emerald-400" />
                         <span>3. Perfil de Negocio</span>
                     </div>
                 </AccordionTrigger>
@@ -567,7 +567,7 @@ export function DynamicInterviewForm({ scenario, data, onChange, errors = [], la
 
     // Determine title and icon based on scenario
     let title = isCommerce ? "Perfilamiento Comercial" : "Entrevista Clínica";
-    let Icon = isCommerce ? (entityType === 'natural_store' ? Leaf : Scale) : Stethoscope;
+    let Icon = isCommerce ? (entityType === 'natural_store' ? LeafIcon : Scale) : Stethoscope;
     let colorClass = "text-purple-400";
 
     if (scenario.type === 'conquest') {
@@ -648,12 +648,9 @@ export function validateDynamicInterview(scenario: VisitScenario, data: any, ent
     if (scenario.type === 'conquest') {
         if (isCommerce) {
             const d = data as CommerceProfilingData;
-            const isDoctorSale = entityType === 'doctor'; // If we ever use this for doctors
 
-            // For Doctors, we don't block by documentation
-            if (!isDoctorSale) {
-                if (!d.legal_docs || d.legal_docs.length < 2) errors.push('legal_docs');
-            }
+            // Critical Documentation check for commerce entities
+            if (!d.legal_docs || d.legal_docs.length < 2) errors.push('legal_docs');
 
             if (!d.est_monthly_volume) errors.push('est_monthly_volume');
             if (!d.payment_condition) errors.push('payment_condition');

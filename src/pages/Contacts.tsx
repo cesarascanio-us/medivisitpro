@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Building2, Edit, Printer, Download, Trash2, Upload, HelpCircle, FileSpreadsheet, Leaf } from "lucide-react";
+import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Building2, Edit, Printer, Download, Trash2, Upload, HelpCircle, FileSpreadsheet, Leaf as LeafIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -358,7 +358,7 @@ export default function Contacts() {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-12 w-12 border-2 border-background shadow-sm ring-1 ring-border">
                     <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold">
-                      {contact.contact_type === 'natural_store' || contact.contact_type === 'drugstore' ? <Leaf className="h-6 w-6" /> : (contact.name || '').split(' ').map((n: string) => n[0]).join('')}
+                      {contact.contact_type === 'natural_store' || contact.contact_type === 'drugstore' ? <LeafIcon className="h-6 w-6" /> : (contact.name || '').split(' ').map((n: string) => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div>

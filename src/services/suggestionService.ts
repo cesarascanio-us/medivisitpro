@@ -212,12 +212,15 @@ export function autoAssignRepresentatives(
             }
 
             // 2. Specialty overlap (Simulated)
-            // Representatives could have a "primary_area" or "specialty" field
-            if (rep.therapeutic_area && doctor.specialty) {
+            // Skip specialty matching for non-doctor types unless they have special data
+            if (doctor.contact_type === 'doctor' && rep.therapeutic_area && doctor.specialty) {
                 const therapeuticAreas = SPECIALTY_THERAPEUTIC_MAP[doctor.specialty] || [];
                 if (therapeuticAreas.some(ta => rep.therapeutic_area.toLowerCase().includes(ta.toLowerCase()))) {
                     score += 40;
                 }
+            } else if (doctor.contact_type !== 'doctor') {
+                // For POS, we might have other scoring factors later, but for now just zone is enough (+99 for zone match)
+                score += 40; // High score just for being in the same zone
             }
 
             // 3. Workload balance (Simulated)

@@ -3,8 +3,9 @@ import { InstructionCard } from "@/components/ui/InstructionCard";
 import {
     Plus, Building2, Phone, Mail, MapPin, Search, Store, Send, Package,
     Clock, CheckCircle, XCircle, Eye, Download, Trash2, History, FileText,
-    RefreshCw, Edit, Building, AlertCircle, Calendar, Upload, Printer, HelpCircle, FileSpreadsheet, ClipboardList, Lightbulb
+    RefreshCw, Edit, Building, AlertCircle, Calendar, Upload, Printer, HelpCircle, FileSpreadsheet, ClipboardList, Lightbulb, Leaf as LeafIcon, Users as UsersIcon
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -175,6 +176,7 @@ const ACTION_LABELS: Record<string, { label: string; color: string }> = {
 export default function Pharmacies() {
     const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
     const { toast } = useToast();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("pharmacies");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [pharmacyImporting, setPharmacyImporting] = useState(false);
@@ -188,6 +190,7 @@ export default function Pharmacies() {
 
     // Pharmacies state
     const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
+    const [naturalStores, setNaturalStores] = useState<any[]>([]); // New state for natural stores
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -370,6 +373,19 @@ export default function Pharmacies() {
                 console.error('Error loading pharmacies:', pharmaciesRes.error);
             }
             setPharmacies((pharmaciesRes.data as unknown as Pharmacy[]) || []);
+
+            // Load natural stores
+            let naturalStoresQuery = supabase
+                .from('contacts')
+                .select('*')
+                .eq('contact_type', 'natural_store');
+
+            naturalStoresQuery = applyFilters(naturalStoresQuery, 'user_id');
+            const naturalStoresRes = await naturalStoresQuery.order('name', { ascending: true });
+            if (naturalStoresRes.error) {
+                console.error('Error loading natural stores:', naturalStoresRes.error);
+            }
+            setNaturalStores(naturalStoresRes.data || []);
 
             // Load drugstores
             let drugstoresQuery = supabase.from('drugstores' as any).select('*').eq('is_active', true);
@@ -1109,10 +1125,13 @@ export default function Pharmacies() {
         return matchesSearch && matchesStatus;
     });
 
-    const filteredPharmacies = pharmacies.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (p.city && p.city.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const filteredPharmacies = (activeTab === 'all'
+        ? [...pharmacies, ...naturalStores, ...drugstores]
+        : activeTab === 'natural_store' ? naturalStores : pharmacies)
+        .filter(p =>
+            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (p.city && p.city.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
 
     const getPharmacyStats = (pharmacyId: string) => {
         const pharmacyStock = allStock.filter(s => s.pharmacy_id === pharmacyId);
@@ -1235,12 +1254,18 @@ export default function Pharmacies() {
 
             {/* Main Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid grid-cols-3 w-full max-w-lg">
+                <TabsList className="grid grid-cols-5 w-full max-w-2xl">
                     <TabsTrigger value="pharmacies" className="flex items-center gap-2">
                         <Store className="h-4 w-4" /> Farmacias
                     </TabsTrigger>
+                    <TabsTrigger value="natural_store" className="flex items-center gap-2">
+                        <LeafIcon className="h-4 w-4" /> Naturistas
+                    </TabsTrigger>
                     <TabsTrigger value="drugstores" className="flex items-center gap-2">
                         <Building className="h-4 w-4" /> Droguerías
+                    </TabsTrigger>
+                    <TabsTrigger value="all" className="flex items-center gap-2">
+                        <UsersIcon className="h-4 w-4" /> Ver Todo
                     </TabsTrigger>
                     <TabsTrigger value="transfers" className="flex items-center gap-2">
                         <Send className="h-4 w-4" /> Transferencias
@@ -1906,6 +1931,102 @@ export default function Pharmacies() {
                             </Table>
                         </CardContent>
                     </Card>
+                </TabsContent>
+
+                <TabsContent value="natural_store" className="space-y-4">
+                    <div className="flex gap-4">
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Buscar tiendas..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+                        </div>
+                        <Button
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                            onClick={() => navigate('/natural-stores')}
+                        >
+                            <Plus className="h-4 w-4 mr-2" /> Nueva Tienda
+                        </Button>
+                    </div>
+
+                    {filteredPharmacies.length === 0 ? (
+                        <Card className="medical-card p-12 text-center">
+                            <LeafIcon className="h-12 w-12 mx-auto mb-4 opacity-10 text-emerald-500" />
+                            <p className="text-muted-foreground">No se encontraron tiendas naturistas registradas</p>
+                        </Card>
+                    ) : (
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                            {filteredPharmacies.map(store => (
+                                <Card
+                                    key={store.id}
+                                    className="hover:shadow-lg transition-shadow border-l-4 border-l-emerald-500/50 cursor-pointer"
+                                    onClick={() => handleViewPharmacy(store)}
+                                >
+                                    <CardHeader className="pb-3 border-b bg-emerald-50/20">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <CardTitle className="text-lg font-bold text-emerald-800">{store.name}</CardTitle>
+                                                <p className="text-xs text-muted-foreground flex items-center mt-1">
+                                                    <MapPin className="h-3 w-3 mr-1" /> {store.address || store.city || 'Dirección parcial'}
+                                                </p>
+                                            </div>
+                                            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">POS</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-4">
+                                        <div className="flex justify-between text-sm text-muted-foreground font-medium">
+                                            <span>{store.rif}</span>
+                                            <span>{store.phone || 'S/T'}</span>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
+                </TabsContent>
+
+                <TabsContent value="all" className="space-y-4">
+                    <div className="flex gap-4">
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Buscar todo (Farmacias, Droguerías, Naturistas)..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+                        </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {filteredPharmacies.length === 0 ? (
+                            <div className="col-span-full text-center p-12 bg-muted/20 rounded-xl border border-dashed">
+                                <UsersIcon className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                                <p className="text-muted-foreground">No se encontraron resultados en ninguna categoría</p>
+                            </div>
+                        ) : (
+                            filteredPharmacies.map(item => (
+                                <Card
+                                    key={item.id}
+                                    className="hover:shadow-lg transition-shadow border-l-4 border-l-primary/50 cursor-pointer"
+                                    onClick={() => handleViewPharmacy(item)}
+                                >
+                                    <CardHeader className="pb-3 border-b bg-muted/20">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <CardTitle className="text-lg font-bold text-primary">{item.name}</CardTitle>
+                                                <p className="text-xs text-muted-foreground flex items-center mt-1">
+                                                    <MapPin className="h-3 w-3 mr-1" /> {item.address || item.city}
+                                                </p>
+                                            </div>
+                                            {getPriorityBadge(item.priority)}
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-4">
+                                        <div className="flex justify-between text-sm items-center">
+                                            <span className="text-xs font-mono">{item.rif}</span>
+                                            <Badge variant="outline" className="text-[10px]">
+                                                {item.contact_type === 'natural_store' ? 'Naturista' : item.contact_type === 'drugstore' ? 'Droguería' : 'Farmacia'}
+                                            </Badge>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        )}
+                    </div>
                 </TabsContent>
             </Tabs>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MapPin, Search, Trash2, Edit, Check, X, Users } from "lucide-react";
+import { Plus, MapPin, Search, Trash2, Edit, Check, X, Users as UsersIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -311,7 +311,7 @@ export default function Zones() {
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="secondary">
-                                                <Users className="h-3 w-3 mr-1" />
+                                                <UsersIcon className="h-3 w-3 mr-1" />
                                                 {zone.user_count || 0}
                                             </Badge>
                                         </TableCell>

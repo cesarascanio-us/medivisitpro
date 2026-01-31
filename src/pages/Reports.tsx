@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  BarChart3, TrendingUp, Download, Calendar, Users,
+  BarChart3, TrendingUp, Download, Calendar, Users as UsersIcon,
   FileText, Target, Award, FileDown, PieChart as PieChartIcon,
   AlertCircle, Map as MapIcon, ShieldAlert, DollarSign
 } from "lucide-react";
@@ -218,7 +218,7 @@ export default function Reports() {
                 </p>
               </div>
               <div className="p-3 bg-warning/10 rounded-xl">
-                <Users className="h-6 w-6 text-warning" />
+                <UsersIcon className="h-6 w-6 text-warning" />
               </div>
             </div>
             <div className="mt-4 space-y-2">

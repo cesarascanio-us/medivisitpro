@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { MapPin, Search, Filter, Users, Building2, Building, Hospital, RefreshCw } from "lucide-react";
+import { MapPin, Search, Filter, Users as UsersIcon, Building2, Building, Hospital, RefreshCw, Leaf as LeafIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,14 +39,18 @@ interface OptimizedRoute {
 const MARKER_COLORS: Record<string, string> = {
     doctor: '#3B82F6',    // Blue
     pharmacy: '#10B981',  // Green
+    natural_store: '#10B981', // Green (Leafy)
+    drugstore: '#8B5CF6', // Purple
     hospital: '#EF4444',  // Red
     clinic: '#F59E0B',    // Amber
 };
 
 const getTypeIcon = (type: string) => {
     switch (type) {
-        case 'doctor': return <Users className="h-4 w-4" />;
+        case 'doctor': return <UsersIcon className="h-4 w-4" />;
         case 'pharmacy': return <Building2 className="h-4 w-4" />;
+        case 'natural_store': return <LeafIcon className="h-4 w-4" />;
+        case 'drugstore': return <Building className="h-4 w-4" />;
         case 'hospital': return <Hospital className="h-4 w-4" />;
         case 'clinic': return <Building className="h-4 w-4" />;
         default: return <MapPin className="h-4 w-4" />;
@@ -55,8 +59,10 @@ const getTypeIcon = (type: string) => {
 
 const getTypeLabel = (type: string) => {
     switch (type) {
-        case 'doctor': return 'MÃ©dico';
+        case 'doctor': return 'Médico';
         case 'pharmacy': return 'Farmacia';
+        case 'natural_store': return 'Tienda Naturista';
+        case 'drugstore': return 'Droguería';
         case 'hospital': return 'Hospital';
         case 'clinic': return 'ClÃ­nica';
         default: return type;
@@ -425,15 +431,6 @@ export default function CoverageMap() {
         return true;
     }), [contacts, showDoctors, showPharmacies, showHospitals, showClinics, searchTerm]);
 
-    const getTypeIcon = (type: string) => {
-        switch (type) {
-            case 'doctor': return <Users className="h-4 w-4" />;
-            case 'pharmacy': return <Building2 className="h-4 w-4" />;
-            case 'hospital': return <Hospital className="h-4 w-4" />;
-            case 'clinic': return <Building className="h-4 w-4" />;
-            default: return <MapPin className="h-4 w-4" />;
-        }
-    };
 
     const getTypeLabel = (type: string) => {
         switch (type) {
@@ -509,7 +506,7 @@ export default function CoverageMap() {
                     <div className="space-y-1 mb-4">
                         {contact.specialty && (
                             <p className="text-xs text-muted-foreground flex items-center">
-                                <Users className="h-3 w-3 mr-1" /> {contact.specialty}
+                                <UsersIcon className="h-3 w-3 mr-1" /> {contact.specialty}
                             </p>
                         )}
                         {contact.address && (
@@ -568,7 +565,7 @@ export default function CoverageMap() {
                 <Card className="medical-card">
                     <CardContent className="p-4 flex items-center space-x-3">
                         <div className="p-2 rounded-full bg-blue-100">
-                            <Users className="h-5 w-5 text-blue-600" />
+                            <UsersIcon className="h-5 w-5 text-blue-600" />
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{stats.doctors}</p>

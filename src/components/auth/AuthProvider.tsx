@@ -3,8 +3,7 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 
-// Master user emails - have full access
-const MASTER_EMAILS = ['cesar.ascanio@gmail.com'];
+// Demo user - fixed context for trials
 const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 
@@ -165,33 +164,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!email) return;
 
         const lowerEmail = email.trim().toLowerCase();
-        const isMasterByEmail = MASTER_EMAILS.some(m => m.toLowerCase() === lowerEmail);
         const demoEmailLower = DEMO_EMAIL.trim().toLowerCase();
-
         const isHardcodedDemo = lowerEmail === demoEmailLower;
 
-        // [NUCLEAR FAIL-SAFE] Absolute Bypass
-        if (isMasterByEmail || isHardcodedDemo) {
-            console.log('AuthProvider: NUCLEAR BYPASS triggered for', lowerEmail);
-            const finalRole = isMasterByEmail ? 'master' : 'representative';
-            const finalOrgId = isMasterByEmail ? null : DEMO_ORG_ID;
-
+        // [DEMO FAIL-SAFE] Only for the public demo account
+        if (isHardcodedDemo) {
+            console.log('AuthProvider: DEMO context triggered for', lowerEmail);
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
-                role: finalRole as UserRole,
-                organization_id: finalOrgId,
+                role: 'representative',
+                organization_id: DEMO_ORG_ID,
                 zone_id: null,
                 state: null,
                 region: null,
-                is_master: isMasterByEmail
+                is_master: false
             };
 
             setProfile(combinedProfile);
-            setRole(finalRole as UserRole);
-            setPermissions(['*']); // Master gets all
+            setRole('representative');
+            setPermissions([]);
             setLoading(false);
-            return; // EXIT IMMEDIATELY - DO NOT PROCEED TO TRY/CATCH
+            return;
         }
 
         try {
@@ -379,7 +373,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Audit Mode
         isAuditMode: !!auditOrgId,
-        isSystemAdmin: (user?.email ? MASTER_EMAILS.some(m => m.toLowerCase() === user.email.toLowerCase()) : false) || profile?.is_master === true || originalRole === 'master',
+        isSystemAdmin: profile?.role === 'master' || profile?.is_master === true || originalRole === 'master',
         enterAuditMode,
         exitAuditMode,
         organizationName,
