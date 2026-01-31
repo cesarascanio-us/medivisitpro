@@ -135,6 +135,9 @@ const REPRESENTATIVE_NAV = [
       { name: "Contactos", href: "/contacts", icon: Users }, // Restored
       { name: "Fichero Médico", href: "/doctors", icon: Stethoscope },
       { name: "Farmacias", href: "/pharmacies", icon: Store },
+      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
+      { name: "Droguerías", href: "/drugstores", icon: Truck },
+      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
     ]
   },
   {
