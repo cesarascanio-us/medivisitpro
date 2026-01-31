@@ -146,6 +146,7 @@ const REPRESENTATIVE_NAV = [
     items: [
       { name: "Mis Visitas", href: "/visits", icon: FileText },
       { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck },
+      { name: "Objetivos & Metas", href: "/objectives", icon: Target },
       { name: "Planificador", href: "/planner", icon: ClipboardList },
       { name: "Gastos", href: "/expenses", icon: DollarSign },
     ]
@@ -155,6 +156,8 @@ const REPRESENTATIVE_NAV = [
     items: [
       { name: "Muestras", href: "/muestras", icon: Pill },
       { name: "Catálogo", href: "/products", icon: Package },
+      { name: "Mis Activos", href: "/resources/assets", icon: Boxes },
+      { name: "Procesos", href: "/work-processes", icon: GitBranch },
       { name: "Mapa", href: "/coverage-map", icon: Map },
     ]
   }
