@@ -218,7 +218,7 @@ const MASTER_SAAS_NAV = [
 // ... (Existing Constants)
 
 const ADMIN_NAV = [
-  ...MANAGER_NAV,
+  ...OPERATIONAL_NAV,
   {
     title: "ADMINISTRACIÓN EMPRESARIAL",
     items: [
@@ -258,11 +258,11 @@ const getNavigationGroups = () => {
 
   // 3. ROLE SPECIFIC NAV
 
-  // Level 1: Company Owners & Support (Golden Tier)
+  // Level 1: Company Owners & Support
   // Manager (Client Owner) and Admin (SaaS Support) see everything including Business Settings
   if (isManager || isAdmin) return ADMIN_NAV;
 
-  // Level 2: High Level Operations (Silver Tier)
+  // Level 2: High Level Operations (Chiefs)
   // Chiefs run the operation but don't own the business settings
   if (isChief) return OPERATIONAL_NAV;
 
