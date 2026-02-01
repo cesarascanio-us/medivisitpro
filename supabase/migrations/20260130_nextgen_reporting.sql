@@ -52,3 +52,10 @@ FROM transfer_order_items ti
 WHERE t.status != 'cancelled'
     AND date_trunc('month', t.created_at) = date_trunc('month', now())
 GROUP BY p.category;
+-- GRANT PERMISSIONS FOR API ACCESS
+GRANT SELECT ON view_gerencial_kpis TO authenticated;
+GRANT SELECT ON view_gerencial_kpis TO service_role;
+GRANT SELECT ON view_ventas_por_zona TO authenticated;
+GRANT SELECT ON view_ventas_por_zona TO service_role;
+GRANT SELECT ON view_product_mix TO authenticated;
+GRANT SELECT ON view_product_mix TO service_role;

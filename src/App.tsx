@@ -301,40 +301,13 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/billing" element={
-                  <ProtectedRoute allowedRoles={['master']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><Billing /></Layout>
                   </ProtectedRoute>
                 } />
-                <Route path="/planning/cycles" element={
+                <Route path="/logs" element={
                   <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                    <Layout><CyclesPage /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/planning/weekly" element={
-                  <ProtectedRoute>
-                    <Layout><WeeklyScheduler /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/visits/execution/:id" element={
-                  <ProtectedRoute>
-                    <Layout><VisitExecutionPage /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/commercial/builder" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'representative']}>
-                    <Layout><OrderBuilder /></Layout>
-                  </ProtectedRoute>
-                } />
-
-                <Route path="/resources/expenses" element={
-                  <ProtectedRoute>
-                    <Layout><ExpenseReport /></Layout>
-                  </ProtectedRoute>
-                } />
-
-                <Route path="/resources/assets" element={
-                  <ProtectedRoute>
-                    <Layout><AssetList /></Layout>
+                    <Layout><AuditLogs /></Layout>
                   </ProtectedRoute>
                 } />
 
@@ -345,12 +318,12 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/master/logs" element={
-                  <ProtectedRoute allowedRoles={['master']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><AuditLogs /></Layout>
                   </ProtectedRoute>
                 } />
                 <Route path="/master/billing" element={
-                  <ProtectedRoute allowedRoles={['master']}>
+                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
                     <Layout><BillingManager /></Layout>
                   </ProtectedRoute>
                 } />
