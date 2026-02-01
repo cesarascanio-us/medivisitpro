@@ -33,7 +33,7 @@ export default function AuditLogs() {
         setLoading(true);
         // Cast table name to any/string to bypass strict type check for new table
         let query = supabase
-            .from('system_audit_logs')
+            .from('audit_logs')
             .select('*')
             .order('created_at', { ascending: false })
             .limit(100);
