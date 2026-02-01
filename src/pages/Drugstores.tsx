@@ -16,7 +16,8 @@ import {
     RefreshCw,
     Navigation,
     Calendar,
-    ShoppingCart
+    ShoppingCart,
+    Package
 } from "lucide-react";
 import {
     Card,
