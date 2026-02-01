@@ -60,7 +60,7 @@ const SYSTEM_ADMIN_NAV = [
     ]
   },
   {
-    title: "INTELIGENCIA & EXPLORACIÓN",
+    title: "GESTIÓN COMERCIAL & EQUIPO",
     items: [
       { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
       { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
@@ -94,38 +94,38 @@ const SYSTEM_ADMIN_NAV = [
   }
 ];
 
-const MANAGER_NAV = [
+const OPERATIONAL_NAV = [
   {
-    title: "Gestión Local",
+    title: "GESTIÓN COMERCIAL & EQUIPO",
     items: [
-      { name: "Mi Dashboard", href: "/dashboard", icon: Home },
-      { name: "Mi Equipo", href: "/users", icon: Users },
-      { name: "Contactos", href: "/contacts", icon: Users }, // Restored
+      { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
+      { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
+      { name: "Planificación & Ciclos", href: "/planning/cycles", icon: Layers },
+      { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
+    ]
+  },
+  {
+    title: "OPERACIÓN DE CAMPO",
+    items: [
+      { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
+      { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
+      { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
       { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
+      { name: "Droguerías", href: "/drugstores", icon: Truck },
       { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
-      { name: "Zona / Territorio", href: "/zones", icon: Map },
-      { name: "Reportes Venta", href: "/reports", icon: BarChart3 },
+      { name: "Rutas y Territorios", href: "/visits", icon: FileText },
+      { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
+      { name: "Cobertura Global", href: "/coverage-map", icon: Map },
     ]
   },
   {
-    title: "Operaciones",
+    title: "INVENTARIO & RECURSOS",
     items: [
-      { name: "Objetivos & Metas", href: "/objectives", icon: Target }, // Restored
-      { name: "Eventos & Congresos", href: "/events", icon: CalendarCheck }, // Restored
-      { name: "Ciclos Promo", href: "/promotional-cycles", icon: RefreshCw },
-      { name: "Planificación", href: "/planning/cycles", icon: Layers },
+      { name: "Catálogo Maestro", href: "/products", icon: Package },
       { name: "Control Almacén", href: "/warehouse", icon: Boxes },
-      { name: "Transfer Orders", href: "/transfer-orders", icon: Truck },
-      { name: "Gastos", href: "/expenses", icon: DollarSign }, // Restored
-    ]
-  },
-  {
-    title: "Catálogo & Stock",
-    items: [
-      { name: "Productos", href: "/products", icon: Package },
-      { name: "Muestras", href: "/muestras", icon: Pill },
+      { name: "Muestras Médicas", href: "/muestras", icon: Pill },
       { name: "Material POP", href: "/material-pop", icon: Megaphone },
-      { name: "Procesos", href: "/work-processes", icon: GitBranch }, // Restored
+      { name: "Agenda Global", href: "/agenda", icon: Calendar },
     ]
   }
 ];
@@ -217,12 +217,24 @@ const MASTER_SAAS_NAV = [
 
 // ... (Existing Constants)
 
+const ADMIN_NAV = [
+  ...MANAGER_NAV,
+  {
+    title: "ADMINISTRACIÓN EMPRESARIAL",
+    items: [
+      { name: "Configuración General", href: "/settings", icon: Settings },
+      { name: "Suscripción y Pagos", href: "/billing", icon: DollarSign }, // Placeholder for future tenant billing
+      { name: "Auditoría Interna", href: "/logs", icon: Shield }, // Placeholder for tenant logs
+    ]
+  }
+];
+
 // --- SELECT NAVIGATION BY ROLE ---
 const getNavigationGroups = () => {
   // 1. MASTER - THE POWER OF ALL (God Mode vs SaaS Mode)
   if (isMaster || isSystemAdmin) {
     // If Master has selected an Organization (Drill-down / Impersonation Mode)
-    // Show the full Operational Suite for that Org
+    // Show the full Operational Suite for that Org (SYSTEM_ADMIN_NAV is now synced with MANAGER_NAV concept + Master tools)
     if (organizationId) {
       return SYSTEM_ADMIN_NAV;
     }
@@ -246,8 +258,13 @@ const getNavigationGroups = () => {
 
   // 3. ROLE SPECIFIC NAV
 
-  // Level 2: Manager / General Admin
-  if (isManager || isAdmin || isChief) return MANAGER_NAV;
+  // Level 1: Company Owners & Support (Golden Tier)
+  // Manager (Client Owner) and Admin (SaaS Support) see everything including Business Settings
+  if (isManager || isAdmin) return ADMIN_NAV;
+
+  // Level 2: High Level Operations (Silver Tier)
+  // Chiefs run the operation but don't own the business settings
+  if (isChief) return OPERATIONAL_NAV;
 
   // Level 3: Coordinator / Supervisor (Team Leaders)
   if (isCoordinator || isSupervisor) return COORDINATOR_NAV;
