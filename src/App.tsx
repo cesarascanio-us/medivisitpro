@@ -1,4 +1,4 @@
-// MediVisitPro - Clean Production v1.0.1 - 2025-12-28
+// MediVisitPro - Optimized with Lazy Loading & SEO
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,63 +6,79 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import AuthPage from "./pages/AuthPage";
-import LandingPage from "./pages/LandingPage";
-import DashboardRouter from "./pages/DashboardRouter";
-import Dashboard from "./pages/Dashboard";
-import DashboardSupervisor from "./pages/DashboardSupervisor";
-import Agenda from "./pages/Agenda";
-import Contacts from "./pages/Contacts";
-import Visits from "./pages/Visits";
-import Products from "./pages/Products";
-import Reports from "./pages/Reports";
-import HealthCenters from "./pages/HealthCenters";
-import NotFound from "./pages/NotFound";
-import Settings from "./pages/Settings";
-import WorkProcesses from "./pages/WorkProcesses";
-import Events from "./pages/Events";
-import Objectives from "./pages/Objectives";
-import Samples from "./pages/Samples";
-import MaterialPOP from "./pages/MaterialPOP";
-import SampleBanks from "./pages/SampleBanks";
-import Expenses from "./pages/Expenses";
-import Notifications from "./pages/Notifications";
-import Help from "./pages/Help";
-import Planner from "./pages/Planner";
-import Doctors from "./pages/Doctors";
-import Pharmacies from "./pages/Pharmacies";
-import NaturalStores from "./pages/NaturalStores";
-import Specialties from "./pages/Specialties";
-import Drugstores from "./pages/Drugstores";
-import DemoPage from "./pages/DemoPage";
-
-import Users from "./pages/Users";
-import Zones from "./pages/Zones";
-import MasterPanel from "./pages/MasterPanel";
-import TransferOrders from "./pages/TransferOrders";
-import CoverageMap from "./pages/CoverageMap";
-import PromotionalCycles from "./pages/PromotionalCycles";
-import DashboardMaster from "./pages/DashboardMaster";
-import CyclesPage from "./pages/Planning/Cycles";
-import WeeklyScheduler from "./pages/Planning/WeeklyScheduler";
-import VisitExecutionPage from "./pages/Visits/VisitExecution";
-import OrderBuilder from "./pages/Commercial/OrderBuilder";
-import ExpenseReport from "./pages/Expenses/ExpenseReport";
-import AssetList from "./pages/Resources/AssetList";
-import PublicProductPage from "./pages/Public/ProductPage";
-import Documentation from "./pages/Documentation";
-import Billing from "./pages/Billing";
-import TicketList from "./pages/Master/Tickets/TicketList";
-import AuditLogs from "./pages/Master/Logs/AuditLogs";
-import BillingManager from "./pages/Master/Billing/BillingManager";
-import SystemAlerts from "./pages/Master/Reminders/SystemAlerts";
-import PlanManager from "./pages/Master/Memberships/PlanManager";
 import { OrganizationProvider } from "./hooks/useOrganization";
 import { AuthProvider } from "./components/auth/AuthProvider";
-import OnboardingWizard from "./components/onboarding/OnboardingWizard";
+import { DemoDataSeeder } from "@/components/demo/DemoDataSeeder";
+import { MockDataProvider } from "@/contexts/MockDataProvider";
+import { HelmetProvider } from 'react-helmet-async';
+import { Suspense, lazy } from "react";
+import { Loader2 } from "lucide-react";
 
-import WarehouseLayout from "@/components/warehouse/WarehouseLayout";
+// Eager load critical pages for faster First Contentful Paint (FCP)
+import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
 
+// Lazy load everything else to reduce initial bundle size
+const DashboardRouter = lazy(() => import("./pages/DashboardRouter"));
+// const Dashboard = lazy(() => import("./pages/Dashboard")); // Not directly used in routes?
+// const DashboardSupervisor = lazy(() => import("./pages/DashboardSupervisor"));
+const Agenda = lazy(() => import("./pages/Agenda"));
+const Contacts = lazy(() => import("./pages/Contacts"));
+const Visits = lazy(() => import("./pages/Visits"));
+const Products = lazy(() => import("./pages/Products"));
+const Reports = lazy(() => import("./pages/Reports"));
+const HealthCenters = lazy(() => import("./pages/HealthCenters"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Settings = lazy(() => import("./pages/Settings"));
+const WorkProcesses = lazy(() => import("./pages/WorkProcesses"));
+const Events = lazy(() => import("./pages/Events"));
+const Objectives = lazy(() => import("./pages/Objectives"));
+const Samples = lazy(() => import("./pages/Samples"));
+const MaterialPOP = lazy(() => import("./pages/MaterialPOP"));
+const SampleBanks = lazy(() => import("./pages/SampleBanks"));
+const Expenses = lazy(() => import("./pages/Expenses"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const Help = lazy(() => import("./pages/Help"));
+const Planner = lazy(() => import("./pages/Planner"));
+const Doctors = lazy(() => import("./pages/Doctors"));
+const Pharmacies = lazy(() => import("./pages/Pharmacies"));
+const NaturalStores = lazy(() => import("./pages/NaturalStores"));
+const Specialties = lazy(() => import("./pages/Specialties"));
+const Drugstores = lazy(() => import("./pages/Drugstores"));
+const DemoPage = lazy(() => import("./pages/DemoPage"));
+
+const Users = lazy(() => import("./pages/Users"));
+const Zones = lazy(() => import("./pages/Zones"));
+const MasterPanel = lazy(() => import("./pages/MasterPanel"));
+const TransferOrders = lazy(() => import("./pages/TransferOrders"));
+const CoverageMap = lazy(() => import("./pages/CoverageMap"));
+const PromotionalCycles = lazy(() => import("./pages/PromotionalCycles"));
+const DashboardMaster = lazy(() => import("./pages/DashboardMaster"));
+
+// const CyclesPage = lazy(() => import("./pages/Planning/Cycles"));
+// const WeeklyScheduler = lazy(() => import("./pages/Planning/WeeklyScheduler"));
+// const VisitExecutionPage = lazy(() => import("./pages/Visits/VisitExecution"));
+// const OrderBuilder = lazy(() => import("./pages/Commercial/OrderBuilder"));
+// const ExpenseReport = lazy(() => import("./pages/Expenses/ExpenseReport"));
+// const AssetList = lazy(() => import("./pages/Resources/AssetList"));
+const PublicProductPage = lazy(() => import("./pages/Public/ProductPage"));
+const Documentation = lazy(() => import("./pages/Documentation"));
+const Billing = lazy(() => import("./pages/Billing"));
+const TicketList = lazy(() => import("./pages/Master/Tickets/TicketList"));
+const AuditLogs = lazy(() => import("./pages/Master/Logs/AuditLogs"));
+const BillingManager = lazy(() => import("./pages/Master/Billing/BillingManager"));
+const SystemAlerts = lazy(() => import("./pages/Master/Reminders/SystemAlerts"));
+const PlanManager = lazy(() => import("./pages/Master/Memberships/PlanManager"));
+const OnboardingWizard = lazy(() => import("./components/onboarding/OnboardingWizard"));
+
+const WarehouseLayout = lazy(() => import("@/components/warehouse/WarehouseLayout"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,250 +90,248 @@ const queryClient = new QueryClient({
   },
 });
 
-import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
-import { DemoDataSeeder } from "@/components/demo/DemoDataSeeder";
-import { MockDataProvider } from "@/contexts/MockDataProvider";
-
-// Legacy InventorySeeder removed
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <MockDataProvider>
-        <DemoDataSeeder />
-        <OrganizationProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter
-              future={{
-                v7_startTransition: true,
-                v7_relativeSplatPath: true,
-              }}
-            >
+    <HelmetProvider>
+      <AuthProvider>
+        <MockDataProvider>
+          <DemoDataSeeder />
+          <OrganizationProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter
+                future={{
+                  v7_startTransition: true,
+                  v7_relativeSplatPath: true,
+                }}
+              >
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    {/* Public Routes - kept eager for speed */}
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/auth" element={<AuthPage />} />
 
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/demo" element={<DemoPage />} />
-                <Route path="/onboarding" element={
-                  <ProtectedRoute>
-                    <OnboardingWizard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/product/:id" element={<PublicProductPage />} />
+                    {/* Lazy loaded routes */}
+                    <Route path="/demo" element={<DemoPage />} />
+                    <Route path="/onboarding" element={
+                      <ProtectedRoute>
+                        <OnboardingWizard />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/product/:id" element={<PublicProductPage />} />
 
-                {/* Protected Routes */}
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Layout><DashboardRouter /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/agenda" element={
-                  <ProtectedRoute>
-                    <Layout><Agenda /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/planner" element={
-                  <ProtectedRoute>
-                    <Layout><Planner /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/events" element={
-                  <ProtectedRoute>
-                    <Layout><Events /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/contacts" element={
-                  <ProtectedRoute>
-                    <Layout><Contacts /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/doctors" element={
-                  <ProtectedRoute>
-                    <Layout><Doctors /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/pharmacies" element={
-                  <ProtectedRoute>
-                    <Layout><Pharmacies /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/natural-stores" element={
-                  <ProtectedRoute>
-                    <Layout><NaturalStores /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/specialties" element={
-                  <ProtectedRoute>
-                    <Layout><Specialties /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/drugstores" element={
-                  <ProtectedRoute>
-                    <Layout><Drugstores /></Layout>
-                  </ProtectedRoute>
-                } />
+                    {/* Protected Routes */}
+                    <Route path="/dashboard" element={
+                      <ProtectedRoute>
+                        <Layout><DashboardRouter /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/agenda" element={
+                      <ProtectedRoute>
+                        <Layout><Agenda /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/planner" element={
+                      <ProtectedRoute>
+                        <Layout><Planner /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/events" element={
+                      <ProtectedRoute>
+                        <Layout><Events /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/contacts" element={
+                      <ProtectedRoute>
+                        <Layout><Contacts /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/doctors" element={
+                      <ProtectedRoute>
+                        <Layout><Doctors /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/pharmacies" element={
+                      <ProtectedRoute>
+                        <Layout><Pharmacies /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/natural-stores" element={
+                      <ProtectedRoute>
+                        <Layout><NaturalStores /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/specialties" element={
+                      <ProtectedRoute>
+                        <Layout><Specialties /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/drugstores" element={
+                      <ProtectedRoute>
+                        <Layout><Drugstores /></Layout>
+                      </ProtectedRoute>
+                    } />
 
-                <Route path="/warehouse" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'store_manager']}>
-                    <Layout><WarehouseLayout /></Layout>
-                  </ProtectedRoute>
-                } />
+                    <Route path="/warehouse" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'store_manager']}>
+                        <Layout><WarehouseLayout /></Layout>
+                      </ProtectedRoute>
+                    } />
 
-                <Route path="/visits" element={
-                  <ProtectedRoute>
-                    <Layout><Visits /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/products" element={
-                  <ProtectedRoute>
-                    <Layout><Products /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/muestras" element={
-                  <ProtectedRoute>
-                    <Layout><Samples /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/material-pop" element={
-                  <ProtectedRoute>
-                    <Layout><MaterialPOP /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/sample-banks" element={
-                  <ProtectedRoute>
-                    <Layout><SampleBanks /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/objectives" element={
-                  <ProtectedRoute>
-                    <Layout><Objectives /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/expenses" element={
-                  <ProtectedRoute>
-                    <Layout><Expenses /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/reports" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
-                    <Layout><Reports /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/health-centers" element={
-                  <ProtectedRoute>
-                    <Layout><HealthCenters /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/work-processes" element={
-                  <ProtectedRoute>
-                    <Layout><WorkProcesses /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/notifications" element={
-                  <ProtectedRoute>
-                    <Layout><Notifications /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/users" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
-                    <Layout><Users /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/zones" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                    <Layout><Zones /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/master-panel" element={
-                  <ProtectedRoute allowedRoles={['master']}>
-                    <Layout><MasterPanel /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/dashboard-master" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin']}>
-                    <Layout><DashboardMaster /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/settings" element={
-                  <ProtectedRoute>
-                    <Layout><Settings /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/help" element={
-                  <ProtectedRoute>
-                    <Layout><Help /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/transfer-orders" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor', 'representative']}>
-                    <Layout><TransferOrders /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/coverage-map" element={
-                  <ProtectedRoute>
-                    <Layout><CoverageMap /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/promotional-cycles" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
-                    <Layout><PromotionalCycles /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/documentation" element={
-                  <ProtectedRoute>
-                    <Layout><Documentation /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/billing" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                    <Layout><Billing /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/logs" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                    <Layout><AuditLogs /></Layout>
-                  </ProtectedRoute>
-                } />
+                    <Route path="/visits" element={
+                      <ProtectedRoute>
+                        <Layout><Visits /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/products" element={
+                      <ProtectedRoute>
+                        <Layout><Products /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/muestras" element={
+                      <ProtectedRoute>
+                        <Layout><Samples /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/material-pop" element={
+                      <ProtectedRoute>
+                        <Layout><MaterialPOP /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/sample-banks" element={
+                      <ProtectedRoute>
+                        <Layout><SampleBanks /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/objectives" element={
+                      <ProtectedRoute>
+                        <Layout><Objectives /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/expenses" element={
+                      <ProtectedRoute>
+                        <Layout><Expenses /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/reports" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
+                        <Layout><Reports /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/health-centers" element={
+                      <ProtectedRoute>
+                        <Layout><HealthCenters /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/work-processes" element={
+                      <ProtectedRoute>
+                        <Layout><WorkProcesses /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/notifications" element={
+                      <ProtectedRoute>
+                        <Layout><Notifications /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/users" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
+                        <Layout><Users /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/zones" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                        <Layout><Zones /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/master-panel" element={
+                      <ProtectedRoute allowedRoles={['master']}>
+                        <Layout><MasterPanel /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/dashboard-master" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin']}>
+                        <Layout><DashboardMaster /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/settings" element={
+                      <ProtectedRoute>
+                        <Layout><Settings /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/help" element={
+                      <ProtectedRoute>
+                        <Layout><Help /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/transfer-orders" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor', 'representative']}>
+                        <Layout><TransferOrders /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/coverage-map" element={
+                      <ProtectedRoute>
+                        <Layout><CoverageMap /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/promotional-cycles" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
+                        <Layout><PromotionalCycles /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/documentation" element={
+                      <ProtectedRoute>
+                        <Layout><Documentation /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/billing" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                        <Layout><Billing /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/logs" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                        <Layout><AuditLogs /></Layout>
+                      </ProtectedRoute>
+                    } />
 
-                {/* Master SaaS Modules */}
-                <Route path="/master/tickets" element={
-                  <ProtectedRoute allowedRoles={['master']}>
-                    <Layout><TicketList /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/master/logs" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                    <Layout><AuditLogs /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/master/billing" element={
-                  <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                    <Layout><BillingManager /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/master/alerts" element={
-                  <ProtectedRoute allowedRoles={['master']}>
-                    <Layout><SystemAlerts /></Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/master/plans" element={
-                  <ProtectedRoute allowedRoles={['master']}>
-                    <Layout><PlanManager /></Layout>
-                  </ProtectedRoute>
-                } />
+                    {/* Master SaaS Modules */}
+                    <Route path="/master/tickets" element={
+                      <ProtectedRoute allowedRoles={['master']}>
+                        <Layout><TicketList /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/master/logs" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                        <Layout><AuditLogs /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/master/billing" element={
+                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                        <Layout><BillingManager /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/master/alerts" element={
+                      <ProtectedRoute allowedRoles={['master']}>
+                        <Layout><SystemAlerts /></Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/master/plans" element={
+                      <ProtectedRoute allowedRoles={['master']}>
+                        <Layout><PlanManager /></Layout>
+                      </ProtectedRoute>
+                    } />
 
-                {/* Catch-all */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </OrganizationProvider>
-      </MockDataProvider>
-    </AuthProvider>
+                    {/* Catch-all */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </TooltipProvider>
+          </OrganizationProvider>
+        </MockDataProvider>
+      </AuthProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 

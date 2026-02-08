@@ -11,66 +11,116 @@ import {
   Package,
   ArrowRight,
   CheckCircle2,
-  Loader2,
-  Rocket
+  Rocket,
+  ShieldCheck,
+  Zap,
+  Smartphone
 } from 'lucide-react';
 import { AppShowcaseCarousel } from '@/components/common/AppShowcaseCarousel';
+import { SEO } from '@/components/common/SEO';
+import { trackEvent } from '@/lib/analytics';
+import { PricingSection } from '@/components/landing/PricingSection';
+import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
 
 const features = [
   {
     icon: Calendar,
-    title: 'Agenda Inteligente',
-    description: 'Planifica y organiza tus visitas médicas con un calendario optimizado.'
+    title: 'Recupera 10+ Horas Semanales',
+    description: 'Olvídate de organizar la agenda manualmente. Nuestro algoritmo optimiza tus rutas y visitas automáticamente.'
   },
   {
     icon: Users,
-    title: 'Gestión de Contactos',
-    description: 'Mantén un registro completo de médicos, farmacias y centros de salud.'
+    title: 'Relaciones que Generan Ventas',
+    description: 'Historial detallado de cada médico y farmacia. Llega a la visita sabiendo exactamente qué necesitan.'
   },
   {
     icon: BarChart3,
-    title: 'Reportes y Analytics',
-    description: 'Analiza tu rendimiento con métricas en tiempo real y reportes detallados.'
-  },
-  {
-    icon: MapPin,
-    title: 'Cobertura Geográfica',
-    description: 'Visualiza tu territorio y optimiza rutas de visitas.'
+    title: 'Tus Métricas, Tu Ascenso',
+    description: 'Demuestra tu rendimiento con reportes automáticos. KPIs claros para negociar tus comisiones.'
   },
   {
     icon: Package,
-    title: 'Control de Muestras',
-    description: 'Gestiona inventario de muestras médicas y material promocional.'
+    title: 'Cero Muestras Perdidas',
+    description: 'Control total de tu inventario promocional. Nunca más te quedes sin material para un médico clave.'
   },
   {
-    icon: CheckCircle2,
-    title: 'Objetivos y KPIs',
-    description: 'Define metas mensuales y haz seguimiento de tu progreso.'
+    icon: ShieldCheck,
+    title: 'Funciona Offline',
+    description: '¿Sin señal en el hospital? No hay problema. Tu información está siempre disponible y se sincroniza después.'
+  },
+  {
+    icon: Smartphone,
+    title: 'Oficina en tu Bolsillo',
+    description: 'Toda la potencia de un CRM corporativo, diseñado para la pantalla de tu móvil.'
   }
 ];
 
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MediVisit Pro",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web, Android, iOS",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "ratingCount": "520"
+  },
+  "description": "Plataforma integral para la gestión de visitas médicas. Optimiza rutas, controla inventario y mejora el rendimiento comercial.",
+  "featureList": "Agenda Inteligente, CRM Médico, Control de Muestras, Reportes Offline"
+};
+
 export default function LandingPage() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  // No longer auto-redirecting to dashboard to allow user to see landing page
-  // useEffect(() => {
-  //   if (!loading && user) {
-  //     console.log('User authenticated, redirecting to dashboard...');
-  //     navigate('/dashboard');
-  //   }
-  // }, [user, loading, navigate]);
+  useEffect(() => {
+    trackEvent('view_landing');
+  }, []);
 
   const handleAuthNavigation = () => {
     if (user) {
       navigate('/dashboard');
     } else {
+      trackEvent('click_login');
       navigate('/auth');
     }
   };
 
+  const handleStartFree = () => {
+    trackEvent('click_start_free');
+    handleAuthNavigation();
+  };
+
+  const handleDemo = () => {
+    trackEvent('click_demo');
+    navigate('/demo');
+  };
+
+  const handleWhatsApp = () => {
+    trackEvent('click_whatsapp');
+    window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20MediVisitPro,%20quiero%20mejorar%20mis%20ventas", "_blank");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-x-hidden">
+      <SEO
+        title="MediVisit Pro - Aumenta tus Prescripciones Médicas"
+        description="El arma secreta de los visitadores médicos top. Gestiona territorio, muestras y objetivos en una sola app. Pruébalo gratis hoy."
+        keywords="visitador médico app, crm visita médica, gestión farmacéutica, control muestras médicas, software visitadores"
+        canonical="https://medivisitpro.com/"
+      />
+
+      {/* Schema.org Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify(schemaData)}
+      </script>
+
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,7 +133,7 @@ export default function LandingPage() {
             </div>
             <Button
               onClick={handleAuthNavigation}
-              className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5"
+              className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all font-medium"
             >
               {user ? 'Ir al Dashboard' : 'Iniciar Sesión'}
             </Button>
@@ -92,82 +142,86 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              Plataforma Profesional para Visitadores Médicos
+              Nuevo: Modo Offline Inteligente
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6">
-              Gestiona tus visitas médicas
-              <span className="block mt-2 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
-                de forma inteligente
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
+              Domina tu Territorio.
+              <span className="block mt-2 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent pb-2">
+                Supera tus Cuotas.
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              La solución integral para representantes médicos. Organiza tu agenda,
-              gestiona contactos, controla muestras y alcanza tus objetivos comerciales.
+            <p className="text-lg sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+              Deja de perder tiempo en reportes y enfócate en lo que importa: <strong>las relaciones con tus médicos</strong>.
+              La única herramienta diseñada por y para visitadores de alto rendimiento.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
               <Button
-                onClick={() => navigate('/demo')}
+                onClick={handleDemo}
                 size="lg"
-                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 px-10 h-14 text-lg font-bold relative overflow-hidden group"
+                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 px-10 h-16 text-lg font-bold rounded-xl"
               >
-                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
-                <Rocket className="mr-3 h-6 w-6 animate-bounce" />
-                Probar Demo Gratis
-                <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <Rocket className="mr-3 h-6 w-6" />
+                Probar Demo Interactiva
               </Button>
               <Button
-                onClick={handleAuthNavigation}
+                onClick={handleStartFree}
                 size="lg"
                 variant="outline"
-                className="border-2 border-slate-600 text-white hover:bg-slate-800 hover:border-emerald-500 px-8 h-14 text-base font-semibold"
+                className="w-full sm:w-auto border-2 border-slate-600 text-white hover:bg-slate-800 hover:border-emerald-500/50 hover:text-emerald-400 px-10 h-16 text-lg font-semibold rounded-xl bg-transparent"
               >
-                Crear Cuenta
+                Crear Cuenta Gratis
               </Button>
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex items-center justify-center gap-6 text-sm text-slate-400 mt-6">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-medium text-slate-400 mt-10 animate-in fade-in duration-1000 delay-700">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span>Sin tarjeta de crédito</span>
+                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                <span>Plan Gratuito Permanente</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span>Acceso inmediato</span>
+                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                <span>No requiere tarjeta</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span>Datos realistas</span>
+                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                <span>Instalación en 1 min</span>
               </div>
             </div>
           </div>
 
-          <AppShowcaseCarousel />
+          <div className="mt-20 animate-in fade-in zoom-in duration-1000 delay-500">
+            <AppShowcaseCarousel />
+          </div>
 
-          {/* Stats */}
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          {/* Social Proof Numbers */}
+          <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-slate-800/50 pt-12">
             {[
-              { value: '500+', label: 'Usuarios Activos' },
-              { value: '10K+', label: 'Visitas Registradas' },
-              { value: '99.9%', label: 'Disponibilidad' },
-              { value: '4.9★', label: 'Calificación' }
+              { value: '+30%', label: 'Más Visitas/Día' },
+              { value: '100%', label: 'Control de Stock' },
+              { value: '0', label: 'Errores de Reporte' },
+              { value: '4.9/5', label: 'Valoración Usuarios' }
             ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <div key={i} className="text-center group hover:bg-slate-800/20 p-4 rounded-xl transition-colors">
+                <div className="text-3xl sm:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
                   {stat.value}
                 </div>
-                <div className="text-sm text-slate-500 mt-1">{stat.label}</div>
+                <div className="text-sm font-medium text-emerald-400 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -177,74 +231,100 @@ export default function LandingPage() {
       {/* Features Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/30">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Todo lo que necesitas en un solo lugar
+          <div className="text-center mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+              Tu Ventaja Competitiva
             </h2>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Herramientas diseñadas específicamente para optimizar el trabajo del visitador médico profesional.
+            <p className="text-slate-400 text-xl max-w-2xl mx-auto">
+              Mientras otros pierden el tiempo llenando excels, tú estarás cerrando tratos.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, i) => (
               <div
                 key={i}
-                className="group p-6 rounded-2xl bg-slate-800/50 border border-slate-700/50 hover:border-emerald-500/30 hover:bg-slate-800/80 transition-all duration-300"
+                className="group p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800 hover:shadow-2xl hover:shadow-emerald-900/20 transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center mb-4 group-hover:from-emerald-500/30 group-hover:to-teal-500/30 transition-all">
-                  <feature.icon className="h-6 w-6 text-emerald-400" />
+                <div className="w-14 h-14 rounded-2xl bg-slate-800 group-hover:bg-emerald-500/10 flex items-center justify-center mb-6 transition-colors border border-slate-700 group-hover:border-emerald-500/50">
+                  <feature.icon className="h-7 w-7 text-emerald-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors">{feature.title}</h3>
+                <p className="text-slate-400 text-base leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Lead Magnet: Commission Calculator */}
+      <CommissionCalculator />
+
+      {/* Pricing Section */}
+      <PricingSection />
+
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-emerald-500/20">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              ¿Listo para optimizar tu trabajo?
-            </h2>
-            <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-              Únete a cientos de representantes médicos que ya confían en MediVisitPro para gestionar sus visitas.
-            </p>
-            <Button
-              onClick={handleAuthNavigation}
-              size="lg"
-              className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 px-10 h-12 text-base"
-            >
-              Empezar Gratis
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+          <div className="relative p-8 sm:p-16 rounded-[2.5rem] bg-gradient-to-br from-emerald-900/50 via-teal-900/30 to-slate-900 border border-emerald-500/30 overflow-hidden">
+            {/* Glossy Effect */}
+            <div className="absolute inset-0 bg-white/5 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div className="relative z-10">
+              <h2 className="text-3xl sm:text-5xl font-bold text-white mb-6">
+                ¿Listo para ser el N°1 de tu zona?
+              </h2>
+              <p className="text-slate-300 text-lg mb-10 max-w-xl mx-auto">
+                No necesitas tarjeta de crédito. Empieza a usar MediVisitPro hoy y nota la diferencia en tu primera semana.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button
+                  onClick={handleStartFree}
+                  size="lg"
+                  className="bg-white text-emerald-900 hover:bg-slate-100 shadow-xl px-12 h-14 text-lg font-bold rounded-xl"
+                >
+                  Empezar Ahora - Es Gratis
+                </Button>
+                <Button
+                  onClick={handleDemo}
+                  size="lg"
+                  variant="outline"
+                  className="border-slate-600 text-white hover:bg-slate-800/50 hover:border-emerald-400 px-12 h-14 text-lg font-medium rounded-xl"
+                >
+                  Ver Demo Primero
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
-              <Stethoscope className="h-4 w-4 text-white" />
+      <footer className="py-12 px-4 border-t border-slate-800 bg-slate-900">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                <Stethoscope className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-lg font-bold text-white">MediVisitPro</span>
             </div>
-            <span className="text-sm font-semibold text-slate-400">MediVisitPro</span>
+            <p className="text-sm text-slate-500 max-w-xs">
+              Potenciando profesionales de la salud con tecnología simple y poderosa.
+            </p>
           </div>
-          <p className="text-sm text-slate-500">
-            © 2024 MediVisitPro. Todos los derechos reservados.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-6 text-sm text-slate-400">
+            <Link to="/auth" className="hover:text-emerald-400 transition-colors">Login</Link>
+            <Link to="/demo" className="hover:text-emerald-400 transition-colors">Demo</Link>
+            <span>© 2024 MediVisitPro</span>
+          </div>
         </div>
       </footer>
+
       {/* WhatsApp Floating Button */}
-      <a
-        href="https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20MediVisitPro,%20estoy%20interesado%20en%20conocer%20m%C3%A1s%20sobre%20su%20app"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 flex items-center justify-center group animate-in fade-in zoom-in duration-300"
+      <button
+        onClick={handleWhatsApp}
+        className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-lg hover:shadow-[0_0_20px_rgba(37,211,102,0.5)] transition-all hover:-translate-y-1 flex items-center justify-center group animate-in fade-in zoom-in duration-300"
         aria-label="Contactar por WhatsApp"
       >
         <svg
@@ -257,7 +337,7 @@ export default function LandingPage() {
         <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-semibold">
           Chatea con nosotros
         </span>
-      </a>
+      </button>
     </div>
   );
 }
