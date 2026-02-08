@@ -57,11 +57,15 @@ export default function Products() {
         return;
       }
 
+      console.log("DEBUG: Query Organization ID:", organizationId);
+
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .eq('organization_id', organizationId)
+        .eq('organization_id', organizationId) // Make sure this matches!
         .order('name', { ascending: true });
+
+      console.log("DEBUG: Products Fetch Result:", { dataLength: data?.length, error }); // NEW DEBUG LOG
 
       if (error) throw error;
 

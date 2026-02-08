@@ -23,9 +23,17 @@ import {
   X,
   Wifi,
   WifiOff,
+  Target,
+  Users,
+  TrendingUp,
+  Clock,
+  Plus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { useKpiSummary } from "@/hooks/queries/useDashboardQueries";
+import { StatsCard } from "./StatsCard";
+
 
 // =============================================================================
 // MOCK DATA - Structured for easy Supabase integration later
@@ -150,6 +158,9 @@ export default function DashboardRep() {
   // Alerts count for badge
   const alertsCount = stockAlerts.length;
 
+  const { data: kpis, isLoading: kpisLoading } = useKpiSummary(user?.id || '');
+
+
   // ---------------------------------------------------------------------------
   // Data Loading (Structured for Supabase)
   // ---------------------------------------------------------------------------
@@ -227,6 +238,17 @@ export default function DashboardRep() {
     };
   }, [user, loadDashboardData]);
 
+  // Sync metrics with KPI data
+  useEffect(() => {
+    if (kpis) {
+      setMetrics(prev => ({
+        ...prev,
+        salesAmount: kpis.salesActual || 0,
+        salesQuota: kpis.salesQuota || 100,
+      }));
+    }
+  }, [kpis]);
+
   // ---------------------------------------------------------------------------
   // Event Handlers
   // ---------------------------------------------------------------------------
@@ -256,376 +278,177 @@ export default function DashboardRep() {
   // RENDER
   // ---------------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-slate-100 pb-8">
-      {/* Alpha BMT Style Header with Clock and Sync */}
-      <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden">
-        {/* Decorative background element */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+    <div className="min-h-screen bg-[#020617] text-white p-4 sm:p-6 lg:p-8">
+      {/* 1. Header (Greeting and Summary Title) */}
+      <div className="mb-8 space-y-1">
+        <p className="text-slate-400 text-sm font-medium">Hola,</p>
+        <h1 className="text-3xl font-bold text-white tracking-tight">
+          {userName}
+        </h1>
+        <div className="pt-6">
+          <h2 className="text-2xl font-bold text-white">Tu Resumen Hoy</h2>
+        </div>
+      </div>
 
-        {/* Top Row: Greeting + Status + Actions */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10">
-              <span className="text-2xl font-bold text-white">
-                {(user?.user_metadata?.first_name || user?.email || "?")[0].toUpperCase()}
-              </span>
-            </div>
-            <div>
-              <p className="text-emerald-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Panel de Control</p>
-              <h1 className="text-2xl font-bold tracking-tight text-white">¡Hola, {userName}!</h1>
-              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
-                  Representante
-                </Badge>
-                {organizationName && (
-                  <Badge variant="outline" className="text-emerald-400 border-emerald-400/30 bg-emerald-400/10 text-[10px] px-2 capitalize">
-                    {organizationName}
-                  </Badge>
-                )}
-                <Badge
-                  variant="outline"
-                  className={`flex items-center gap-1 border-0 text-[10px] px-2 ${isOnline ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}
-                >
-                  {isOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-                  {isOnline ? 'En línea' : 'Desconectado'}
-                </Badge>
-              </div>
-            </div>
+      {/* 2. Progress Indicators (Ruta Diaria and Cuota Ventas) */}
+      <div className="space-y-6 mb-10">
+        {/* Ruta Diaria */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-end text-sm">
+            <span className="text-slate-400 font-medium">Ruta Diaria</span>
+            <span className="text-white font-mono">{metrics.visitedToday} / {metrics.totalPlanned}</span>
           </div>
-
-          <div className="flex flex-col items-end gap-2">
-            <div className="flex items-center gap-3">
-              {/* Notifications */}
-              <Popover open={alertsOpen} onOpenChange={setAlertsOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-white hover:bg-white/10 relative h-10 w-10 rounded-xl border border-white/5"
-                  >
-                    <Bell className="h-5 w-5" />
-                    {alertsCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-md">
-                        {alertsCount}
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-80 p-0 overflow-hidden border-white/5 bg-slate-900 text-white shadow-2xl"
-                  align="end"
-                  sideOffset={8}
-                >
-                  <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-4 border-b border-white/5">
-                    <h3 className="font-semibold text-sm flex items-center gap-2">
-                      <Bell className="h-4 w-4 text-emerald-400" />
-                      Notificaciones
-                      {alertsCount > 0 && (
-                        <Badge className="bg-red-500 text-white text-[10px] ml-auto border-0">
-                          {alertsCount}
-                        </Badge>
-                      )}
-                    </h3>
-                  </div>
-                  <div className="max-h-80 overflow-y-auto custom-scrollbar bg-slate-900/50">
-                    {stockAlerts.length === 0 ? (
-                      <div className="p-8 text-center text-xs text-slate-500 italic">
-                        No hay alertas proyectadas para hoy
-                      </div>
-                    ) : (
-                      stockAlerts.map((alert) => (
-                        <div
-                          key={alert.id}
-                          className="flex items-start gap-4 p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group"
-                        >
-                          <div className="p-2 rounded-xl bg-amber-500/10 flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <AlertTriangle className="h-4 w-4 text-amber-500" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-slate-200 uppercase tracking-tight">
-                              Stock Crítico
-                            </p>
-                            <p className="text-sm text-slate-400 mt-1 leading-tight">
-                              <span className="text-white font-medium">
-                                {alert.productName}
-                              </span>
-                              : Quedan {alert.currentStock} unidades
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-slate-600 hover:text-white hover:bg-white/5 rounded-lg flex-shrink-0"
-                            onClick={() => handleDismissAlert(alert.id)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  {stockAlerts.length > 0 && (
-                    <div className="p-3 border-t border-white/5 bg-slate-900/80 backdrop-blur-md">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full text-xs text-emerald-400 hover:text-emerald-300 hover:bg-emerald-400/10 rounded-lg h-9"
-                        onClick={() => {
-                          setAlertsOpen(false);
-                          navigate("/muestras");
-                        }}
-                      >
-                        Gestionar Inventario
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </Button>
-                    </div>
-                  )}
-                </PopoverContent>
-              </Popover>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10 h-10 w-10 rounded-xl border border-white/5"
-                onClick={loadDashboardData}
-                disabled={loading}
-              >
-                <RefreshCcw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-red-400 hover:bg-red-400/10 h-10 w-10 rounded-xl border border-red-400/10"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </div>
-
-            <div className="text-right">
-              <div className="text-2xl font-mono font-bold tracking-tighter text-white">
-                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-              </div>
-              <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium">
-                {currentTime.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' })}
-              </div>
-            </div>
+          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-sky-500 transition-all duration-1000 ease-out"
+              style={{ width: `${metrics.totalPlanned > 0 ? (metrics.visitedToday / metrics.totalPlanned) * 100 : 0}%` }}
+            />
           </div>
         </div>
 
-        {/* Sync Info Bar */}
-        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/10 rounded-2xl border border-white/10 mb-8 backdrop-blur-sm">
-          <div className="flex items-center gap-2 text-xs">
-            <RefreshCcw className={`h-3 w-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span className="text-white/60">Última Sinc:</span>
-            <span className="text-white font-medium">
-              {lastSync ? new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pendiente'}
-            </span>
+        {/* Cuota Ventas */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-end text-sm">
+            <span className="text-slate-400 font-medium">Cuota Ventas</span>
+            <span className="text-white font-mono">${metrics.salesAmount.toLocaleString()} / ${metrics.salesQuota.toLocaleString()}</span>
           </div>
-          {syncPendingCount > 0 && (
-            <Badge className="bg-amber-500 text-amber-950 text-[10px] h-5 px-2 font-bold">
-              {syncPendingCount} Pendientes
-            </Badge>
-          )}
-          {!isOnline && (
-            <div className="text-[10px] text-amber-400 flex items-center gap-1.5 ml-auto italic">
-              <AlertTriangle className="h-3 w-3" />
-              Modo Offline activo
-            </div>
-          )}
-        </div>
-
-        {/* KPI Progress Bars */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 px-1">
-          {/* Route Progress */}
-          <div>
-            <div className="flex justify-between text-xs mb-2">
-              <span className="text-slate-300 font-medium">Ruta Diaria</span>
-              <span className="text-white font-bold">
-                {metrics.visitedToday} / {metrics.totalPlanned}
-              </span>
-            </div>
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-              <div
-                className="h-full bg-blue-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                style={{ width: `${routeProgress}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Sales Progress */}
-          <div>
-            <div className="flex justify-between text-xs mb-2">
-              <span className="text-slate-300 font-medium">Cuota Ventas</span>
-              <span className="text-white font-bold">
-                ${metrics.salesAmount.toLocaleString()} / $
-                {metrics.salesQuota.toLocaleString()}
-              </span>
-            </div>
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-              <div
-                className="h-full bg-emerald-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
-                style={{ width: `${Math.min(salesProgress, 100)}%` }}
-              />
-            </div>
+          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-emerald-500 transition-all duration-1000 ease-out"
+              style={{ width: `${metrics.salesQuota > 0 ? (metrics.salesAmount / metrics.salesQuota) * 100 : 0}%` }}
+            />
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* ===================================================================
-          MAIN CONTENT - Floating effect with negative margin
-          =================================================================== */}
-      <main className="px-4 -mt-6 pb-6 space-y-4">
-        {/* -----------------------------------------------------------------
-            WIDGET: Tu Ruta
-            ----------------------------------------------------------------- */}
-        <Card className="shadow-md border-0 bg-white">
-          <CardHeader className="py-3 px-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center text-base font-semibold">
-                <MapPin className="h-4 w-4 text-blue-600 mr-2" />
-                Tu Ruta
-              </CardTitle>
-              {pendingCount > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="bg-blue-100 text-blue-700 hover:bg-blue-100 text-xs px-2 py-0.5"
-                >
-                  {pendingCount} Pendientes
-                </Badge>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4 pt-0">
-            {visits.length === 0 ? (
-              <div className="text-center py-6 text-muted-foreground">
-                <MapPin className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                <p className="text-sm">No tienes visitas agendadas.</p>
-                <Button
-                  variant="link"
-                  className="mt-1 text-blue-600 text-sm p-0 h-auto"
-                  onClick={() => navigate("/visits")}
-                >
-                  Ir al planificador
-                </Button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Tu Ruta Timeline */}
+        <div className="lg:col-span-2">
+          <Card className="bg-white border-none shadow-2xl rounded-[2rem] overflow-hidden text-slate-900">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-100 px-8 py-6">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-sky-500" />
+                <CardTitle className="text-slate-800 text-lg font-bold">Tu Ruta</CardTitle>
               </div>
-            ) : (
-              <div className="space-y-0">
-                {visits.map((visit, index) => {
-                  const isCompleted = visit.status === "completed";
-                  const isLast = index === visits.length - 1;
-
-                  return (
-                    <div
-                      key={visit.id}
-                      className="flex gap-2 cursor-pointer"
-                      onClick={() => !isCompleted && handleStartVisit(visit.id)}
-                    >
-                      {/* Timeline Column */}
-                      <div className="flex flex-col items-center w-12 flex-shrink-0">
-                        <span
-                          className={`text-[10px] font-semibold mb-0.5 ${isCompleted ? "text-emerald-600" : "text-slate-500"
-                            }`}
-                        >
-                          {visit.scheduledTime}
-                        </span>
-                        <div
-                          className={`w-2.5 h-2.5 rounded-full border-2 ${isCompleted
-                            ? "bg-emerald-500 border-emerald-500"
-                            : "bg-white border-blue-500"
-                            }`}
-                        />
-                        {!isLast && (
-                          <div
-                            className={`w-0.5 flex-1 min-h-[32px] ${isCompleted ? "bg-emerald-300" : "bg-slate-200"
-                              }`}
-                          />
-                        )}
-                      </div>
-
-                      {/* Content Column */}
+              <Badge variant="secondary" className="bg-sky-50 text-sky-600 border-none px-3 py-1 font-bold">
+                {pendingCount} Pendientes
+              </Badge>
+            </CardHeader>
+            <CardContent className="p-0">
+              {visits.length > 0 ? (
+                <div className="divide-y divide-slate-50">
+                  {visits.map((visit, index) => {
+                    const isCompleted = visit.status === 'completed';
+                    return (
                       <div
-                        className={`flex-1 pb-3 ${!isLast ? "border-b border-slate-100" : ""
-                          }`}
+                        key={visit.id}
+                        className="flex items-start gap-6 px-8 py-6 hover:bg-slate-50/50 transition-colors group relative cursor-pointer"
+                        onClick={() => !isCompleted && handleStartVisit(visit.id)}
                       >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <h4
-                              className={`font-medium text-sm truncate ${isCompleted
-                                ? "text-slate-400 line-through"
-                                : "text-slate-900"
-                                }`}
-                            >
-                              {visit.contactName}
-                            </h4>
-                            <p className="text-[11px] text-slate-500 truncate">
-                              {visit.address}
-                            </p>
-                          </div>
+                        {/* Timeline Connector */}
+                        <div className="flex flex-col items-center pt-1.5 w-10">
+                          <span className="text-[10px] font-bold text-slate-400 mb-1">{visit.scheduledTime}</span>
+                          <div className={`w-2.5 h-2.5 rounded-full border-2 z-10 ${isCompleted ? "bg-emerald-500 border-emerald-500" : "bg-white border-sky-400"
+                            }`} />
+                          {index < visits.length - 1 && (
+                            <div className={`w-0.5 h-16 -mb-4 mt-1 ${isCompleted ? "bg-emerald-500" : "bg-slate-200"
+                              }`} />
+                          )}
+                        </div>
 
-                          {/* Action Button */}
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <h4 className={`font-bold text-base truncate ${isCompleted ? "text-slate-400 line-through" : "text-slate-800"
+                            }`}>
+                            {visit.contactName}
+                          </h4>
+                          <p className="text-slate-500 text-xs truncate mt-0.5">
+                            {visit.address}
+                          </p>
+                        </div>
+
+                        {/* Status Icon */}
+                        <div className="flex-shrink-0 pt-1">
                           {isCompleted ? (
-                            <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0" />
+                            <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center">
+                              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                            </div>
                           ) : (
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-7 w-7 text-blue-600 hover:bg-blue-50 flex-shrink-0"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleOpenNavigation(visit);
-                              }}
-                            >
-                              <Navigation className="h-3.5 w-3.5" />
-                            </Button>
+                            <Navigation className="h-5 w-5 text-sky-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                           )}
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* -----------------------------------------------------------------
-            WIDGET: Accesos Rápidos
-            ----------------------------------------------------------------- */}
-        <Card className="shadow-md border-0 bg-white">
-          <CardHeader className="py-3 px-4">
-            <CardTitle className="text-base font-semibold">
-              Accesos Rápidos
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pb-4 pt-0">
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-1.5 border hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 transition-all group"
-                onClick={() => navigate("/muestras")}
-              >
-                <div className="p-2 rounded-full bg-slate-100 group-hover:bg-emerald-100 transition-colors">
-                  <Package className="h-5 w-5 text-slate-600 group-hover:text-emerald-600" />
+                    );
+                  })}
                 </div>
-                <span className="text-xs font-medium">Mi Inventario</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-1.5 border hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-all group"
-                onClick={() => navigate("/expenses")}
-              >
-                <div className="p-2 rounded-full bg-slate-100 group-hover:bg-blue-100 transition-colors">
-                  <DollarSign className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+              ) : (
+                <div className="p-12 text-center text-slate-400">
+                  <RefreshCcw className="h-10 w-10 mx-auto mb-4 opacity-20 animate-spin" />
+                  <p className="font-medium">No hay visitas agendadas para hoy</p>
                 </div>
-                <span className="text-xs font-medium">Reportar Gasto</span>
-              </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: Key Metrics and Actions */}
+        <div className="space-y-6">
+          {/* Real-time KPIs mini grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-4">
+              <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-1">Cobertura</p>
+              <p className="text-xl font-bold text-white">{kpisLoading ? "..." : `${kpis?.coverage || 0}%`}</p>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+            <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-4">
+              <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-1">Frecuencia</p>
+              <p className="text-xl font-bold text-white">{kpisLoading ? "..." : kpis?.frequency || 0}%</p>
+            </div>
+          </div>
+
+          <Card className="bg-slate-900/40 border-slate-800 text-white rounded-3xl overflow-hidden shadow-xl shadow-black/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-slate-400 uppercase tracking-widest">Accesos Rápidos</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-3 p-4">
+              <Button
+                variant="outline"
+                className="flex flex-col h-auto py-4 bg-slate-800/20 border-slate-700 hover:bg-slate-800 text-white gap-2 transition-all active:scale-95"
+                onClick={() => navigate('/products')}
+              >
+                <Package className="h-5 w-5 text-sky-400" />
+                <span className="text-xs">Inventario</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="flex flex-col h-auto py-4 bg-slate-800/20 border-slate-700 hover:bg-slate-800 text-white gap-2 transition-all active:scale-95"
+                onClick={() => navigate('/expenses')}
+              >
+                <TrendingUp className="h-5 w-5 text-emerald-400" />
+                <span className="text-xs">Gastos</span>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Sync Status Card */}
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div>
+                <p className="text-xs font-bold text-emerald-400">Sincronizado</p>
+                <p className="text-[10px] text-emerald-500/60">Hace unos momentos</p>
+              </div>
+            </div>
+            <RefreshCcw className="h-4 w-4 text-emerald-500/40" />
+          </div>
+        </div>
+      </div>
+
+      {/* Floating Action Button (Matches Demo Screenshot) */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button className="w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-xl shadow-emerald-500/40 p-0 flex items-center justify-center transition-transform hover:scale-110 active:scale-90">
+          <Plus className="h-6 w-6 text-white" />
+        </Button>
+      </div>
     </div>
   );
 }

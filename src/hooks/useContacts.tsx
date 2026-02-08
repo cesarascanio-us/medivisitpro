@@ -68,6 +68,7 @@ export function useContacts(options: UseContactsOptions = {}) {
                     // For doctors/pharmacies we use representative_id as it's the definitive assignment
                     const repColumn = tableName === 'contacts' ? 'user_id' : 'representative_id';
                     query = query.eq(repColumn, user.id);
+                    // console.warn("DEBUG: User filter disabled to check data existence");
                 } else {
                     // Master/Admin with optional filters
                     if (adminFilters.repId && adminFilters.repId !== 'all') {
@@ -91,6 +92,15 @@ export function useContacts(options: UseContactsOptions = {}) {
                 return query;
             };
 
+            console.log("DEBUG: loadContacts params:", {
+                userId: user?.id,
+                orgId: organizationId,
+                isSupervisor,
+                zoneId,
+                canViewAll: canViewAllData,
+                filters: adminFilters
+            });
+
             // 1. Fetch Generic Contacts
             let contactsQuery = supabase.from('contacts').select(`*, contact_health_centers(health_center_id, health_centers(id, name))`);
             contactsQuery = baseFilter(contactsQuery, 'contacts');
@@ -103,25 +113,23 @@ export function useContacts(options: UseContactsOptions = {}) {
             let pharmaciesQuery = supabase.from('pharmacies').select('*');
             pharmaciesQuery = baseFilter(pharmaciesQuery, 'pharmacies');
 
-            // 4. Fetch Legacy Drugstores
-            let legacyDrugstoresQuery = supabase.from('drugstores').select('*');
-            // Manual filter for legacy table since it might have different columns
-            legacyDrugstoresQuery = legacyDrugstoresQuery.eq('organization_id', organizationId);
-            if (!canViewAllData) {
-                legacyDrugstoresQuery = legacyDrugstoresQuery.eq('user_id', user.id);
-            }
-
-            const [contactsRes, doctorsRes, pharmaciesRes, legacyDrugstoresRes] = await Promise.all([
+            const [contactsRes, doctorsRes, pharmaciesRes] = await Promise.all([
                 contactsQuery,
                 doctorsQuery,
-                pharmaciesQuery,
-                legacyDrugstoresQuery
+                pharmaciesQuery
             ]);
 
             if (contactsRes.error) throw contactsRes.error;
             if (doctorsRes.error) throw doctorsRes.error;
             if (pharmaciesRes.error) throw pharmaciesRes.error;
-            if (legacyDrugstoresRes.error) throw legacyDrugstoresRes.error;
+
+            console.log("DEBUG: loadContacts RESULTS:", {
+                contacts: contactsRes.data?.length,
+                doctors: doctorsRes.data?.length,
+                pharmacies: pharmaciesRes.data?.length,
+                contactsError: contactsRes.error,
+                doctorsError: doctorsRes.error
+            });
 
             const unified: Contact[] = [];
 
@@ -154,12 +162,12 @@ export function useContacts(options: UseContactsOptions = {}) {
                         source: 'doctors',
                         displayType: 'Médico',
                         contact_type: 'doctor',
-                        priority: d.priority || 'medium',
+                        priority: d.potential || d.priority || 'medium',
                         lastVisit: d.last_visit || d.created_at,
                         visitCount: d.visit_count || 0,
                         rating: d.rating || 0,
-                        hospital: d.work_center,
-                        user_id: d.user_id,
+                        hospital: d.work_center || d.health_center,
+                        user_id: d.user_id || d.representative_id,
                         organization_id: d.organization_id
                     } as Contact);
                 });
@@ -177,46 +185,26 @@ export function useContacts(options: UseContactsOptions = {}) {
                         source: 'pharmacies',
                         displayType: 'Farmacia',
                         contact_type: 'pharmacy',
-                        priority: p.priority || 'medium',
+                        priority: p.potential || p.priority || 'medium',
                         lastVisit: p.last_visit || p.created_at,
                         visitCount: 0,
                         rating: 0,
                         status: p.status,
-                        user_id: p.user_id,
+                        user_id: p.user_id || p.representative_id,
                         organization_id: p.organization_id
                     } as Contact);
-                });
-            }
-
-            if (legacyDrugstoresRes.data) {
-                legacyDrugstoresRes.data.forEach((d: any) => {
-                    // Avoid duplication if already in 'contacts' table (unlikely but safe)
-                    if (!unified.find(u => u.id === d.id)) {
-                        unified.push({
-                            id: d.id,
-                            name: d.name,
-                            phone: d.phone,
-                            email: d.email,
-                            address: d.address || d.location,
-                            city: d.location?.split(',')[0]?.trim() || "",
-                            source: 'contacts', // Map to contacts source for consistency
-                            displayType: 'Droguería',
-                            contact_type: 'drugstore',
-                            priority: 'medium',
-                            lastVisit: d.created_at,
-                            visitCount: 0,
-                            rating: 0,
-                            user_id: d.user_id,
-                            organization_id: d.organization_id
-                        } as Contact);
-                    }
                 });
             }
 
             unified.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
             setContacts(unified);
         } catch (error: any) {
-            console.error("useContacts Error:", error);
+            console.error("useContacts Error Detail:", {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            });
             toast({
                 title: "Error de Datos",
                 description: "No se pudieron cargar los contactos aislados correspondientes.",

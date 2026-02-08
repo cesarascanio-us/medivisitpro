@@ -44,19 +44,35 @@ export function InventoryDashboard() {
                 return;
             }
 
-            const { data: inv, error } = await supabase
-                .from('rep_inventory')
-                .select(`
-                    id,
-                    product_id,
-                    quantity,
-                    products ( name )
-                `)
-                .order('quantity', { ascending: true });
+            // Fetch inventory and products in parallel to avoid Join 400 errors
+            const [inventoryResult, productsResult] = await Promise.all([
+                supabase
+                    .from('rep_inventory')
+                    .select('id, product_id, quantity')
+                    .order('quantity', { ascending: true }),
+                supabase
+                    .from('products')
+                    .select('id, name')
+            ]);
 
-            if (error) throw error;
+            if (inventoryResult.error) throw inventoryResult.error;
+            if (productsResult.error) throw productsResult.error;
+
+            const inventoryData = inventoryResult.data || [];
+            const productsList = productsResult.data || [];
+            console.log("DEBUG: Inventory IDs:", inventoryData.map(i => i.product_id));
+            console.log("DEBUG: Available Product IDs:", productsList.map(p => p.id));
+
+            const productsMap = new Map(productsList.map(p => [p.id, p]));
+
+            // Join data manually
+            const joinedData = inventoryData.map(item => ({
+                ...item,
+                products: productsMap.get(item.product_id) || { name: 'Producto Desconocido' }
+            }));
+
             // @ts-ignore
-            setData(inv || []);
+            setData(joinedData);
         } catch (error) {
             console.error('Error loading dashboard:', error);
         } finally {
@@ -72,11 +88,14 @@ export function InventoryDashboard() {
     // 76 items * 60px = 4560px -> Ensures readability
     const chartWidth = Math.max(100, displayedData.length * 60);
 
-    const chartData = displayedData.map(i => ({
-        name: i.products?.name.substring(0, 15) + (i.products?.name.length > 15 ? '...' : ''),
-        full_name: i.products?.name,
-        cantidad: i.quantity
-    }));
+    const chartData = displayedData.map(i => {
+        const productName = i.products?.name || "Producto Desconocido";
+        return {
+            name: productName.substring(0, 15) + (productName.length > 15 ? '...' : ''),
+            full_name: productName,
+            cantidad: i.quantity
+        };
+    });
 
     return (
         <div className="space-y-6">

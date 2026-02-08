@@ -30,7 +30,7 @@ interface Objective {
 }
 
 export default function Objectives() {
-    const { user, canViewAllData, isSupervisor, isManager, isCoordinator, zoneId } = useAuth();
+    const { user, canViewAllData, isSupervisor, isManager, isCoordinator, zoneId, canAssignObjectives: canAssign } = useAuth();
     const { toast } = useToast();
     const [objectives, setObjectives] = useState<Objective[]>([]);
     const [loading, setLoading] = useState(true);
@@ -89,10 +89,7 @@ export default function Objectives() {
             }
             let query: any = supabase
                 .from('objectives')
-                .select(`
-                    *,
-                    profiles:user_id (first_name, last_name, email)
-                `);
+                .select('*');
 
             if (!canViewAllData) {
                 if (isSupervisor && zoneId) {

@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"; // Added missing Textarea
 import { useToast } from "@/hooks/use-toast";
 import {
     MapPin, Clock, Camera, CheckCircle, Navigation, AlertTriangle, Play, Square,
-    FileText, PenTool, Brain, Activity as ActivityIcon, Star, Calculator, Store
+    FileText, PenTool, Brain, Activity as ActivityIcon, Star, Calculator, Store, AlertCircle
 } from "lucide-react";
 import type { VisitExecution as VisitExecutionType } from "@/types/visits"; // Rename type import
 import { SPINGuideAlert } from "@/components/visits/SPINGuideAlert";
@@ -624,9 +624,12 @@ export default function VisitExecutionPage() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {scenario && !scenarioLoading && (
                                 <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 shadow-sm">
-                                    <h3 className="text-lg font-bold text-emerald-700 mb-4 flex items-center gap-2">
-                                        <Brain className="h-6 w-6 text-emerald-600" /> Brain 360: Sugerencia Estratégica
+                                    <h3 className="text-lg font-bold text-emerald-700 mb-1 flex items-center gap-2">
+                                        <Brain className="h-6 w-6 text-emerald-600" /> Brain 360: {scenario.title || 'Sugerencia Estratégica'}
                                     </h3>
+                                    <p className="text-sm text-emerald-600/80 mb-6 px-8">
+                                        {scenario.description}
+                                    </p>
                                     <SmartScheduleWidget
                                         scenario={scenario}
                                         suggestedObjective={customObjective || autoFields.suggestedObjective}
@@ -637,6 +640,7 @@ export default function VisitExecutionPage() {
                                     />
                                 </div>
                             )}
+
 
                             <Card className="border-slate-200 bg-white shadow-lg rounded-2xl overflow-hidden">
                                 <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100">

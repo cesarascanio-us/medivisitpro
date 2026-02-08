@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { dashboardService, DashboardFilters } from "@/services/dashboardService";
+import { kpiService } from "@/services/kpiService";
 
 
 
@@ -51,3 +52,12 @@ export function useDashboardDroguerias() {
         queryFn: () => dashboardService.getDroguerias()
     });
 }
+
+export function useKpiSummary(userId: string) {
+    return useQuery({
+        queryKey: ['kpis', 'summary', userId],
+        queryFn: () => kpiService.getSummary(userId),
+        enabled: !!userId
+    });
+}
+

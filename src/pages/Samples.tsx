@@ -62,9 +62,9 @@ export default function Samples() {
         // For strict "Jornada Medica" mode, usually only In Progress.
         const { data } = await supabase
             .from('events')
-            .select('id, title, location, date')
+            .select('id, title, location, scheduled_date')
             .eq('status', 'in_progress')
-            .order('date', { ascending: false });
+            .order('scheduled_date', { ascending: false });
 
         if (data) {
             // @ts-ignore

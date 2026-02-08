@@ -133,24 +133,26 @@ const REPRESENTATIVE_NAV = [
     title: "Mi Día",
     items: [
       { name: "Mi Dashboard", href: "/dashboard", icon: Home },
-      { name: "Visitas de Hoy", href: "/visits", icon: Map },
-      { name: "Agenda", href: "/agenda", icon: Calendar }
+      { name: "Agenda", href: "/agenda", icon: Calendar },
+      { name: "Objetivos", href: "/objectives", icon: Target }
     ]
   },
   {
-    title: "Gestión",
+    title: "Operación de Campo",
     items: [
-      { name: "Mis Contactos", href: "/contacts", icon: Users },
-      { name: "Fichero Médico", href: "/doctors", icon: Stethoscope },
+      { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
+      { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
+      { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
+      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
+      { name: "Droguerías", href: "/drugstores", icon: Truck },
+      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
       { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
-      { name: "Objetivos", href: "/objectives", icon: Target }
     ]
   },
   {
     title: "Recursos",
     items: [
       { name: "Catálogo", href: "/products", icon: Package },
-      { name: "Inventario Personal", href: "/warehouse", icon: Boxes },
       { name: "Muestras", href: "/muestras", icon: Pill }
     ]
   }
@@ -164,7 +166,8 @@ const COORDINATOR_NAV = [
       { name: "Agenda Equipo", href: "/agenda", icon: Calendar }, // Restored
       { name: "Mi Equipo", href: "/users", icon: Users },
       { name: "Rutas de Tropa", href: "/visits", icon: Map },
-      { name: "Cobertura", href: "/coverage-map", icon: Map }, // Restored
+      // { name: "Cobertura", href: "/coverage-map", icon: Map }, // Hidden for Reps/Coordinators by default logic if this is shared? Wait, this is COORDINATOR_NAV.
+      { name: "Cobertura", href: "/coverage-map", icon: Map }, // Coordinators see this. Reps use a different list?
     ]
   },
   {

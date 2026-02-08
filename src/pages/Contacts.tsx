@@ -344,7 +344,11 @@ export default function Contacts() {
           <div className="text-sm text-muted-foreground">Visitados Este Mes</div>
         </Card>
         <Card className="medical-card text-center p-4">
-          <div className="text-2xl font-bold text-foreground">{Math.round(contacts.reduce((acc, c) => acc + c.rating, 0) / contacts.length * 10) / 10}</div>
+          <div className="text-2xl font-bold text-foreground">
+            {contacts.length > 0
+              ? Math.round(contacts.reduce((acc, c) => acc + c.rating, 0) / contacts.length * 10) / 10
+              : 0}
+          </div>
           <div className="text-sm text-muted-foreground">Rating Promedio</div>
         </Card>
       </div>

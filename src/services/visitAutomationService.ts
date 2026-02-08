@@ -11,7 +11,11 @@ export interface VisitScenario {
     suggestedObjective: string;
     showMasterDataCard: boolean;
     showCloseFields: boolean;
+    title?: string;
+    description?: string;
+    steps?: string[];
 }
+
 
 export interface VisitHistory {
     visitCount: number;
@@ -34,13 +38,21 @@ export interface AutoCalculatedFields {
  * Determine the visit scenario based on visit count and entity type
  */
 export function determineScenario(visitCount: number, entityType?: string): VisitScenario {
-    if (visitCount === 0) {
-        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
-        const isNaturalStore = entityType === 'natural_store';
+    const isDoctor = entityType === 'doctor';
+    const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'natural_store';
+    const isNaturalStore = entityType === 'natural_store';
 
+    if (visitCount === 0) {
         return {
             type: 'conquest',
             label: isNaturalStore ? 'Alta Comercial (V1)' : 'Conquista (Visita 1)',
+            title: isDoctor ? 'Captación y Perfilamiento' : 'Alta Comercial y Mapeo',
+            description: isDoctor
+                ? 'Primer contacto: Identificar potencial receptivo y perfil médico (Ley de Pareto).'
+                : 'Validación de local, inventario inicial y perfilamiento de compra.',
+            steps: isDoctor
+                ? ['Profiling Médico', 'Presentación Institucional', 'Acuerdo de Prueba']
+                : ['Mapeo de Exhibición', 'Perfilamiento Comercial', 'Validación de Datos'],
             suggestedObjective: isNaturalStore
                 ? 'Alta Comercial y Primer Pedido (Venta Directa)'
                 : isCommerce
@@ -52,15 +64,21 @@ export function determineScenario(visitCount: number, entityType?: string): Visi
     } else if (visitCount === 1) {
         return {
             type: 'development',
-            label: 'Seguimiento (Visita 2)',
-            suggestedObjective: 'Validar uso de muestras y Experiencia',
+            label: 'Desarrollo (Visita 2)',
+            title: 'Evidencia y Desarrollo',
+            description: 'Validar experiencia con muestras anteriores y profundizar en el pitch neuro-ventas.',
+            steps: ['Validación de Muestra', 'Presentación de Ayuda Visual', 'Manejo de Objecciones'],
+            suggestedObjective: 'Validar uso de muestras y Experiencia del paciente',
             showMasterDataCard: false,
             showCloseFields: false,
         };
     } else {
         return {
             type: 'maturity',
-            label: 'Mantenimiento (Visita 3+)',
+            label: 'Fidelización (Visita 3+)',
+            title: 'Mantenimiento y Cierre',
+            description: 'Fidelización, reposición de inventario y cierre de compromisos recurrentes.',
+            steps: ['Inventario / Falla', 'Registro de Pedido', 'Refuerzo de Marca'],
             suggestedObjective: entityType === 'natural_store'
                 ? 'Reposición de Inventario y Venta'
                 : 'Lograr cierre / Reposición de Inventario',
@@ -69,6 +87,7 @@ export function determineScenario(visitCount: number, entityType?: string): Visi
         };
     }
 }
+
 
 export const calculateCycleCondition = (visitCount: number) => {
     // Implementation placeholder based on visit count

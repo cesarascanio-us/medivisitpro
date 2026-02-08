@@ -75,7 +75,7 @@ export default function Visits() {
         .from('visits')
         .select(`
           *,
-          contacts(name, specialty, address, email, phone)
+          contacts(name, specialty, address, email, phone, priority)
         `)
         .eq('organization_id', organizationId);
 
@@ -106,7 +106,11 @@ export default function Visits() {
 
       setVisits(data || []);
     } catch (error) {
-      console.error('Error loading visits:', error);
+      console.error('Error loading visits:', error, {
+        message: (error as any)?.message || error,
+        details: (error as any)?.details,
+        code: (error as any)?.code
+      });
       toast({
         title: "Error",
         description: "No se pudieron cargar las visitas.",
@@ -534,6 +538,12 @@ export default function Visits() {
                         <h3 className="text-lg font-semibold text-foreground">
                           {visit.contacts?.name || "Contacto no disponible"}
                         </h3>
+                        {visit.contacts?.potential === 'Alto' && (
+                          <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-[10px] h-5 px-1.5 font-bold animate-pulse">
+                            PARETO A
+                          </Badge>
+                        )}
+
                         {/* Edit and Delete Actions */}
                         <div className="flex gap-1">
                           {/* TODO: Add edit functionality */}

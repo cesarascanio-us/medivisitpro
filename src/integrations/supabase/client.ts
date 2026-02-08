@@ -8,6 +8,12 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || impor
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
+if (!SUPABASE_URL || !SUPABASE_URL.startsWith('https://')) {
+  console.error("Supabase URL is invalid or missing protocol:", SUPABASE_URL);
+} else {
+  console.log("Supabase initialized with URL:", SUPABASE_URL);
+}
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     storage: localStorage,

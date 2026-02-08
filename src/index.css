@@ -65,13 +65,13 @@
     --destructive-foreground: 210 40% 98%;
 
     /* Sidebar - Inverted to Light or Dark? User wants luminous. Keeping sidebar dark is common for contrast, but let's make it match brand-primary (Slate-900) */
-    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-background: 222.2 47.4% 5%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 199 89% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217.2 32.6% 20%;
+    --sidebar-border: 217.2 32.6% 10%;
     --sidebar-ring: 217.2 32.6% 17.5%;
 
     --radius: 0.5rem;

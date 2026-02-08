@@ -45,11 +45,12 @@ export async function refreshObjectivesProgress(userId: string) {
                     break;
 
                 case 'samples':
-                    // Count samples distributed in period
+                    // Count samples distributed in period (using 'promotion' movement type)
                     const { data: sampleData } = await supabase
-                        .from('sample_distributions')
+                        .from('sample_movements')
                         .select('quantity')
                         .eq('user_id', userId)
+                        .eq('movement_type', 'promotion')
                         .gte('created_at', startDate)
                         .lte('created_at', endDate);
 

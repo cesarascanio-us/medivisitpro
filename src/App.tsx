@@ -80,40 +80,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { DemoDataSeeder } from "@/components/demo/DemoDataSeeder";
 import { MockDataProvider } from "@/contexts/MockDataProvider";
 
-// Legacy InventorySeeder - now handled by DemoDataSeeder
-const InventorySeeder = () => {
-  const { user } = useAuth();
-  useEffect(() => {
-    const seed = async () => {
-      if (!user) return;
-      console.log("Checking inventory for seeding...");
-      const { data } = await supabase.from('inventario_muestras').select('id').eq('user_id', user.id).limit(1);
-      if (!data || data.length === 0) {
-        console.log("Seeding inventory...");
-        const { data: prods } = await supabase.from('products').select('id').limit(1);
-        if (prods && prods[0]) {
-          await supabase.from('inventario_muestras').insert({
-            user_id: user.id,
-            product_id: prods[0].id,
-            cantidad_asignada: 50,
-            lote: 'DEMO-SEED-001',
-            fecha_vencimiento: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
-          });
-          console.log("Inventory seeded!");
-        }
-      }
-    };
-    seed();
-  }, [user]);
-  return null;
-};
-
+// Legacy InventorySeeder removed
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <MockDataProvider>
         <DemoDataSeeder />
-        <InventorySeeder />
         <OrganizationProvider>
           <TooltipProvider>
             <Toaster />
