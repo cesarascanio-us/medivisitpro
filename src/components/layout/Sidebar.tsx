@@ -62,7 +62,7 @@ const SYSTEM_ADMIN_NAV = [
     items: [
       { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
       { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
-      { name: "Planificación & Ciclos", href: "/planning/cycles", icon: Layers },
+      { name: "Planificación & Ciclos", href: "/promotional-cycles", icon: Layers },
       { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
     ]
   },
@@ -98,7 +98,7 @@ const OPERATIONAL_NAV = [
     items: [
       { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
       { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
-      { name: "Planificación & Ciclos", href: "/planning/cycles", icon: Layers },
+      { name: "Planificación & Ciclos", href: "/promotional-cycles", icon: Layers },
       { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
     ]
   },
@@ -364,7 +364,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen shadow-2xl z-30 transition-all duration-300 ease-in-out",
+        "flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen shadow-2xl z-50 transition-all duration-300 ease-in-out",
         isExpanded ? "w-64" : "w-16",
         className
       )}
@@ -445,6 +445,15 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                       key={item.name}
                       to={item.href}
                       title={!isExpanded ? item.name : undefined}
+                      onClick={(e) => {
+                        // FIX: When on coverage-map, Leaflet corrupts React Router state
+                        // Use hard navigation to ensure proper page transition
+                        if (location.pathname === '/coverage-map' && item.href !== '/coverage-map') {
+                          e.preventDefault();
+                          console.log('[Sidebar] Hard navigation from coverage-map to:', item.href);
+                          window.location.href = item.href;
+                        }
+                      }}
                       className={cn(
                         "flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-all group",
                         isActive
