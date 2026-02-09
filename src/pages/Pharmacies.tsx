@@ -314,7 +314,8 @@ export default function Pharmacies() {
             }
 
             // Base query filter helper - hasStateColumn indicates if the table has a 'state' column
-            const applyFilters = (query: any, userColumn = 'user_id', hasStateColumn = false) => {
+            // hasZoneIdColumn indicates if the table has a 'zone_id' column (default true)
+            const applyFilters = (query: any, userColumn = 'user_id', hasStateColumn = false, hasZoneIdColumn = true) => {
                 if (!organizationId) return query;
 
                 // Add mandatory organization_id filter for multi-tenancy
@@ -324,11 +325,12 @@ export default function Pharmacies() {
                 if (isSupervisor && zoneId) {
                     if (adminFilters.repId && adminFilters.repId !== 'all') {
                         query = query.or(`${userColumn}.eq.${adminFilters.repId},user_id.eq.${adminFilters.repId}`);
-                    } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
+                    } else if (hasZoneIdColumn && adminFilters.zoneId && adminFilters.zoneId !== 'all') {
                         query = query.eq('zone_id', adminFilters.zoneId);
                     } else if (hasStateColumn && adminFilters.state && adminFilters.state !== 'all') {
                         query = query.eq('state', adminFilters.state);
-                    } else {
+                    } else if (hasZoneIdColumn) {
+                        // Only apply zone_id filter if the table has that column
                         return query.eq('zone_id', zoneId);
                     }
                     return query;
@@ -349,7 +351,7 @@ export default function Pharmacies() {
                     } else {
                         query = query.eq(userColumn, adminFilters.repId);
                     }
-                } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
+                } else if (hasZoneIdColumn && adminFilters.zoneId && adminFilters.zoneId !== 'all') {
                     query = query.eq('zone_id', adminFilters.zoneId);
                 } else if (hasStateColumn && adminFilters.state && adminFilters.state !== 'all') {
                     query = query.eq('state', adminFilters.state);
@@ -387,9 +389,9 @@ export default function Pharmacies() {
             }
             setNaturalStores(naturalStoresRes.data || []);
 
-            // Load drugstores
+            // Load drugstores - NOTE: drugstores table does NOT have zone_id column
             let drugstoresQuery = supabase.from('drugstores' as any).select('*').eq('is_active', true);
-            drugstoresQuery = applyFilters(drugstoresQuery);
+            drugstoresQuery = applyFilters(drugstoresQuery, 'user_id', false, false); // hasZoneIdColumn = false
             const drugstoresRes: any = await drugstoresQuery;
             setDrugstores(drugstoresRes.data || []);
 
