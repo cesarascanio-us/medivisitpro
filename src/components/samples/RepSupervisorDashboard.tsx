@@ -39,7 +39,7 @@ export function RepSupervisorDashboard() {
         // Get all profiles first (simplified approach)
         const { data: profiles } = await supabase
             .from('profiles')
-            .select('id, first_name, last_name, email');
+            .select('user_id, first_name, last_name, email');
 
         if (!profiles) {
             setLoading(false);
@@ -54,7 +54,7 @@ export function RepSupervisorDashboard() {
             const { count, data } = await supabase
                 .from('rep_inventory')
                 .select('updated_at', { count: 'exact' })
-                .eq('user_id', profile.id)
+                .eq('user_id', profile.user_id)
                 .gt('quantity', 0); // Active items
 
             // Get latest update if any
@@ -66,7 +66,7 @@ export function RepSupervisorDashboard() {
             }
 
             summaries.push({
-                id: profile.id,
+                id: profile.user_id,
                 first_name: profile.first_name || '',
                 last_name: profile.last_name || '',
                 email: profile.email || '',

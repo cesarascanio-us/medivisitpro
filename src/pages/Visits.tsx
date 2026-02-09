@@ -22,6 +22,7 @@ import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useNavigate } from "react-router-dom";
 import { getStatesInRegion } from "@/constants/regions";
 import { useDemoData } from "@/contexts/MockDataProvider";
+import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 
 interface AdminFilterState {
   region?: string;
@@ -661,18 +662,18 @@ export default function Visits() {
           ))}
 
           {filteredVisits.length === 0 && (
-            <Card className="medical-card">
-              <CardContent className="p-12 text-center">
-                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">No se encontraron visitas</h3>
-                <p className="text-muted-foreground mb-4">
-                  {searchTerm || statusFilter !== "all"
-                    ? "Intenta ajustar los filtros de búsqueda"
-                    : "Comienza creando tu primera visita médica"
-                  }
-                </p>
-              </CardContent>
-            </Card>
+            <div className="medical-card mt-6">
+              <PremiumEmptyState
+                icon={FileText}
+                title={searchTerm || statusFilter !== "all" ? "Sin resultados" : "Tu agenda está despejada"}
+                description={searchTerm || statusFilter !== "all"
+                  ? "Prueba ajustando los filtros de búsqueda para encontrar lo que buscas."
+                  : "Es un buen momento para planificar tus próximas visitas y conquistar tu territorio."
+                }
+                actionLabel={searchTerm || statusFilter !== "all" ? undefined : "Programar Primera Visita"}
+                onAction={searchTerm || statusFilter !== "all" ? undefined : () => setWizardOpen(true)}
+              />
+            </div>
           )}
         </TabsContent>
 

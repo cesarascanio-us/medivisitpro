@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { MapPin, Search, Filter, Users as UsersIcon, Building2, Building, Hospital, RefreshCw, Leaf as LeafIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -84,6 +85,7 @@ interface MapContact {
 
 export default function CoverageMap() {
     const { user, role, userState, zoneId, canViewAllData } = useAuth();
+    const navigate = useNavigate();
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
@@ -525,7 +527,7 @@ export default function CoverageMap() {
                                 const route = contact.type === 'doctor' ? 'doctors' :
                                     contact.type === 'pharmacy' ? 'pharmacies' :
                                         'health-centers';
-                                window.location.href = `/${route}?id=${contact.id}`;
+                                navigate(`/${route}?id=${contact.id}`);
                             }}
                         >
                             Ver Perfil

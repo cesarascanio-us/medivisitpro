@@ -83,8 +83,8 @@ export default function Samples() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">Gestión de Muestras</h1>
-                    <p className="text-muted-foreground">Logística Integral: Maletín, Bancos y Eventos</p>
+                    <h1 className="text-3xl font-bold text-white">Gestión de Muestras</h1>
+                    <p className="text-slate-400">Logística Integral: Maletín, Bancos y Eventos</p>
                 </div>
             </div>
 
@@ -139,10 +139,10 @@ export default function Samples() {
                 <TabsContent value="events" className="mt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-4">
-                            <div className="bg-muted/50 p-4 rounded-lg">
-                                <h3 className="font-semibold mb-2">Modo Jornada Médica</h3>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Selecciona un evento <strong>En Progreso</strong> para habilitar la entrega rápida.
+                            <div className="medical-card p-6">
+                                <h3 className="text-lg font-bold text-white mb-2">Modo Jornada Médica</h3>
+                                <p className="text-sm text-slate-400 mb-6">
+                                    Selecciona un evento <strong className="text-emerald-400">En Progreso</strong> para habilitar la entrega rápida.
                                 </p>
 
                                 {loadingEvents ? (
@@ -168,12 +168,12 @@ export default function Samples() {
                             </div>
 
                             {activeEventId && (
-                                <div className="border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                                <div className="border border-emerald-500/20 bg-emerald-500/5 p-4 rounded-xl backdrop-blur-sm">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                                        <p className="text-green-800 dark:text-green-300 font-medium">Jornada Activa</p>
+                                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                                        <p className="text-emerald-400 font-bold uppercase text-[10px] tracking-widest">Jornada Activa</p>
                                     </div>
-                                    <p className="text-sm text-green-700 dark:text-green-400 ml-4">{activeEventTitle}</p>
+                                    <p className="text-sm text-white font-medium ml-4">{activeEventTitle}</p>
                                 </div>
                             )}
 
@@ -193,8 +193,9 @@ export default function Samples() {
                             {activeEventId ? (
                                 <EventTreatmentForm eventId={activeEventId} />
                             ) : (
-                                <div className="flex items-center justify-center h-[200px] border border-dashed rounded-lg text-muted-foreground bg-muted/20">
-                                    Selecciona un evento para comenzar
+                                <div className="flex flex-col items-center justify-center h-[240px] border border-dashed border-white/10 rounded-2xl text-slate-500 bg-white/5 backdrop-blur-sm">
+                                    <Calendar className="h-8 w-8 mb-3 opacity-20" />
+                                    <p className="text-sm">Selecciona un evento para comenzar</p>
                                 </div>
                             )}
                         </div>

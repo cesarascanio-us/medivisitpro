@@ -75,16 +75,22 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     .maybeSingle(),
                 supabase
                     .from('user_roles')
-                    .select('organization_id')
+                    .select('organization_id, role')
                     .eq('user_id', user.id)
                     .maybeSingle()
             ]);
 
-            const userRoleName = userRole?.role || profile?.role || 'representative';
+            const userRoleName = userRole?.role || 'representative';
             isMasterUser = userRoleName === 'master';
             setIsMaster(isMasterUser);
 
-            setIsOrgAdmin(profile?.is_org_admin || false);
+            // Access control: admins and managers are considered org admins
+            setIsOrgAdmin(
+                profile?.is_org_admin ||
+                userRoleName === 'admin' ||
+                userRoleName === 'manager' ||
+                isMasterUser
+            );
 
             if (isMasterUser) {
                 // MASTER FLOW: Load ALL organizations
@@ -97,8 +103,9 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
                 const orgs = (allOrgs || []).map(o => ({
                     ...o,
-                    plan_tier: o.plan_tier as PlanTier
-                }));
+                    plan_tier: o.plan_tier as PlanTier,
+                    subscription_status: o.subscription_status as SubscriptionStatus
+                })) as Organization[];
                 setAllOrganizations(orgs);
 
                 const assignedOrgId = profile?.organization_id || userRole?.organization_id;
@@ -131,7 +138,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
                 const typedOrg = org ? {
                     ...org,
-                    plan_tier: org.plan_tier as PlanTier
+                    plan_tier: org.plan_tier as PlanTier,
+                    subscription_status: org.subscription_status as SubscriptionStatus
                 } as Organization : null;
 
                 setOrganization(typedOrg);
@@ -242,10 +250,10 @@ export function useFeatureAccess(feature: string): boolean {
 
     // Import plan limits dynamically to avoid circular dependencies
     const PLAN_FEATURES: Record<PlanTier, string[]> = {
-        free: ['basic_visits', 'basic_reports'],
-        starter: ['basic_visits', 'basic_reports', 'sample_tracking', 'export_data'],
-        professional: ['basic_visits', 'basic_reports', 'sample_tracking', 'export_data', 'advanced_analytics', 'api_access'],
-        enterprise: ['basic_visits', 'basic_reports', 'sample_tracking', 'export_data', 'advanced_analytics', 'api_access', 'custom_integrations', 'dedicated_support', 'sso']
+        free: ['basic_visits', 'basic_reports', 'smart_agenda'],
+        starter: ['basic_visits', 'basic_reports', 'smart_agenda', 'sample_tracking', 'export_data'],
+        professional: ['basic_visits', 'advanced_reports', 'smart_agenda', 'sample_tracking', 'export_data', 'offline_sync', 'unlimited_doctors'],
+        enterprise: ['all_features', 'advanced_reports', 'smart_agenda', 'sample_tracking', 'export_data', 'offline_sync', 'unlimited_doctors', 'kpi_analytics', 'geolocalization', 'team_management', 'api_access', 'custom_integrations', 'sso']
     };
 
     const features = PLAN_FEATURES[organization.plan_tier] || [];

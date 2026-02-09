@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Building2, Edit, Printer, Download, Trash2, Upload, HelpCircle, FileSpreadsheet, Leaf as LeafIcon } from "lucide-react";
+import { Search, Plus, Filter, User, MapPin, Phone, Mail, Star, Calendar, Building2, Edit, Printer, Download, Trash2, Upload, HelpCircle, FileSpreadsheet, Leaf as LeafIcon, Share2, MoreHorizontal, ExternalLink, AlertCircle, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useOrganization, useSubscriptionStatus } from "@/hooks/useOrganization";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ContactDialog } from "@/components/contacts/ContactDialog";
 import { useContacts, type Contact } from "@/hooks/useContacts";
@@ -17,6 +19,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import * as XLSX from 'xlsx';
+import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useDemoData } from "@/contexts/MockDataProvider";
@@ -30,7 +33,9 @@ interface AdminFilterState {
 
 export default function Contacts() {
   const [importing, setImporting] = useState(false);
+  const [timeRange, setTimeRange] = useState("month");
   const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { planTier } = useSubscriptionStatus();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [adminFilters, setAdminFilters] = useState<any>({});
@@ -186,8 +191,11 @@ export default function Contacts() {
     ));
   };
 
+  const isFreePlan = planTier === 'free';
+  const hasReachedLimit = isFreePlan && contacts.length >= 50;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <input
         type="file"
         ref={fileInputRef}
@@ -197,12 +205,29 @@ export default function Contacts() {
       />
 
       {/* Header */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">Directorio de Contactos</h1>
-          <p className="text-muted-foreground font-medium">Gestiona tu red de profesionales médicos</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Directorio de Contactos</h1>
+          <p className="text-muted-foreground italic">Red Médica & Comercial</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
+          {isFreePlan && (
+            <Badge variant="outline" className="mr-2 bg-primary/5 text-primary border-primary/20">
+              {contacts.length}/50 Médicos (Plan Básico)
+            </Badge>
+          )}
+          <ContactDialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            trigger={
+              <Button disabled={hasReachedLimit} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
+                <Plus className="mr-2 h-4 w-4" />
+                Añadir Contacto
+              </Button>
+            }
+            onContactSaved={refresh}
+          />
+
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="ghost" size="icon" title="Ayuda de Importación" className="text-muted-foreground hover:text-primary">
@@ -475,15 +500,13 @@ export default function Contacts() {
       </div>
 
       {filteredContacts.length === 0 && (
-        <Card className="medical-card">
-          <CardContent className="p-8 text-center">
-            <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No se encontraron contactos</h3>
-            <p className="text-muted-foreground">
-              Intenta ajustar tu búsqueda o añade nuevos contactos a tu directorio.
-            </p>
-          </CardContent>
-        </Card>
+        <PremiumEmptyState
+          icon={User}
+          title="No se encontraron contactos"
+          description="Intenta ajustar tu búsqueda o añade nuevos contactos a tu directorio para ampliar tu red profesional."
+          actionLabel="Añadir Contacto"
+          onAction={() => setIsDialogOpen(true)}
+        />
       )}
     </div>
   );

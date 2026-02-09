@@ -16,6 +16,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     const location = useLocation();
 
     useEffect(() => {
+
         if (!loading && !user) {
             navigate('/auth', { replace: true });
         } else if (!loading && user && !orgLoading) {

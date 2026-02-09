@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Navigate } from "react-router-dom";
 import RoleManager from "@/pages/Master/Roles/RoleManager";
 import PlanManager from "@/pages/Master/Memberships/PlanManager";
+import ManualPaymentApprover from "@/pages/Master/Memberships/ManualPaymentApprover";
 import TicketList from "@/pages/Master/Tickets/TicketList";
 
 interface SystemStats {
@@ -517,6 +518,7 @@ export default function MasterPanel() {
                     <TabsTrigger value="roles">Roles & Permisos</TabsTrigger>
                     <TabsTrigger value="organizations">Organizaciones</TabsTrigger>
                     <TabsTrigger value="memberships">Membresías</TabsTrigger>
+                    <TabsTrigger value="manual-payments">Pagos Manuales</TabsTrigger>
                     <TabsTrigger value="support">Soporte</TabsTrigger>
                     <TabsTrigger value="activity">Actividad</TabsTrigger>
                 </TabsList>
@@ -529,6 +531,11 @@ export default function MasterPanel() {
                 {/* Memberships Tab */}
                 <TabsContent value="memberships">
                     <PlanManager />
+                </TabsContent>
+
+                {/* Manual Payments Tab */}
+                <TabsContent value="manual-payments">
+                    <ManualPaymentApprover />
                 </TabsContent>
 
                 {/* Support Tab */}

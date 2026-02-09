@@ -8,6 +8,7 @@ import { useOrganization, useSubscriptionStatus } from "@/hooks/useOrganization"
 import { useBilling, PaymentProvider } from "@/hooks/useBilling";
 import { BinancePayGateway } from "@/components/billing/BinancePayGateway";
 import { BillingPortal } from "@/components/billing/BillingPortal";
+import { ManualPaymentDialog } from "@/components/billing/ManualPaymentDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -24,7 +25,8 @@ import {
     ShieldCheck,
     MessageCircle,
     Shield,
-    Globe
+    Globe,
+    Smartphone
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -36,6 +38,7 @@ export default function Billing() {
 
     const [selectedPriceId, setSelectedPriceId] = useState<string | null>(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [showManualPaymentDialog, setShowManualPaymentDialog] = useState(false);
     const [binanceOrderData, setBinanceOrderData] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<string>("plans");
 
@@ -294,10 +297,39 @@ export default function Billing() {
                                     <p className="text-xs text-slate-500">Paga con USDT, BTC y más sin comisiones</p>
                                 </div>
                             </Button>
+
+                            <Separator className="bg-slate-800 my-2" />
+
+                            <Button
+                                variant="outline"
+                                className="h-16 justify-start gap-4 border-slate-700 hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-slate-300 group"
+                                onClick={() => {
+                                    setShowPaymentModal(false);
+                                    setShowManualPaymentDialog(true);
+                                }}
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20">
+                                    <Smartphone className="w-6 h-6 text-emerald-500" />
+                                </div>
+                                <div className="text-left">
+                                    <p className="font-bold text-white">Pago Móvil / Transferencia</p>
+                                    <p className="text-xs text-slate-500">Reporta tu pago local en Bolívares</p>
+                                </div>
+                            </Button>
                         </div>
                     )}
                 </DialogContent>
             </Dialog>
+
+            {/* Manual Payment Dialog */}
+            {selectedPriceId && (
+                <ManualPaymentDialog
+                    open={showManualPaymentDialog}
+                    onOpenChange={setShowManualPaymentDialog}
+                    planName={plans.find(p => prices.find(pr => pr.id === selectedPriceId)?.plan_id === p.id)?.name || ""}
+                    amount={prices.find(p => p.id === selectedPriceId)?.amount || 0}
+                />
+            )}
 
             {/* Premium Trust Badges */}
             <div className="pt-20 pb-10 border-t border-slate-800/50">

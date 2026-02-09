@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useOrganizationId } from './useOrganization';
 import { useToast } from './use-toast';
 
-export type PaymentProvider = 'stripe' | 'paypal' | 'binance';
+export type PaymentProvider = 'stripe' | 'paypal' | 'binance' | 'pago_movil' | 'bank_transfer' | 'binance_manual' | 'paypal_manual' | 'bolivares';
 
 export interface Plan {
     id: string;
@@ -69,17 +69,35 @@ export function useBilling() {
                 .eq('organization_id', organizationId)
                 .maybeSingle();
 
-            // Load transaction history
+            // Load transaction history (from billing_transactions)
             const { data: transData } = await supabase
                 .from('billing_transactions')
                 .select('*')
                 .eq('organization_id', organizationId)
                 .order('created_at', { ascending: false });
 
+            // Load pending manual reports to show in history
+            const { data: manualReports } = await supabase
+                .from('payment_reports')
+                .select('*')
+                .eq('organization_id', organizationId)
+                .order('created_at', { ascending: false });
+
+            const formattedManual = (manualReports || []).map(report => ({
+                id: report.id,
+                amount: report.amount_paid,
+                currency: 'USD',
+                status: report.status,
+                provider: report.payment_method,
+                created_at: report.created_at,
+                provider_transaction_id: report.reference_number
+            }));
+
             setPlans((plansData as any) || [] as Plan[]);
             setPrices((pricesData as any) || [] as Price[]);
-            setTransactions((transData as any) || [] as Transaction[]);
+            setTransactions([...formattedManual, ...((transData as any) || [])]);
             setSubscription(subData);
+
         } catch (error) {
             console.error('Error loading billing data:', error);
         } finally {
@@ -141,6 +159,49 @@ export function useBilling() {
         }
     };
 
+    const reportManualPayment = async (reportData: {
+        planId: string;
+        method: string;
+        reference: string;
+        amount: number;
+        proofUrl?: string;
+    }) => {
+        setLoading(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('Usuario no autenticado');
+
+            const { error } = await supabase.from('payment_reports').insert({
+                user_id: user.id,
+                organization_id: organizationId,
+                plan_id: reportData.planId,
+                payment_method: reportData.method,
+                reference_number: reportData.reference,
+                amount_paid: reportData.amount,
+                proof_image_url: reportData.proofUrl,
+                status: 'pending'
+            });
+
+            if (error) throw error;
+
+            toast({
+                title: "Reporte Enviado",
+                description: "Tu pago está siendo verificado por nuestro equipo administrativo. Recibirás un correo cuando se active tu plan.",
+            });
+
+            return true;
+        } catch (error: any) {
+            toast({
+                variant: 'destructive',
+                title: 'Error al reportar pago',
+                description: error.message
+            });
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         plans,
         prices,
@@ -149,6 +210,8 @@ export function useBilling() {
         loading,
         createCheckoutSession,
         createPortalSession,
+        reportManualPayment,
         refresh: loadBillingData
     };
 }
+

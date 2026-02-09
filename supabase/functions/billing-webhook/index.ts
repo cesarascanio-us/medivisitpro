@@ -1,5 +1,4 @@
-// @ts-nocheck
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
@@ -14,86 +13,97 @@ serve(async (req: Request) => {
     }
 
     try {
+        // Use Service Role to bypass RLS and manage organizations
         const supabaseClient = createClient(
-            (globalThis as any).Deno.env.get('SUPABASE_URL') ?? '',
-            (globalThis as any).Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+            Deno.env.get('SUPABASE_URL') ?? '',
+            Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
         )
 
-        const url = new URL(req.url)
-        const provider = url.searchParams.get('provider') // stripe, paypal, binance
+        // Verify LemonSqueezy Signature (Recommended for production)
+        // const secret = Deno.env.get('LEMONSQUEEZY_WEBHOOK_SECRET');
+        // const hmac = req.headers.get('X-Signature');
+        // ... validation logic ...
 
         const body = await req.json()
-        console.log(`Received webhook from ${provider}:`, body)
+        const eventName = body.meta.event_name
+        const data = body.data
 
-        if (provider === 'stripe') {
-            // Handle Stripe Event
-            const eventType = body.type
-            const data = body.data.object
+        console.log(`Received LemonSqueezy event: ${eventName}`, data.id)
 
-            if (eventType === 'checkout.session.completed') {
-                const orgId = data.metadata.organization_id
-                const subId = data.subscription
-                const customerId = data.customer
+        if (eventName === 'order_created' || eventName === 'subscription_created') {
+            const attributes = data.attributes
+            const customData = attributes.checkout_data?.custom || {}
+            const userEmail = attributes.user_email
+            const userId = customData.user_id
 
-                // Update Organization with Stripe Customer ID
-                await supabaseClient
+            // We need a userId to associate the subscription
+            if (!userId) {
+                console.warn('No user_id found in webhook custom data. Trying with email...')
+                // Fallback: find user by email (risky if email changed, but better than nothing)
+            }
+
+            let targetUserId = userId
+
+            if (!targetUserId && userEmail) {
+                const { data: users, error: userError } = await supabaseClient.auth.admin.listUsers();
+                const foundUser = users?.users.find(u => u.email?.toLowerCase() === userEmail.toLowerCase())
+                if (foundUser) targetUserId = foundUser.id
+            }
+
+            if (!targetUserId) {
+                throw new Error(`Could not identify user for email ${userEmail}`)
+            }
+
+            console.log(`Processing subscription for User ID: ${targetUserId}`)
+
+            // 1. Check if user belongs to an organization
+            const { data: userRoles } = await supabaseClient
+                .from('user_roles')
+                .select('organization_id, role')
+                .eq('user_id', targetUserId)
+                .maybeSingle()
+
+            let orgId = userRoles?.organization_id
+
+            // 2. If NO organization, create one (Self-Serve Flow)
+            if (!orgId) {
+                console.log('User has no organization. Creating "Personal" organization...')
+
+                const { data: profile } = await supabaseClient.from('profiles').select('first_name, last_name').eq('user_id', targetUserId).single()
+                const orgName = profile ? `Org de ${profile.first_name}` : `Org Personal ${targetUserId.substring(0, 4)}`
+
+                const { data: newOrg, error: orgError } = await supabaseClient
                     .from('organizations')
-                    .update({ stripe_customer_id: customerId })
-                    .eq('id', orgId)
+                    .insert({ name: orgName, slug: crypto.randomUUID(), plan: 'pro', status: 'active' })
+                    .select()
+                    .single()
 
-                // Create/Update Subscription
-                await supabaseClient.from('subscriptions').upsert({
+                if (orgError) throw orgError
+                orgId = newOrg.id
+
+                // Assign user as Admin/Master of this new Org
+                await supabaseClient.from('user_roles').upsert({
+                    user_id: targetUserId,
                     organization_id: orgId,
-                    provider: 'stripe',
-                    provider_subscription_id: subId,
-                    status: 'active',
-                    current_period_end: new Date(data.expires_at * 1000).toISOString(),
+                    role: 'admin', // Give them full control
+                    updated_at: new Date().toISOString()
                 })
+
+                // Update profile
+                await supabaseClient.from('profiles').update({ organization_id: orgId }).eq('user_id', targetUserId)
             }
-        }
 
-        else if (provider === 'paypal') {
-            // Handle PayPal Webhook (e.g., BILLING.SUBSCRIPTION.ACTIVATED)
-            const eventType = body.event_type
-            const resource = body.resource
+            // 3. Record Subscription
+            await supabaseClient.from('subscriptions').upsert({
+                organization_id: orgId,
+                status: attributes.status, // 'active'
+                plan_variant_id: attributes.variant_id.toString(),
+                provider_subscription_id: data.id, // Subscription ID in LS
+                current_period_end: attributes.renews_at ? new Date(attributes.renews_at).toISOString() : null,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'organization_id' }) // One active sub per org for now? Or handle multiple?
 
-            if (eventType === 'BILLING.SUBSCRIPTION.ACTIVATED') {
-                const orgId = resource.custom_id // We should pass orgId in custom_id
-
-                await supabaseClient.from('subscriptions').upsert({
-                    organization_id: orgId,
-                    provider: 'paypal',
-                    provider_subscription_id: resource.id,
-                    status: 'active',
-                    current_period_end: resource.billing_info.next_billing_time,
-                })
-            }
-        }
-
-        else if (provider === 'binance') {
-            // Handle Binance Pay (C2B) logic
-            // In Binance, we usually poll or use a webhook for "Order Paid"
-            if (body.bizStatus === 'PAY_SUCCESS') {
-                const orgId = body.merchantTradeNo.split('_')[0] // Assuming merchantTradeNo is "orgId_timestamp"
-
-                // Log Transaction
-                await supabaseClient.from('billing_transactions').insert({
-                    organization_id: orgId,
-                    amount: parseFloat(body.totalFee),
-                    currency: body.currency,
-                    status: 'completed',
-                    provider: 'binance',
-                    provider_transaction_id: body.transactionId
-                })
-
-                // Update Subscription (Binance is usually one-off or handled as manual renewal)
-                await supabaseClient.from('subscriptions').upsert({
-                    organization_id: orgId,
-                    provider: 'binance',
-                    status: 'active',
-                    current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // +30 days
-                })
-            }
+            console.log(`Subscription activated for Org ${orgId}`)
         }
 
         return new Response(JSON.stringify({ received: true }), {

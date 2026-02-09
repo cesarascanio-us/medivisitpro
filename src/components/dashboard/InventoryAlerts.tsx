@@ -110,11 +110,10 @@ export function InventoryAlerts({
 
     if (loading) {
         return (
-            <Card className="medical-card">
-                <CardContent className="p-6 text-center text-muted-foreground">
-                    Cargando alertas de inventario...
-                </CardContent>
-            </Card>
+            <div className="medical-card p-12 text-center animate-pulse">
+                <Package className="mx-auto h-8 w-8 text-emerald-500/50 mb-4 animate-bounce" />
+                <p className="text-slate-400 text-sm font-medium">Sincronizando inventario premium...</p>
+            </div>
         );
     }
 
@@ -127,9 +126,13 @@ export function InventoryAlerts({
                         Alertas de Inventario
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center py-6 text-muted-foreground">
-                    <Package className="mx-auto h-10 w-10 mb-2 opacity-50" />
-                    <p>¡Todo en orden! No hay alertas de inventario.</p>
+                <CardContent className="text-center py-12">
+                    <div className="relative inline-block mb-4">
+                        <div className="absolute inset-0 bg-emerald-500/10 blur-xl rounded-full scale-150"></div>
+                        <Package className="relative mx-auto h-12 w-12 text-emerald-500/40" />
+                    </div>
+                    <p className="text-slate-300 font-semibold tracking-tight">Inventario Optimizado</p>
+                    <p className="text-slate-500 text-xs mt-1">No hay alertas críticas en tu zona hoy.</p>
                 </CardContent>
             </Card>
         );
@@ -177,7 +180,7 @@ export function InventoryAlerts({
                         {visibleLowStock.map(item => (
                             <div
                                 key={`low_${item.productId}`}
-                                className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800"
+                                className="flex items-center justify-between p-4 bg-red-500/5 rounded-2xl border border-red-500/10 group hover:bg-red-500/10 transition-colors"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 rounded-full bg-red-100 dark:bg-red-900">
@@ -207,24 +210,24 @@ export function InventoryAlerts({
                             <div
                                 key={`exp_${item.productId}`}
                                 className={`flex items-center justify-between p-3 rounded-lg border ${item.daysUntilExpiry <= 7
-                                        ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
-                                        : item.daysUntilExpiry <= 14
-                                            ? 'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800'
-                                            : 'bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800'
+                                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
+                                    : item.daysUntilExpiry <= 14
+                                        ? 'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800'
+                                        : 'bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2 rounded-full ${item.daysUntilExpiry <= 7
-                                            ? 'bg-red-100 dark:bg-red-900'
-                                            : item.daysUntilExpiry <= 14
-                                                ? 'bg-orange-100 dark:bg-orange-900'
-                                                : 'bg-yellow-100 dark:bg-yellow-900'
+                                        ? 'bg-red-100 dark:bg-red-900'
+                                        : item.daysUntilExpiry <= 14
+                                            ? 'bg-orange-100 dark:bg-orange-900'
+                                            : 'bg-yellow-100 dark:bg-yellow-900'
                                         }`}>
                                         <Clock className={`h-4 w-4 ${item.daysUntilExpiry <= 7
-                                                ? 'text-red-600'
-                                                : item.daysUntilExpiry <= 14
-                                                    ? 'text-orange-600'
-                                                    : 'text-yellow-600'
+                                            ? 'text-red-600'
+                                            : item.daysUntilExpiry <= 14
+                                                ? 'text-orange-600'
+                                                : 'text-yellow-600'
                                             }`} />
                                     </div>
                                     <div>

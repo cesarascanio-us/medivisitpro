@@ -1,7 +1,10 @@
-import { Check, X } from 'lucide-react';
+import { Check, X, CreditCard, Globe, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackEvent } from '@/lib/analytics';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { ManualPaymentDialog } from '@/components/billing/ManualPaymentDialog';
+import { useState } from 'react';
 
 const plans = [
     {
@@ -32,7 +35,7 @@ const plans = [
             { name: 'Exportación a PDF/Excel', included: true },
             { name: 'Soporte prioritario', included: true },
         ],
-        cta: 'Prueba Pro 7 Días Gratis',
+        cta: 'Reportar Pago Pro',
         popular: true,
     },
     {
@@ -54,15 +57,28 @@ const plans = [
 
 export const PricingSection = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+    const [selectedPlanDetails, setSelectedPlanDetails] = useState({ name: '', price: '' });
 
-    const handlePlanClick = (planName: string) => {
+    const handlePlanClick = (planName: string, planPrice: string) => {
         trackEvent('click_pricing_plan', { plan: planName });
+
         if (planName === 'Team') {
             window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20me%20interesa%20el%20plan%20Team%20para%20mi%20laboratorio", "_blank");
+        } else if (planName === 'Pro') {
+            if (!user) {
+                navigate('/auth?redirect=pricing');
+                return;
+            }
+
+            setSelectedPlanDetails({ name: planName, price: planPrice });
+            setIsPaymentDialogOpen(true);
         } else {
             navigate('/auth');
         }
     };
+
 
     return (
         <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-900 relative overflow-hidden" id="pricing">
@@ -75,7 +91,7 @@ export const PricingSection = () => {
                         Inversión que se paga sola en un día
                     </h2>
                     <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-                        Elige el plan que mejor se adapte a tu etapa profesional. Sin contratos forzosos.
+                        Pagos locales en Venezuela: PayPal, Binance, Pago Móvil y Transferencia.
                     </p>
                 </div>
 
@@ -84,8 +100,8 @@ export const PricingSection = () => {
                         <div
                             key={plan.name}
                             className={`relative bg-slate-800/50 rounded-2xl p-8 border ${plan.popular
-                                    ? 'border-emerald-500 shadow-2xl shadow-emerald-500/20 scale-105 z-10'
-                                    : 'border-slate-700 hover:border-slate-600'
+                                ? 'border-emerald-500 shadow-2xl shadow-emerald-500/20 scale-105 z-10'
+                                : 'border-slate-700 hover:border-slate-600'
                                 } transition-all duration-300 flex flex-col`}
                         >
                             {plan.popular && (
@@ -119,19 +135,41 @@ export const PricingSection = () => {
                             </ul>
 
                             <Button
-                                onClick={() => handlePlanClick(plan.name)}
+                                onClick={() => handlePlanClick(plan.name, plan.price)}
                                 className={`w-full h-12 text-base font-semibold transition-all ${plan.popular
-                                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
-                                        : 'bg-slate-700 hover:bg-slate-600 text-white'
+                                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
+                                    : 'bg-slate-700 hover:bg-slate-600 text-white'
                                     }`}
                                 variant={plan.popular ? 'default' : 'outline'}
                             >
                                 {plan.cta}
                             </Button>
+
+                            {/* Payment Icons for Pro Plan */}
+                            {plan.name === 'Pro' && (
+                                <div className="mt-4 flex items-center justify-center gap-3 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+                                    <div className="flex flex-col items-center gap-1 text-center w-full">
+                                        <div className="flex gap-4 mb-1">
+                                            <Globe className="w-4 h-4 text-slate-400" />
+                                            <CreditCard className="w-4 h-4 text-slate-400" />
+                                            <Smartphone className="w-4 h-4 text-slate-400" />
+                                        </div>
+                                        <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">PayPal · Binance · Pago Móvil</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
             </div>
+
+            <ManualPaymentDialog
+                open={isPaymentDialogOpen}
+                onOpenChange={setIsPaymentDialogOpen}
+                planName={selectedPlanDetails.name}
+                amount={selectedPlanDetails.price}
+            />
         </section>
     );
 };
+

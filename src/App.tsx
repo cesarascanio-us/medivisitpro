@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { OrganizationProvider } from "./hooks/useOrganization";
@@ -11,7 +11,7 @@ import { AuthProvider } from "./components/auth/AuthProvider";
 import { DemoDataSeeder } from "@/components/demo/DemoDataSeeder";
 import { MockDataProvider } from "@/contexts/MockDataProvider";
 import { HelmetProvider } from 'react-helmet-async';
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 // Eager load critical pages for faster First Contentful Paint (FCP)
@@ -80,6 +80,20 @@ const PageLoader = () => (
   </div>
 );
 
+// Wrapper component to force re-mount of children when route changes
+// This fixes issues with components like LeafletMap that persist state across routes
+const RoutesWithRemount = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+
+  // Log route changes for debugging
+  useEffect(() => {
+    console.log('[RoutesWithRemount] Route changed to:', location.pathname);
+  }, [location.pathname]);
+
+  // Using a div with key forces React to unmount and remount the entire subtree
+  return <div key={location.pathname} style={{ display: 'contents' }}>{children}</div>;
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -107,224 +121,227 @@ const App = () => (
                 }}
               >
                 <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    {/* Public Routes - kept eager for speed */}
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/auth" element={<AuthPage />} />
+                  <RoutesWithRemount>
+                    <Routes>
+                      {/* Public Routes - kept eager for speed */}
+                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/auth" element={<AuthPage />} />
 
-                    {/* Lazy loaded routes */}
-                    <Route path="/demo" element={<DemoPage />} />
-                    <Route path="/onboarding" element={
-                      <ProtectedRoute>
-                        <OnboardingWizard />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/product/:id" element={<PublicProductPage />} />
+                      {/* Lazy loaded routes */}
+                      <Route path="/demo" element={<DemoPage />} />
+                      <Route path="/onboarding" element={
+                        <ProtectedRoute>
+                          <OnboardingWizard />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/product/:id" element={<PublicProductPage />} />
 
-                    {/* Protected Routes */}
-                    <Route path="/dashboard" element={
-                      <ProtectedRoute>
-                        <Layout><DashboardRouter /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/agenda" element={
-                      <ProtectedRoute>
-                        <Layout><Agenda /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/planner" element={
-                      <ProtectedRoute>
-                        <Layout><Planner /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/events" element={
-                      <ProtectedRoute>
-                        <Layout><Events /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/contacts" element={
-                      <ProtectedRoute>
-                        <Layout><Contacts /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/doctors" element={
-                      <ProtectedRoute>
-                        <Layout><Doctors /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/pharmacies" element={
-                      <ProtectedRoute>
-                        <Layout><Pharmacies /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/natural-stores" element={
-                      <ProtectedRoute>
-                        <Layout><NaturalStores /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/specialties" element={
-                      <ProtectedRoute>
-                        <Layout><Specialties /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/drugstores" element={
-                      <ProtectedRoute>
-                        <Layout><Drugstores /></Layout>
-                      </ProtectedRoute>
-                    } />
+                      {/* Protected Routes */}
+                      <Route path="/dashboard" element={
+                        <ProtectedRoute>
+                          <Layout><DashboardRouter /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/agenda" element={
+                        <ProtectedRoute>
+                          <Layout><Agenda /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/planner" element={
+                        <ProtectedRoute>
+                          <Layout><Planner /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/events" element={
+                        <ProtectedRoute>
+                          <Layout><Events /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/contacts" element={
+                        <ProtectedRoute>
+                          <Layout><Contacts /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/doctors" element={
+                        <ProtectedRoute>
+                          <Layout><Doctors /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/pharmacies" element={
+                        <ProtectedRoute>
+                          <Layout><Pharmacies /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/natural-stores" element={
+                        <ProtectedRoute>
+                          <Layout><NaturalStores /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/specialties" element={
+                        <ProtectedRoute>
+                          <Layout><Specialties /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/drugstores" element={
+                        <ProtectedRoute>
+                          <Layout><Drugstores /></Layout>
+                        </ProtectedRoute>
+                      } />
 
-                    <Route path="/warehouse" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'store_manager']}>
-                        <Layout><WarehouseLayout /></Layout>
-                      </ProtectedRoute>
-                    } />
+                      <Route path="/warehouse" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'store_manager']}>
+                          <Layout><WarehouseLayout /></Layout>
+                        </ProtectedRoute>
+                      } />
 
-                    <Route path="/visits" element={
-                      <ProtectedRoute>
-                        <Layout><Visits /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/products" element={
-                      <ProtectedRoute>
-                        <Layout><Products /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/muestras" element={
-                      <ProtectedRoute>
-                        <Layout><Samples /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/material-pop" element={
-                      <ProtectedRoute>
-                        <Layout><MaterialPOP /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/sample-banks" element={
-                      <ProtectedRoute>
-                        <Layout><SampleBanks /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/objectives" element={
-                      <ProtectedRoute>
-                        <Layout><Objectives /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/expenses" element={
-                      <ProtectedRoute>
-                        <Layout><Expenses /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/reports" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
-                        <Layout><Reports /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/health-centers" element={
-                      <ProtectedRoute>
-                        <Layout><HealthCenters /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/work-processes" element={
-                      <ProtectedRoute>
-                        <Layout><WorkProcesses /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/notifications" element={
-                      <ProtectedRoute>
-                        <Layout><Notifications /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/users" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
-                        <Layout><Users /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/zones" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                        <Layout><Zones /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/master-panel" element={
-                      <ProtectedRoute allowedRoles={['master']}>
-                        <Layout><MasterPanel /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/dashboard-master" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin']}>
-                        <Layout><DashboardMaster /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/settings" element={
-                      <ProtectedRoute>
-                        <Layout><Settings /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/help" element={
-                      <ProtectedRoute>
-                        <Layout><Help /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/transfer-orders" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor', 'representative']}>
-                        <Layout><TransferOrders /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/coverage-map" element={
-                      <ProtectedRoute>
-                        <Layout><CoverageMap /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/promotional-cycles" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
-                        <Layout><PromotionalCycles /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/documentation" element={
-                      <ProtectedRoute>
-                        <Layout><Documentation /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/billing" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                        <Layout><Billing /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/logs" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                        <Layout><AuditLogs /></Layout>
-                      </ProtectedRoute>
-                    } />
+                      <Route path="/visits" element={
+                        <ProtectedRoute>
+                          <Layout><Visits /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/products" element={
+                        <ProtectedRoute>
+                          <Layout><Products /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/muestras" element={
+                        <ProtectedRoute>
+                          <Layout><Samples /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/material-pop" element={
+                        <ProtectedRoute>
+                          <Layout><MaterialPOP /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/sample-banks" element={
+                        <ProtectedRoute>
+                          <Layout><SampleBanks /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/objectives" element={
+                        <ProtectedRoute>
+                          <Layout><Objectives /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/expenses" element={
+                        <ProtectedRoute>
+                          <Layout><Expenses /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/reports" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
+                          <Layout><Reports /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/health-centers" element={
+                        <ProtectedRoute>
+                          <Layout><HealthCenters /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/work-processes" element={
+                        <ProtectedRoute>
+                          <Layout><WorkProcesses /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/notifications" element={
+                        <ProtectedRoute>
+                          <Layout><Notifications /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/users" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
+                          <Layout><Users /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/zones" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                          <Layout><Zones /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/master-panel" element={
+                        <ProtectedRoute allowedRoles={['master']}>
+                          <Layout><MasterPanel /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/dashboard-master" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin']}>
+                          <Layout><DashboardMaster /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/settings" element={
+                        <ProtectedRoute>
+                          <Layout><Settings /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/help" element={
+                        <ProtectedRoute>
+                          <Layout><Help /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/transfer-orders" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor', 'representative']}>
+                          <Layout><TransferOrders /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/coverage-map" element={
+                        <ProtectedRoute>
+                          <Layout><CoverageMap /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/promotional-cycles" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
+                          <Layout><PromotionalCycles /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/planning/cycles" element={<Navigate to="/promotional-cycles" replace />} />
+                      <Route path="/documentation" element={
+                        <ProtectedRoute>
+                          <Layout><Documentation /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/billing" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                          <Layout><Billing /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/logs" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                          <Layout><AuditLogs /></Layout>
+                        </ProtectedRoute>
+                      } />
 
-                    {/* Master SaaS Modules */}
-                    <Route path="/master/tickets" element={
-                      <ProtectedRoute allowedRoles={['master']}>
-                        <Layout><TicketList /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/master/logs" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                        <Layout><AuditLogs /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/master/billing" element={
-                      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-                        <Layout><BillingManager /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/master/alerts" element={
-                      <ProtectedRoute allowedRoles={['master']}>
-                        <Layout><SystemAlerts /></Layout>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/master/plans" element={
-                      <ProtectedRoute allowedRoles={['master']}>
-                        <Layout><PlanManager /></Layout>
-                      </ProtectedRoute>
-                    } />
+                      {/* Master SaaS Modules */}
+                      <Route path="/master/tickets" element={
+                        <ProtectedRoute allowedRoles={['master']}>
+                          <Layout><TicketList /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/master/logs" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                          <Layout><AuditLogs /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/master/billing" element={
+                        <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+                          <Layout><BillingManager /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/master/alerts" element={
+                        <ProtectedRoute allowedRoles={['master']}>
+                          <Layout><SystemAlerts /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/master/plans" element={
+                        <ProtectedRoute allowedRoles={['master']}>
+                          <Layout><PlanManager /></Layout>
+                        </ProtectedRoute>
+                      } />
 
-                    {/* Catch-all */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
+                      {/* Catch-all */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </RoutesWithRemount>
                 </Suspense>
               </BrowserRouter>
             </TooltipProvider>

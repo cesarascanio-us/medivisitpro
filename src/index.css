@@ -23,38 +23,43 @@
   }
 
   :root {
-    /* Light Theme (Clean & Luminous) */
-    --background: 210 40% 98%; /* Slate-50 (#f8fafc) */
-    --foreground: 222.2 47.4% 11.2%; /* Slate-900 (#0f172a) */
+    /* Premium Dark Theme - Force Emerald/Slate Base */
+    --background: 222.2 84% 4.9%;
+    /* Slate-950 (#020617) */
+    --foreground: 210 40% 98%;
+    /* Slate-50 (#f8fafc) */
 
     /* Emerald Primary (Brand) */
-    --primary: 222.2 47.4% 11.2%; /* Brand Primary (Slate-900) for Titles/Nav */
-    --primary-foreground: 210 40% 98%;
+    --primary: 158 94% 43%;
+    /* Emerald-500 (#10b981) */
+    --primary-foreground: 222.2 47.4% 11.2%;
 
     /* Sky/Blue Secondary (Brand) */
-    --secondary: 199 89% 48%; /* Sky-600 (#0284c7) for Actions */
+    --secondary: 199 89% 48%;
+    /* Sky-600 */
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted colors - slate tones */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted colors - dark slate tones */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
     /* Accent */
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
-    /* Cards - Pure White */
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    /* Cards - Darker & Glassy */
+    --card: 222.2 84% 8%;
+    /* Slate-900 */
+    --card-foreground: 210 40% 98%;
 
     /* Popover */
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover: 222.2 84% 8%;
+    --popover-foreground: 210 40% 98%;
 
     /* Interactive */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 47.4% 11.2%;
+    --border: 217.2 32.6% 14%;
+    --input: 217.2 32.6% 14%;
+    --ring: 158 94% 43%;
 
     /* Semantic Colors */
     --success: 142.1 76.2% 36.3%;
@@ -79,31 +84,38 @@
     /* Design tokens */
     --shadow-medical: 0 4px 20px -4px rgba(2, 132, 199, 0.25);
     --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+    /* Premium Operation Unicorn Tokens */
+    --premium-gradient: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
+    --premium-glass-bg: rgba(30, 41, 59, 0.5);
+    --premium-glass-border: rgba(255, 255, 255, 0.05);
+    --medical-accent: #10b981;
+    --medical-background: #020617;
   }
 
-  /* Typography Rules */
+  /* Typography Rules - Optimized for Premium Dark */
   h1 {
-    @apply text-3xl font-bold tracking-tight text-brand-primary;
+    @apply text-3xl font-bold tracking-tight text-white;
   }
-  
+
   h2 {
-    @apply text-xl font-semibold text-brand-primary;
+    @apply text-xl font-semibold text-white;
   }
 
   h3 {
-    @apply text-lg font-semibold text-brand-primary;
+    @apply text-lg font-semibold text-white;
   }
 
   p {
-    @apply text-sm text-slate-700 leading-relaxed;
+    @apply text-sm text-slate-300 leading-relaxed;
   }
 
   label {
-    @apply text-sm font-medium text-slate-700;
+    @apply text-sm font-medium text-slate-300;
   }
 
   body {
-    @apply bg-surface-ground text-slate-700 font-sans antialiased;
+    @apply bg-background text-slate-300 font-sans antialiased;
   }
 }
 
@@ -111,11 +123,15 @@
 
   /* Medical Card Components - Dark Glass Style */
   .medical-card {
-    @apply bg-card/50 border border-border rounded-xl backdrop-blur-sm;
+    @apply bg-slate-900/40 border border-white/5 rounded-2xl backdrop-blur-md shadow-xl;
+  }
+
+  .premium-card {
+    @apply bg-gradient-to-br from-slate-900/60 to-slate-900/20 border border-white/5 rounded-3xl backdrop-blur-xl shadow-2xl transition-all duration-300;
   }
 
   .medical-card-hover {
-    @apply bg-card/50 border border-border rounded-xl backdrop-blur-sm transition-all hover:bg-card/80 hover:border-emerald-500/30 hover:-translate-y-0.5;
+    @apply bg-slate-900/40 border border-white/5 rounded-2xl backdrop-blur-md shadow-xl transition-all duration-300 hover:bg-slate-900/60 hover:border-emerald-500/20 hover:-translate-y-1 hover:shadow-emerald-500/10;
   }
 
   /* Medical Gradients */
@@ -221,4 +237,48 @@
 .leaflet-top,
 .leaflet-bottom {
   z-index: 10 !important;
+}
+
+/* Ensure Leaflet popups and overlays stay within the map container */
+.leaflet-pane {
+  z-index: 10 !important;
+}
+
+.leaflet-overlay-pane {
+  z-index: 10 !important;
+}
+
+.leaflet-marker-pane {
+  z-index: 11 !important;
+}
+
+.leaflet-tooltip-pane {
+  z-index: 12 !important;
+}
+
+.leaflet-popup-pane {
+  z-index: 13 !important;
+}
+
+/* Create stacking context for map container */
+.leaflet-container {
+  isolation: isolate;
+  z-index: 1 !important;
+}
+
+/* CRITICAL: Ensure sidebar container is ALWAYS clickable above map */
+/* This fixes the issue where Leaflet overlays block sidebar clicks */
+.sidebar-wrapper {
+  position: relative !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+/* Force all sidebar navigation items to be clickable */
+nav a,
+nav button,
+.sidebar-nav-item {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 1 !important;
 }

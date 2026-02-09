@@ -20,7 +20,7 @@ interface LogType {
     entity: string;
     details: any;
     ip_address: string;
-    created_at: string;
+    changed_at: string;
     user_id: string;
 }
 
@@ -35,7 +35,7 @@ export default function AuditLogs() {
         let query = supabase
             .from('audit_logs')
             .select('*')
-            .order('created_at', { ascending: false })
+            .order('changed_at', { ascending: false })
             .limit(100);
 
         if (searchTerm) {
@@ -143,8 +143,8 @@ export default function AuditLogs() {
                                         </TableCell>
                                         <TableCell className="text-right text-slate-400 text-sm">
                                             <div className="flex flex-col items-end">
-                                                <span>{new Date(log.created_at).toLocaleDateString()}</span>
-                                                <span className="text-xs text-slate-500">{new Date(log.created_at).toLocaleTimeString()}</span>
+                                                <span>{new Date(log.changed_at).toLocaleDateString()}</span>
+                                                <span className="text-xs text-slate-500">{new Date(log.changed_at).toLocaleTimeString()}</span>
                                             </div>
                                         </TableCell>
                                     </TableRow>

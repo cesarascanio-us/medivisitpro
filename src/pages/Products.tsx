@@ -19,6 +19,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { exportToCSV } from "@/utils/exportUtils";
 import * as XLSX from 'xlsx';
+import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 
 import { useDemoData } from "@/contexts/MockDataProvider";
 
@@ -527,8 +528,14 @@ export default function Products() {
               </Card>
             ))}
             {filteredProducts.length === 0 && !loading && (
-              <div className="col-span-full text-center py-12 text-muted-foreground">
-                No se encontraron productos. ¡Crea uno nuevo o importa un archivo CSV!
+              <div className="col-span-full">
+                <PremiumEmptyState
+                  icon={Package}
+                  title="No se encontraron productos"
+                  description="Intenta ajustar tu búsqueda o añade nuevos productos a tu catálogo para ampliar tu portafolio médico."
+                  actionLabel="Nuevo Producto"
+                  onAction={() => { }} /* The dialog trigger is already in the header */
+                />
               </div>
             )}
           </div>
@@ -602,11 +609,11 @@ export default function Products() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : getFavoriteProductIds().length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground bg-muted/10 rounded-lg">
-              <Heart className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No tienes favoritos aún</h3>
-              <p>Haz clic en el corazón de cualquier producto para agregarlo a tu lista.</p>
-            </div>
+            <PremiumEmptyState
+              icon={Heart}
+              title="No tienes favoritos aún"
+              description="Marca tus productos más utilizados con el icono del corazón para acceder a ellos rápidamente desde esta sección."
+            />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {products

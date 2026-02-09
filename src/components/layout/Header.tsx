@@ -20,7 +20,7 @@ export function Header() {
   });
 
   return (
-    <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50 px-4 py-3 shadow-lg shrink-0 h-14 z-20">
+    <header className="bg-slate-950/40 backdrop-blur-xl border-b border-emerald-500/10 px-4 py-3 shadow-2xl shrink-0 h-14 z-20">
       <div className="flex items-center justify-between h-full gap-4">
         {/* Left side - Date */}
         <div className="flex items-center gap-3">

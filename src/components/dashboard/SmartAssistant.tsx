@@ -36,29 +36,29 @@ interface NextBestAction {
 const missionConfig = {
     critical: {
         color: 'bg-red-500',
-        bgColor: 'bg-red-50 border-red-200',
-        textColor: 'text-red-700',
+        bgColor: 'bg-red-500/10 border-red-500/20',
+        textColor: 'text-red-400',
         icon: AlertTriangle,
         label: 'Crítica'
     },
     urgent: {
         color: 'bg-amber-500',
-        bgColor: 'bg-amber-50 border-amber-200',
-        textColor: 'text-amber-700',
+        bgColor: 'bg-amber-500/10 border-amber-500/20',
+        textColor: 'text-amber-400',
         icon: Clock,
         label: 'Urgente'
     },
     important: {
         color: 'bg-blue-500',
-        bgColor: 'bg-blue-50 border-blue-200',
-        textColor: 'text-blue-700',
+        bgColor: 'bg-blue-500/10 border-blue-500/20',
+        textColor: 'text-blue-400',
         icon: Target,
         label: 'Importante'
     },
     routine: {
         color: 'bg-emerald-500',
-        bgColor: 'bg-emerald-50 border-emerald-200',
-        textColor: 'text-emerald-700',
+        bgColor: 'bg-emerald-500/10 border-emerald-500/20',
+        textColor: 'text-emerald-400',
         icon: Zap,
         label: 'Rutina'
     }
@@ -88,7 +88,6 @@ export function SmartAssistant() {
 
             if (error) {
                 console.error('Error loading missions:', error);
-                // Fallback: mostrar mensaje si la vista no existe aún
                 setMissions([]);
             } else {
                 setMissions((data || []) as unknown as NextBestAction[]);
@@ -102,7 +101,6 @@ export function SmartAssistant() {
     };
 
     const handleAction = (mission: NextBestAction) => {
-        // Navigate to planning with pre-selected entity
         if (mission.entity_type === 'doctor') {
             navigate(`/doctors?highlight=${mission.id}`);
         } else {
@@ -112,16 +110,16 @@ export function SmartAssistant() {
 
     if (loading) {
         return (
-            <Card className="border-2 border-dashed border-primary/20">
+            <Card className="medical-card border-emerald-500/20">
                 <CardHeader className="pb-2">
                     <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-                        <Skeleton className="h-6 w-48" />
+                        <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
+                        <Skeleton className="h-6 w-48 bg-white/5" />
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                     {[1, 2, 3].map(i => (
-                        <Skeleton key={i} className="h-24 w-full" />
+                        <Skeleton key={i} className="h-24 w-full bg-white/5" />
                     ))}
                 </CardContent>
             </Card>
@@ -130,13 +128,13 @@ export function SmartAssistant() {
 
     if (missions.length === 0) {
         return (
-            <Card className="border border-emerald-200 bg-white shadow-sm">
+            <Card className="medical-card border-emerald-500/20 shadow-xl">
                 <CardContent className="pt-6 text-center">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Sparkles className="h-6 w-6 text-emerald-600" />
+                    <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Sparkles className="h-6 w-6 text-emerald-400" />
                     </div>
-                    <h3 className="font-semibold text-emerald-800">¡Todo al día!</h3>
-                    <p className="text-sm text-emerald-600 mt-1">
+                    <h3 className="font-semibold text-white">¡Todo al día!</h3>
+                    <p className="text-sm text-slate-400 mt-1">
                         No hay acciones prioritarias pendientes
                     </p>
                 </CardContent>
@@ -145,31 +143,31 @@ export function SmartAssistant() {
     }
 
     return (
-        <Card className="border-2 border-primary/20 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 shadow-lg">
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                        <Sparkles className="h-5 w-5 text-primary" />
+        <Card className="medical-card border-emerald-500/20 shadow-xl overflow-hidden group">
+            <CardHeader className="pb-3 bg-white/5 backdrop-blur-md border-b border-white/10">
+                <CardTitle className="flex items-center gap-2 text-lg text-white">
+                    <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                        <Sparkles className="h-5 w-5 text-emerald-400" />
                     </div>
                     Asistente Inteligente
-                    <Badge variant="secondary" className="ml-auto bg-primary/10 text-primary">
+                    <Badge variant="secondary" className="ml-auto bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
                         IA Predictiva
                     </Badge>
                 </CardTitle>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-slate-400">
                     Top 3 acciones recomendadas basadas en análisis de datos
                 </p>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-4 space-y-3">
                 {missions.map((mission, index) => {
-                    const config = missionConfig[mission.mission_type];
+                    const config = missionConfig[mission.mission_type as keyof typeof missionConfig] || missionConfig.routine;
                     const MissionIcon = config.icon;
                     const EntityIcon = mission.entity_type === 'doctor' ? UserRound : Building2;
 
                     return (
                         <div
                             key={mission.id}
-                            className={`relative p-4 rounded-xl border-2 ${config.bgColor} transition-all hover:scale-[1.02] hover:shadow-md`}
+                            className={`relative p-4 rounded-xl border-2 ${config.bgColor} transition-all hover:scale-[1.01] hover:bg-white/5 group/item`}
                         >
                             {/* Priority Badge */}
                             <div className="absolute -top-2 -left-2">
@@ -180,21 +178,21 @@ export function SmartAssistant() {
 
                             <div className="ml-4">
                                 <div className="flex items-start justify-between gap-2">
-                                    <div className="flex-1">
+                                    <div className="flex-1 min-w-0">
                                         {/* Header */}
                                         <div className="flex items-center gap-2 mb-1">
                                             <EntityIcon className={`h-4 w-4 ${config.textColor}`} />
-                                            <span className="font-semibold text-slate-800 line-clamp-1">
+                                            <span className="font-semibold text-white truncate">
                                                 {mission.name}
                                             </span>
-                                            <Badge variant="outline" className="text-xs">
+                                            <Badge variant="outline" className="text-[10px] bg-white/5 border-white/10 text-slate-300 h-5">
                                                 {mission.entity_type === 'doctor' ? 'Médico' : 'Farmacia'}
                                             </Badge>
                                         </div>
 
                                         {/* Specialty/Address */}
                                         {(mission.specialty || mission.address) && (
-                                            <p className="text-xs text-muted-foreground mb-2 line-clamp-1">
+                                            <p className="text-xs text-slate-400 mb-2 truncate">
                                                 {mission.specialty || mission.address}
                                             </p>
                                         )}
@@ -202,37 +200,45 @@ export function SmartAssistant() {
                                         {/* Reason */}
                                         <div className={`flex items-center gap-2 ${config.textColor}`}>
                                             <MissionIcon className="h-4 w-4 flex-shrink-0" />
-                                            <span className="text-sm font-medium line-clamp-1">
+                                            <span className="text-sm font-medium truncate">
                                                 {mission.reason}
                                             </span>
                                         </div>
 
                                         {/* Stats Row */}
-                                        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                                        <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
                                             <span className="flex items-center gap-1">
                                                 <Clock className="h-3 w-3" />
-                                                {mission.days_since_visit > 900 ? 'Nunca visitado' : `${mission.days_since_visit} días`}
+                                                {mission.days_since_visit > 900 ? 'Nunca' : `${mission.days_since_visit}d`}
                                             </span>
                                             {mission.sales_drop_percent > 0 && (
-                                                <span className="flex items-center gap-1 text-red-600">
+                                                <span className="flex items-center gap-1 text-red-400 font-medium">
                                                     <TrendingDown className="h-3 w-3" />
                                                     -{mission.sales_drop_percent}% ventas
                                                 </span>
                                             )}
-                                            <Badge className={`${config.color} text-white text-xs`}>
-                                                Score: {mission.score}
-                                            </Badge>
+                                            <div className="ml-auto flex items-center gap-2">
+                                                <span className="text-[10px] uppercase font-bold tracking-tighter text-slate-600">
+                                                    Score: {Math.round(mission.score * 100)}%
+                                                </span>
+                                                <div className="h-1 w-10 bg-white/5 rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-emerald-500"
+                                                        style={{ width: `${mission.score * 100}%` }}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Action Button */}
                                     <Button
-                                        size="sm"
-                                        className={`${config.color} hover:opacity-90 shadow-md`}
+                                        size="icon"
+                                        variant="ghost"
+                                        className={`ml-2 h-8 w-8 rounded-full ${config.textColor} hover:bg-white/10`}
                                         onClick={() => handleAction(mission)}
                                     >
-                                        <span className="hidden sm:inline mr-1">Visitar</span>
-                                        <ArrowRight className="h-4 w-4" />
+                                        <ArrowRight className="h-5 w-5" />
                                     </Button>
                                 </div>
                             </div>

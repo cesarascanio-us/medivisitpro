@@ -10,20 +10,23 @@ interface InstructionCardProps {
 
 export function InstructionCard({ title, description, items, className }: InstructionCardProps) {
     return (
-        <div className={`bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-lg p-4 mb-6 shadow-sm ${className}`}>
-            <div className="flex items-start gap-4">
-                <div className="mt-1 p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full shrink-0">
-                    <Lightbulb className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        <div className={`medical-card p-6 shadow-2xl shadow-emerald-500/5 ${className}`}>
+            <div className="flex items-start gap-5">
+                <div className="mt-1 p-2.5 bg-emerald-500/10 rounded-xl shrink-0 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                    <Lightbulb className="h-5 w-5 text-emerald-400" />
                 </div>
-                <div className="space-y-2">
-                    <h3 className="text-base font-semibold text-blue-900 dark:text-blue-200 leading-tight">{title}</h3>
+                <div className="space-y-3">
+                    <h3 className="text-lg font-bold text-white leading-tight tracking-tight">{title}</h3>
                     {description && (
-                        <p className="text-sm text-blue-800/80 dark:text-blue-300/80 leading-relaxed">{description}</p>
+                        <p className="text-sm text-slate-400 leading-relaxed font-medium">{description}</p>
                     )}
                     {items && items.length > 0 && (
-                        <ul className="list-disc list-inside text-sm text-blue-700 dark:text-blue-400 space-y-2 mt-3">
+                        <ul className="space-y-3 mt-4">
                             {items.map((item, idx) => (
-                                <li key={idx} className="pl-1">{item}</li>
+                                <li key={idx} className="flex items-start gap-3 text-sm text-slate-300">
+                                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500/50 shrink-0" />
+                                    <span className="leading-relaxed">{item}</span>
+                                </li>
                             ))}
                         </ul>
                     )}

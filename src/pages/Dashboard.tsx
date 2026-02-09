@@ -228,21 +228,28 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Alpha BMT Style Header with Clock and Sync */}
-      <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-4 -mt-6 mb-8">
-        {/* Decorative background element */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+      <header className="premium-card px-6 pt-8 pb-24 relative overflow-hidden -mx-4 -mt-10 mb-10">
+        {/* Background Effects */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full -mr-40 -mt-40 blur-[100px] animate-pulse pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full -ml-32 -mb-32 blur-[100px] animate-pulse delay-700 pointer-events-none"></div>
 
         {/* Top Row: Greeting + Status + Actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10">
-              <span className="text-2xl font-bold text-white">
-                {(user?.email || "?")[0].toUpperCase()}
-              </span>
+          <div className="flex items-center gap-5">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative w-20 h-20 bg-slate-900 rounded-2xl flex items-center justify-center border border-white/10 shadow-2xl">
+                <span className="text-3xl font-bold bg-gradient-to-br from-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                  {(user?.email || "?")[0].toUpperCase()}
+                </span>
+              </div>
             </div>
             <div>
-              <p className="text-emerald-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Centro de Mando</p>
-              <h1 className="text-2xl font-bold tracking-tight">¡Hola, {getUserName()}!</h1>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-[0.2em]">SISTEMA ACTIVO</p>
+              </div>
+              <h1 className="text-3xl font-extrabold text-white tracking-tight">Bienvenido, {getUserName()}</h1>
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                 <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
                   {getRoleLabel(role)}
@@ -273,14 +280,14 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col items-end gap-2">
-            <div className="text-right">
-              <div className="text-3xl font-mono font-bold tracking-tighter text-white">
+          <div className="flex flex-col items-end gap-1">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl shadow-inner">
+              <div className="text-4xl font-mono font-black tracking-tighter text-white tabular-nums drop-shadow-lg">
                 {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </div>
-              <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium">
-                {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-              </div>
+            </div>
+            <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium">
+              {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
             </div>
           </div>
         </div>

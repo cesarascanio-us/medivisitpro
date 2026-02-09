@@ -39,16 +39,13 @@ export function BillingPortal({ subscription, transactions, onManageSubscription
     };
 
     const getProviderIcon = (provider: string) => {
-        switch (provider.toLowerCase()) {
-            case 'stripe':
-                return <CreditCard className="w-4 h-4 text-blue-400" />;
-            case 'binance':
-                return <Wallet className="w-4 h-4 text-yellow-400" />;
-            case 'paypal':
-                return <Globe className="w-4 h-4 text-indigo-400" />;
-            default:
-                return <Receipt className="w-4 h-4 text-slate-400" />;
-        }
+        const p = provider.toLowerCase();
+        if (p === 'stripe') return <CreditCard className="w-4 h-4 text-blue-400" />;
+        if (p === 'binance' || p === 'binance_manual') return <Wallet className="w-4 h-4 text-yellow-400" />;
+        if (p === 'paypal' || p === 'paypal_manual') return <Globe className="w-4 h-4 text-indigo-400" />;
+        if (p === 'pago_movil' || p === 'bolivares') return <Receipt className="w-4 h-4 text-emerald-400" />;
+        if (p === 'bank_transfer') return <Receipt className="w-4 h-4 text-slate-400" />;
+        return <Receipt className="w-4 h-4 text-slate-400" />;
     };
 
     const formatDate = (dateString: string) => {

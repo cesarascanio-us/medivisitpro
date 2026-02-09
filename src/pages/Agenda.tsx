@@ -118,8 +118,8 @@ export default function Agenda() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Agenda de Visitas</h1>
-          <p className="text-muted-foreground">Gestiona tus visitas médicas programadas</p>
+          <h1 className="text-3xl font-bold text-white">Agenda de Visitas</h1>
+          <p className="text-slate-400">Gestiona tus visitas médicas programadas</p>
         </div>
         <VisitDetailDialog
           trigger={
@@ -156,7 +156,7 @@ export default function Agenda() {
               </Button>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant={currentDate.toDateString() === new Date().toDateString() ? "default" : "outline"} size="sm" onClick={() => setCurrentDate(new Date())}>
+              <Button variant={currentDate.toDateString() === new Date().toDateString() ? "default" : "secondary"} size="sm" onClick={() => setCurrentDate(new Date())}>
                 Hoy
               </Button>
             </div>
@@ -174,12 +174,12 @@ export default function Agenda() {
         </CardHeader>
         <CardContent className="space-y-4">
           {visits.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No hay visitas programadas para este día.</p>
+            <div className="text-center py-12 text-slate-500">
+              <p className="text-lg mb-4">No hay visitas programadas para este día.</p>
               <div className="mt-4">
                 <VisitDetailDialog
                   trigger={
-                    <Button variant="outline">Programar Visita</Button>
+                    <Button variant="secondary" className="glass-effect">Programar Visita</Button>
                   }
                   onVisitSaved={loadVisits}
                 />
@@ -195,34 +195,34 @@ export default function Agenda() {
                   )}
                   <div className="flex items-start space-x-4 p-4 medical-card-hover rounded-lg transition-colors hover:bg-muted/50">
                     <div className="flex flex-col items-center">
-                      <div className={`w-3 h-3 rounded-full ${visit.status === 'completed' ? 'bg-green-500' : 'bg-primary'}`}></div>
-                      <div className="text-sm font-medium text-primary mt-1">{visitTime}</div>
+                      <div className={`w-3 h-3 rounded-full ${visit.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-emerald-400/30'}`}></div>
+                      <div className="text-xs font-bold text-emerald-500 mt-2 tracking-wider">{visitTime}</div>
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-foreground">
+                        <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">
                           {visit.contacts?.name || "Contacto desconocido"}
                         </h3>
-                        <Badge className={getStatusColor(visit.status)}>
+                        <Badge className={`${getStatusColor(visit.status)} px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter`}>
                           {getStatusText(visit.status)}
                         </Badge>
                       </div>
 
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <User className="h-4 w-4 mr-1" />
+                      <div className="space-y-1.5 opacity-80">
+                        <div className="flex items-center text-sm text-slate-300">
+                          <User className="h-3.5 w-3.5 mr-2 text-emerald-500/70" />
                           {visit.contacts?.specialty || "Especialidad no disponible"}
                         </div>
                         {visit.contacts?.address && (
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <MapPin className="h-4 w-4 mr-1" />
+                          <div className="flex items-center text-sm text-slate-400 italic">
+                            <MapPin className="h-3.5 w-3.5 mr-2 text-emerald-500/70" />
                             {visit.contacts.address}
                           </div>
                         )}
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4 mr-1" />
-                          Objetivo: {visit.objective || "Sin objetivo definido"}
+                        <div className="flex items-center text-sm text-slate-300 font-medium">
+                          <Clock className="h-3.5 w-3.5 mr-2 text-emerald-500" />
+                          <span className="text-emerald-500/60 mr-1">Objetivo:</span> {visit.objective || "Sin objetivo definido"}
                         </div>
                       </div>
 

@@ -174,17 +174,22 @@ export default function TransferOrders() {
         setLoading(true);
         try {
             // Base query helper with adminFilters support
-            const applyFilters = (query: any) => {
+            const applyFilters = (query: any, table: 'transfer_orders' | 'drugstores' | 'contacts' = 'transfer_orders') => {
                 // Hierarchical filtering logic
                 if (isSupervisor && zoneId) {
                     // Supervisor: Base scope is their zone, but AdminFilter can refine it
                     if (adminFilters.repId && adminFilters.repId !== 'all') {
                         query = query.eq('user_id', adminFilters.repId);
                     } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                        query = query.eq('zone_id', adminFilters.zoneId);
+                        // Only filter by zone_id if the table has it
+                        if (table === 'transfer_orders') {
+                            query = query.eq('zone_id', adminFilters.zoneId);
+                        }
                     } else {
-                        // Default to assigned zone
-                        query = query.eq('zone_id', zoneId);
+                        // Default to assigned zone - only if table has it
+                        if (table === 'transfer_orders') {
+                            query = query.eq('zone_id', zoneId);
+                        }
                     }
                     return query;
                 }
@@ -198,22 +203,30 @@ export default function TransferOrders() {
                 if (adminFilters.repId && adminFilters.repId !== 'all') {
                     query = query.eq('user_id', adminFilters.repId);
                 } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                    query = query.eq('zone_id', adminFilters.zoneId);
+                    // Only filter by zone_id if the table has it
+                    if (table === 'transfer_orders') {
+                        query = query.eq('zone_id', adminFilters.zoneId);
+                    }
                 }
-                // Note: Transfer orders usually follow user_id/zone_id scope. 
-                // Specific state/region filtering would require joins if not present as columns.
                 return query;
             };
 
             // Load transfer orders
-            let ordersQuery = supabase.from('transfer_orders' as any).select('*');
-            ordersQuery = applyFilters(ordersQuery);
+            let ordersQuery = supabase
+                .from('transfer_orders')
+                .select('*', { count: 'exact' });
+
+            ordersQuery = applyFilters(ordersQuery, 'transfer_orders');
             const ordersRes: any = await ordersQuery.order('created_at', { ascending: false });
             setOrders(ordersRes.data || []);
 
             // Load drugstores
-            let drugstoresQuery = supabase.from('drugstores' as any).select('*').eq('is_active', true);
-            drugstoresQuery = applyFilters(drugstoresQuery);
+            let drugstoresQuery = supabase
+                .from('drugstores')
+                .select('*')
+                .eq('is_active', true);
+
+            drugstoresQuery = applyFilters(drugstoresQuery, 'drugstores');
             const drugstoresRes: any = await drugstoresQuery;
             setDrugstores(drugstoresRes.data || []);
 

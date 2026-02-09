@@ -16,6 +16,8 @@ import {
 } from 'recharts';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization, useFeatureAccess } from "@/hooks/useOrganization";
+import { SubscriptionLock } from "@/components/ui/SubscriptionLock";
 import { useToast } from "@/hooks/use-toast";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -168,191 +170,190 @@ export default function Reports() {
         </div>
       </div>
 
-      {/* NIVEL 1: Impact KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Ventas Totales (Mes)</p>
-                <p className="text-3xl font-bold mt-1">
-                  ${gerencialKpis.total_sales.toLocaleString('es-CO', { minimumFractionDigits: 0 })}
-                </p>
-              </div>
-              <div className="p-3 bg-primary/10 rounded-xl">
-                <DollarSign className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center text-xs text-muted-foreground">
-              <Badge variant="secondary" className="mr-2">Real-time</Badge>
-              Facturación acumulada confirmada
-            </div>
-          </CardContent>
-        </Card>
+      {!useFeatureAccess('advanced_reports') && (
+        <SubscriptionLock
+          featureName="Métricas Gerenciales"
+          requiredPlan="Profesional"
+          description="Accede a KPIs de efectividad, ventas por zona y análisis de product mix para optimizar tu estrategia comercial."
+        />
+      )}
 
-        <Card className="border-l-4 border-l-success shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Efectividad de Visita</p>
-                <p className="text-3xl font-bold mt-1 text-success">
-                  {gerencialKpis.visit_effectiveness.toFixed(1)}%
-                </p>
+      <div className={!useFeatureAccess('advanced_reports') ? "opacity-20 pointer-events-none filter blur-sm grayscale select-none mt-6" : "mt-6"}>
+        {/* NIVEL 1: Impact KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Ventas Totales (Mes)</p>
+                  <p className="text-3xl font-bold mt-1">
+                    ${gerencialKpis.total_sales.toLocaleString('es-CO', { minimumFractionDigits: 0 })}
+                  </p>
+                </div>
+                <div className="p-3 bg-primary/10 rounded-xl">
+                  <DollarSign className="h-6 w-6 text-primary" />
+                </div>
               </div>
-              <div className="p-3 bg-success/10 rounded-xl">
-                <Target className="h-6 w-6 text-success" />
+              <div className="mt-4 flex items-center text-xs text-muted-foreground">
+                <Badge variant="secondary" className="mr-2">Real-time</Badge>
+                Facturación acumulada confirmada
               </div>
-            </div>
-            <Progress value={gerencialKpis.visit_effectiveness} className="h-2 mt-4" />
-            <p className="text-[10px] mt-2 text-muted-foreground">Ratio: Pedidos generados / Visitas ejecutadas</p>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="border-l-4 border-l-warning shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Cobertura de Cartera</p>
-                <p className="text-3xl font-bold mt-1 text-warning">
-                  {gerencialKpis.portfolio_coverage.toFixed(1)}%
-                </p>
+          <Card className="border-l-4 border-l-success shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Efectividad de Visita</p>
+                  <p className="text-3xl font-bold mt-1 text-success">
+                    {gerencialKpis.visit_effectiveness.toFixed(1)}%
+                  </p>
+                </div>
+                <div className="p-3 bg-success/10 rounded-xl">
+                  <Target className="h-6 w-6 text-success" />
+                </div>
               </div>
-              <div className="p-3 bg-warning/10 rounded-xl">
-                <UsersIcon className="h-6 w-6 text-warning" />
-              </div>
-            </div>
-            <div className="mt-4 space-y-2">
-              <div className="flex justify-between text-[10px]">
-                <span>Contactos Visitados</span>
-                <span className="font-bold">Vs Base Total</span>
-              </div>
-              <Progress value={gerencialKpis.portfolio_coverage} className="h-2 bg-warning/20" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              <Progress value={gerencialKpis.visit_effectiveness} className="h-2 mt-4" />
+              <p className="text-[10px] mt-2 text-muted-foreground">Ratio: Pedidos generados / Visitas ejecutadas</p>
+            </CardContent>
+          </Card>
 
-      {/* NIVEL 2: Geospatial War Room */}
-      <Card className="overflow-hidden border-none shadow-lg">
-        <CardHeader className="bg-slate-900 text-white p-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="flex items-center text-xl">
-                <MapIcon className="mr-2 h-6 w-6 text-primary" />
-                The War Room: Geospatial Intelligence
+          <Card className="border-l-4 border-l-warning shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Cobertura de Cartera</p>
+                  <p className="text-3xl font-bold mt-1 text-warning">
+                    {gerencialKpis.portfolio_coverage.toFixed(1)}%
+                  </p>
+                </div>
+                <div className="p-3 bg-warning/10 rounded-xl">
+                  <UsersIcon className="h-6 w-6 text-warning" />
+                </div>
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className="flex justify-between text-[10px]">
+                  <span>Contactos Visitados</span>
+                  <span className="font-bold">Vs Base Total</span>
+                </div>
+                <Progress value={gerencialKpis.portfolio_coverage} className="h-2 bg-warning/20" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* NIVEL 3: Product & Zone Analytics */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          {/* Sales by Zone */}
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center">
+                <BarChart3 className="mr-2 h-5 w-5 text-primary" />
+                Comparativa de Ventas por Zona
               </CardTitle>
-              <CardDescription className="text-slate-400">
-                Densidad de presencia y cobertura geográfica
-              </CardDescription>
-            </div>
-            <div className="flex bg-slate-800 p-1 rounded-lg">
-              <Button
-                variant={heatmapType === 'pharmacy' ? 'default' : 'ghost'}
-                size="sm"
-                className={`text-xs h-8 ${heatmapType === 'pharmacy' ? 'bg-primary' : 'text-slate-400'}`}
-                onClick={() => setHeatmapType('pharmacy')}
-              >
-                Farmacias
-              </Button>
-              <Button
-                variant={heatmapType === 'natural_store' ? 'default' : 'ghost'}
-                size="sm"
-                className={`text-xs h-8 ${heatmapType === 'natural_store' ? 'bg-primary' : 'text-slate-400'}`}
-                onClick={() => setHeatmapType('natural_store')}
-              >
-                Tiendas Nat.
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0 relative h-[450px]">
-          <MapContainer
-            center={[4.5709, -74.2973]}
-            zoom={6}
-            style={{ height: '100%', width: '100%' }}
-            zoomControl={false}
-          >
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            />
-            <VisitHeatmap visits={heatmapData} show={true} radius={35} blur={20} />
-          </MapContainer>
-          <div className="absolute bottom-4 right-4 z-[1000] bg-slate-900/90 backdrop-blur-md p-3 rounded-lg border border-slate-700 text-white text-[10px] space-y-2">
-            <div className="flex items-center">
-              <div className="w-2 h-2 rounded-full bg-red-500 mr-2 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-              <span>Alta Densidad</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-2 h-2 rounded-full bg-blue-500 mr-2 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>
-              <span>Baja Densidad</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={ventasZona} layout="vertical" margin={{ left: 40, right: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} opacity={0.3} />
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="zona" type="category" width={80} style={{ fontSize: '12px' }} />
+                    <Tooltip
+                      cursor={{ fill: 'transparent' }}
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    />
+                    <Bar dataKey="total_ventas" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={20}>
+                      {ventasZona.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* NIVEL 3: Product & Zone Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Sales by Zone */}
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center">
-              <BarChart3 className="mr-2 h-5 w-5 text-primary" />
-              Comparativa de Ventas por Zona
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={ventasZona} layout="vertical" margin={{ left: 40, right: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} opacity={0.3} />
-                  <XAxis type="number" hide />
-                  <YAxis dataKey="zona" type="category" width={80} style={{ fontSize: '12px' }} />
-                  <Tooltip
-                    cursor={{ fill: 'transparent' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  />
-                  <Bar dataKey="total_ventas" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={20}>
-                    {ventasZona.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+          {/* Product Mix */}
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center">
+                <PieChartIcon className="mr-2 h-5 w-5 text-secondary" />
+                Sales Mix: Unidades por Categoría
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={productMix}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={70}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="total_quantity"
+                      nameKey="category"
+                    >
+                      {productMix.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend verticalAlign="bottom" height={36} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        {/* Heatmap Section */}
+        <Card className="mt-6 shadow-sm overflow-hidden border-border bg-card">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-slate-950/20">
+            <div>
+              <CardTitle className="text-lg font-bold flex items-center">
+                <MapIcon className="mr-2 h-5 w-5 text-primary" />
+                Heatmap Táctico de Cobertura
+              </CardTitle>
+              <CardDescription>Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Product Mix */}
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center">
-              <PieChartIcon className="mr-2 h-5 w-5 text-secondary" />
-              Sales Mix: Unidades por Categoría
-            </CardTitle>
+            <Select value={heatmapType} onValueChange={(v: any) => setHeatmapType(v)}>
+              <SelectTrigger className="w-[180px] bg-background">
+                <SelectValue placeholder="Tipo de Punto" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pharmacy">Farmacias</SelectItem>
+                <SelectItem value="natural_store">Tiendas Naturistas</SelectItem>
+              </SelectContent>
+            </Select>
           </CardHeader>
-          <CardContent>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={productMix}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={70}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="total_quantity"
-                    nameKey="category"
-                  >
-                    {productMix.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend verticalAlign="bottom" height={36} />
-                </PieChart>
-              </ResponsiveContainer>
+          <CardContent className="p-0 relative h-[500px]">
+            {!useFeatureAccess('geolocalization') && (
+              <SubscriptionLock
+                featureName="Heatmap Táctico"
+                requiredPlan="Empresarial"
+                description="Optimiza tus rutas y despliegue táctico visualizando la densidad de tu red comercial en el mapa."
+              />
+            )}
+
+            <div className={!useFeatureAccess('geolocalization') ? "h-full w-full opacity-30 pointer-events-none filter blur-sm grayscale select-none" : "h-full w-full"}>
+              <MapContainer
+                center={[10.4806, -66.9036]}
+                zoom={12}
+                scrollWheelZoom={false}
+                className="h-full w-full z-0"
+              >
+                <TileLayer
+                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                />
+                <VisitHeatmap
+                  visits={heatmapData}
+                  show={useFeatureAccess('geolocalization')}
+                />
+              </MapContainer>
             </div>
           </CardContent>
         </Card>
