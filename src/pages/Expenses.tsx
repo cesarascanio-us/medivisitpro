@@ -124,6 +124,30 @@ export default function Expenses() {
         }
     };
 
+    const updateExpenseStatus = async (expenseId: string, status: string) => {
+        try {
+            const { error } = await supabase
+                .from('expenses')
+                .update({ status })
+                .eq('id', expenseId);
+
+            if (error) throw error;
+
+            toast({
+                title: status === 'approved' ? "Gasto aprobado" : "Gasto rechazado",
+                description: `El estado del gasto ha sido actualizado a ${status === 'approved' ? 'aprobado' : 'rechazado'}.`
+            });
+            loadExpenses();
+        } catch (error) {
+            console.error('Error updating expense status:', error);
+            toast({
+                title: "Error",
+                description: "No se pudo actualizar el estado del gasto.",
+                variant: "destructive"
+            });
+        }
+    };
+
     const getCategoryInfo = (cat: string) => {
         return EXPENSE_CATEGORIES.find(c => c.value === cat) || { value: cat, label: cat, icon: "📋" };
     };

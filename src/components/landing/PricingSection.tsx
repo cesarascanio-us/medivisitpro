@@ -9,31 +9,32 @@ import { useState } from 'react';
 const plans = [
     {
         name: 'Starter',
-        price: 'Gratis',
+        price: '$9.99',
+        period: '/mes',
         description: 'Para estudiantes y nuevos visitadores.',
         features: [
-            { name: 'Gestión de hasta 50 médicos', included: true },
+            { name: 'Gestión de hasta 120 médicos', included: true },
+            { name: 'Gestión de hasta 100 farmacias', included: true },
+            { name: 'Centros de Salud ilimitados', included: true },
             { name: 'Rutas optimizadas básicas', included: true },
             { name: 'Agenda digital', included: true },
             { name: 'Control de inventario', included: false },
-            { name: 'Reportes avanzados', included: false },
-            { name: 'Soporte prioritario', included: false },
         ],
-        cta: 'Empezar Gratis',
+        cta: 'Reportar Pago Starter',
         popular: false,
     },
     {
         name: 'Pro',
-        price: '$9.99',
+        price: '$19.99',
         period: '/mes',
         description: 'Para visitadores de alto rendimiento.',
         features: [
             { name: 'Médicos ilimitados', included: true },
+            { name: 'Farmacias ilimitadas', included: true },
+            { name: 'Centros de Salud ilimitados', included: true },
             { name: 'Rutas inteligentes ilimitadas', included: true },
             { name: 'Control de stock de muestras', included: true },
             { name: 'Analytics de desempeño', included: true },
-            { name: 'Exportación a PDF/Excel', included: true },
-            { name: 'Soporte prioritario', included: true },
         ],
         cta: 'Reportar Pago Pro',
         popular: true,
@@ -66,7 +67,7 @@ export const PricingSection = () => {
 
         if (planName === 'Team') {
             window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20me%20interesa%20el%20plan%20Team%20para%20mi%20laboratorio", "_blank");
-        } else if (planName === 'Pro') {
+        } else if (planName === 'Pro' || planName === 'Starter') {
             if (!user) {
                 navigate('/auth?redirect=pricing');
                 return;
@@ -92,6 +93,8 @@ export const PricingSection = () => {
                     </h2>
                     <p className="text-slate-400 text-lg max-w-2xl mx-auto">
                         Pagos locales en Venezuela: PayPal, Binance, Pago Móvil y Transferencia.
+                        <br />
+                        <span className="text-emerald-400 font-medium">¿Quieres probar antes? La demo es totalmente gratis.</span>
                     </p>
                 </div>
 

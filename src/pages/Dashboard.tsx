@@ -15,7 +15,8 @@ import { AutoAssignmentPanel } from "@/components/dashboard/AutoAssignmentPanel"
 import { refreshObjectivesProgress } from "@/services/objectiveService";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
-import { Wifi, WifiOff, RefreshCcw } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
+import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator";
 
 export default function Dashboard() {
   const { user, role, isManager, isCoordinator, isAdmin, isMaster, isSystemAdmin, organizationName } = useAuth();
@@ -228,7 +229,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Alpha BMT Style Header with Clock and Sync */}
-      <header className="premium-card px-6 pt-8 pb-24 relative overflow-hidden -mx-4 -mt-10 mb-10">
+      <header className="premium-card px-6 pt-8 pb-10 relative overflow-hidden -mx-4 -mt-10 mb-10">
         {/* Background Effects */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full -mr-40 -mt-40 blur-[100px] animate-pulse pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full -ml-32 -mb-32 blur-[100px] animate-pulse delay-700 pointer-events-none"></div>
@@ -264,18 +265,6 @@ export default function Dashboard() {
                     {organizationName}
                   </Badge>
                 )}
-                {organizationName && isSystemAdmin && (
-                  <Badge variant="outline" className="text-purple-400 border-purple-400/30 bg-purple-400/10 text-[10px] px-2 capitalize">
-                    Auditing: {organizationName}
-                  </Badge>
-                )}
-                <Badge
-                  variant="outline"
-                  className={`flex items-center gap-1 border-0 text-[10px] px-2 ${isOnline ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}
-                >
-                  {isOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-                  {isOnline ? 'En línea' : 'Desconectado'}
-                </Badge>
               </div>
             </div>
           </div>
@@ -286,14 +275,14 @@ export default function Dashboard() {
                 {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </div>
             </div>
-            <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium">
+            <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium text-right w-full">
               {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
             </div>
           </div>
         </div>
 
         {/* Sync Info Bar */}
-        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 mb-8 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
           <div className="flex items-center gap-2 text-xs">
             <RefreshCcw className={`h-3 w-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
             <span className="text-white/60">Última Sinc:</span>
@@ -301,11 +290,9 @@ export default function Dashboard() {
               {lastSync ? new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pendiente'}
             </span>
           </div>
-          {pendingCount > 0 && (
-            <Badge className="bg-amber-500 text-amber-950 text-[10px] h-5 px-2 font-bold">
-              {pendingCount} Pendientes
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            <OnlineStatusIndicator />
+          </div>
           <div className="ml-auto text-sm text-primary-foreground/80">
             {(isManager || isAdmin || isMaster) ? (
               `Hoy: ${stats.visitsToday} visitas totales`
@@ -330,7 +317,6 @@ export default function Dashboard() {
           subtitle={`${stats.visitsTodayConfirmed} confirmadas`}
           icon={Calendar}
           variant="primary"
-        // trending logic could be comparison with yesterday, omitting for now or keeping static
         />
         <StatsCard
           title="Médicos Contactados"

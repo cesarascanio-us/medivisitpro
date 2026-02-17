@@ -5,10 +5,22 @@ import { cn } from '@/lib/utils';
 
 const slides = [
     {
+        image: '/img/landing/hero-3d.png',
+        title: 'Tecnología de Vanguardia',
+        description: 'Todo el control de tu territorio en la palma de tu mano con una interfaz diseñada para la eficiencia.',
+        tags: ['Next-Gen CRM', 'Smart Tech', 'Mobile First']
+    },
+    {
         image: '/img/showcase/dashboard.png',
         title: 'Dashboard Inteligente',
         description: 'Gestión 360 de tu jornada diaria con indicadores clave en tiempo real.',
         tags: ['Daily Route', 'Sales KPIs', 'Visits Summary']
+    },
+    {
+        image: '/img/landing/territory-3d.png',
+        title: 'Domina tu Territorio',
+        description: 'Mapas de calor y rutas optimizadas para que cada visita cuente al máximo.',
+        tags: ['Heatmaps', 'Route Optimization', 'Intelligence']
     },
     {
         image: '/img/showcase/medicos.png',

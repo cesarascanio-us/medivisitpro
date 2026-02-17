@@ -21,6 +21,7 @@ import { SEO } from '@/components/common/SEO';
 import { trackEvent } from '@/lib/analytics';
 import { PricingSection } from '@/components/landing/PricingSection';
 import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
+import { OnlineStatusIndicator } from '@/components/common/OnlineStatusIndicator';
 
 const features = [
   {
@@ -131,12 +132,18 @@ export default function LandingPage() {
               </div>
               <span className="text-xl font-bold text-white tracking-tight">MediVisitPro</span>
             </div>
-            <Button
-              onClick={handleAuthNavigation}
-              className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all font-medium"
-            >
-              {user ? 'Ir al Dashboard' : 'Iniciar Sesión'}
-            </Button>
+
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:block">
+                <OnlineStatusIndicator />
+              </div>
+              <Button
+                onClick={handleAuthNavigation}
+                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all font-medium"
+              >
+                {user ? 'Ir al Dashboard' : 'Iniciar Sesión'}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -147,65 +154,74 @@ export default function LandingPage() {
         <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
+        {/* Background Decorative Images */}
+        <div className="absolute -top-24 -right-24 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-1/2 -left-48 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              Nuevo: Modo Offline Inteligente
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            <div className="lg:text-left text-center flex-1 space-y-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Demo Gratuita Disponible
+              </div>
+
+              <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
+                Domina tu <br />
+                <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent italic">
+                  Territorio.
+                </span>
+              </h1>
+
+              <p className="text-xl sm:text-2xl text-slate-300 max-w-2xl lg:mx-0 mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+                Deja de perder tiempo en reportes y enfócate en lo que importa: <strong>las relaciones con tus médicos</strong>.
+                La única herramienta diseñada por y para visitadores de alto rendimiento.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
+                <Button
+                  onClick={handleDemo}
+                  size="lg"
+                  className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 px-10 h-16 text-lg font-bold rounded-xl"
+                >
+                  <Rocket className="mr-3 h-6 w-6" />
+                  Probar Demo Gratis
+                </Button>
+                <div className="text-slate-500 text-sm font-medium">Únete a +500 visitadores</div>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap items-center lg:justify-start justify-center gap-x-6 gap-y-3 text-sm font-medium text-slate-400 pt-4 animate-in fade-in duration-1000 delay-700">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  <span>Sin Tarjeta</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  <span>Modo Offline</span>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-              Domina tu Territorio.
-              <span className="block mt-2 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent pb-2">
-                Supera tus Cuotas.
-              </span>
-            </h1>
-
-            <p className="text-lg sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-              Deja de perder tiempo en reportes y enfócate en lo que importa: <strong>las relaciones con tus médicos</strong>.
-              La única herramienta diseñada por y para visitadores de alto rendimiento.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
-              <Button
-                onClick={handleDemo}
-                size="lg"
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 px-10 h-16 text-lg font-bold rounded-xl"
-              >
-                <Rocket className="mr-3 h-6 w-6" />
-                Probar Demo Interactiva
-              </Button>
-              <Button
-                onClick={handleStartFree}
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-2 border-slate-600 text-white hover:bg-slate-800 hover:border-emerald-500/50 hover:text-emerald-400 px-10 h-16 text-lg font-semibold rounded-xl bg-transparent"
-              >
-                Crear Cuenta Gratis
-              </Button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-medium text-slate-400 mt-10 animate-in fade-in duration-1000 delay-700">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                <span>Plan Gratuito Permanente</span>
+            <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300 lg:block hidden">
+              {/* Floating 3D Device */}
+              <div className="relative z-10 w-full max-w-[500px] mx-auto animate-float">
+                <img
+                  src="/img/landing/hero-3d.png"
+                  alt="MediVisitPro interface"
+                  className="w-full h-auto drop-shadow-[0_35px_35px_rgba(16,185,129,0.3)]"
+                />
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                <span>No requiere tarjeta</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                <span>Instalación en 1 min</span>
-              </div>
+
+              {/* Decorative elements around device */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-500/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
             </div>
           </div>
 
-          <div className="mt-20 animate-in fade-in zoom-in duration-1000 delay-500">
+          <div className="mt-24 animate-in fade-in zoom-in duration-1000 delay-500">
             <AppShowcaseCarousel />
           </div>
 
@@ -224,6 +240,72 @@ export default function LandingPage() {
                 <div className="text-sm font-medium text-emerald-400 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Intelligence Showcase Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 relative bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className="flex-1 space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                Inteligencia de Datos
+              </div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
+                Visualiza tu Éxito con <br />
+                <span className="text-emerald-400 font-extrabold italic">Mapas de Calor</span>
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed max-w-xl">
+                No dispongas tus esfuerzos al azar. Nuestra tecnología de geolocalización avanzada identifica dónde están tus mayores oportunidades en tiempo real.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  'Identificación de zonas con baja cobertura',
+                  'Optimización de rutas por proximidad',
+                  'Seguimiento visual de objetivos de ciclo'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-slate-300">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={handleDemo}
+                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 h-14 px-8 rounded-xl font-bold shadow-lg shadow-slate-900/50"
+              >
+                Explorar Mapas Inteligentes
+              </Button>
+            </div>
+
+            <div className="flex-1 relative animate-in fade-in slide-in-from-right-8 duration-1000">
+              {/* Premium Image Container */}
+              <div className="relative z-10 rounded-[3rem] overflow-hidden border-8 border-slate-800/50 shadow-2xl shadow-emerald-500/20">
+                <img
+                  src="/img/landing/territory-3d.png"
+                  alt="Inteligencia de Territorio"
+                  className="w-full h-auto transform hover:scale-105 transition-transform duration-700"
+                />
+                {/* Glassmorphism Badge */}
+                <div className="absolute bottom-6 right-6 p-4 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-500 rounded-lg">
+                      <Zap className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="text-white font-bold text-xs">Visitas Optimizadas</div>
+                      <div className="text-emerald-400 text-[10px] font-bold">+25% Eficiencia</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Decorative Glows */}
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-[60px] animate-pulse"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-[60px] animate-pulse delay-500"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -254,6 +336,49 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+
+          {/* Testimonials */}
+          <div className="mt-32 grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                Casos de Éxito
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
+                Dejaron el Excel y <br />
+                <span className="text-emerald-400">recuperaron su tiempo.</span>
+              </h2>
+              <div className="p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 relative">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-3xl text-white font-serif">“</div>
+                <p className="text-lg text-slate-300 italic mb-6">
+                  "Antes pasaba todo mi sábado haciendo reportes del ciclo. Con MediVisitPro, simplemente cierro mi sesión al final del día y el reporte ya está en la bandeja de mi jefe. He subido mis visitas un 25%."
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-slate-700 border-2 border-emerald-500/30 overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                  </div>
+                  <div>
+                    <div className="text-white font-bold text-sm">Carlos M.</div>
+                    <div className="text-slate-500 text-xs font-medium">Representante Senior - Lab Farmacéutico</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 text-center">
+                <div className="text-4xl font-bold text-white mb-1">10h</div>
+                <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Ahorradas/Sem</div>
+              </div>
+              <div className="p-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/5 text-center">
+                <div className="text-4xl font-bold text-emerald-400 mb-1">+22%</div>
+                <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Prescripciones</div>
+              </div>
+              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 text-center col-span-2">
+                <div className="text-4xl font-bold text-white mb-1">100%</div>
+                <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Trazabilidad de Muestras</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -262,6 +387,41 @@ export default function LandingPage() {
 
       {/* Pricing Section */}
       <PricingSection />
+
+      {/* FAQ Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Preguntas Frecuentes</h2>
+            <p className="text-slate-400">Todo lo que necesitas saber para empezar hoy mismo.</p>
+          </div>
+          <div className="space-y-6">
+            {[
+              {
+                q: "¿Realmente funciona sin conexión a internet?",
+                a: "Sí. MediVisitPro está construida como una PWA (Progressive Web App). Puedes registrar visitas, ver tu agenda y gestionar muestras en sótanos de hospitales o clínicas remotas. Los datos se sincronizarán automáticamente en cuanto recuperes señal."
+              },
+              {
+                q: "¿Cómo calculan las rutas optimizadas?",
+                a: "Utilizamos algoritmos de optimización de rutas (TSP) basados en OSRM. El sistema analiza la ubicación de tus médicos seleccionados para el día y te ofrece el camino más corto, ahorrándote combustible y tiempo."
+              },
+              {
+                q: "¿Mis datos están seguros?",
+                a: "Absolutamente. Utilizamos Supabase con encriptación de grado bancario y Row Level Security (RLS). Tus datos están aislados y solo tú (o tu organización) tienen acceso a ellos."
+              },
+              {
+                q: "¿Puedo importar mi lista actual de médicos?",
+                a: "Sí, contamos con una herramienta de importación masiva que acepta archivos CSV y Excel. Si necesitas ayuda, nuestro equipo técnico puede hacer la migración por ti sin costo extra."
+              }
+            ].map((item, i) => (
+              <div key={i} className="p-6 rounded-2xl bg-slate-800/30 border border-slate-700/50 hover:border-emerald-500/30 transition-colors">
+                <h3 className="text-lg font-bold text-white mb-2">{item.q}</h3>
+                <p className="text-slate-400 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">

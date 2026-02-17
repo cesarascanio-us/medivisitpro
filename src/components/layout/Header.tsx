@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { NotificationBadge } from "@/components/layout/NotificationBadge";
 import { OrganizationSwitcher } from "@/components/organization/OrganizationSwitcher";
 import { Badge } from "@/components/ui/badge";
+import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator";
+
 export function Header() {
   const navigate = useNavigate();
   const { user, isMaster, isSystemAdmin } = useAuth();
@@ -51,10 +53,8 @@ export function Header() {
         </div>
 
         {/* Right side - Actions */}
-        <div className="flex items-center gap-2">
-          {/* New Visit Button - Hidden for Master */}
-          {/* New Visit Button Removed */}
-
+        <div className="flex items-center gap-4">
+          <OnlineStatusIndicator />
           {/* Notifications */}
           <NotificationBadge />
         </div>
