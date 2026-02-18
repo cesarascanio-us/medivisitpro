@@ -8,12 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar, Clock, FileText, UserRound, Building, Store, Package, Award, AlertCircle, TrendingUp, ShoppingCart, Truck, Loader2 } from "lucide-react";
+import { Calendar, Clock, FileText, UserRound, Building, Store, Package, Award, AlertCircle, TrendingUp, ShoppingCart, Truck, Loader2, Sparkles, Navigation, MapPinOff, Camera, Upload, MapPin, Calculator, XCircle } from "lucide-react";
 import { ShelfAuditForm } from "./ShelfAuditForm";
 import { PharmacyTrainingForm } from "./PharmacyTrainingForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Command,
   CommandEmpty,
@@ -30,6 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { SupervisorEvaluationModal } from "./SupervisorEvaluationModal";
 
 // Helper MultiSelect Component
 function MultiSelect({
@@ -138,8 +141,12 @@ interface Contact {
   name: string;
   specialty: string | null;
   contact_type: string;
+
   address: string | null;
+  potential?: string;
 }
+
+const BUCKET_NAME = 'visit_attachments'; // Configure this in Supabase Storage
 
 const CONTACT_TYPE_LABELS: Record<string, { label: string; icon: typeof UserRound }> = {
   doctor: { label: 'Médico', icon: UserRound },
@@ -152,8 +159,11 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isSupervisor, profile } = useAuth();
+
+  const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
 
   // Contacts state
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -174,8 +184,8 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   const [formData, setFormData] = useState({
     // Basic
     contact_id: visitData?.contact_id || "",
-    scheduled_date: visitData?.scheduled_date?.split('T')[0] || "",
-    scheduled_time: visitData?.scheduled_date?.split('T')[1]?.slice(0, 5) || "",
+    scheduled_date: visitData?.scheduled_date?.split('T')[0] || new Date().toISOString().split('T')[0],
+    scheduled_time: visitData?.scheduled_date?.split('T')[1]?.slice(0, 5) || "09:00",
     arrival_time: visitData?.arrival_time || "",
     departure_time: visitData?.departure_time || "",
     visit_type: visitData?.visit_type || "doctor",
@@ -214,8 +224,32 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
     main_objection: visitData?.main_objection || "",
     closure_commitment: visitData?.closure_commitment || visitData?.agreements || "",
     file_url: visitData?.file_url || "",
-    geolocation: visitData?.geolocation || ""
+    geolocation: visitData?.geolocation || "",
+    // Estrategia 360
+    selling_points: visitData?.selling_points || [],
+    compromiso_inicio: visitData?.compromiso_inicio || 0,
+    objection_selector: visitData?.objection_selector || "",
+    sample_tracking_id: visitData?.sample_tracking_id || "",
+    competitor_brands_detected: visitData?.competitor_brands_detected || [],
+    pop_checklist_completed: visitData?.pop_checklist_completed || {},
   });
+
+  const { organization } = useOrganization();
+  const orgSettings = (organization?.settings || {}) as any;
+  const competitorOptions = (orgSettings.competitor_brands || []).map((b: string) => ({ label: b, value: b }));
+  const popChecklist = orgSettings.pop_checklist || [];
+  const objectionScripts = orgSettings.objection_scripts || [];
+
+  const [dosingState, setDosingState] = useState({
+    weight: 0,
+    productDose: 0,
+    concentration: 0,
+    result: 0
+  });
+
+  const [productSellingPoints, setProductSellingPoints] = useState<any[]>([]);
+  const [nearbyPharmacies, setNearbyPharmacies] = useState<any[]>([]);
+  const [loadingNearby, setLoadingNearby] = useState(false);
 
   // Load contacts when dialog opens
   useEffect(() => {
@@ -226,8 +260,8 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
       // Reset form data to defaults or visitData
       setFormData({
         contact_id: visitData?.contact_id || "",
-        scheduled_date: visitData?.scheduled_date?.split('T')[0] || "",
-        scheduled_time: visitData?.scheduled_date?.split('T')[1]?.slice(0, 5) || "",
+        scheduled_date: visitData?.scheduled_date?.split('T')[0] || new Date().toISOString().split('T')[0],
+        scheduled_time: visitData?.scheduled_date?.split('T')[1]?.slice(0, 5) || "09:00",
         arrival_time: visitData?.arrival_time || "",
         departure_time: visitData?.departure_time || "",
         visit_type: visitData?.visit_type || "doctor",
@@ -256,10 +290,80 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
         main_objection: visitData?.main_objection || "",
         closure_commitment: visitData?.closure_commitment || visitData?.agreements || "",
         file_url: visitData?.file_url || "",
-        geolocation: visitData?.geolocation || ""
+        geolocation: visitData?.geolocation || "",
+        selling_points: visitData?.selling_points || [],
+        compromiso_inicio: visitData?.compromiso_inicio || 0,
+        objection_selector: visitData?.objection_selector || "",
+        sample_tracking_id: visitData?.sample_tracking_id || "",
+        competitor_brands_detected: visitData?.competitor_brands_detected || [],
+        pop_checklist_completed: visitData?.pop_checklist_completed || {},
       });
     }
-  }, [open, visitData]);
+  }, [visitData, open]);
+
+  // Fetch selling points for selected products
+  useEffect(() => {
+    const fetchProductTags = async () => {
+      if (formData.products_presented.length > 0) {
+        const { data } = await supabase
+          .from('products')
+          .select('id, name, selling_points, dosage_config')
+          .in('name', formData.products_presented);
+
+        if (data) {
+          setProductSellingPoints(data);
+
+          setProductSellingPoints(data);
+
+          // Strategy 360: Auto-prefill dosing if product has vademecum config
+          const productsWithDosage = (data as any[]).filter(p => p.dosage_config && p.dosage_config.default_dose_mg_kg > 0);
+          if (productsWithDosage.length > 0) {
+            const config = productsWithDosage[0].dosage_config;
+            setDosingState(prev => ({
+              ...prev,
+              productDose: config.default_dose_mg_kg,
+              concentration: config.concentration_mg_ml,
+              // don't reset weight if already entered
+              result: (config.default_dose_mg_kg * (prev.weight || 0)) / (config.concentration_mg_ml || 1)
+            }));
+          }
+        }
+      } else {
+        setProductSellingPoints([]);
+      }
+    };
+    fetchProductTags();
+  }, [formData.products_presented]);
+
+  // Fetch nearby pharmacies for "Closing the Circuit" (Doctor Visited)
+  useEffect(() => {
+    const fetchNearby = async () => {
+      if (formData.visit_type === 'doctor' && formData.contact_id) {
+        setLoadingNearby(true);
+        try {
+          const { data, error } = await (supabase as any).rpc('get_visit_impact_correlation', {
+            p_doctor_id: formData.contact_id,
+            p_radius_km: 10.0 // Wider radius to ensure we find something
+          });
+
+          if (!error && data) {
+            // Take top 3 nearest
+            const top3 = (data as any[])
+              .sort((a, b) => a.distance_km - b.distance_km)
+              .slice(0, 3);
+            setNearbyPharmacies(top3);
+          }
+        } catch (e) {
+          console.error("Nearby fetch error:", e);
+        } finally {
+          setLoadingNearby(false);
+        }
+      } else {
+        setNearbyPharmacies([]);
+      }
+    };
+    fetchNearby();
+  }, [formData.contact_id, formData.visit_type]);
 
   const loadContacts = async () => {
     if (!user) return;
@@ -334,13 +438,13 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   };
 
   const loadResources = async () => {
-    if (!user) return;
+    if (!user || !profile?.organization_id) return;
     try {
-      // Fetch Products
       // Fetch Products
       const { data: productsData } = await supabase
         .from('products')
         .select('id, name, medical_specialties')
+        .eq('organization_id', profile.organization_id)
         .order('name');
 
       if (productsData) {
@@ -348,9 +452,10 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
       }
 
       // Fetch Samples (from sample_inventory with product name)
-      const { data: samplesData } = await supabase
+      const { data: samplesData } = await (supabase as any)
         .from('sample_inventory')
         .select('product_id, batch_number, products(name, medical_specialties)')
+        .eq('organization_id', profile.organization_id)
         .gt('quantity_available', 0);
 
       if (samplesData) {
@@ -358,11 +463,10 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
       }
 
       // Fetch Materials
-      // Validating table name: trying 'promotional_materials' as per types, fallback to 'materiales_promocionales' if needed
-      // but sticking to existing code's table name 'materiales_promocionales' for safety, adding product relation if possible
-      const { data: materialsData } = await supabase
+      const { data: materialsData } = await (supabase as any)
         .from('materiales_promocionales')
-        .select('id, nombre, product_id, products(medical_specialties)') // Assuming relationship exists
+        .select('id, nombre, product_id, products(medical_specialties)')
+        .eq('organization_id', profile.organization_id)
         .gt('cantidad_disponible', 0);
 
       if (materialsData) {
@@ -370,6 +474,56 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
       }
     } catch (error) {
       console.error('Error loading resources:', error);
+    }
+
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setUploading(true);
+    const file = e.target.files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `${user?.id}/${fileName}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, file_url: data.publicUrl }));
+      toast({ title: "Archivo subido", description: "El archivo se ha adjuntado correctamente." });
+    } catch (error: any) {
+      console.error('Error uploading file:', error);
+      toast({
+        title: "Error al subir",
+        description: "Verifica que el bucket 'visit_attachments' exista en Supabase.",
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleGetLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData(prev => ({ ...prev, geolocation: `${latitude}, ${longitude}` }));
+          toast({ title: "Ubicación obtenida", description: `Lat: ${latitude}, Long: ${longitude}` });
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          toast({ title: "Error", description: "No se pudo obtener la ubicación.", variant: "destructive" });
+        }
+      );
+    } else {
+      toast({ title: "No soportado", description: "La geolocalización no está soportada en este navegador.", variant: "destructive" });
     }
   };
 
@@ -379,6 +533,26 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
 
     if (!formData.contact_id) {
       toast({ title: "Error", description: "Selecciona un contacto", variant: "destructive" });
+      return;
+    }
+
+    // Validate Missed Visit Reason
+    if ((formData.status === 'missed' || formData.status === 'cancelled') && !formData.closure_reason) {
+      toast({
+        title: "Justificación Requerida",
+        description: "Debe documentar el motivo por el cual la visita no se realizó.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate Strategy 360: Mandatory commitment if samples delivered
+    if (formData.samples_delivered && (!formData.compromiso_inicio || formData.compromiso_inicio <= 0)) {
+      toast({
+        title: "Dato Obligatorio",
+        description: "Al entregar muestras, debes registrar el Compromiso de Inicio (Proyección de Recetas).",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -395,6 +569,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
         visit_type: formData.visit_type,
         status: formData.status,
         representative: formData.representative || null,
+        organization_id: profile?.organization_id, // Mandatory for multi-tenant isolation
 
         // Pre-Visit
         cycle_condition: formData.cycle_condition || null,
@@ -435,6 +610,10 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
         file_url: formData.file_url || null,
         geolocation: formData.geolocation || null,
 
+        // Estrategia 360
+        selling_points: formData.selling_points,
+        compromiso_inicio: formData.compromiso_inicio,
+
         user_id: user.id
       };
 
@@ -459,6 +638,76 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
 
       setOpen(false);
       onVisitSaved?.();
+
+      // AUTO-UPDATE CONTACT GEOLOCATION
+      if (formData.geolocation && formData.contact_id) {
+        try {
+          const [latStr, lngStr] = formData.geolocation.split(',').map(s => s.trim());
+          const lat = parseFloat(latStr);
+          const lng = parseFloat(lngStr);
+
+          if (!isNaN(lat) && !isNaN(lng)) {
+            let tableToUpdate = '';
+            if (formData.visit_type === 'doctor') tableToUpdate = 'doctors';
+            else if (formData.visit_type === 'pharmacy') tableToUpdate = 'pharmacies';
+            // Add logic for hospitals/clinics if they have their own tables or shared 'health_centers'
+            else if (formData.visit_type === 'hospital' || formData.visit_type === 'clinic') tableToUpdate = 'health_centers';
+
+            if (tableToUpdate) {
+              await (supabase as any)
+                .from(tableToUpdate)
+                .update({ latitude: lat, longitude: lng })
+                .eq('id', formData.contact_id);
+              console.log(`Updated geolocation for ${tableToUpdate} ${formData.contact_id}`);
+            }
+          }
+        } catch (geoErr) {
+          console.error("Error updating contact geolocation:", geoErr);
+        }
+      }
+
+      // AUTO-SCHEDULE NEXT VISIT LOGIC
+      if (formData.status === 'completed') {
+        try {
+          const currentDate = new Date(formData.scheduled_date);
+          const nextMonthDate = new Date(currentDate);
+          nextMonthDate.setMonth(currentDate.getMonth() + 1);
+
+          // Determine next business day via RPC
+          const { data: adjustedDate } = await (supabase as any).rpc('get_next_business_day', {
+            start_date: nextMonthDate.toISOString().split('T')[0]
+          });
+
+          const finalDate = adjustedDate || nextMonthDate.toISOString().split('T')[0];
+
+          // Create the next visit
+          const nextVisitPayload = {
+            contact_id: formData.contact_id,
+            scheduled_date: `${finalDate}T${formData.scheduled_time}:00`,
+            visit_type: formData.visit_type,
+            status: 'scheduled',
+            organization_id: profile?.organization_id,
+            user_id: user.id,
+            representative: formData.representative,
+            // Carry over cycle condition or objective if needed? 
+            // Usually objective changes. Let's keep it clean.
+            visit_objective: "Seguimiento Mensual (Auto-generada)"
+          };
+
+          const { error: scheduleError } = await supabase.from('visits').insert([nextVisitPayload]);
+
+          if (!scheduleError) {
+            toast({
+              title: "Ciclo Continuo Activado",
+              description: `Próxima visita autoprogramada para el ${finalDate} a las ${formData.scheduled_time}.`,
+              className: "bg-emerald-50 border-emerald-200 text-emerald-800"
+            });
+          }
+        } catch (schedErr) {
+          console.error("Error auto-scheduling:", schedErr);
+        }
+      }
+
     } catch (error) {
       console.error('Error saving visit:', error);
       toast({
@@ -630,8 +879,13 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                                   {contact.specialty && (
                                     <span className="text-xs text-muted-foreground">{contact.specialty}</span>
                                   )}
+                                  {contact.potential && (
+                                    <Badge variant="outline" className="mt-1 w-fit text-[10px] py-0 h-4 border-primary/20 text-primary capitalize">
+                                      Segmento: {contact.potential}
+                                    </Badge>
+                                  )}
                                 </div>
-                                <div className="ml-auto text-xs text-muted-foreground">
+                                <div className="ml-auto flex items-center gap-2">
                                   {getContactTypeIcon(contact.contact_type)}
                                 </div>
                               </CommandItem>
@@ -652,6 +906,26 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                   </p>
                 )}
               </div>
+
+              {/* Compromiso de Inicio */}
+              {isDoctor && (
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-emerald-600" />
+                    Compromiso de Inicio (Recetas/Mes)
+                  </Label>
+                  <Input
+                    type="number"
+                    placeholder="Eje: 5"
+                    value={formData.compromiso_inicio || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, compromiso_inicio: parseFloat(e.target.value) || null }))}
+                    className={formData.samples_delivered && !formData.compromiso_inicio ? "border-amber-500 bg-amber-50" : ""}
+                  />
+                  {formData.samples_delivered && !formData.compromiso_inicio && (
+                    <p className="text-xs text-amber-600 font-medium italic">Campo obligatorio por entrega de muestras</p>
+                  )}
+                </div>
+              )}
 
               {/* Date & Time */}
               <div className="grid grid-cols-2 gap-4">
@@ -721,9 +995,29 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                     <SelectItem value="completed">Completada</SelectItem>
                     <SelectItem value="cancelled">Cancelada</SelectItem>
                     <SelectItem value="no_show">No se presentó</SelectItem>
+                    <SelectItem value="missed">No Realizada (Documentar)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Missed Visit Documentation */}
+              {(formData.status === 'missed' || formData.status === 'cancelled' || formData.status === 'no_show') && (
+                <div className="space-y-2 bg-red-50 p-3 rounded-md border border-red-100 animate-in fade-in slide-in-from-top-2">
+                  <Label htmlFor="closure_reason" className="text-red-800 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    Motivo de No Realización
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Textarea
+                    id="closure_reason"
+                    value={formData.closure_reason || ""}
+                    onChange={(e) => setFormData(prev => ({ ...prev, closure_reason: e.target.value }))}
+                    placeholder="Especifique por qué no se pudo realizar la visita (Ej: Médico en congreso, Vacaciones, Emergencia...)"
+                    className="border-red-200 focus-visible:ring-red-500 bg-white"
+                    required
+                  />
+                </div>
+              )}
 
 
 
@@ -754,6 +1048,56 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
             <TabsContent value="activity" className="space-y-4">
               <h3 className="text-lg font-semibold">Durante la Visita</h3>
 
+
+              <div className="space-y-4">
+                <Label className="flex items-center gap-2">
+                  <Award className="h-4 w-4 icon-medical" />
+                  Inteligencia de Mensaje (Etiquetas 360)
+                </Label>
+
+                {productSellingPoints.length > 0 ? (
+                  <div className="space-y-3">
+                    {productSellingPoints.map((prod) => (
+                      <div key={prod.id} className="p-3 border rounded-lg bg-surface-card shadow-sm">
+                        <p className="text-xs font-bold text-brand-primary mb-2 flex items-center gap-1">
+                          <Package className="h-3 w-3" /> {prod.name}
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                          {prod.selling_points && typeof prod.selling_points === 'object' && (
+                            Object.entries(prod.selling_points).map(([category, value]: [string, any]) => (
+                              value && (
+                                <div key={category} className="flex items-center space-x-2 p-1.5 rounded bg-muted/50 border border-border/40">
+                                  <Checkbox
+                                    id={`tag-${prod.id}-${category}`}
+                                    checked={formData.selling_points.includes(`${prod.name}: ${value}`)}
+                                    onCheckedChange={(checked) => {
+                                      const tag = `${prod.name}: ${value}`;
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        selling_points: checked
+                                          ? [...prev.selling_points, tag]
+                                          : prev.selling_points.filter(t => t !== tag)
+                                      }));
+                                    }}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span className="text-[9px] uppercase font-bold text-muted-foreground">{category}</span>
+                                    <Label htmlFor={`tag-${prod.id}-${category}`} className="text-[11px] cursor-pointer line-clamp-1">{value}</Label>
+                                  </div>
+                                </div>
+                              )
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 border border-dashed rounded-lg text-center text-sm text-muted-foreground italic">
+                    Selecciona productos para ver sus etiquetas de valor
+                  </div>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <Label>Productos Presentados</Label>
@@ -786,6 +1130,166 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                   emptyMessage="No hay materiales disponibles"
                 />
               </div>
+
+              {/* Dosing Motor 360 */}
+              <Card className="border-cyan-500/30 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden shadow-lg">
+                <CardHeader className="pb-2 flex flex-row items-center justify-between border-b border-white/10 bg-white/5">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-cyan-500/20 rounded-lg">
+                      <Calculator className="h-5 w-5 text-cyan-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold text-cyan-100">Calculadora de Dosis</CardTitle>
+                      <CardDescription className="text-xs text-cyan-300/70">Estratega 360 - {dosingState.productDose > 0 ? "Producto Configurado" : "Modo Manual"}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-4 space-y-4">
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Peso (kg)</Label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={dosingState.weight || ''}
+                        onChange={(e) => {
+                          const w = Number(e.target.value);
+                          setDosingState(prev => ({
+                            ...prev,
+                            weight: w,
+                            result: (prev.productDose * w) / (prev.concentration || 1)
+                          }));
+                        }}
+                        className="bg-slate-950/50 border-slate-700 text-cyan-300 font-mono text-center h-10 focus:ring-cyan-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Dosis (mg/kg)</Label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={dosingState.productDose || ''}
+                        onChange={(e) => {
+                          const d = Number(e.target.value);
+                          setDosingState(prev => ({
+                            ...prev,
+                            productDose: d,
+                            result: (d * prev.weight) / (prev.concentration || 1)
+                          }));
+                        }}
+                        className="bg-slate-950/50 border-slate-700 text-white font-mono text-center h-10 focus:ring-cyan-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Conc (mg/mL)</Label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={dosingState.concentration || ''}
+                        onChange={(e) => {
+                          const c = Number(e.target.value);
+                          setDosingState(prev => ({
+                            ...prev,
+                            concentration: c,
+                            result: (prev.productDose * prev.weight) / (c || 1)
+                          }));
+                        }}
+                        className="bg-slate-950/50 border-slate-700 text-white font-mono text-center h-10 focus:ring-cyan-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-cyan-950/40 border border-cyan-500/20 rounded-xl p-4 flex justify-between items-center relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-cyan-500/5 group-hover:bg-cyan-500/10 transition-colors"></div>
+                    <div className="flex flex-col z-10">
+                      <span className="text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-1">Volumen a Administrar</span>
+                      <span className="text-3xl font-black text-white tracking-tight drop-shadow-sm">
+                        {dosingState.result > 0 ? dosingState.result.toFixed(2) : "0.00"} <span className="text-lg font-normal text-cyan-500/80">mL/día</span>
+                      </span>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/50 z-10">
+                      <Sparkles className="h-5 w-5 text-cyan-300" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sample_tracking">Tracking de Lote (Ética)</Label>
+                  <Input
+                    id="sample_tracking"
+                    value={formData.sample_tracking_id}
+                    onChange={(e) => setFormData(prev => ({ ...prev, sample_tracking_id: e.target.value }))}
+                    placeholder="Lote / ID de Trazabilidad"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="objections">Manual de Objeciones</Label>
+                  <Select
+                    value={formData.objection_selector}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, objection_selector: value }))}
+                  >
+                    <SelectTrigger id="objections">
+                      <SelectValue placeholder="Seleccionar objeción..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["Precio", "Hábito", "Competencia", "Disponibilidad", "Desconocimiento"].map(o => (
+                        <SelectItem key={o} value={o}>{o}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Strategic Circuit Closure (MediVisitPro 360) */}
+              {isDoctor && formData.contact_id && (
+                <Card className="border-emerald-200 bg-emerald-50/10 shadow-sm border-dashed">
+                  <CardHeader className="py-3 px-4 flex flex-row items-center justify-between space-y-0">
+                    <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
+                      <Navigation className="h-4 w-4" />
+                      Cierre de Circuito (Farmacias Cercanas)
+                    </CardTitle>
+                    {loadingNearby && <Loader2 className="h-3 w-3 animate-spin text-emerald-600" />}
+                  </CardHeader>
+                  <CardContent className="py-2 px-4 space-y-2">
+                    {nearbyPharmacies.length > 0 ? (
+                      <div className="grid grid-cols-1 gap-2">
+                        {nearbyPharmacies.map((pharma, idx) => (
+                          <div key={idx} className="flex items-center justify-between p-2 bg-white rounded-lg border border-emerald-100/50 hover:bg-emerald-50 transition-colors">
+                            <div className="flex items-center gap-2">
+                              <div className={cn(
+                                "p-1.5 rounded-full",
+                                pharma.stock_risk ? "bg-red-100" : "bg-emerald-100"
+                              )}>
+                                <Store className={cn(
+                                  "h-3 w-3",
+                                  pharma.stock_risk ? "text-red-600" : "text-emerald-600"
+                                )} />
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="text-[11px] font-bold text-slate-800 line-clamp-1">{pharma.pharmacy_name}</span>
+                                <span className="text-[9px] text-muted-foreground">{pharma.distance_km.toFixed(1)} km de distancia</span>
+                              </div>
+                            </div>
+                            {pharma.stock_risk && (
+                              <Badge variant="destructive" className="text-[8px] h-4 px-1 animate-pulse">RIESGO QUIEBRE</Badge>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : !loadingNearby ? (
+                      <div className="text-center py-4 bg-white/50 rounded-lg border border-dashed border-emerald-100">
+                        <MapPinOff className="h-8 w-8 mx-auto text-emerald-200 mb-1" />
+                        <p className="text-[10px] text-emerald-600 italic">No se detectaron farmacias geolocalizadas cerca de este consultorio</p>
+                      </div>
+                    ) : null}
+                    <p className="text-[9px] text-emerald-800 font-medium pt-1 italic opacity-80">
+                      * El cierre de circuito asegura que la demanda generada en consultorio sea atendida en el PDV.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Doctor specific */}
               {isDoctor && (
@@ -881,14 +1385,29 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
             <TabsContent value="results" className="space-y-4">
               <h3 className="text-lg font-semibold">Post-Visita y Resultados</h3>
 
-              <div className="space-y-2">
-                <Label htmlFor="prescribed">Productos Prescritos/Pedidos</Label>
-                <Input
-                  id="prescribed"
-                  value={formData.products_prescribed}
-                  onChange={(e) => setFormData(prev => ({ ...prev, products_prescribed: e.target.value }))}
-                  placeholder="Productos que se comprometieron a prescribir..."
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="prescribed">Productos Prescritos/Pedidos</Label>
+                  <Input
+                    id="prescribed"
+                    value={formData.products_prescribed}
+                    onChange={(e) => setFormData(prev => ({ ...prev, products_prescribed: e.target.value }))}
+                    placeholder="Compromisos específicos..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="commitment" className="text-emerald-700 font-bold">Compromiso de Inicio (Recetas)</Label>
+                  <Input
+                    id="commitment"
+                    type="number"
+                    value={formData.compromiso_inicio}
+                    onChange={(e) => setFormData(prev => ({ ...prev, compromiso_inicio: Number(e.target.value) }))}
+                    className={formData.samples_delivered && formData.compromiso_inicio === 0 ? "border-red-500 bg-red-50 h-10" : "h-10"}
+                  />
+                  {formData.samples_delivered && formData.compromiso_inicio === 0 && (
+                    <p className="text-[10px] text-red-600 font-bold animate-pulse">REQUERIDO: Ingresa proyección por entrega de muestra</p>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -945,16 +1464,60 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 </Label>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="comp">Actividad de Competencia</Label>
+              <div className="space-y-3 p-4 bg-slate-50 rounded-lg border border-dashed">
+                <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  Módulo de Competencia (Marcas Detectadas)
+                </div>
+                <MultiSelect
+                  options={competitorOptions}
+                  selected={formData.competitor_brands_detected}
+                  onChange={(selected) => setFormData(prev => ({ ...prev, competitor_brands_detected: selected }))}
+                  placeholder="Seleccionar marcas presentes..."
+                />
                 <Textarea
                   id="comp"
                   value={formData.competitor_activity}
                   onChange={(e) => setFormData(prev => ({ ...prev, competitor_activity: e.target.value }))}
-                  placeholder="Productos competidores, actividades observadas..."
+                  placeholder="Otras observaciones de la competencia..."
                   rows={2}
+                  className="text-[11px]"
                 />
               </div>
+
+              {popChecklist.length > 0 && (
+                <div className="space-y-3 p-4 bg-emerald-50/20 rounded-lg border border-emerald-100">
+                  <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+                    <Award className="h-4 w-4" />
+                    Auditoría de Visibilidad (POP)
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {popChecklist.map((item: string) => (
+                      <div key={item} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`pop-${item}`}
+                          checked={formData.pop_checklist_completed[item] || false}
+                          onCheckedChange={(checked) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              pop_checklist_completed: {
+                                ...prev.pop_checklist_completed,
+                                [item]: !!checked
+                              }
+                            }));
+                          }}
+                        />
+                        <label
+                          htmlFor={`pop-${item}`}
+                          className="text-[11px] leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          {item}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {isPharmacy && (
                 <div className="space-y-2">
@@ -1012,14 +1575,36 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="objection">Objeción Principal</Label>
+              <div className="space-y-4">
+                <Label htmlFor="objection">Objeciones Tácticas (Script de Marketing)</Label>
+                <Select
+                  value={formData.objection_selector}
+                  onValueChange={(value) => {
+                    const script = objectionScripts.find((s: any) => s.objection === value);
+                    setFormData(prev => ({
+                      ...prev,
+                      objection_selector: value,
+                      main_objection: script ? script.script : prev.main_objection
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="border-orange-200 bg-orange-50/10">
+                    <SelectValue placeholder="Seleccionar objeción común..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {objectionScripts.map((s: any, idx: number) => (
+                      <SelectItem key={idx} value={s.objection}>{s.objection}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 <Textarea
                   id="objection"
                   value={formData.main_objection}
                   onChange={(e) => setFormData(prev => ({ ...prev, main_objection: e.target.value }))}
-                  placeholder="Principal objeción presentada..."
-                  rows={2}
+                  placeholder="Respuesta sugerida o anotaciones adicionales..."
+                  rows={3}
+                  className="bg-slate-50 italic text-sm"
                 />
               </div>
 
@@ -1035,23 +1620,73 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="file">Archivo Adjunto (URL)</Label>
-                <Input
-                  id="file"
-                  value={formData.file_url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, file_url: e.target.value }))}
-                  placeholder="https://..."
-                />
+                <Label htmlFor="file" className="flex items-center gap-2">
+                  <Camera className="h-4 w-4" />
+                  Adjuntar Evidencia (Foto/Documento)
+                </Label>
+                <div className="flex gap-2 items-center">
+                  <div className="relative flex-1">
+                    <Input
+                      id="file"
+                      type="file"
+                      accept="image/*,.pdf"
+                      capture="environment" // Hints mobile to use rear camera
+                      onChange={handleFileUpload}
+                      className="hidden" // Find a better way to style file input or use Label as trigger
+                    />
+                    <div className="flex gap-2">
+                      <Label htmlFor="file" className="flex-1 cursor-pointer">
+                        <div className="flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium transition-colors bg-white border rounded-md hover:bg-slate-50 border-input shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                          <span className="flex items-center gap-2 text-muted-foreground">
+                            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                            {uploading ? "Subiendo..." : "Tomar Foto o Subir"}
+                          </span>
+                        </div>
+                      </Label>
+                      {formData.file_url && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="text-emerald-600 border-emerald-200 bg-emerald-50"
+                          onClick={() => window.open(formData.file_url, '_blank')}
+                        >
+                          <FileText className="h-4 w-4" />
+                        </Button>
+                      )}
+                      {formData.file_url && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => setFormData(prev => ({ ...prev, file_url: "" }))}
+                        >
+                          <XCircle className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {formData.file_url && <p className="text-[10px] text-emerald-600 truncate">Adjunto: {formData.file_url}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="geo">Geolocalización</Label>
-                <Input
-                  id="geo"
-                  value={formData.geolocation}
-                  onChange={(e) => setFormData(prev => ({ ...prev, geolocation: e.target.value }))}
-                  placeholder="Lat, Long o dirección..."
-                />
+                <Label htmlFor="geo" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" /> Geolocalización
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="geo"
+                    value={formData.geolocation}
+                    readOnly
+                    placeholder="Coordenadas GPS"
+                    className="flex-1 bg-slate-50 font-mono text-xs"
+                  />
+                  <Button type="button" variant="secondary" onClick={handleGetLocation}>
+                    <Navigation className="h-4 w-4 mr-2" />
+                    Ubicación
+                  </Button>
+                </div>
               </div>
             </TabsContent>
 
@@ -1136,6 +1771,18 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
               </>
             )}
 
+            {isSupervisor && visitData?.id && (
+              <Button
+                type="button"
+                variant="default" // Changed to default primary for emphasis? Or keeping varied.
+                className="gap-2 bg-amber-600 hover:bg-amber-700 text-white"
+                onClick={() => setIsEvaluationOpen(true)}
+              >
+                <Award className="h-4 w-4" />
+                Evaluar (Supervisor)
+              </Button>
+            )}
+
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
@@ -1144,6 +1791,16 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
             </Button>
           </div>
         </form>
+
+        {visitData?.id && visitData?.representative_id && (
+          <SupervisorEvaluationModal
+            isOpen={isEvaluationOpen}
+            onClose={() => setIsEvaluationOpen(false)}
+            visitId={visitData.id}
+            representativeId={visitData.representative_id}
+            representativeName={visitData.representative?.full_name || "Representante"} // Assuming representative join exists or we use user name logic
+          />
+        )}
       </DialogContent>
     </Dialog >
   );

@@ -42,6 +42,7 @@ const productAuditSchema = z.object({
         (a) => parseInt(z.string().parse(String(a))),
         z.number().min(0).default(0)
     ),
+    substitution_alert: z.boolean().default(false),
 });
 
 const auditFormSchema = z.object({
@@ -55,6 +56,8 @@ const auditFormSchema = z.object({
         z.number().min(0).default(0)
     ),
     competitor_notes: z.string().optional(),
+    trained_staff: z.boolean().default(false),
+    pop_visible: z.boolean().default(false),
 });
 
 type AuditFormValues = z.infer<typeof auditFormSchema>;
@@ -81,7 +84,15 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
             pop_extra: false,
             competitor_faces: 0,
             competitor_notes: "",
+            trained_staff: false,
+            pop_visible: false,
         },
+    });
+
+    const [orgSettings, setOrgSettings] = useState({
+        safety_threshold_default: 6,
+        conversion_factor_default: 0.7,
+        geo_radius_attribution: 1.5
     });
 
     const { fields, append } = useFieldArray({
@@ -91,7 +102,31 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
 
     useEffect(() => {
         loadProducts();
+        loadOrgSettings();
     }, []);
+
+    const loadOrgSettings = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('organization_id')
+            .eq('id', user.id)
+            .single();
+
+        if (profile?.organization_id) {
+            const { data: org } = await supabase
+                .from('organizations')
+                .select('settings')
+                .eq('id', profile.organization_id)
+                .single();
+
+            if (org?.settings) {
+                setOrgSettings(prev => ({ ...prev, ...(org.settings as any) }));
+            }
+        }
+    };
 
     const loadProducts = async () => {
         try {
@@ -230,12 +265,8 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                     cantidad_actual: audit.cantidad_actual,
                     cantidad_anterior: audit.cantidad_anterior,
                     ventas_estimadas: audit.ventas_estimadas,
-                    // Faces not yet in DB table registro_pvp_farmacia (optional to add column later if needed per product)
-                    // For now we rely on visit aggregate or if we add column.
-                    // Assuming we want to track faces per product, we should ideally add 'faces' to registro_pvp_farmacia.
-                    // But to avoid schema change blocking, we will save it in JSONB of visit if preferred, 
-                    // OR we just assume the user added the column. 
-                    // Let's stick to saving Global Visibility in Visits for now.
+                    faces: audit.faces,
+                    substitution_alert: audit.substitution_alert,
                 };
             });
 
@@ -263,7 +294,11 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
 
             const { error: visitError } = await supabase
                 .from("visits")
-                .update({ visibility_audit: visibilityData } as any)
+                .update({
+                    visibility_audit: visibilityData,
+                    trained_staff: values.trained_staff,
+                    pop_visible: values.pop_visible
+                } as any)
                 .eq("id", visitId);
 
             if (visitError) throw visitError;
@@ -331,10 +366,14 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                                                             <Input
                                                                 {...field}
                                                                 type="number"
-                                                                placeholder="Cant."
-                                                                className="h-8 text-center"
+                                                                className={`h-8 text-center ${field.value < orgSettings.safety_threshold_default ? "border-red-500 bg-red-50 text-red-700 animate-pulse font-bold" : ""}`}
                                                                 disabled={!form.watch(`audits.${index}.has_stock`)}
                                                             />
+                                                            {field.value < orgSettings.safety_threshold_default && field.value > 0 && (
+                                                                <div className="absolute -top-6 left-0 right-0 text-center">
+                                                                    <span className="text-[9px] bg-red-600 text-white px-1.5 py-0.5 rounded-full font-bold">QUIEBRE!</span>
+                                                                </div>
+                                                            )}
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -376,6 +415,25 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name={`audits.${index}.substitution_alert`}
+                                                render={({ field }) => (
+                                                    <FormItem className="flex items-center space-x-1">
+                                                        <FormControl>
+                                                            <div className="flex flex-col items-center">
+                                                                <span className="text-[8px] uppercase font-bold text-orange-600">Sustit.</span>
+                                                                <Switch
+                                                                    checked={field.value}
+                                                                    onCheckedChange={field.onChange}
+                                                                    className="scale-75"
+                                                                />
+                                                            </div>
+                                                        </FormControl>
                                                     </FormItem>
                                                 )}
                                             />
@@ -472,6 +530,36 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
                                                         </FormControl>
                                                         <FormLabel className="text-xs font-normal">Exh. Adic</FormLabel>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
+                                        <div className="pt-4 space-y-3 border-t">
+                                            <h4 className="text-sm font-semibold text-emerald-700 flex items-center gap-2">
+                                                🛡️ Blindaje de PDV
+                                            </h4>
+                                            <FormField
+                                                control={form.control}
+                                                name="trained_staff"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                        </FormControl>
+                                                        <FormLabel className="text-xs font-medium">¿Personal Capacitado?</FormLabel>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="pop_visible"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                        </FormControl>
+                                                        <FormLabel className="text-xs font-medium">¿Material POP Visible?</FormLabel>
                                                     </FormItem>
                                                 )}
                                             />

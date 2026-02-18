@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { User, Building, MapPin, X, Leaf } from "lucide-react";
+import { User, Building, MapPin, X, Leaf, Rocket, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscriptionQuota } from "@/hooks/useSubscriptionQuota";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
@@ -29,6 +30,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
   const [healthCenters, setHealthCenters] = useState<any[]>([]);
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
   const { toast } = useToast();
+  const { canAddDoctor, canAddPharmacy, usage, limits, tier } = useSubscriptionQuota();
 
   const [formData, setFormData] = useState({
     name: contactData?.name || "",
@@ -97,6 +99,34 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
 
     try {
       const user = await supabase.auth.getUser();
+
+      // QUOTA CHECK
+      if (!contactData) { // Only check on creation
+        const type = formData.contact_type;
+        const isDoctorType = type === 'doctor' || type === 'specialist';
+        const isPharmacyType = type === 'pharmacy' || type === 'natural_store' || type === 'drugstore';
+
+        if (isDoctorType && !canAddDoctor) {
+          toast({
+            title: "Límite Alcanzado",
+            description: `Has llegado al máximo de ${limits.doctors} médicos de tu plan ${tier.toUpperCase()}. Actualiza a PRO para ilimitados.`,
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+
+        if (isPharmacyType && !canAddPharmacy) {
+          toast({
+            title: "Límite Alcanzado",
+            description: `Has llegado al máximo de ${limits.pharmacies} farmacias de tu plan ${tier.toUpperCase()}. Actualiza a PRO para ilimitados.`,
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       const contactPayload = {
         ...formData,
         user_id: user.data.user?.id

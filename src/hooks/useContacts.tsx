@@ -59,21 +59,31 @@ export function useContacts(options: UseContactsOptions = {}) {
                 // Apply role-based filtering
                 if (isSupervisor && zoneId) {
                     if (adminFilters.repId && adminFilters.repId !== 'all') {
-                        query = query.eq(tableName === 'contacts' ? 'user_id' : 'representative_id', adminFilters.repId);
+                        const repColumn = tableName === 'contacts' ? 'user_id' : 'representative_id';
+                        if (tableName === 'contacts') {
+                            query = query.eq('user_id', adminFilters.repId);
+                        } else {
+                            query = query.or(`representative_id.eq.${adminFilters.repId},user_id.eq.${adminFilters.repId}`);
+                        }
                     } else {
                         query = query.eq('zone_id', zoneId);
                     }
                 } else if (!canViewAllData) {
                     // Regular representative: strictly their own data
-                    // For doctors/pharmacies we use representative_id as it's the definitive assignment
-                    const repColumn = tableName === 'contacts' ? 'user_id' : 'representative_id';
-                    query = query.eq(repColumn, user.id);
-                    // console.warn("DEBUG: User filter disabled to check data existence");
+                    if (tableName === 'contacts') {
+                        query = query.eq('user_id', user.id);
+                    } else {
+                        // For doctors/pharmacies, can see both assigned and created
+                        query = query.or(`representative_id.eq.${user.id},user_id.eq.${user.id}`);
+                    }
                 } else {
                     // Master/Admin with optional filters
                     if (adminFilters.repId && adminFilters.repId !== 'all') {
-                        const repColumn = tableName === 'contacts' ? 'user_id' : 'representative_id';
-                        query = query.eq(repColumn, adminFilters.repId);
+                        if (tableName === 'contacts') {
+                            query = query.eq('user_id', adminFilters.repId);
+                        } else {
+                            query = query.or(`representative_id.eq.${adminFilters.repId},user_id.eq.${adminFilters.repId}`);
+                        }
                     }
                     if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
                         query = query.eq('zone_id', adminFilters.zoneId);

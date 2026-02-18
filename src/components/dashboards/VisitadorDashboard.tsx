@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Package, FileText, LogOut, Activity } from 'lucide-react';
+import { RepresentativeScorecard } from './RepresentativeScorecard';
 
 const VisitadorDashboard = () => {
     const { signOut, user } = useAuth();
@@ -39,6 +40,9 @@ const VisitadorDashboard = () => {
                         Gestiona tus visitas médicas y entregas de muestras
                     </p>
                 </div>
+
+                {/* 360 Scorecard - Strategic Performance View */}
+                <RepresentativeScorecard />
 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

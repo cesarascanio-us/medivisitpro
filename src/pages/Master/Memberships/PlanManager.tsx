@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, Crown, Check, X, CreditCard } from "lucide-react";
+import { Loader2, Crown, Check, X, CreditCard, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface PlanType {
@@ -15,7 +15,53 @@ interface PlanType {
     interval: 'month' | 'year';
     features: string[];
     active: boolean;
+    description?: string; // Added description
 }
+
+const OFFICIAL_PLANS = [
+    {
+        name: 'Starter',
+        price: 9.99,
+        interval: 'month',
+        description: 'Para estudiantes y nuevos visitadores.',
+        features: [
+            'Gestión de hasta 120 médicos',
+            'Gestión de hasta 100 farmacias',
+            'Centros de Salud ilimitados',
+            'Rutas optimizadas básicas',
+            'Agenda digital'
+        ],
+        active: true
+    },
+    {
+        name: 'Pro',
+        price: 19.99,
+        interval: 'month',
+        description: 'Para visitadores de alto rendimiento.',
+        features: [
+            'Médicos ilimitados',
+            'Farmacias ilimitadas',
+            'Rutas inteligentes ilimitadas',
+            'Control de stock de muestras',
+            'Analytics de desempeño'
+        ],
+        active: true
+    },
+    {
+        name: 'Team',
+        price: 0, // Contact Sales
+        interval: 'month',
+        description: 'Para laboratorios y gerentes.',
+        features: [
+            'Dashboard de gerencia',
+            'Asignación de zonas',
+            'Reportes consolidados',
+            'Soporte dedicado 24/7',
+            'Facturación corporativa'
+        ],
+        active: true
+    }
+];
 
 export default function PlanManager() {
     const [newPlanName, setNewPlanName] = useState('');
@@ -24,6 +70,8 @@ export default function PlanManager() {
     const [plans, setPlans] = useState<PlanType[]>([]);
     const [loading, setLoading] = useState(true);
     const { toast } = useToast();
+
+    const [editingPlan, setEditingPlan] = useState<PlanType | null>(null);
 
     // Mock initial data if empty, or fetch
     const fetchPlans = async () => {
@@ -59,29 +107,52 @@ export default function PlanManager() {
         }
     };
 
-    const handleCreatePlan = async () => {
+    const handleSavePlan = async () => {
         if (!newPlanName || !newPlanPrice) return;
 
-        const { data, error } = await supabase
-            .from('subscription_plans')
-            .insert({
-                name: newPlanName,
-                price: parseFloat(newPlanPrice),
-                interval: 'month',
-                features: ['Módulo Estándar', 'Soporte Básico'],
-                active: true
-            })
-            .select()
-            .single();
+        if (editingPlan) {
+            // Update existing plan
+            const { error } = await supabase
+                .from('subscription_plans')
+                .update({
+                    name: newPlanName,
+                    price: parseFloat(newPlanPrice)
+                })
+                .eq('id', editingPlan.id);
 
-        if (error) {
-            toast({ title: 'Error', description: error.message, variant: 'destructive' });
+            if (error) {
+                toast({ title: 'Error', description: error.message, variant: 'destructive' });
+            } else {
+                setPlans(plans.map(p => p.id === editingPlan.id ? { ...p, name: newPlanName, price: parseFloat(newPlanPrice) } : p));
+                setIsDialogOpen(false);
+                setEditingPlan(null);
+                setNewPlanName('');
+                setNewPlanPrice('');
+                toast({ title: 'Actualizado', description: 'Plan actualizado exitosamente.' });
+            }
         } else {
-            setPlans([...plans, data as PlanType]);
-            setIsDialogOpen(false);
-            setNewPlanName('');
-            setNewPlanPrice('');
-            toast({ title: 'Creado', description: 'Nuevo plan guardado exitosamente.' });
+            // Create new plan
+            const { data, error } = await supabase
+                .from('subscription_plans')
+                .insert({
+                    name: newPlanName,
+                    price: parseFloat(newPlanPrice),
+                    interval: 'month',
+                    features: ['Módulo Estándar', 'Soporte Básico'],
+                    active: true
+                })
+                .select()
+                .single();
+
+            if (error) {
+                toast({ title: 'Error', description: error.message, variant: 'destructive' });
+            } else {
+                setPlans([...plans, data as PlanType]);
+                setIsDialogOpen(false);
+                setNewPlanName('');
+                setNewPlanPrice('');
+                toast({ title: 'Creado', description: 'Nuevo plan guardado exitosamente.' });
+            }
         }
     };
 
@@ -101,6 +172,83 @@ export default function PlanManager() {
         }
     };
 
+    const resetToOfficialPlans = async () => {
+        if (!confirm('¿Confirmar sincronización? Se actualizarán los planes "Free", "Professional" y "Enterprise" a la nueva estructura comercial.')) return;
+        setLoading(true);
+
+        try {
+            console.log("Iniciando sincronización de planes...");
+
+            // 1. Fetch current plans
+            const { data: currentPlans, error: fetchError } = await supabase.from('subscription_plans').select('*');
+
+            if (fetchError) {
+                throw new Error(`Error al leer planes: ${fetchError.message}`);
+            }
+
+            const safePlans = currentPlans || [];
+            console.log("Planes actuales encontrados:", safePlans.map(p => p.name));
+
+            // Helper to find match
+            const findMatch = (keywords: string[]) =>
+                safePlans.find(p => keywords.some(k => p.name.toLowerCase().includes(k.toLowerCase())));
+
+            // 2. Process OFFICIAL_PLANS SERIALLY to avoid conflicts
+            for (const official of OFFICIAL_PLANS) {
+                let existingPlan = null;
+
+                // Explicit Mapping Logic
+                if (official.name === 'Starter') {
+                    existingPlan = findMatch(['Starter', 'Free', 'Básico', 'Basic', 'Gratis']);
+                } else if (official.name === 'Pro') {
+                    existingPlan = findMatch(['Pro', 'Professional', 'Premium', 'Avanzado', 'Estándar']);
+                } else if (official.name === 'Team') {
+                    existingPlan = findMatch(['Team', 'Enterprise', 'Corporativo', 'Master', 'Business']);
+                }
+
+                const planData = {
+                    name: official.name,
+                    price: official.price,
+                    interval: official.interval,
+                    features: official.features,
+                    description: official.description,
+                    active: true
+                };
+
+                if (existingPlan) {
+                    console.log(`Actualizando plan existente: ${existingPlan.name} -> ${official.name}`);
+                    const { error } = await supabase
+                        .from('subscription_plans')
+                        .update(planData)
+                        .eq('id', existingPlan.id);
+
+                    if (error) console.error(`Error actualizando ${official.name}:`, error);
+                } else {
+                    console.log(`Creando nuevo plan: ${official.name}`);
+                    const { error } = await supabase
+                        .from('subscription_plans')
+                        .insert(planData);
+
+                    if (error) console.error(`Error creando ${official.name}:`, error);
+                }
+            }
+
+            // 3. Refresh UI
+            await fetchPlans();
+
+            toast({
+                title: 'Sincronización Completada',
+                description: 'Los planes se han actualizado a la versión oficial. Si no ves los cambios, recarga la página.'
+            });
+
+        } catch (e: any) {
+            console.error("Error crítico en sincronización:", e);
+            toast({ title: 'Error de Sincronización', description: e.message, variant: 'destructive' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="p-6 space-y-6 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
@@ -112,15 +260,26 @@ export default function PlanManager() {
                     <p className="text-slate-400 mt-1">Configura los niveles de servicio del SaaS.</p>
                 </div>
 
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                    setIsDialogOpen(open);
+                    if (!open) {
+                        setEditingPlan(null);
+                        setNewPlanName('');
+                        setNewPlanPrice('');
+                    }
+                }}>
                     <DialogTrigger asChild>
-                        <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">
+                        <Button className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20">
                             Crear Nuevo Plan
                         </Button>
                     </DialogTrigger>
+                    <Button variant="outline" onClick={resetToOfficialPlans} className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 ml-2">
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Sincronizar con Landing
+                    </Button>
                     <DialogContent className="bg-slate-900 border-slate-700 text-white">
                         <DialogHeader>
-                            <DialogTitle>Nuevo Plan de Suscripción</DialogTitle>
+                            <DialogTitle>{editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
@@ -142,8 +301,8 @@ export default function PlanManager() {
                                     onChange={(e) => setNewPlanPrice(e.target.value)}
                                 />
                             </div>
-                            <Button onClick={handleCreatePlan} className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold mt-4">
-                                Guardar Plan
+                            <Button onClick={handleSavePlan} className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold mt-4">
+                                {editingPlan ? 'Actualizar Plan' : 'Guardar Plan'}
                             </Button>
                         </div>
                     </DialogContent>
@@ -183,7 +342,16 @@ export default function PlanManager() {
                                     ))}
                                 </ul>
                                 <div className="flex gap-2">
-                                    <Button variant="outline" className="flex-1 border-slate-600 text-white hover:bg-slate-800">
+                                    <Button
+                                        variant="outline"
+                                        className="flex-1 border-slate-600 text-white hover:bg-slate-800"
+                                        onClick={() => {
+                                            setEditingPlan(plan);
+                                            setNewPlanName(plan.name);
+                                            setNewPlanPrice(plan.price.toString());
+                                            setIsDialogOpen(true);
+                                        }}
+                                    >
                                         Editar
                                     </Button>
                                     <Button

@@ -69,6 +69,7 @@ const AuditLogs = lazy(() => import("./pages/Master/Logs/AuditLogs"));
 const BillingManager = lazy(() => import("./pages/Master/Billing/BillingManager"));
 const SystemAlerts = lazy(() => import("./pages/Master/Reminders/SystemAlerts"));
 const PlanManager = lazy(() => import("./pages/Master/Memberships/PlanManager"));
+const LandingEditor = lazy(() => import("./pages/Master/LandingEditor"));
 const OnboardingWizard = lazy(() => import("./components/onboarding/OnboardingWizard"));
 
 const WarehouseLayout = lazy(() => import("@/components/warehouse/WarehouseLayout"));
@@ -335,6 +336,11 @@ const App = () => (
                       <Route path="/master/plans" element={
                         <ProtectedRoute allowedRoles={['master']}>
                           <Layout><PlanManager /></Layout>
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/master/landing" element={
+                        <ProtectedRoute allowedRoles={['master']}>
+                          <Layout><LandingEditor /></Layout>
                         </ProtectedRoute>
                       } />
 

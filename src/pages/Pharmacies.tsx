@@ -531,6 +531,7 @@ export default function Pharmacies() {
                 // Create new pharmacy
                 const { data: pharmacyData, error: pharmacyError } = await supabase.from('pharmacies').insert({
                     user_id: user.id,
+                    organization_id: organizationId,
                     // Información básica
                     name: pharmacyFormData.name,
                     rif: pharmacyFormData.rif || null,
@@ -577,6 +578,7 @@ export default function Pharmacies() {
                     const drugstoresToInsert = pharmacyFormData.affiliatedDrugstores.map(ds => ({
                         ...ds,
                         user_id: user.id,
+                        organization_id: organizationId,
                         contact_id: pharmacyData.id,
                         is_active: true
                     }));
@@ -693,6 +695,7 @@ export default function Pharmacies() {
 
                     const pharmaciesToInsert = jsonData.map((row: any) => ({
                         user_id: user?.id,
+                        organization_id: organizationId,
                         // Información básica
                         name: row['Nombre'] || row['nombre'] || row['Name'],
                         rif: row['RIF'] || row['rif'] || null,

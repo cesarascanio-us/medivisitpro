@@ -186,7 +186,7 @@ export default function DashboardMaster() {
                 state: 'N/A', visits: 0, orders: 0, sales: 0, effectiveness: 0,
                 role: roleInfo?.role || 'representative',
                 is_active: roleInfo?.is_active ?? true,
-                invitation_status: p.invitation_status || 'active',
+                invitation_status: (p.invitation_status as 'pending' | 'active') || 'active',
                 region: roleInfo?.zone_id ? zoneMap[roleInfo.zone_id] : 'N/A'
             };
         });
@@ -415,24 +415,24 @@ export default function DashboardMaster() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-white space-y-6">
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
 
             {/* HEADERS FILTER & ACTION */}
             <div className="flex flex-col gap-4 pt-4 px-1">
                 <div className="flex justify-between items-start md:items-center">
                     <div className="flex flex-col space-y-1.5">
-                        <h2 className="text-2xl font-bold tracking-tight text-slate-800">Centro de Mando</h2>
-                        <p className="text-slate-500">Gestión estratégica y control operativo</p>
+                        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Centro de Mando</h2>
+                        <p className="text-slate-500 dark:text-slate-400">Gestión estratégica y control operativo</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} size="icon" variant="outline" className="text-slate-500 hover:text-blue-600">
+                        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} size="icon" variant="outline" className="text-slate-500 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700">
                             <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
                         </Button>
                     </div>
                 </div>
 
                 {/* Welcome Section */}
-                <div className="gradient-medical p-6 rounded-lg text-primary-foreground shadow-md">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-lg text-white shadow-md">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
                         <div>
                             <h1 className="text-2xl font-bold">¡Bienvenido de vuelta, {getUserName()}!</h1>
@@ -733,13 +733,13 @@ function KPICard({ title, value, icon, color }: any) {
         amber: "text-amber-600 bg-amber-50 border-amber-100",
     };
     return (
-        <Card className={`border shadow-sm ${colors[color]} border-l-4 bg-slate-50`}>
+        <Card className={`border-l-4 shadow-sm bg-white dark:bg-slate-900 ${color === 'emerald' ? 'border-l-emerald-500' : color === 'blue' ? 'border-l-blue-500' : color === 'violet' ? 'border-l-violet-500' : 'border-l-amber-500'}`}>
             <CardContent className="p-4 flex items-center justify-between">
                 <div>
-                    <p className="text-xs font-semibold uppercase opacity-70 mb-1">{title}</p>
-                    <p className="text-2xl font-bold">{value}</p>
+                    <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">{title}</p>
+                    <p className={`text-2xl font-bold ${color === 'emerald' ? 'text-emerald-600 dark:text-emerald-400' : color === 'blue' ? 'text-blue-600 dark:text-blue-400' : color === 'violet' ? 'text-violet-600 dark:text-violet-400' : 'text-amber-600 dark:text-amber-400'}`}>{value}</p>
                 </div>
-                <div className={`p-3 rounded-xl bg-white shadow-sm`}>
+                <div className={`p-3 rounded-xl ${color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : color === 'violet' ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'}`}>
                     {icon}
                 </div>
             </CardContent>

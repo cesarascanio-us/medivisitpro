@@ -59,6 +59,29 @@ export const MOCK_PRODUCTS = [
         price: 12.50,
         is_sample: true,
         created_at: '2025-01-04T10:00:00Z'
+    },
+    {
+        id: 'prod-launch-001',
+        name: 'NeuroFortis Plus',
+        description: 'Suplemento neuroprotector de alta potencia',
+        category: 'Premium Launch',
+        therapeutic_area: 'Neurología',
+        dosage: '5mg/kg',
+        presentation: 'Frasco 120ml',
+        price: 45.00,
+        is_sample: true,
+        created_at: '2026-02-17T10:00:00Z',
+        selling_points: {
+            "Clínico": "Liberación controlada 24h",
+            "Eficacia": "Mejora cognitiva en 14 días",
+            "Seguridad": "Complejo B de grado médico",
+            "Diferencial": "Sabor cereza natural"
+        },
+        dosage_config: {
+            "default_dose_mg_kg": 5,
+            "concentration_mg_ml": 50,
+            "presentation_unit": "mL"
+        }
     }
 ];
 

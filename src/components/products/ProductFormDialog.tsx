@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import {
     Loader2, Plus, Edit, Check, ChevronsUpDown, X, Upload, ImageIcon, FileText, Trash2,
     Package, Stethoscope, ShoppingBag, GraduationCap, Files, Sparkles
@@ -164,6 +165,7 @@ interface ProductFormDialogProps {
 }
 
 export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: constrainedOpen, onOpenChange }: ProductFormDialogProps) {
+    const { organizationId } = useAuth(); // Get organizationId from useAuth
     const [internalOpen, setInternalOpen] = useState(false);
     const isControlled = typeof constrainedOpen !== "undefined";
     const open = isControlled ? constrainedOpen : internalOpen;
@@ -201,7 +203,11 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
         // Commercial Info (Sección Comercial)
         key_message: "",
-        selling_points: "",
+        selling_points: {
+            clinical: "",
+            experience: "",
+            evidence: ""
+        } as any,
         profitability_info: "",
 
         // Training Info (Sección Entrenamiento)
@@ -210,7 +216,12 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
         // Resources
         image_url: "",
-        pdf_link: ""
+        pdf_link: "",
+        dosage_config: {
+            default_dose_mg_kg: 0,
+            concentration_mg_ml: 1,
+            presentation_unit: "mL"
+        }
     });
 
     useEffect(() => {
@@ -243,14 +254,21 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                 clinical_evidence: productToEdit.clinical_evidence || "",
 
                 key_message: productToEdit.key_message || "",
-                selling_points: productToEdit.selling_points || "",
+                selling_points: typeof productToEdit.selling_points === 'object' && productToEdit.selling_points !== null
+                    ? productToEdit.selling_points
+                    : { clinical: "", experience: "", evidence: "" },
                 profitability_info: productToEdit.profitability_info || "",
 
                 sales_tips: productToEdit.sales_tips || "",
                 objection_handling: productToEdit.objection_handling || "",
 
                 image_url: productToEdit.image_url || "",
-                pdf_link: productToEdit.pdf_link || ""
+                pdf_link: productToEdit.pdf_link || "",
+                dosage_config: productToEdit.dosage_config || {
+                    default_dose_mg_kg: 0,
+                    concentration_mg_ml: 1,
+                    presentation_unit: "mL"
+                }
             });
         } else if (open) {
             // Reset form
@@ -259,9 +277,14 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                 category: "", description: "", therapeutic_area: "", price: "",
                 indications: "", composition: "", dosage: "", posology: "", medical_specialties: "",
                 contraindications: "", side_effects: "", safety_info: "", clinical_evidence: "",
-                key_message: "", selling_points: "", profitability_info: "",
+                key_message: "", selling_points: { clinical: "", experience: "", evidence: "" }, profitability_info: "",
                 sales_tips: "", objection_handling: "",
-                image_url: "", pdf_link: ""
+                image_url: "", pdf_link: "",
+                dosage_config: {
+                    default_dose_mg_kg: 0,
+                    concentration_mg_ml: 1,
+                    presentation_unit: "mL"
+                }
             });
             setActiveTab("basic");
         }
@@ -283,8 +306,18 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
         }
     };
 
-    const handleChange = (field: string, value: string) => {
+    const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleSellingPointChange = (category: string, value: string) => {
+        setFormData(prev => ({
+            ...prev,
+            selling_points: {
+                ...prev.selling_points,
+                [category]: value
+            }
+        }));
     };
 
     // File upload handler for images
@@ -379,6 +412,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
             const productPayload = {
                 // Basic
+                organization_id: organizationId, // Include organizationId
                 product_code: formData.product_code || null,
                 sku: formData.sku || null,
                 name: formData.name,
@@ -411,7 +445,8 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
                 // Resources
                 image_url: formData.image_url || null,
-                pdf_link: formData.pdf_link || null
+                pdf_link: formData.pdf_link || null,
+                dosage_config: formData.dosage_config
             };
 
             let error;
@@ -697,16 +732,54 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="safety_info">Información de Seguridad</Label>
+                                            <Label htmlFor="safety_info">Información de Seguridad / Advertencias</Label>
                                             <Textarea
                                                 id="safety_info"
                                                 value={formData.safety_info}
                                                 onChange={(e) => handleChange("safety_info", e.target.value)}
-                                                placeholder="Advertencias y precauciones importantes"
+                                                placeholder="Advertencias importantes..."
                                                 rows={3}
                                             />
                                         </div>
 
+                                        <div className="space-y-4 pt-4 border-t">
+                                            <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm bg-emerald-50 p-2 rounded">
+                                                <Sparkles className="h-4 w-4" />
+                                                Parámetros de Dosificación (Simulador 360)
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs">Dosis Defecto (mg/kg)</Label>
+                                                    <Input
+                                                        type="number"
+                                                        value={formData.dosage_config.default_dose_mg_kg}
+                                                        onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, default_dose_mg_kg: Number(e.target.value) })}
+                                                        className="h-8 text-xs"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs">Conc. (mg/mL)</Label>
+                                                    <Input
+                                                        type="number"
+                                                        value={formData.dosage_config.concentration_mg_ml}
+                                                        onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, concentration_mg_ml: Number(e.target.value) })}
+                                                        className="h-8 text-xs"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs">Unidad</Label>
+                                                    <Input
+                                                        value={formData.dosage_config.presentation_unit}
+                                                        onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, presentation_unit: e.target.value })}
+                                                        placeholder="mL, gotas..."
+                                                        className="h-8 text-xs"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <p className="text-[10px] text-muted-foreground italic">
+                                                * Estos valores pre-cargarán el Motor de Dosificación durante la visita médica.
+                                            </p>
+                                        </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="clinical_evidence">Evidencia Clínica</Label>
                                             <Textarea
@@ -744,16 +817,40 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                             <p className="text-xs text-slate-500">Este mensaje se muestra destacado en la presentación del producto</p>
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="selling_points">Argumentos de Venta</Label>
-                                            <Textarea
-                                                id="selling_points"
-                                                value={formData.selling_points}
-                                                onChange={(e) => handleChange("selling_points", e.target.value)}
-                                                placeholder="• Diferenciador 1&#10;• Diferenciador 2&#10;• Ventajas vs competencia"
-                                                rows={5}
-                                            />
-                                            <p className="text-xs text-slate-500">Lista los puntos fuertes y diferenciadores del producto</p>
+                                        <div className="space-y-4">
+                                            <Label className="text-sm font-semibold text-emerald-800">Etiquetas de Valor (Inteligencia 360)</Label>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="sp_clinical" className="text-xs">Diferencial Clínico</Label>
+                                                <Input
+                                                    id="sp_clinical"
+                                                    value={formData.selling_points.clinical}
+                                                    onChange={(e) => handleSellingPointChange("clinical", e.target.value)}
+                                                    placeholder="Ej: Absorción, Biodisponibilidad, Mecanismo..."
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="sp_experience" className="text-xs">Experiencia del Paciente</Label>
+                                                <Input
+                                                    id="sp_experience"
+                                                    value={formData.selling_points.experience}
+                                                    onChange={(e) => handleSellingPointChange("experience", e.target.value)}
+                                                    placeholder="Ej: Sabor, Tolerancia, Fácil Dosificación..."
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="sp_evidence" className="text-xs">Evidencia</Label>
+                                                <Input
+                                                    id="sp_evidence"
+                                                    value={formData.selling_points.evidence}
+                                                    onChange={(e) => handleSellingPointChange("evidence", e.target.value)}
+                                                    placeholder="Ej: Estudios Clínicos, Guías, Respaldo..."
+                                                />
+                                            </div>
+
+                                            <p className="text-[10px] text-slate-500 italic">Estas etiquetas se utilizarán para medir el 'Message Reach' en las visitas médicas.</p>
                                         </div>
 
                                         <div className="space-y-2">
@@ -944,8 +1041,8 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                     </Card>
                                 </div>
                             </TabsContent>
-                        </div>
-                    </Tabs>
+                        </div >
+                    </Tabs >
 
                     <DialogFooter className="pt-4 border-t mt-4">
                         <Button type="button" variant="outline" onClick={() => setOpen?.(false)}>
@@ -956,8 +1053,8 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                             {productToEdit ? "Guardar Cambios" : "Crear Producto"}
                         </Button>
                     </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
+                </form >
+            </DialogContent >
+        </Dialog >
     );
 }

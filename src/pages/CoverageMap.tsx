@@ -306,14 +306,15 @@ export default function CoverageMap() {
             if (role === 'master' || role === 'admin' || role === 'manager') {
                 // God Mode: No filters for master/manager - See all national territory
                 console.log("CoverageMap: God Mode Active - Fetching all coordinates");
-            } else if (role === 'supervisor' || role === 'chief' || role === 'coordinator') {
-                // Supervisor: Filter by their assigned state/region
+            } else {
+                // For ALL other roles (Supervisor, Coordinator, Representative), STRICTLY filter by State
+                // This ensures a Rep from Aragua ONLY sees Aragua.
                 if (userState) {
-                    query = query.eq('state', userState);
+                    query = query.ilike('state', `%${userState}%`); // Using ilike for safer matching
+                } else if (role === 'representative') {
+                    // If no state assigned (rare), fallback to own contacts + zone
+                    query = query.or(`assigned_rep_id.eq.${user?.id},zone_id.eq.${zoneId}`);
                 }
-            } else if (role === 'representative') {
-                // Representative: Only see their own contacts or assigned zone
-                query = query.or(`assigned_rep_id.eq.${user?.id},zone_id.eq.${zoneId}`);
             }
 
             // Always ensure we have coordinates to avoid render errors

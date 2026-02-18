@@ -22,7 +22,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
   const [contacts, setContacts] = useState<any[]>([]);
   const [showNewContactDialog, setShowNewContactDialog] = useState(false);
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
     contact_id: visitData?.contact_id || "",
     scheduled_date: visitData?.scheduled_date?.split('T')[0] || "",
@@ -58,7 +58,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
 
     try {
       const scheduledDateTime = new Date(`${formData.scheduled_date}T${formData.scheduled_time}`);
-      
+
       const visitPayload = {
         contact_id: formData.contact_id,
         scheduled_date: scheduledDateTime.toISOString(),
@@ -69,7 +69,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
       };
 
       let result;
-      if (visitData) {
+      if (visitData?.id) {
         result = await supabase
           .from('visits')
           .update(visitPayload)
@@ -83,8 +83,8 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
       if (result.error) throw result.error;
 
       toast({
-        title: visitData ? "Visita actualizada" : "Visita creada",
-        description: visitData ? "La visita ha sido actualizada correctamente." : "Nueva visita programada exitosamente.",
+        title: visitData?.id ? "Visita actualizada" : "Visita creada",
+        description: visitData?.id ? "La visita ha sido actualizada correctamente." : "Nueva visita programada exitosamente.",
       });
 
       setOpen(false);
@@ -116,16 +116,16 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
           <DialogHeader>
             <DialogTitle className="flex items-center">
               <Calendar className="mr-2 h-5 w-5 icon-medical" />
-              {visitData ? "Editar Visita" : "Nueva Visita"}
+              {visitData?.id ? "Editar Visita" : "Nueva Visita"}
             </DialogTitle>
           </DialogHeader>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="contact">Contacto Médico</Label>
               <div className="flex gap-2">
-                <Select 
-                  value={formData.contact_id} 
+                <Select
+                  value={formData.contact_id}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, contact_id: value }))}
                 >
                   <SelectTrigger className="flex-1">
@@ -197,8 +197,8 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
 
             <div className="space-y-2">
               <Label htmlFor="status">Estado</Label>
-              <Select 
-                value={formData.status} 
+              <Select
+                value={formData.status}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
               >
                 <SelectTrigger>
@@ -218,7 +218,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
                 Cancelar
               </Button>
               <Button type="submit" disabled={loading} className="btn-medical">
-                {loading ? "Guardando..." : (visitData ? "Actualizar" : "Crear Visita")}
+                {loading ? "Guardando..." : (visitData?.id ? "Actualizar" : "Crear Visita")}
               </Button>
             </div>
           </form>

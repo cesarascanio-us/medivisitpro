@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ContactDialog } from "@/components/contacts/ContactDialog";
 import { useContacts, type Contact } from "@/hooks/useContacts";
-import { VisitDialog } from "@/components/agenda/VisitDialog";
+import { VisitDetailDialog } from "@/components/visits/VisitDetailDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -99,33 +99,69 @@ export default function Contacts() {
             throw new Error("El archivo está vacío o no tiene el formato correcto.");
           }
 
-          const contactsToInsert = jsonData.map((row: any) => ({
-            user_id: user?.id,
-            name: row['Nombre'] || row['nombre'] || row['Name'],
-            specialty: row['Especialidad'] || row['especialidad'] || row['Specialty'] || null,
-            contact_type: row['Tipo'] || row['tipo'] || 'doctor',
-            address: row['Direccion'] || row['direccion'] || row['Address'] || null,
-            city: row['Ciudad'] || row['ciudad'] || row['City'] || null,
-            phone: row['Telefono'] || row['telefono'] || row['Phone'] || null,
-            email: row['Email'] || row['email'] || null,
-            work_hours: row['Horario'] || row['horario'] || null,
-            priority: row['Prioridad'] || row['prioridad'] || 'medium',
-            notes: row['Notas'] || row['notas'] || null
-          })).filter(c => c.name); // Filter out rows without name
+          const doctorsToInsert: any[] = [];
+          const pharmaciesToInsert: any[] = [];
+          const genericContactsToInsert: any[] = [];
 
-          if (contactsToInsert.length === 0) {
+          jsonData.forEach((row: any) => {
+            const type = row['Tipo'] || row['tipo'] || 'doctor';
+            const baseData = {
+              user_id: user?.id,
+              organization_id: organizationId,
+              name: row['Nombre'] || row['nombre'] || row['Name'],
+              address: row['Direccion'] || row['direccion'] || row['Address'] || null,
+              city: row['Ciudad'] || row['ciudad'] || row['City'] || null,
+              phone: row['Telefono'] || row['telefono'] || row['Phone'] || null,
+              email: row['Email'] || row['email'] || null,
+              status: 'Activo'
+            };
+
+            if (!baseData.name) return;
+
+            if (type === 'doctor') {
+              doctorsToInsert.push({
+                ...baseData,
+                specialty: row['Especialidad'] || row['especialidad'] || row['Specialty'] || null,
+                observations: row['Notas'] || row['notas'] || null,
+                potential: 'Medio'
+              });
+            } else if (type === 'pharmacy') {
+              pharmaciesToInsert.push({
+                ...baseData,
+                notes: row['Notas'] || row['notas'] || null,
+                potential: 'Medio'
+              });
+            } else {
+              genericContactsToInsert.push({
+                ...baseData,
+                contact_type: type,
+                specialty: row['Especialidad'] || row['especialidad'] || row['Specialty'] || null,
+                notes: row['Notas'] || row['notas'] || null,
+                priority: row['Prioridad'] || row['prioridad'] || 'medium',
+              });
+            }
+          });
+
+          const totalToImport = doctorsToInsert.length + pharmaciesToInsert.length + genericContactsToInsert.length;
+
+          if (totalToImport === 0) {
             throw new Error("No se encontraron contactos válidos para importar.");
           }
 
-          const { error } = await supabase
-            .from('contacts')
-            .insert(contactsToInsert);
+          // Execute inserts in parallel
+          const promises = [];
+          if (doctorsToInsert.length > 0) promises.push(supabase.from('doctors').insert(doctorsToInsert));
+          if (pharmaciesToInsert.length > 0) promises.push(supabase.from('pharmacies').insert(pharmaciesToInsert));
+          if (genericContactsToInsert.length > 0) promises.push(supabase.from('contacts').insert(genericContactsToInsert));
 
-          if (error) throw error;
+          const results = await Promise.all(promises);
+          const firstError = results.find(r => r.error);
+
+          if (firstError) throw firstError.error;
 
           toast({
             title: "Importación exitosa",
-            description: `Se han importado ${contactsToInsert.length} contactos correctamente.`
+            description: `Se han importado ${totalToImport} contactos correctamente en sus respectivos catálogos.`
           });
           refresh();
         } catch (error: any) {
@@ -485,12 +521,16 @@ export default function Contacts() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-                <VisitDialog
+                <VisitDetailDialog
                   trigger={
                     <Button size="sm" className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm font-medium">
                       Programar Visita
                     </Button>
                   }
+                  visitData={{
+                    contact_id: contact.id,
+                    visit_type: contact.contact_type || 'doctor'
+                  }}
                   onVisitSaved={refresh}
                 />
               </div>

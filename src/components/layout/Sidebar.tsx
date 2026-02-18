@@ -34,7 +34,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  Leaf
+  Leaf,
+  Globe
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -146,6 +147,8 @@ const REPRESENTATIVE_NAV = [
       { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
       { name: "Droguerías", href: "/drugstores", icon: Truck },
       { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
+      { name: "Rutas y Territorios", href: "/visits", icon: FileText },
+      { name: "Cobertura Global", href: "/coverage-map", icon: Map },
       { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
     ]
   },
@@ -240,6 +243,7 @@ const MASTER_SAAS_NAV = [
       { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
       { name: "Gestión de Cuentas", href: "/users", icon: Users },
       { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
+      { name: "Editor Landing Page", href: "/master/landing", icon: Globe },
     ]
   },
   {
@@ -324,8 +328,10 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       return MASTER_SAAS_NAV;
     }
 
-    // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view
-    if (!organizationId && !isDemo) {
+    // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view. 
+    // EXCEPTION: Trusted roles (Rep, Supervisor, etc.) pass even if OrgID is transiently missing to avoid UI lockout.
+    const trustedRoles = ['representative', 'supervisor', 'coordinator', 'chief', 'telemarketing', 'manager', 'admin'];
+    if (!organizationId && !isDemo && !trustedRoles.includes(role)) {
       return [
         {
           title: "CUENTA PENDIENTE",

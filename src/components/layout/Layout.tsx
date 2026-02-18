@@ -8,6 +8,7 @@ import { Rocket, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { StrategicOnboarding360 } from '../onboarding/StrategicOnboarding360';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -160,6 +161,7 @@ export const Layout = ({ children }: LayoutProps) => {
           </main>
         </div>
       </div>
+      <StrategicOnboarding360 />
     </div>
   );
 }

@@ -128,8 +128,11 @@ export default function Agenda() {
               Nueva Visita
             </Button>
           }
+          visitData={{
+            scheduled_date: currentDate.toISOString().split('T')[0],
+            status: 'scheduled'
+          }}
           onVisitSaved={loadVisits}
-        // Optionally pass currentDate to pre-fill? The dialog might need update for that.
         />
       </div>
 
@@ -181,6 +184,10 @@ export default function Agenda() {
                   trigger={
                     <Button variant="secondary" className="glass-effect">Programar Visita</Button>
                   }
+                  visitData={{
+                    scheduled_date: currentDate.toISOString().split('T')[0],
+                    status: 'scheduled'
+                  }}
                   onVisitSaved={loadVisits}
                 />
               </div>
@@ -260,6 +267,11 @@ export default function Agenda() {
               </CardContent>
             </Card>
           }
+          visitData={{
+            scheduled_date: new Date().toISOString().split('T')[0],
+            status: 'completed',
+            visit_type: 'doctor'
+          }}
           onVisitSaved={loadVisits}
         />
       </div>
