@@ -51,8 +51,8 @@ export function useBilling() {
             setLoading(true);
 
             // Load plans from subscription_plans (Unified System)
-            const { data: plansData, error: plansError } = await supabase
-                .from('subscription_plans')
+            const { data: plansData, error: plansError } = await (supabase
+                .from('subscription_plans') as any)
                 .select('*')
                 .eq('active', true);
 
@@ -68,7 +68,7 @@ export function useBilling() {
             }));
 
             // Map data to expected Plan interface
-            const formattedPlans: Plan[] = (plansData || []).map(p => {
+            const formattedPlans: Plan[] = (plansData as any[] || []).map(p => {
                 let tier = p.name.toLowerCase();
                 if (tier.includes('starter') || tier.includes('free')) tier = 'starter';
                 if (tier.includes('pro')) tier = 'professional';
@@ -79,32 +79,32 @@ export function useBilling() {
                     name: p.name,
                     tier: tier,
                     description: p.description || 'Plan de suscripción personalizado',
-                    features: p.features || []
+                    features: (p.features as unknown as string[]) || []
                 };
             });
 
             // Load current subscription
-            const { data: subData } = await supabase
-                .from('subscriptions')
+            const { data: subData } = await (supabase
+                .from('subscriptions') as any)
                 .select('*, subscription_plans(*)')
                 .eq('organization_id', organizationId)
                 .maybeSingle();
 
             // Load transaction history
-            const { data: transData } = await supabase
-                .from('billing_transactions')
+            const { data: transData } = await (supabase
+                .from('billing_transactions') as any)
                 .select('*')
                 .eq('organization_id', organizationId)
                 .order('created_at', { ascending: false });
 
             // Load pending manual reports
-            const { data: manualReports } = await supabase
-                .from('payment_reports')
+            const { data: manualReports } = await (supabase
+                .from('payment_reports') as any)
                 .select('*')
                 .eq('organization_id', organizationId)
                 .order('created_at', { ascending: false });
 
-            const formattedManual = (manualReports || []).map(report => ({
+            const formattedManual = (manualReports as any[] || []).map(report => ({
                 id: report.id,
                 amount: report.amount_paid,
                 currency: 'USD',
@@ -192,7 +192,7 @@ export function useBilling() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Usuario no autenticado');
 
-            const { error } = await supabase.from('payment_reports').insert({
+            const { error } = await (supabase.from('payment_reports') as any).insert({
                 user_id: user.id,
                 organization_id: organizationId,
                 plan_id: reportData.planId,

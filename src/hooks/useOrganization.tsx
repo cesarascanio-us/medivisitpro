@@ -146,7 +146,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     .maybeSingle();
 
                 if (planData) {
-                    setPlanFeatures(planData.features || []);
+                    setPlanFeatures((planData.features as unknown as string[]) || []);
                 } else {
                     // Fallback to basic features if plan not found
                     setPlanFeatures(['basic_visits', 'basic_reports']);
