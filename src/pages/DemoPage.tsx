@@ -37,7 +37,7 @@ export default function DemoPage() {
 
                 // Redirect to dashboard
                 setTimeout(() => {
-                    navigate('/dashboard', { replace: true });
+                    navigate('/demo/dashboard', { replace: true });
                 }, 500);
             } else {
                 setError(result.error || 'No se pudo acceder a la demo');

@@ -52,12 +52,12 @@ export default function ManualPaymentApprover() {
     const fetchReports = async () => {
         setLoading(true);
         try {
-            const { data, error } = await supabase
+            const { data, error } = await (supabase as any)
                 .from('payment_reports')
                 .select(`
                     *,
                     organizations(name),
-                    profiles:user_id(email)
+                    profiles(email)
                 `)
                 .order('created_at', { ascending: false });
 
@@ -73,36 +73,51 @@ export default function ManualPaymentApprover() {
     const handleApprove = async (report: PaymentReport) => {
         setProcessingId(report.id);
         try {
-            // 1. Update Report Status
-            const { error: reportError } = await supabase
+            // 1. Fetch current subscription to see if we should extend it
+            const { data: currentSub } = await supabase
+                .from('subscriptions')
+                .select('current_period_end, status')
+                .eq('organization_id', report.organization_id)
+                .maybeSingle();
+
+            let baseDate = new Date();
+            if (currentSub?.status === 'active' && currentSub?.current_period_end) {
+                const existingEnd = new Date(currentSub.current_period_end);
+                if (existingEnd > baseDate) {
+                    baseDate = existingEnd;
+                }
+            }
+
+            // Calculate new end date (30 days from baseDate)
+            const endDate = new Date(baseDate);
+            endDate.setDate(endDate.getDate() + 30);
+
+            // 2. Update Report Status
+            const { error: reportError } = await (supabase as any)
                 .from('payment_reports')
                 .update({ status: 'approved' })
                 .eq('id', report.id);
 
             if (reportError) throw reportError;
 
-            // 2. Upsert Subscription
-            const endDate = new Date();
-            endDate.setDate(endDate.getDate() + 30); // 30 days subscription
-
-            const { error: subError } = await supabase
+            // 3. Upsert Subscription
+            const { error: subError } = await (supabase as any)
                 .from('subscriptions')
                 .upsert({
                     organization_id: report.organization_id,
-                    plan_name: report.plan_id,
+                    plan_id: report.plan_id,
                     status: 'active',
-                    payment_method: report.payment_method,
-                    last_payment_reference: report.reference_number,
-                    is_manual: true,
+                    provider: report.payment_method,
+                    provider_subscription_id: report.reference_number,
                     current_period_start: new Date().toISOString(),
                     current_period_end: endDate.toISOString(),
                     updated_at: new Date().toISOString()
-                }, { onConflict: 'organization_id' });
+                });
 
             if (subError) throw subError;
 
-            // 3. Record Transaction
-            await supabase.from('billing_transactions').insert({
+            // 4. Record Transaction
+            await (supabase as any).from('billing_transactions').insert({
                 organization_id: report.organization_id,
                 amount: report.amount_paid,
                 currency: 'USD',
@@ -125,7 +140,7 @@ export default function ManualPaymentApprover() {
 
         setProcessingId(id);
         try {
-            const { error } = await supabase
+            const { error } = await (supabase as any)
                 .from('payment_reports')
                 .update({ status: 'rejected' })
                 .eq('id', id);

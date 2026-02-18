@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, Search, Eye, AlertTriangle, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useDemoData } from "@/contexts/MockDataProvider";
 
 interface RepSummary {
     id: string;
@@ -29,13 +30,40 @@ export function RepSupervisorDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRep, setSelectedRep] = useState<RepSummary | null>(null);
     const [repInventory, setRepInventory] = useState<InventoryItem[]>([]);
+    const demoData = useDemoData();
 
     useEffect(() => {
         loadReps();
-    }, []);
+    }, [demoData]);
 
     const loadReps = async () => {
         setLoading(true);
+
+        if (demoData) {
+            console.log("RepSupervisorDashboard: Loading demo reps");
+            const demoReps = [
+                {
+                    id: 'demo-user-1',
+                    first_name: 'Representante',
+                    last_name: 'Uno',
+                    email: 'rep1@demo.com',
+                    inventory_items: 5,
+                    last_update: new Date().toLocaleDateString()
+                },
+                {
+                    id: 'demo-user-2',
+                    first_name: 'Representante',
+                    last_name: 'Dos',
+                    email: 'rep2@demo.com',
+                    inventory_items: 8,
+                    last_update: new Date().toLocaleDateString()
+                }
+            ];
+            setReps(demoReps);
+            setLoading(false);
+            return;
+        }
+
         // Get all profiles first (simplified approach)
         const { data: profiles } = await supabase
             .from('profiles')
@@ -80,6 +108,17 @@ export function RepSupervisorDashboard() {
     };
 
     const loadRepDetail = async (repId: string) => {
+        if (demoData) {
+            console.log("RepSupervisorDashboard: Loading demo rep detail");
+            const items = (demoData.inventory || []).map((d: any) => ({
+                product_name: d.products?.name,
+                quantity: d.quantity,
+                updated_at: new Date().toISOString()
+            }));
+            setRepInventory(items);
+            return;
+        }
+
         const { data } = await supabase
             .from('rep_inventory')
             .select(`

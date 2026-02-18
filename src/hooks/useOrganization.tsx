@@ -85,7 +85,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             ]);
 
             const userRoleName = userRole?.role || 'representative';
-            isMasterUser = userRoleName === 'master';
+            const isOwner = lowerEmail === 'cesar.ascanio@gmail.com';
+            isMasterUser = userRoleName === 'master' || isOwner;
             setIsMaster(isMasterUser);
 
             setIsOrgAdmin(
@@ -111,8 +112,15 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 })) as Organization[];
 
                 currentOrgsList = orgs;
+
+                // 1. Check if there's a manually selected org in localStorage
+                const savedOrgId = localStorage.getItem('medivisit_master_active_org');
                 const assignedOrgId = profile?.organization_id || userRole?.organization_id;
-                currentOrg = orgs.find(o => o.id === assignedOrgId) || orgs[0] || null;
+
+                // 2. Prioritize saved org, then assigned org, then first available
+                currentOrg = orgs.find(o => o.id === savedOrgId) ||
+                    orgs.find(o => o.id === assignedOrgId) ||
+                    orgs[0] || null;
             } else {
                 let organizationId = profile?.organization_id || userRole?.organization_id;
                 if (organizationId) {
@@ -138,7 +146,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
             // FETCH FEATURES DYNAMICALLY
             if (currentOrg) {
-                const { data: planData } = await supabase
+                const { data: planData } = await (supabase as any)
                     .from('subscription_plans')
                     .select('features')
                     .ilike('name', `%${currentOrg.plan_tier}%`)

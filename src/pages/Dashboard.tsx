@@ -65,7 +65,7 @@ export default function Dashboard() {
       setLoading(true);
 
       // DEMO MODE: Use mock data ONLY for demo users
-      if (demoData && user?.email?.includes('demo')) {
+      if (demoData) {
         console.log("Dashboard: Using mock demo data");
         setProfile({ first_name: 'Usuario', last_name: 'Demo' });
         setStats(demoData.dashboardStats);

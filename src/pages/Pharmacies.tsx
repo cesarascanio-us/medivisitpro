@@ -294,7 +294,7 @@ export default function Pharmacies() {
 
     useEffect(() => {
         if (user) loadAllData();
-    }, [user, adminFilters, canViewAllData, zoneId, organizationId]); // Reload when user auth/role state, filters or organizationId change
+    }, [user, adminFilters, canViewAllData, zoneId, organizationId, demoData]); // Reload when user auth/role state, filters, organizationId or demo state changes
 
     const loadAllData = async () => {
         setLoading(true);
@@ -481,6 +481,14 @@ export default function Pharmacies() {
 
     const handlePharmacySubmit = async () => {
         if (!user || !pharmacyFormData.name) return;
+
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden crear o editar farmacias." });
+            setDialogOpen(false);
+            resetPharmacyForm();
+            return;
+        }
+
         try {
             if (editingPharmacyId) {
                 // Update existing pharmacy
@@ -827,6 +835,14 @@ export default function Pharmacies() {
             toast({ title: "Error", description: "El nombre de la droguería es requerido", variant: "destructive" });
             return;
         }
+
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden crear droguerías." });
+            setDrugstoreDialogOpen(false);
+            setDrugstoreForm({ name: '', code: '', contact_name: '', phone: '', email: '' });
+            return;
+        }
+
         try {
             const { data, error } = await (supabase.from('drugstores' as any).insert({
                 user_id: user?.id,
@@ -913,6 +929,13 @@ export default function Pharmacies() {
         const totals = calculateTotals();
         const drugstore = drugstores.find(d => d.id === newTransfer.drugstore_id);
 
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden crear pedidos reales." });
+            setTransferDialogOpen(false);
+            resetTransferForm();
+            return;
+        }
+
         try {
             const { data, error } = await (supabase.from('transfer_orders' as any).insert({
                 user_id: user?.id,
@@ -962,6 +985,11 @@ export default function Pharmacies() {
     };
 
     const handleUpdateStatus = async (orderId: string, newStatus: string, orderNumber: string) => {
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden cambiar estados." });
+            return;
+        }
+
         try {
             const { error } = await (supabase
                 .from('transfer_orders' as any)
@@ -979,6 +1007,11 @@ export default function Pharmacies() {
     };
 
     const handleDeleteTransfer = async (orderId: string) => {
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden eliminar pedidos." });
+            return;
+        }
+
         try {
             await logTransferHistory(orderId, 'deleted', 'Pedido eliminado');
             const { error } = await (supabase.from('transfer_orders' as any).delete().eq('id', orderId)) as any;
@@ -991,6 +1024,14 @@ export default function Pharmacies() {
     };
 
     const loadTransferHistory = async (transferId: string) => {
+        if (demoData) {
+            console.log("TransferHistory: Using mock demo data");
+            // Find in demoData if available, otherwise show empty
+            const mockHistory = (demoData.transferHistory || []).filter((h: any) => h.transfer_order_id === transferId);
+            setTransferHistory(mockHistory);
+            return;
+        }
+
         try {
             const { data }: any = await (supabase
                 .from('transfer_order_history' as any)
@@ -1096,11 +1137,13 @@ export default function Pharmacies() {
         // Log document generation
         await logTransferHistory(order.id, 'document_generated', 'Documento PDF generado');
 
-        // Update document generated flag
-        await (supabase
-            .from('transfer_orders' as any)
-            .update({ document_generated: true, updated_at: new Date().toISOString() })
-            .eq('id', order.id)) as any;
+        // Update document generated flag if not in demo mode
+        if (!demoData) {
+            await (supabase
+                .from('transfer_orders' as any)
+                .update({ document_generated: true, updated_at: new Date().toISOString() })
+                .eq('id', order.id)) as any;
+        }
 
         toast({ title: "Documento generado", description: "Se ha abierto la ventana de impresión." });
         loadAllData();

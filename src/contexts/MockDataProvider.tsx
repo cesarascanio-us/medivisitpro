@@ -1,4 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { MOCK_DATA } from '@/data/mockDemoData';
 
@@ -28,6 +29,9 @@ interface MockDataContextType {
     bankInventory: typeof MOCK_DATA.bankInventory;
     events: typeof MOCK_DATA.events;
     sampleMovements: typeof MOCK_DATA.sampleMovements;
+    pharmacyInventory: typeof MOCK_DATA.pharmacyInventory;
+    transfers: typeof MOCK_DATA.transfers;
+    transferHistory: typeof MOCK_DATA.transferHistory;
 }
 
 const MockDataContext = createContext<MockDataContextType | null>(null);
@@ -59,7 +63,10 @@ export const MockDataProvider: React.FC<MockDataProviderProps> = ({ children }) 
         sampleBanks: MOCK_DATA.sampleBanks,
         bankInventory: MOCK_DATA.bankInventory,
         events: MOCK_DATA.events,
-        sampleMovements: MOCK_DATA.sampleMovements
+        sampleMovements: MOCK_DATA.sampleMovements,
+        pharmacyInventory: MOCK_DATA.pharmacyInventory,
+        transfers: MOCK_DATA.transfers,
+        transferHistory: MOCK_DATA.transferHistory
     };
 
     return (
@@ -75,13 +82,32 @@ export const MockDataProvider: React.FC<MockDataProviderProps> = ({ children }) 
  */
 export const useDemoData = () => {
     const context = useContext(MockDataContext);
+    const location = useLocation();
+    const { isMaster, isSystemAdmin, user } = useAuth();
 
-    // If context doesn't exist or not in demo mode, return null
-    if (!context || !context.isDemo) {
-        return null;
+    // 1. If context doesn't exist, we can't do anything
+    if (!context) return null;
+
+    // 2. FORCED DEMO: If the route explicitly starts with /demo, ALWAYS use mock data
+    if (location.pathname.startsWith('/demo/')) {
+        return context;
     }
 
-    return context;
+    // 3. AUTO DEMO: If user is in demo org but NOT a master, use mock data
+    const isTrialUser = context.isDemo && !isMaster && !isSystemAdmin;
+    if (isTrialUser) {
+        return context;
+    }
+
+    // Default: Real data
+    if (context.isDemo) {
+        console.log('[useDemoData] User in Demo Org but Master/Admin status detected. Bypassing demo data.', {
+            isMaster,
+            isSystemAdmin,
+            email: user?.email
+        });
+    }
+    return null;
 };
 
 /**

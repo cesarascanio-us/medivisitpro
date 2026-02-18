@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { History, Search, ChevronDown, ChevronUp, Package } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useDemoData } from "@/contexts/MockDataProvider";
 
 interface Assignment {
     id: string;
@@ -41,13 +42,49 @@ export function AssignmentHistory() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [expandedId, setExpandedId] = useState<string | null>(null);
+    const demoData = useDemoData();
 
     useEffect(() => {
         loadAssignments();
-    }, []);
+    }, [demoData]);
 
     const loadAssignments = async () => {
         setLoading(true);
+
+        if (demoData) {
+            console.log("AssignmentHistory: Loading demo assignments");
+            const demoAssignments = [
+                {
+                    id: 'asgn-001',
+                    created_at: new Date(Date.now() - 86400000).toISOString(),
+                    status: 'accepted',
+                    representative_id: 'demo-user-1',
+                    created_by: 'demo-master',
+                    representative_name: 'Representante Uno',
+                    creator_name: 'Gerencia Demo',
+                    items: [
+                        { product_name: 'Atorvastatina 20mg', quantity: 20 },
+                        { product_name: 'Losartán 50mg', quantity: 15 }
+                    ]
+                },
+                {
+                    id: 'asgn-002',
+                    created_at: new Date().toISOString(),
+                    status: 'pending',
+                    representative_id: 'demo-user-2',
+                    created_by: 'demo-master',
+                    representative_name: 'Representante Dos',
+                    creator_name: 'Gerencia Demo',
+                    items: [
+                        { product_name: 'Metformina 850mg', quantity: 30 }
+                    ]
+                }
+            ];
+            setAssignments(demoAssignments);
+            setLoading(false);
+            return;
+        }
+
         try {
             // Get assignments
             const { data: assignmentsData, error } = await supabase

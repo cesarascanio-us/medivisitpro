@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Truck, CheckCircle, PackagePlus, AlertCircle, Loader2 } from "lucide-react";
+import { useDemoData } from "@/contexts/MockDataProvider";
 
 interface IncomingItem {
     id: string;
@@ -29,13 +30,32 @@ export function WarehouseReception({ onReceive }: { onReceive: () => void }) {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [incoming, setIncoming] = useState<IncomingStock[]>([]);
+    const demoData = useDemoData();
 
     useEffect(() => {
-        if (user) loadIncoming();
-    }, [user]);
+        if (user || demoData) loadIncoming();
+    }, [user, demoData]);
 
     const loadIncoming = async () => {
-        if (!user) return;
+        if (!user && !demoData) return;
+
+        if (demoData) {
+            console.log("WarehouseReception: Loading demo data");
+            const demoIncoming: IncomingStock[] = [
+                {
+                    id: 'warehouse-env-001',
+                    type: 'request',
+                    created_at: new Date().toISOString(),
+                    notes: 'Reposición Mensual Almacén Central',
+                    items: [
+                        { id: 'item-1', product_id: 'p1', product_name: 'Atorvastatina 20mg', quantity: 100, batch_number: 'BATCH-2024-001' },
+                        { id: 'item-2', product_id: 'p2', product_name: 'Losartán 50mg', quantity: 80, batch_number: 'BATCH-2024-002' }
+                    ]
+                }
+            ];
+            setIncoming(demoIncoming);
+            return;
+        }
 
         try {
             // 1. Fetch Traditional Assignments
@@ -118,6 +138,21 @@ export function WarehouseReception({ onReceive }: { onReceive: () => void }) {
 
     const handleAccept = async (stock: IncomingStock) => {
         setLoading(true);
+
+        if (demoData) {
+            setTimeout(() => {
+                toast({
+                    title: "Stock Incorporado (Demo)",
+                    description: "En modo demo la recepción es simulada.",
+                    className: "bg-green-50 border-green-200"
+                });
+                setIncoming(prev => prev.filter(i => i.id !== stock.id));
+                setLoading(false);
+                if (onReceive) onReceive();
+            }, 1000);
+            return;
+        }
+
         try {
             if (stock.type === 'assignment') {
                 await supabase.from('sample_assignments').update({ status: 'accepted' }).eq('id', stock.id);

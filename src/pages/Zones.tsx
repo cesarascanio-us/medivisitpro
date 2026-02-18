@@ -12,11 +12,15 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { getAllRegions, getStatesInRegion } from "@/constants/regions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Zone {
     id: string;
     name: string;
     description: string | null;
+    state: string | null;
+    region: string | null;
     created_at: string;
     user_count?: number;
 }
@@ -32,7 +36,9 @@ export default function Zones() {
     const [editingZone, setEditingZone] = useState<Zone | null>(null);
     const [formData, setFormData] = useState({
         name: "",
-        description: ""
+        description: "",
+        state: "",
+        region: ""
     });
 
     useEffect(() => {
@@ -117,6 +123,8 @@ export default function Zones() {
                     .insert({
                         name: formData.name,
                         description: formData.description || null,
+                        state: formData.state || null,
+                        region: formData.region || null,
                         organization_id: organizationId // Set current org
                     });
 
@@ -126,7 +134,7 @@ export default function Zones() {
 
             setDialogOpen(false);
             setEditingZone(null);
-            setFormData({ name: "", description: "" });
+            setFormData({ name: "", description: "", state: "", region: "" });
             loadZones();
         } catch (error) {
             console.error('Error saving zone:', error);
@@ -154,14 +162,16 @@ export default function Zones() {
         setEditingZone(zone);
         setFormData({
             name: zone.name,
-            description: zone.description || ""
+            description: zone.description || "",
+            state: zone.state || "",
+            region: zone.region || ""
         });
         setDialogOpen(true);
     };
 
     const openCreateDialog = () => {
         setEditingZone(null);
-        setFormData({ name: "", description: "" });
+        setFormData({ name: "", description: "", state: "", region: "" });
         setDialogOpen(true);
     };
 
@@ -217,6 +227,38 @@ export default function Zones() {
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Descripción opcional de la zona..."
                                 />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Región</Label>
+                                    <Select
+                                        value={formData.region}
+                                        onValueChange={(v) => setFormData({ ...formData, region: v, state: "" })}
+                                    >
+                                        <SelectTrigger><SelectValue placeholder="Región" /></SelectTrigger>
+                                        <SelectContent>
+                                            {getAllRegions().map(r => (
+                                                <SelectItem key={r} value={r}>{r}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Estado</Label>
+                                    <Select
+                                        value={formData.state}
+                                        onValueChange={(v) => setFormData({ ...formData, state: v })}
+                                        disabled={!formData.region}
+                                    >
+                                        <SelectTrigger><SelectValue placeholder="Estado" /></SelectTrigger>
+                                        <SelectContent>
+                                            {formData.region && getStatesInRegion(formData.region).map(s => (
+                                                <SelectItem key={s} value={s}>{s}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             <Button onClick={handleSubmit} className="w-full btn-medical">
                                 {editingZone ? "Guardar Cambios" : "Crear Zona"}

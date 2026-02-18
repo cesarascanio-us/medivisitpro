@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
     Users, Shield, Building2, BarChart3, Settings, Database,
     Activity, TrendingUp, Calendar, Package, FileText, Bell,
-    Plus, Edit, Trash2, Eye, RefreshCw, Download, Save
+    Plus, Edit, Trash2, Eye, RefreshCw, Download, Save, AlertTriangle, ShieldCheck
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ import RoleManager from "@/pages/Master/Roles/RoleManager";
 import PlanManager from "@/pages/Master/Memberships/PlanManager";
 import ManualPaymentApprover from "@/pages/Master/Memberships/ManualPaymentApprover";
 import TicketList from "@/pages/Master/Tickets/TicketList";
+import LandingEditor from "@/pages/Master/LandingEditor";
 
 interface SystemStats {
     totalUsers: number;
@@ -139,9 +140,10 @@ export default function MasterPanel() {
     const [newUserFirstName, setNewUserFirstName] = useState('');
     const [newUserLastName, setNewUserLastName] = useState('');
     const [isCreatingUser, setIsCreatingUser] = useState(false);
+    const [securityAlerts, setSecurityAlerts] = useState<{ status: string, missing_tables: string[] } | null>(null);
 
-    // Redirect non-master/admin users
-    if (!isMaster && !isAdmin) {
+    // Redirect non-master users (Hardened routing)
+    if (!isMaster) {
         return <Navigate to="/" replace />;
     }
 
@@ -155,6 +157,18 @@ export default function MasterPanel() {
             // Fetch Dynamic Roles
             const { data: rolesData } = await supabase.from('app_roles').select('slug, name').order('name');
             if (rolesData) setAvailableRoles(rolesData);
+
+            // Sentinel Security Check (Automatic Alerts)
+            try {
+                const { data: sentinelData } = await (supabase as any).rpc('check_security_integrity');
+                if (sentinelData && (sentinelData as any).status === 'compromised') {
+                    setSecurityAlerts(sentinelData as any);
+                } else {
+                    setSecurityAlerts(null);
+                }
+            } catch (err) {
+                console.error("Sentinel check failed:", err);
+            }
 
             // Load stats
             const [usersRes, organizationsRes, visitsRes, contactsRes, productsRes, expensesRes, ticketsRes] = await Promise.all([
@@ -182,21 +196,28 @@ export default function MasterPanel() {
 
             setOrganizations(organizationsRes.data || []);
 
-            // Load users with emails from profiles
-            if (usersRes.data) {
-                const usersWithEmails = await Promise.all(usersRes.data.map(async (ur) => {
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('email')
-                        .eq('user_id', ur.user_id)
-                        .maybeSingle();
+            // Load users with emails from profiles - OPTIMIZED BATCH FETCH
+            if (usersRes.data && usersRes.data.length > 0) {
+                const userIds = usersRes.data.map(u => u.user_id);
+
+                // Fetch all profiles involved in one step
+                const { data: profilesData } = await supabase
+                    .from('profiles')
+                    .select('user_id, email')
+                    .in('user_id', userIds);
+
+                const usersWithEmails = usersRes.data.map(ur => {
+                    const profile = profilesData?.find(p => p.user_id === ur.user_id);
                     return {
                         ...ur,
                         email: profile?.email || 'Sin email',
                         role: (ur.role || 'representative') as UserRole
                     };
-                }));
+                });
+
                 setUsers(usersWithEmails);
+            } else {
+                setUsers([]);
             }
         } catch (error) {
             console.error('Error loading data:', error);
@@ -208,6 +229,7 @@ export default function MasterPanel() {
 
     const handleUpdateRole = async (userId: string) => {
         try {
+            // Consistency Note: Profile organization_id is now synced via DB Trigger
             const { error: roleError } = await supabase
                 .from('user_roles')
                 .update({
@@ -218,11 +240,13 @@ export default function MasterPanel() {
 
             if (roleError) throw roleError;
 
-            // Also update profiles for consistency
-            await supabase
-                .from('profiles')
-                .update({ organization_id: newUserOrgIdEdit || null })
-                .eq('user_id', userId);
+            // Log Master Action
+            await (supabase as any).from('master_audit_logs').insert({
+                action_type: 'user_role_change',
+                master_id: user?.id,
+                target_id: userId,
+                details: { new_role: newRole, organization_id: newUserOrgIdEdit }
+            });
 
             toast({ title: "Usuario actualizado", description: "El rol y organización se han cambiado correctamente." });
             setEditingUser(null);
@@ -462,6 +486,34 @@ export default function MasterPanel() {
                 </Button>
             </div>
 
+            {/* Security Alert Banner (Sentinel) */}
+            {securityAlerts && securityAlerts.status === 'compromised' && (
+                <Card className="bg-red-50 border-red-200 border-2 overflow-hidden animate-pulse">
+                    <CardContent className="p-4 flex items-center gap-4">
+                        <div className="bg-red-100 p-2 rounded-full">
+                            <AlertTriangle className="h-6 w-6 text-red-600" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-red-800">ALERTA DE SEGURIDAD: Integridad Comprometida</h3>
+                            <p className="text-sm text-red-700">
+                                Se han detectado fallos en las políticas de RLS o funciones críticas ausentes.
+                                Tablas afectadas: <span className="font-mono font-bold">{securityAlerts.missing_tables.join(', ') || 'Funciones del Sistema'}</span>
+                            </p>
+                        </div>
+                        <Button variant="destructive" size="sm" onClick={() => window.open('/docs/security-fix', '_blank')}>
+                            Ver Reparación
+                        </Button>
+                    </CardContent>
+                </Card>
+            )}
+
+            {!securityAlerts && (
+                <div className="bg-green-50 border-green-100 border p-2 rounded-lg flex items-center gap-2 text-xs text-green-700">
+                    <ShieldCheck className="h-3 w-3" />
+                    Sentinel: Sistema de seguridad verificado y activo.
+                </div>
+            )}
+
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="medical-card">
@@ -520,6 +572,7 @@ export default function MasterPanel() {
                     <TabsTrigger value="memberships">Membresías</TabsTrigger>
                     <TabsTrigger value="manual-payments">Pagos Manuales</TabsTrigger>
                     <TabsTrigger value="support">Soporte</TabsTrigger>
+                    <TabsTrigger value="landing">Landing Page</TabsTrigger>
                     <TabsTrigger value="activity">Actividad</TabsTrigger>
                 </TabsList>
 
@@ -541,6 +594,11 @@ export default function MasterPanel() {
                 {/* Support Tab */}
                 <TabsContent value="support">
                     <TicketList />
+                </TabsContent>
+
+                {/* Landing Tab */}
+                <TabsContent value="landing">
+                    <LandingEditor />
                 </TabsContent>
 
                 {/* Users Tab */}
@@ -661,8 +719,8 @@ export default function MasterPanel() {
                                                         </SelectContent>
                                                     </Select>
                                                 ) : (
-                                                    <span className="text-sm text-muted-foreground whitespace-nowrap">
-                                                        {organizations.find(o => o.id === u.organization_id)?.name || 'Sin Org'}
+                                                    <span className={`text-sm whitespace-nowrap ${u.role === 'master' ? 'text-purple-600 font-medium' : 'text-muted-foreground'}`}>
+                                                        {u.role === 'master' ? 'Acceso Global' : (organizations.find(o => o.id === u.organization_id)?.name || 'Sin Org')}
                                                     </span>
                                                 )}
                                             </TableCell>

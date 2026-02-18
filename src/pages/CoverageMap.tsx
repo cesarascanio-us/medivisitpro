@@ -65,7 +65,7 @@ const getTypeLabel = (type: string) => {
         case 'natural_store': return 'Tienda Naturista';
         case 'drugstore': return 'Droguería';
         case 'hospital': return 'Hospital';
-        case 'clinic': return 'ClÃ­nica';
+        case 'clinic': return 'Clínica';
         default: return type;
     }
 };
@@ -168,29 +168,46 @@ export default function CoverageMap() {
 
                 const { data, error } = await supabase
                     .from('visits')
-                    .select('id, location_lat, location_lng, scheduled_date')
+                    .select(`
+                        id, 
+                        location_lat, 
+                        location_lng, 
+                        scheduled_date,
+                        contacts:contact_id(priority)
+                    `)
                     .gte('scheduled_date', threeMonthsAgo.toISOString())
                     .not('location_lat', 'is', null)
                     .not('location_lng', 'is', null);
 
                 if (error) throw error;
 
-                // Count visits per location for intensity
+                // Priority weights for intelligence heatmap
+                const weights: Record<string, number> = {
+                    'urgent': 4,
+                    'high': 3,
+                    'medium': 2,
+                    'low': 1
+                };
+
+                // Count visits per location for intensity (weighted by contact potential)
                 const locationMap = new Map<string, { lat: number; lng: number; count: number }>();
 
-                (data || []).forEach(visit => {
+                (data || []).forEach((visit: any) => {
                     const lat = visit.location_lat;
                     const lng = visit.location_lng;
+                    const contactPriority = visit.contacts?.priority || 'medium';
+                    const weight = weights[contactPriority.toLowerCase()] || 2;
+
                     if (lat == null || lng == null) return;
 
                     const key = `${lat},${lng}`;
                     if (locationMap.has(key)) {
-                        locationMap.get(key)!.count++;
+                        locationMap.get(key)!.count += weight;
                     } else {
                         locationMap.set(key, {
                             lat: lat,
                             lng: lng,
-                            count: 1
+                            count: weight
                         });
                     }
                 });
@@ -437,10 +454,10 @@ export default function CoverageMap() {
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case 'doctor': return 'MÃ©dico';
+            case 'doctor': return 'Médico';
             case 'pharmacy': return 'Farmacia';
             case 'hospital': return 'Hospital';
-            case 'clinic': return 'ClÃ­nica';
+            case 'clinic': return 'Clínica';
             default: return 'Contacto';
         }
     };
@@ -555,7 +572,7 @@ export default function CoverageMap() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-foreground">Mapa de Cobertura</h1>
-                    <p className="text-muted-foreground">Visualiza la ubicaciÃ³n geogrÃ¡fica de tus contactos</p>
+                    <p className="text-muted-foreground">Visualiza la ubicación geográfica de tus contactos</p>
                 </div>
                 <Button onClick={loadData} variant="outline" disabled={loading}>
                     <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -572,7 +589,7 @@ export default function CoverageMap() {
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{stats.doctors}</p>
-                            <p className="text-xs text-muted-foreground">MÃ©dicos</p>
+                            <p className="text-xs text-muted-foreground">Médicos</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -605,7 +622,7 @@ export default function CoverageMap() {
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{stats.clinics}</p>
-                            <p className="text-xs text-muted-foreground">ClÃ­nicas</p>
+                            <p className="text-xs text-muted-foreground">Clínicas</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -700,7 +717,7 @@ export default function CoverageMap() {
                         <div className="pt-4 border-t space-y-3">
                             <label className="text-sm font-semibold flex items-center">
                                 <Activity className="mr-2 h-4 w-4 text-emerald-500" />
-                                Herramientas de AnÃ¡lisis
+                                Herramientas de Análisis
                             </label>
                             <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
                                 <div className="space-y-0.5">
@@ -770,7 +787,7 @@ export default function CoverageMap() {
                                     {filteredContacts.length === 0 && (
                                         <div className="text-center py-8 text-muted-foreground">
                                             <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                                            <p className="text-sm">No hay contactos con ubicaciÃ³n</p>
+                                            <p className="text-sm">No hay contactos con ubicación</p>
                                             <p className="text-xs mt-1">Agrega coordenadas a tus contactos</p>
                                         </div>
                                     )}

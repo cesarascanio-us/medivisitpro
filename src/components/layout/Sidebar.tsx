@@ -445,19 +445,22 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                 isGroupCollapsed ? "hidden" : "block"
               )}>
                 {group.items.map((item: any) => {
-                  const isActive = location.pathname === item.href;
+                  // Master users always use root routes (real data) even if in Demo Org
+                  const itemHref = (isMaster || isSystemAdmin) ? item.href : (isDemo ? `/demo${item.href}` : item.href);
+                  const isActive = location.pathname === itemHref;
                   return (
                     <NavLink
                       key={item.name}
-                      to={item.href}
+                      to={itemHref}
                       title={!isExpanded ? item.name : undefined}
                       onClick={(e) => {
                         // FIX: When on coverage-map, Leaflet corrupts React Router state
                         // Use hard navigation to ensure proper page transition
-                        if (location.pathname === '/coverage-map' && item.href !== '/coverage-map') {
+                        const targetPath = itemHref;
+                        if (location.pathname.includes('/coverage-map') && !targetPath.includes('/coverage-map')) {
                           e.preventDefault();
-                          console.log('[Sidebar] Hard navigation from coverage-map to:', item.href);
-                          window.location.href = item.href;
+                          console.log('[Sidebar] Hard navigation from coverage-map to:', targetPath);
+                          window.location.href = targetPath;
                         }
                       }}
                       className={cn(

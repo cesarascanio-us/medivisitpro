@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PackagePlus, User, Search, Trash2, Send } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoData } from "@/contexts/MockDataProvider";
 
 interface Product {
     id: string;
@@ -39,15 +40,51 @@ export function StockAssignmentManager() {
     const [quantity, setQuantity] = useState<number>(0);
     const [items, setItems] = useState<AssignmentItem[]>([]);
     const [loading, setLoading] = useState(false);
+    const demoData = useDemoData();
 
     // Check if user can assign to supervisors (only master, admin, manager)
     const canAssignToSupervisors = isMaster || isAdmin || isManager;
 
     useEffect(() => {
         loadData();
-    }, [role]);
+    }, [role, demoData]);
 
     const loadData = async () => {
+        if (demoData) {
+            console.log("StockAssignmentManager: Loading demo data");
+            const demoReps = [
+                {
+                    user_id: 'demo-user-1',
+                    first_name: 'Representante',
+                    last_name: 'Uno',
+                    email: 'rep1@demo.com',
+                    role: 'representative'
+                },
+                {
+                    user_id: 'demo-user-2',
+                    first_name: 'Representante',
+                    last_name: 'Dos',
+                    email: 'rep2@demo.com',
+                    role: 'representative'
+                },
+                {
+                    user_id: 'demo-user-3',
+                    first_name: 'Supervisor',
+                    last_name: 'Demo',
+                    email: 'supervisor@demo.com',
+                    role: 'supervisor'
+                }
+            ];
+            setReps(demoReps);
+
+            const demoProducts = (demoData.products || []).map((p: any) => ({
+                id: p.id,
+                name: p.name
+            }));
+            setProducts(demoProducts);
+            return;
+        }
+
         // Determine which roles to load based on current user's role
         const rolesToLoad = canAssignToSupervisors
             ? ['representative', 'supervisor']
@@ -128,6 +165,19 @@ export function StockAssignmentManager() {
     const handleSubmit = async () => {
         if (!user || !selectedRep || items.length === 0) return;
         setLoading(true);
+
+        if (demoData) {
+            console.log("StockAssignmentManager: Handling demo submission");
+            toast({
+                title: "Asignación Enviada (Demo)",
+                description: "En modo demo las asignaciones son simuladas y no se guardan en BD.",
+                className: "bg-blue-50 border-blue-200"
+            });
+            setItems([]);
+            setSelectedRep("");
+            setLoading(false);
+            return;
+        }
 
         try {
             // 1. Create Assignment Header

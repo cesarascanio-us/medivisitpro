@@ -54,9 +54,20 @@ hc2 UUID;
 hc3 UUID;
 hc4 UUID;
 hc5 UUID;
-BEGIN -- Step 1: Get the demo user ID (will be created when user first logs in)
--- For now, we'll use a placeholder and the data will be linked when user logs in
--- Actually, let's check if the user exists in auth.users first
+BEGIN -- Step 1: Get the demo user ID
+SELECT id INTO demo_user_id
+FROM auth.users
+WHERE email = 'demo.medivisitpro@gmail.com'
+LIMIT 1;
+IF demo_user_id IS NULL THEN -- Fallback to first available user to avoid FK errors
+SELECT id INTO demo_user_id
+FROM auth.users
+LIMIT 1;
+END IF;
+IF demo_user_id IS NULL THEN RAISE EXCEPTION 'No se encontro ningun usuario en auth.users. Por favor crea un usuario primero.';
+END IF;
+RAISE NOTICE 'Using user_id: %',
+demo_user_id;
 RAISE NOTICE '========================================';
 RAISE NOTICE 'Starting MediVisitPro Demo Seed';
 RAISE NOTICE '========================================';
@@ -68,7 +79,7 @@ INSERT INTO products (
         description,
         category,
         presentation,
-        active_ingredient,
+        active_ingredients,
         organization_id,
         created_at
     )
@@ -78,7 +89,7 @@ VALUES (
         'Tratamiento para hipercolesterolemia y prevención cardiovascular',
         'Cardiovascular',
         'Tabletas',
-        'Atorvastatina',
+        ARRAY ['Atorvastatina'],
         demo_org_id,
         NOW() - INTERVAL '90 days'
     ),
@@ -88,7 +99,7 @@ VALUES (
         'Antihipertensivo antagonista de receptores AT1',
         'Cardiovascular',
         'Tabletas',
-        'Losartán',
+        ARRAY ['Losartán'],
         demo_org_id,
         NOW() - INTERVAL '85 days'
     ),
@@ -98,7 +109,7 @@ VALUES (
         'Antibiótico betalactámico de amplio espectro',
         'Antibióticos',
         'Cápsulas',
-        'Amoxicilina',
+        ARRAY ['Amoxicilina'],
         demo_org_id,
         NOW() - INTERVAL '80 days'
     ),
@@ -108,7 +119,7 @@ VALUES (
         'Antibiótico macrólido para infecciones respiratorias',
         'Antibióticos',
         'Tabletas',
-        'Azitromicina',
+        ARRAY ['Azitromicina'],
         demo_org_id,
         NOW() - INTERVAL '75 days'
     ),
@@ -118,7 +129,7 @@ VALUES (
         'Antiinflamatorio no esteroideo (AINE)',
         'Analgésicos',
         'Tabletas',
-        'Ibuprofeno',
+        ARRAY ['Ibuprofeno'],
         demo_org_id,
         NOW() - INTERVAL '70 days'
     ),
@@ -128,7 +139,7 @@ VALUES (
         'Antiinflamatorio tópico para dolor muscular',
         'Analgésicos',
         'Gel tópico 50g',
-        'Diclofenaco',
+        ARRAY ['Diclofenaco'],
         demo_org_id,
         NOW() - INTERVAL '65 days'
     ),
@@ -138,7 +149,7 @@ VALUES (
         'Antidiabético oral para diabetes tipo 2',
         'Antidiabéticos',
         'Tabletas',
-        'Metformina',
+        ARRAY ['Metformina'],
         demo_org_id,
         NOW() - INTERVAL '60 days'
     ),
@@ -148,7 +159,7 @@ VALUES (
         'Hipoglucemiante oral sulfonilurea',
         'Antidiabéticos',
         'Tabletas',
-        'Glibenclamida',
+        ARRAY ['Glibenclamida'],
         demo_org_id,
         NOW() - INTERVAL '55 days'
     ),
@@ -158,7 +169,7 @@ VALUES (
         'Inhibidor de bomba de protones para úlceras',
         'Gastrointestinal',
         'Cápsulas',
-        'Omeprazol',
+        ARRAY ['Omeprazol'],
         demo_org_id,
         NOW() - INTERVAL '50 days'
     ),
@@ -168,7 +179,7 @@ VALUES (
         'Antagonista H2 para acidez estomacal',
         'Gastrointestinal',
         'Tabletas',
-        'Ranitidina',
+        ARRAY ['Ranitidina'],
         demo_org_id,
         NOW() - INTERVAL '45 days'
     ),
@@ -178,7 +189,7 @@ VALUES (
         'Broncodilatador para asma y EPOC',
         'Respiratorio',
         'Inhalador 200 dosis',
-        'Salbutamol',
+        ARRAY ['Salbutamol'],
         demo_org_id,
         NOW() - INTERVAL '40 days'
     ),
@@ -188,67 +199,79 @@ VALUES (
         'Antihistamínico de segunda generación',
         'Respiratorio',
         'Tabletas',
-        'Loratadina',
+        ARRAY ['Loratadina'],
         demo_org_id,
         NOW() - INTERVAL '35 days'
-    )
-RETURNING id INTO product_atorva;
+    );
 -- Get product IDs for later use
 SELECT id INTO product_atorva
 FROM products
 WHERE name = 'Atorvastatina 20mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_losartan
 FROM products
 WHERE name = 'Losartán 50mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_amoxi
 FROM products
 WHERE name = 'Amoxicilina 500mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_azitro
 FROM products
 WHERE name = 'Azitromicina 500mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_ibuprofen
 FROM products
 WHERE name = 'Ibuprofeno 400mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_diclo
 FROM products
 WHERE name = 'Diclofenaco Gel 1%'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_metformin
 FROM products
 WHERE name = 'Metformina 850mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_gliben
 FROM products
 WHERE name = 'Glibenclamida 5mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_omepra
 FROM products
 WHERE name = 'Omeprazol 20mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_ranitidina
 FROM products
 WHERE name = 'Ranitidina 150mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_salbutamol
 FROM products
 WHERE name = 'Salbutamol Inhalador'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO product_loratadina
 FROM products
 WHERE name = 'Loratadina 10mg'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 RAISE NOTICE '✓ Created 12 pharmaceutical products';
 -- Step 3: Create Health Centers (5 impressive facilities)
 RAISE NOTICE 'Creating Health Centers...';
 INSERT INTO health_centers (
         id,
+        user_id,
         name,
-        type,
+        facility_type,
         address,
         city,
         state,
@@ -258,6 +281,7 @@ INSERT INTO health_centers (
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         'Hospital General de México',
         'hospital',
         'Dr. Balmis No. 148, Col. Doctores',
@@ -269,6 +293,7 @@ VALUES (
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         'IMSS Centro Médico Nacional',
         'hospital',
         'Av. Cuauhtémoc 330, Col. Doctores',
@@ -280,6 +305,7 @@ VALUES (
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         'ISSSTE Hospital Regional 1º de Octubre',
         'hospital',
         'Av. Instituto Politécnico Nacional 1669',
@@ -291,6 +317,7 @@ VALUES (
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         'Clínica Santa Fe',
         'clinic',
         'Av. Vasco de Quiroga 4001, Santa Fe',
@@ -302,6 +329,7 @@ VALUES (
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         'Centro Médico ABC',
         'clinic',
         'Av. Carlos Graef Fernández 154, Santa Fe',
@@ -310,563 +338,450 @@ VALUES (
         '55-1103-1600',
         demo_org_id,
         NOW() - INTERVAL '160 days'
-    )
-RETURNING id INTO hc1;
+    );
 SELECT id INTO hc1
 FROM health_centers
 WHERE name = 'Hospital General de México'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO hc2
 FROM health_centers
 WHERE name = 'IMSS Centro Médico Nacional'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO hc3
 FROM health_centers
 WHERE name = 'ISSSTE Hospital Regional 1º de Octubre'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO hc4
 FROM health_centers
 WHERE name = 'Clínica Santa Fe'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO hc5
 FROM health_centers
 WHERE name = 'Centro Médico ABC'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 RAISE NOTICE '✓ Created 5 health centers';
 -- Step 4: Create Doctor Contacts (15 impressive doctors)
-RAISE NOTICE 'Creating Doctor Contacts...';
+RAISE NOTICE 'Creating Doctors (in correct table)...';
 -- Cardiologists (3)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
+        -- contact_type, -- Removed: implicit in table
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        -- Formerly priority
+        observations,
+        -- Formerly notes
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Carlos Mendoza Ruiz',
-        'doctor',
         'Cardiología',
         '55-1234-5678',
         'cmendoza@hospitalgral.mx',
         'Consultorio 405, Hospital General',
         'Ciudad de México',
         'CDMX',
-        'A',
-        'active',
+        'Alto',
+        -- Formerly high
         'Especialista en hipertensión. Muy receptivo a nuevos tratamientos cardiovasculares.',
         NOW() - INTERVAL '120 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dra. Ana Patricia Torres',
-        'doctor',
         'Cardiología',
         '55-2345-6789',
         'aptorres@imss.gob.mx',
         'Consultorio 302, IMSS CMN',
         'Ciudad de México',
         'CDMX',
-        'A',
-        'active',
+        'Alto',
+        -- Formerly high
         'Jefa de cardiología. Interesada en estatinas de nueva generación.',
         NOW() - INTERVAL '115 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Roberto Sánchez Mora',
-        'doctor',
         'Cardiología',
         '55-3456-7890',
         'rsanchez@clinicasantafe.com',
         'Torre Médica, Piso 8',
         'Ciudad de México',
         'CDMX',
-        'B',
-        'active',
+        'Medio',
+        -- Formerly medium
         'Consulta privada. Prescribe frecuentemente antihipertensivos.',
         NOW() - INTERVAL '110 days'
     );
 -- Pediatricians (2)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        observations,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dra. Laura Martínez Campos',
-        'doctor',
         'Pediatría',
         '55-4567-8901',
         'lmartinez@pediatriahgm.mx',
         'Área de Pediatría, HGM',
         'Ciudad de México',
         'CDMX',
-        'A',
-        'active',
+        'Alto',
         'Especialista en infecciones respiratorias infantiles.',
         NOW() - INTERVAL '105 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Miguel Ángel Ramos',
-        'doctor',
         'Pediatría',
         '55-5678-9012',
         'maramos@outlook.com',
         'Consultorio Privado, Col. Roma',
         'Ciudad de México',
         'CDMX',
-        'B',
-        'active',
+        'Medio',
         'Consulta privada pediátrica. Prescribe antibióticos frecuentemente.',
         NOW() - INTERVAL '100 days'
     );
 -- Gynecologists (2)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        observations,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
+        -- Fixed typo in original seed (was demo_user_id)
         'Dra. Patricia Hernández López',
-        'doctor',
         'Ginecología',
         '55-6789-0123',
         'phernandez@issste.gob.mx',
         'Ginecología, ISSSTE Regional',
         'Ciudad de México',
         'CDMX',
-        'A',
-        'active',
+        'Alto',
         'Especialista en salud reproductiva.',
         NOW() - INTERVAL '95 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Fernando Ortiz Delgado',
-        'doctor',
         'Ginecología',
         '55-7890-1234',
         'fortiz@abc.org.mx',
         'Centro Médico ABC',
         'Ciudad de México',
         'CDMX',
-        'A',
-        'active',
+        'Alto',
         'Ginecólogo obstetra de alto prestigio.',
         NOW() - INTERVAL '90 days'
     );
 -- General Medicine (3)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        observations,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
+        -- Fixed typo in original seed
         'Dr. José Luis Ramírez',
-        'doctor',
         'Medicina General',
         '55-8901-2345',
         'jlramirez@gmail.com',
         'Consultorio Col. Condesa',
         'Ciudad de México',
         'CDMX',
-        'B',
-        'active',
+        'Medio',
         'Médico general con amplia base de pacientes.',
         NOW() - INTERVAL '85 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dra. María Elena Castro',
-        'doctor',
         'Medicina General',
         '55-9012-3456',
         'mecastro@yahoo.com',
         'Consultorio Col. Del Valle',
         'Ciudad de México',
         'CDMX',
-        'B',
-        'active',
+        'Medio',
         'Medicina familiar. Muy organizada en su práctica.',
         NOW() - INTERVAL '80 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Alberto Gómez Vega',
-        'doctor',
         'Medicina General',
         '55-0123-4567',
         'agomez@medico.com',
         'Consultorio Col. Polanco',
         'Ciudad de México',
         'CDMX',
-        'C',
-        'active',
+        'Bajo',
+        -- Formerly low
         'Consulta general ambulatoria.',
         NOW() - INTERVAL '75 days'
     );
 -- Traumatologists (2)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        observations,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Ricardo Flores Mendoza',
-        'doctor',
         'Traumatología',
         '55-1111-2222',
         'rflores@traumato.mx',
         'Hospital de Traumatología',
         'Ciudad de México',
         'CDMX',
-        'A',
-        'active',
+        'Alto',
         'Cirujano traumatólogo. Prescribe antiinflamatorios frecuentemente.',
         NOW() - INTERVAL '70 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dra. Sandra Morales Ríos',
-        'doctor',
         'Traumatología',
         '55-2222-3333',
         'smorales@ortopedia.com',
         'Clínica Ortopédica',
         'Ciudad de México',
         'CDMX',
-        'B',
-        'active',
+        'Medio',
         'Especialista en deportología.',
         NOW() - INTERVAL '65 days'
     );
 -- Dermatologists (2)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        observations,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dra. Gabriela Rojas Silva',
-        'doctor',
         'Dermatología',
         '55-3333-4444',
         'grojas@derma.mx',
         'Clínica Dermatológica',
         'Ciudad de México',
         'CDMX',
-        'B',
-        'active',
+        'Medio',
         'Dermatóloga clínica y estética.',
         NOW() - INTERVAL '60 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Eduardo Vargas León',
-        'doctor',
         'Dermatología',
         '55-4444-5555',
         'evargas@skincare.com',
         'Centro Dermatológico',
         'Ciudad de México',
         'CDMX',
-        'C',
-        'active',
+        'Bajo',
         'Dermatología general.',
         NOW() - INTERVAL '55 days'
     );
 -- Pending first contact (1)
-INSERT INTO contacts (
+INSERT INTO doctors (
         id,
+        user_id,
         organization_id,
         name,
-        contact_type,
         specialty,
         phone,
         email,
         address,
         city,
         state,
-        value_tier,
-        status,
-        notes,
+        potential,
+        observations,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Dr. Antonio Cervantes Palacios',
-        'doctor',
         'Medicina Interna',
         '55-5555-6666',
         'acervantes@hospital.mx',
         'Hospital Regional',
         'Tlalnepantla',
         'Estado de México',
-        'B',
-        'pending',
+        'Medio',
         'Nuevo contacto. Pendiente primera visita.',
         NOW() - INTERVAL '10 days'
     );
 RAISE NOTICE '✓ Created 15 doctor contacts';
--- Get doctor IDs for visits
+-- Get doctor IDs for visits (from DOCTORS table now)
 SELECT id INTO doc_cardio1
-FROM contacts
+FROM doctors
 WHERE name = 'Dr. Carlos Mendoza Ruiz'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO doc_cardio2
-FROM contacts
+FROM doctors
 WHERE name = 'Dra. Ana Patricia Torres'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO doc_cardio3
-FROM contacts
+FROM doctors
 WHERE name = 'Dr. Roberto Sánchez Mora'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO doc_pedia1
-FROM contacts
+FROM doctors
 WHERE name = 'Dra. Laura Martínez Campos'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO doc_pedia2
-FROM contacts
+FROM doctors
 WHERE name = 'Dr. Miguel Ángel Ramos'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO doc_general1
-FROM contacts
+FROM doctors
 WHERE name = 'Dr. José Luis Ramírez'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 SELECT id INTO doc_general2
-FROM contacts
+FROM doctors
 WHERE name = 'Dra. María Elena Castro'
-    AND organization_id = demo_org_id;
+    AND organization_id = demo_org_id
+LIMIT 1;
 -- Step 5: Create Pharmacies (8 realistic chains and independents)
 RAISE NOTICE 'Creating Pharmacies...';
 INSERT INTO pharmacies (
         id,
+        user_id,
         organization_id,
         name,
-        chain_name,
         address,
         city,
         state,
         phone,
-        manager_name,
+        contact_name,
         status,
         notes,
         created_at
     )
 VALUES (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Farmacia del Ahorro Centro',
-        'Farmacias del Ahorro',
         'Av. Juárez 102, Centro',
         'Ciudad de México',
         'CDMX',
         '55-1111-0000',
         'Lic. María Rodríguez',
-        'active',
+        'Activo',
         'Sucursal con alto volumen de ventas.',
         NOW() - INTERVAL '200 days'
     ),
     (
         gen_random_uuid(),
+        demo_user_id,
         demo_org_id,
         'Farmacia del Ahorro Polanco',
-        'Farmacias del Ahorro',
-        'Av. Presidente Masaryk 201',
-        'Ciudad de México',
-        'CDMX',
-        '55-1111-0001',
-        'Lic. Roberto Pérez',
-        'active',
-        'Zona de alto poder adquisitivo.',
-        NOW() - INTERVAL '195 days'
-    ),
-    (
-        gen_random_uuid(),
-        demo_org_id,
-        'Farmacia Guadalajara Roma',
-        'Farmacias Guadalajara',
-        'Av. Insurgentes Sur 300, Roma',
-        'Ciudad de México',
-        'CDMX',
-        '55-2222-0000',
-        'Lic. Carmen Soto',
-        'active',
-        'Sucursal estratégica en zona residencial.',
-        NOW() - INTERVAL '190 days'
-    ),
-    (
-        gen_random_uuid(),
-        demo_org_id,
-        'Farmacia Guadalajara Satélite',
-        'Farmacias Guadalajara',
-        'Circuito Centro Comercial',
-        'Naucalpan',
-        'Estado de México',
-        '55-2222-0001',
-        'Lic. Jorge Mendoza',
-        'active',
-        'Alto tráfico en centro comercial.',
-        NOW() - INTERVAL '185 days'
-    ),
-    (
-        gen_random_uuid(),
-        demo_org_id,
-        'Farmacia San Pablo',
-        'Farmacia San Pablo',
-        'Av. Universidad 1500',
-        'Ciudad de México',
-        'CDMX',
-        '55-3333-0000',
-        'Lic. Ana López',
-        'active',
-        'Cadena regional competitiva.',
-        NOW() - INTERVAL '180 days'
-    ),
-    (
-        gen_random_uuid(),
-        demo_org_id,
-        'Farmacia Independiente La Salud',
-        NULL,
-        'Calle Morelos 45, Col. Centro',
-        'Toluca',
-        'Estado de México',
-        '722-123-4567',
-        'Q.F.B. Luis García',
-        'active',
-        'Farmacia familiar tradicional.',
-        NOW() - INTERVAL '175 days'
-    ),
-    (
-        gen_random_uuid(),
-        demo_org_id,
-        'Farmacia Cruz Verde',
-        NULL,
-        'Av. Reforma 890',
-        'Ciudad de México',
-        'CDMX',
-        '55-4444-0000',
-        'Q.F.B. Patricia Ruiz',
-        'active',
-        'Farmacia independiente bien establecida.',
-        NOW() - INTERVAL '170 days'
-    ),
-    (
-        gen_random_uuid(),
-        demo_org_id,
-        'Farmacia Especializada del Norte',
-        NULL,
-        'Blvd. Manuel Ávila Camacho 1234',
-        'Tlalnepantla',
-        'Estado de México',
-        '55-5555-0000',
-        'Q.F.B. Fernando Castro',
-        'active',
-        'Especializada en medicamentos controlados.',
-        NOW() - INTERVAL '165 days'
-    );
-RAISE NOTICE '✓ Created 8 pharmacies';
--- NOTE: We cannot create visits yet because we don't have the demo_user_id
--- Visits will need to be created after the user first logs in
--- For now, we'll leave a comment about this limitation
-RAISE NOTICE '';
-RAISE NOTICE '========================================';
-RAISE NOTICE '✓ Demo seed completed successfully!';
-RAISE NOTICE '';
-RAISE NOTICE 'Created:';
-RAISE NOTICE '  - 12 pharmaceutical products';
-RAISE NOTICE '  - 5 health centers';
-RAISE NOTICE '  - 15 doctor contacts';
-RAISE NOTICE '  - 8 pharmacies';
-RAISE NOTICE '';
-RAISE NOTICE 'NOTE: Visits, inventory, and objectives will be created';
-RAISE NOTICE 'automatically when the demo user first logs in.';
-RAISE NOTICE '========================================';
-END $$;

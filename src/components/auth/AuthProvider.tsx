@@ -213,8 +213,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             console.log('Datos de rol obtenidos:', roleData);
 
-            let finalRole = roleData?.role as UserRole || 'representative';
+            // [FAIL-SAFE] Explicit check for System Owner to prevent accidental lockouts
+            const isOwner = email.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
+
+            let finalRole = (roleData?.role as UserRole) || (isOwner ? 'master' : 'representative');
             let finalOrgId = roleData?.organization_id || profileData?.organization_id || null;
+
+            // If it's the owner but role record is missing, force master
+            if (isOwner && finalRole !== 'master') {
+                finalRole = 'master';
+            }
 
             const combinedProfile: UserProfile = {
                 id: userId,
@@ -306,7 +314,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     // --- Derived Permissions ---
-    const isMaster = role === 'master';
+    // [STRICT] Resilience for System Owner
+    const isOwner = user?.email?.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
+    const isMaster = isOwner || role === 'master' || profile?.is_master === true || originalRole === 'master';
     const isAdmin = role === 'admin';
     const isManager = role === 'manager' || role === 'store_manager';
     const isChief = isManager || role === 'chief';
@@ -336,7 +346,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hasPermission,
         signOut,
         isAuthenticated: !!user,
-        isDemo: profile?.organization_id === 'd3300000-0000-0000-0000-000000000001',
+        // Masters are NEVER in demo mode for navigation purposes
+        isDemo: !isMaster && profile?.organization_id === 'd3300000-0000-0000-0000-000000000001',
         isMaster,
         isAdmin,
         isManager,
@@ -374,7 +385,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Audit Mode
         isAuditMode: !!auditOrgId,
-        isSystemAdmin: profile?.role === 'master' || profile?.is_master === true || originalRole === 'master',
+        isSystemAdmin: isOwner || profile?.role === 'master' || profile?.is_master === true || originalRole === 'master',
         enterAuditMode,
         exitAuditMode,
         organizationName,

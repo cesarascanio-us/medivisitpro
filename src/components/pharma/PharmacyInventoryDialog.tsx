@@ -22,6 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useDemoData } from "@/contexts/MockDataProvider";
 import * as XLSX from 'xlsx';
 
 interface PharmacyInventoryDialogProps {
@@ -52,6 +53,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
     const [newPvp, setNewPvp] = useState("0");
     const [saving, setSaving] = useState(false);
     const { toast } = useToast();
+    const demoData = useDemoData();
 
     useEffect(() => {
         if (open && pharmacyId) {
@@ -63,6 +65,15 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
     const loadStock = async () => {
         try {
             setLoading(true);
+
+            if (demoData) {
+                console.log("PharmacyInventory: Using mock demo data");
+                // In demo mode, we use mock inventory if available
+                const mockStock = (demoData.pharmacyInventory || [])
+                    .filter((s: any) => s.pharmacy_id === pharmacyId);
+                setStock(mockStock);
+                return;
+            }
 
             // 1. Fetch all active products
             const { data: allProducts, error: prodError } = await (supabase as any)
@@ -140,6 +151,12 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
             return;
         }
 
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden guardar registros de stock." });
+            setIsAdding(false);
+            return;
+        }
+
         try {
             setSaving(true);
 
@@ -209,6 +226,11 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
 
     const handleDeleteStock = async (auditId: string) => {
         if (!confirm("¿Está seguro de eliminar este registro de stock?")) return;
+
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden eliminar registros." });
+            return;
+        }
 
         try {
             setLoading(true);

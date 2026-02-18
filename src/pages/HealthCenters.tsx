@@ -73,7 +73,7 @@ export default function HealthCenters() {
 
   useEffect(() => {
     if (user) loadHealthCenters();
-  }, [user, adminFilters, organizationId]);
+  }, [user, adminFilters, organizationId, demoData]);
 
   const loadHealthCenters = async () => {
     try {
@@ -130,6 +130,11 @@ export default function HealthCenters() {
   const handleSync = async () => {
     try {
       setSyncing(true);
+      if (demoData) {
+        toast({ title: "Sincronizado (Demo)", description: "En modo demo no se pueden crear registros nuevos." });
+        return;
+      }
+
       // 1. Get all doctors with a health center assigned
       const { data: doctors, error: docError } = await supabase
         .from('doctors')
@@ -213,6 +218,14 @@ export default function HealthCenters() {
     setSelectedCenterForDirectory(center);
     setDirectoryOpen(true);
     setCenterDoctors([]);
+
+    if (demoData) {
+      console.log("HealthCenter Directory: Using mock demo data");
+      // Find doctors in demoData that belong to this health center
+      const mockDoctors = (demoData.doctors || []).filter((d: any) => d.health_center === center.name);
+      setCenterDoctors(mockDoctors);
+      return;
+    }
 
     try {
       const { data, error } = await supabase

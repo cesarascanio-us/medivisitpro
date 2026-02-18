@@ -146,7 +146,7 @@ export default function Doctors() {
 
     useEffect(() => {
         if (user) loadDoctors();
-    }, [user, adminFilters]); // Reload when filters change
+    }, [user, adminFilters, organizationId, demoData]); // Reload when filters or context change
 
     const loadDoctors = async () => {
         try {
@@ -445,6 +445,12 @@ export default function Doctors() {
     const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
+
+        if (demoData) {
+            toast({ title: "Acción no disponible (Demo)", description: "En modo demo no se pueden importar registros." });
+            if (fileInputRef.current) fileInputRef.current.value = "";
+            return;
+        }
 
         setImporting(true);
 

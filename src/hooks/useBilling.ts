@@ -51,8 +51,8 @@ export function useBilling() {
             setLoading(true);
 
             // Load plans from subscription_plans (Unified System)
-            const { data: plansData, error: plansError } = await (supabase
-                .from('subscription_plans') as any)
+            const { data: plansData, error: plansError } = await (supabase as any)
+                .from('subscription_plans')
                 .select('*')
                 .eq('active', true);
 
@@ -84,22 +84,22 @@ export function useBilling() {
             });
 
             // Load current subscription
-            const { data: subData } = await (supabase
-                .from('subscriptions') as any)
+            const { data: subData } = await (supabase as any)
+                .from('subscriptions')
                 .select('*, subscription_plans(*)')
                 .eq('organization_id', organizationId)
                 .maybeSingle();
 
             // Load transaction history
-            const { data: transData } = await (supabase
-                .from('billing_transactions') as any)
+            const { data: transData } = await (supabase as any)
+                .from('billing_transactions')
                 .select('*')
                 .eq('organization_id', organizationId)
                 .order('created_at', { ascending: false });
 
             // Load pending manual reports
-            const { data: manualReports } = await (supabase
-                .from('payment_reports') as any)
+            const { data: manualReports } = await (supabase as any)
+                .from('payment_reports')
                 .select('*')
                 .eq('organization_id', organizationId)
                 .order('created_at', { ascending: false });
@@ -192,7 +192,7 @@ export function useBilling() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Usuario no autenticado');
 
-            const { error } = await (supabase.from('payment_reports') as any).insert({
+            const { error } = await (supabase as any).from('payment_reports').insert({
                 user_id: user.id,
                 organization_id: organizationId,
                 plan_id: reportData.planId,

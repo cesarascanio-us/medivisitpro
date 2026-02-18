@@ -22,41 +22,19 @@ import { trackEvent } from '@/lib/analytics';
 import { PricingSection } from '@/components/landing/PricingSection';
 import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
 import { OnlineStatusIndicator } from '@/components/common/OnlineStatusIndicator';
+import { useLandingContent } from '@/hooks/useLandingContent';
 
-const features = [
-  {
-    icon: Calendar,
-    title: 'Recupera 10+ Horas Semanales',
-    description: 'Olvídate de organizar la agenda manualmente. Nuestro algoritmo optimiza tus rutas y visitas automáticamente.'
-  },
-  {
-    icon: Users,
-    title: 'Relaciones que Generan Ventas',
-    description: 'Historial detallado de cada médico y farmacia. Llega a la visita sabiendo exactamente qué necesitan.'
-  },
-  {
-    icon: BarChart3,
-    title: 'Tus Métricas, Tu Ascenso',
-    description: 'Demuestra tu rendimiento con reportes automáticos. KPIs claros para negociar tus comisiones.'
-  },
-  {
-    icon: Package,
-    title: 'Cero Muestras Perdidas',
-    description: 'Control total de tu inventario promocional. Nunca más te quedes sin material para un médico clave.'
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Funciona Offline',
-    description: '¿Sin señal en el hospital? No hay problema. Tu información está siempre disponible y se sincroniza después.'
-  },
-  {
-    icon: Smartphone,
-    title: 'Oficina en tu Bolsillo',
-    description: 'Toda la potencia de un CRM corporativo, diseñado para la pantalla de tu móvil.'
-  }
+const IconMap: Record<string, any> = {
+  Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Rocket, Stethoscope
+};
+
+// This is now the fallback if DB fails
+const fallbackFeatures = [
+  { icon: Calendar, title: 'Recupera 10+ Horas Semanales', description: '...' },
+  // others...
 ];
 
-const schemaData = {
+const schemaData = (content: any) => ({
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MediVisit Pro",
@@ -72,13 +50,14 @@ const schemaData = {
     "ratingValue": "4.9",
     "ratingCount": "520"
   },
-  "description": "Plataforma integral para la gestión de visitas médicas. Optimiza rutas, controla inventario y mejora el rendimiento comercial.",
-  "featureList": "Agenda Inteligente, CRM Médico, Control de Muestras, Reportes Offline"
-};
+  "description": content.hero.subtitle,
+  "featureList": content.features.items.map((i: any) => i.title).join(', ')
+});
 
 export default function LandingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { content } = useLandingContent();
 
   useEffect(() => {
     trackEvent('view_landing');
@@ -112,14 +91,14 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-x-hidden">
       <SEO
         title="MediVisit Pro - Aumenta tus Prescripciones Médicas"
-        description="El arma secreta de los visitadores médicos top. Gestiona territorio, muestras y objetivos en una sola app. Pruébalo gratis hoy."
+        description={content.hero.subtitle}
         keywords="visitador médico app, crm visita médica, gestión farmacéutica, control muestras médicas, software visitadores"
         canonical="https://medivisitpro.com/"
       />
 
       {/* Schema.org Structured Data */}
       <script type="application/ld+json">
-        {JSON.stringify(schemaData)}
+        {JSON.stringify(schemaData(content))}
       </script>
 
       {/* Header */}
@@ -166,19 +145,18 @@ export default function LandingPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                Demo Gratuita Disponible
+                {content.hero.badge}
               </div>
 
               <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-                Domina tu <br />
+                {content.hero.title_part1} <br />
                 <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent italic">
-                  Territorio.
+                  {content.hero.title_highlight}
                 </span>
               </h1>
 
               <p className="text-xl sm:text-2xl text-slate-300 max-w-2xl lg:mx-0 mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-                Deja de perder tiempo en reportes y enfócate en lo que importa: <strong>las relaciones con tus médicos</strong>.
-                La única herramienta diseñada por y para visitadores de alto rendimiento.
+                {content.hero.subtitle}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
@@ -188,9 +166,9 @@ export default function LandingPage() {
                   className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 px-10 h-16 text-lg font-bold rounded-xl"
                 >
                   <Rocket className="mr-3 h-6 w-6" />
-                  Probar Demo Gratis
+                  {content.hero.cta_primary}
                 </Button>
-                <div className="text-slate-500 text-sm font-medium">Únete a +500 visitadores</div>
+                <div className="text-slate-500 text-sm font-medium">{content.hero.cta_secondary}</div>
               </div>
 
               {/* Trust Indicators */}
@@ -210,7 +188,7 @@ export default function LandingPage() {
               {/* Floating 3D Device */}
               <div className="relative z-10 w-full max-w-[500px] mx-auto animate-float">
                 <img
-                  src="/img/landing/hero-3d.png"
+                  src={content.hero.hero_image}
                   alt="MediVisitPro interface"
                   className="w-full h-auto drop-shadow-[0_35px_35px_rgba(16,185,129,0.3)]"
                 />
@@ -227,12 +205,7 @@ export default function LandingPage() {
 
           {/* Social Proof Numbers */}
           <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-slate-800/50 pt-12">
-            {[
-              { value: '+30%', label: 'Más Visitas/Día' },
-              { value: '100%', label: 'Control de Stock' },
-              { value: '0', label: 'Errores de Reporte' },
-              { value: '4.9/5', label: 'Valoración Usuarios' }
-            ].map((stat, i) => (
+            {content.stats.map((stat, i) => (
               <div key={i} className="text-center group hover:bg-slate-800/20 p-4 rounded-xl transition-colors">
                 <div className="text-3xl sm:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
                   {stat.value}
@@ -315,50 +288,52 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-              Tu Ventaja Competitiva
+              {content.features.title}
             </h2>
             <p className="text-slate-400 text-xl max-w-2xl mx-auto">
-              Mientras otros pierden el tiempo llenando excels, tú estarás cerrando tratos.
+              {content.features.subtitle}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, i) => (
-              <div
-                key={i}
-                className="group p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800 hover:shadow-2xl hover:shadow-emerald-900/20 transition-all duration-300"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-slate-800 group-hover:bg-emerald-500/10 flex items-center justify-center mb-6 transition-colors border border-slate-700 group-hover:border-emerald-500/50">
-                  <feature.icon className="h-7 w-7 text-emerald-400" />
+            {content.features.items.map((feature, i) => {
+              const Icon = IconMap[feature.icon] || Zap;
+              return (
+                <div
+                  key={i}
+                  className="group p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800 hover:shadow-2xl hover:shadow-emerald-900/20 transition-all duration-300"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-slate-800 group-hover:bg-emerald-500/10 flex items-center justify-center mb-6 transition-colors border border-slate-700 group-hover:border-emerald-500/50">
+                    <Icon className="h-7 w-7 text-emerald-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors">{feature.title}</h3>
+                  <p className="text-slate-400 text-base leading-relaxed">{feature.description}</p>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors">{feature.title}</h3>
-                <p className="text-slate-400 text-base leading-relaxed">{feature.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Testimonials */}
           <div className="mt-32 grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                Casos de Éxito
+                {content.testimonials.badge}
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
-                Dejaron el Excel y <br />
-                <span className="text-emerald-400">recuperaron su tiempo.</span>
+                {content.testimonials.title}
               </h2>
               <div className="p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 relative">
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-3xl text-white font-serif">“</div>
                 <p className="text-lg text-slate-300 italic mb-6">
-                  "Antes pasaba todo mi sábado haciendo reportes del ciclo. Con MediVisitPro, simplemente cierro mi sesión al final del día y el reporte ya está en la bandeja de mi jefe. He subido mis visitas un 25%."
+                  "{content.testimonials.quote}"
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-slate-700 border-2 border-emerald-500/30 overflow-hidden">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                    <img src={content.testimonials.avatar} alt="User" />
                   </div>
                   <div>
-                    <div className="text-white font-bold text-sm">Carlos M.</div>
-                    <div className="text-slate-500 text-xs font-medium">Representante Senior - Lab Farmacéutico</div>
+                    <div className="text-white font-bold text-sm">{content.testimonials.author}</div>
+                    <div className="text-slate-500 text-xs font-medium">{content.testimonials.role}</div>
                   </div>
                 </div>
               </div>
@@ -396,24 +371,7 @@ export default function LandingPage() {
             <p className="text-slate-400">Todo lo que necesitas saber para empezar hoy mismo.</p>
           </div>
           <div className="space-y-6">
-            {[
-              {
-                q: "¿Realmente funciona sin conexión a internet?",
-                a: "Sí. MediVisitPro está construida como una PWA (Progressive Web App). Puedes registrar visitas, ver tu agenda y gestionar muestras en sótanos de hospitales o clínicas remotas. Los datos se sincronizarán automáticamente en cuanto recuperes señal."
-              },
-              {
-                q: "¿Cómo calculan las rutas optimizadas?",
-                a: "Utilizamos algoritmos de optimización de rutas (TSP) basados en OSRM. El sistema analiza la ubicación de tus médicos seleccionados para el día y te ofrece el camino más corto, ahorrándote combustible y tiempo."
-              },
-              {
-                q: "¿Mis datos están seguros?",
-                a: "Absolutamente. Utilizamos Supabase con encriptación de grado bancario y Row Level Security (RLS). Tus datos están aislados y solo tú (o tu organización) tienen acceso a ellos."
-              },
-              {
-                q: "¿Puedo importar mi lista actual de médicos?",
-                a: "Sí, contamos con una herramienta de importación masiva que acepta archivos CSV y Excel. Si necesitas ayuda, nuestro equipo técnico puede hacer la migración por ti sin costo extra."
-              }
-            ].map((item, i) => (
+            {content.faq.map((item, i) => (
               <div key={i} className="p-6 rounded-2xl bg-slate-800/30 border border-slate-700/50 hover:border-emerald-500/30 transition-colors">
                 <h3 className="text-lg font-bold text-white mb-2">{item.q}</h3>
                 <p className="text-slate-400 leading-relaxed">{item.a}</p>
@@ -432,10 +390,10 @@ export default function LandingPage() {
 
             <div className="relative z-10">
               <h2 className="text-3xl sm:text-5xl font-bold text-white mb-6">
-                ¿Listo para ser el N°1 de tu zona?
+                {content.cta.title}
               </h2>
               <p className="text-slate-300 text-lg mb-10 max-w-xl mx-auto">
-                No necesitas tarjeta de crédito. Empieza a usar MediVisitPro hoy y nota la diferencia en tu primera semana.
+                {content.cta.subtitle}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button
@@ -443,7 +401,7 @@ export default function LandingPage() {
                   size="lg"
                   className="bg-white text-emerald-900 hover:bg-slate-100 shadow-xl px-12 h-14 text-lg font-bold rounded-xl"
                 >
-                  Empezar Ahora - Es Gratis
+                  {content.cta.button_primary}
                 </Button>
                 <Button
                   onClick={handleDemo}
@@ -451,7 +409,7 @@ export default function LandingPage() {
                   variant="outline"
                   className="border-slate-600 text-white hover:bg-slate-800/50 hover:border-emerald-400 px-12 h-14 text-lg font-medium rounded-xl"
                 >
-                  Ver Demo Primero
+                  {content.cta.button_secondary}
                 </Button>
               </div>
             </div>

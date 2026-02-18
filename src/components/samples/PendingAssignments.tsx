@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { PackageCheck, PackageX, Clock, User, Package, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useDemoData } from "@/contexts/MockDataProvider";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -44,16 +45,38 @@ export function PendingAssignments() {
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
     const [selectedAssignment, setSelectedAssignment] = useState<string | null>(null);
     const [rejectReason, setRejectReason] = useState("");
+    const demoData = useDemoData();
 
     useEffect(() => {
-        if (user) {
+        if (user || demoData) {
             loadPendingAssignments();
         }
-    }, [user]);
+    }, [user, demoData]);
 
     const loadPendingAssignments = async () => {
-        if (!user) return;
+        if (!user && !demoData) return;
         setLoading(true);
+
+        if (demoData) {
+            console.log("PendingAssignments: Loading demo data");
+            const demoPending = [
+                {
+                    id: 'pend-001',
+                    status: 'pending',
+                    created_at: new Date().toISOString(),
+                    notes: 'Carga inicial para la semana',
+                    created_by: 'demo-master',
+                    creator_name: 'Gerencia Demo',
+                    items: [
+                        { product_id: 'p1', product_name: 'Atorvastatina 20mg', quantity: 50 },
+                        { product_id: 'p2', product_name: 'Losartán 50mg', quantity: 30 }
+                    ]
+                }
+            ];
+            setAssignments(demoPending);
+            setLoading(false);
+            return;
+        }
 
         try {
             // Cargar asignaciones pendientes para el usuario actual
@@ -137,6 +160,19 @@ export function PendingAssignments() {
     const handleAccept = async (assignmentId: string) => {
         setProcessing(assignmentId);
 
+        if (demoData) {
+            setTimeout(() => {
+                toast({
+                    title: "¡Stock Aceptado! (Demo)",
+                    description: "En modo demo la aceptación es simulada.",
+                    className: "bg-green-50 border-green-200"
+                });
+                setAssignments(prev => prev.filter(a => a.id !== assignmentId));
+                setProcessing(null);
+            }, 1000);
+            return;
+        }
+
         try {
             // Llamar función RPC para transacción atómica
             const { data, error } = await supabase.rpc('accept_assignment', {
@@ -182,6 +218,19 @@ export function PendingAssignments() {
         if (!selectedAssignment) return;
         setProcessing(selectedAssignment);
         setRejectDialogOpen(false);
+
+        if (demoData) {
+            setTimeout(() => {
+                toast({
+                    title: "Asignación Rechazada (Demo)",
+                    description: "Modo demo: rechazo simulado.",
+                });
+                setAssignments(prev => prev.filter(a => a.id !== selectedAssignment));
+                setProcessing(null);
+                setSelectedAssignment(null);
+            }, 1000);
+            return;
+        }
 
         try {
             const { data, error } = await supabase.rpc('reject_assignment', {

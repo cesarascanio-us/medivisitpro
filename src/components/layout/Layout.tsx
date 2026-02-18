@@ -92,8 +92,8 @@ export const Layout = ({ children }: LayoutProps) => {
       <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none animate-pulse delay-1000"></div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-purple-500/5 rounded-full blur-[180px] pointer-events-none"></div>
 
-      {/* Compact Demo Mode Banner */}
-      {isDemo && (
+      {/* Compact Demo Mode Banner - Only shown on explicit demo routes */}
+      {location.pathname.startsWith('/demo/') && (
         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-3 py-1.5 shadow-md flex items-center justify-between z-50">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/20 rounded-full text-xs">

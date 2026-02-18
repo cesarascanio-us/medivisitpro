@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useDemoData } from "@/contexts/MockDataProvider";
 import { Badge } from "@/components/ui/badge";
 import {
     Table,
@@ -25,6 +26,7 @@ import {
 export default function SampleBanks() {
     const { user } = useAuth();
     const { toast } = useToast();
+    const demoData = useDemoData();
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -62,6 +64,13 @@ export default function SampleBanks() {
 
     const loadInventario = async () => {
         if (!user) return;
+
+        if (demoData) {
+            console.log("SampleBanks: Loading demo inventory");
+            setInventario(demoData.inventory || []);
+            return;
+        }
+
         const { data, error } = await supabase
             .from('inventario_muestras')
             .select(`
@@ -77,6 +86,22 @@ export default function SampleBanks() {
 
     const loadEntregas = async () => {
         if (!user) return;
+
+        if (demoData) {
+            console.log("SampleBanks: Loading demo bank inventory");
+            // Map demo bank inventory to entregas format
+            const mockEntregas = (demoData.bankInventory || []).map(bi => ({
+                id: bi.id,
+                health_centers: { name: bi.bank_id === 'bank-001' ? 'Centro Médico La Trinidad' : 'Clínica Modelo Valencia' },
+                servicio: bi.bank_id === 'bank-001' ? 'Cardiología' : 'Medicina Interna',
+                jefe_servicio: 'Dr. Jefe Demo',
+                fecha_entrega: new Date().toISOString(),
+                entregado_por: 'Visitador Demo'
+            }));
+            setEntregas(mockEntregas);
+            return;
+        }
+
         const { data, error } = await supabase
             .from('entregas_banco')
             .select(`
@@ -92,6 +117,23 @@ export default function SampleBanks() {
 
     const loadMateriales = async () => {
         if (!user) return;
+
+        if (demoData) {
+            console.log("SampleBanks: Loading demo material POP");
+            // Map MOCK_MATERIAL_POP to materiales format
+            const mockMateriales = (demoData.materialPop || []).map(m => ({
+                id: m.id,
+                nombre: m.name,
+                tipo: m.category,
+                products: { name: 'Genérico Demo' },
+                cantidad_disponible: m.quantity,
+                cantidad_inicial: m.quantity + 50,
+                fecha_recepcion: m.created_at
+            }));
+            setMateriales(mockMateriales);
+            return;
+        }
+
         const { data, error } = await supabase
             .from('materiales_promocionales')
             .select(`

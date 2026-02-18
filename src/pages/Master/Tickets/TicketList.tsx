@@ -25,11 +25,14 @@ interface TicketType {
     priority: 'low' | 'medium' | 'high' | 'critical';
     status: 'open' | 'in_progress' | 'resolved' | 'closed';
     created_at: string;
-    user_id: string; // Ideally join with profiles to get name
-    organization_id: string; // Join with orgs
-    resolution?: string; // New field
-    category?: string; // New field
-    attachment_url?: string; // New field
+    user_id: string;
+    organization_id: string;
+    resolution?: string;
+    category?: string;
+    attachment_url?: string;
+    // Joined data
+    organizations?: { name: string };
+    profiles?: { email: string };
 }
 
 export default function TicketList() {
@@ -39,17 +42,24 @@ export default function TicketList() {
 
     const fetchTickets = async () => {
         setLoading(true);
-        const { data, error } = await supabase
-            .from('support_tickets')
-            .select('*')
-            .order('created_at', { ascending: false });
+        try {
+            const { data, error } = await supabase
+                .from('support_tickets')
+                .select(`
+                    *,
+                    organizations(name),
+                    profiles:user_id(email)
+                `)
+                .order('created_at', { ascending: false });
 
-        if (error) {
+            if (error) throw error;
+            setTickets(data as any[]);
+        } catch (error) {
             console.error('Error fetching tickets:', error);
-        } else {
-            setTickets(data as TicketType[]);
+            toast({ title: "Error", description: "No se pudieron cargar los tickets", variant: "destructive" });
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
@@ -154,6 +164,7 @@ export default function TicketList() {
                             <TableHeader>
                                 <TableRow className="border-slate-800 hover:bg-transparent">
                                     <TableHead className="text-slate-400">Asunto</TableHead>
+                                    <TableHead className="text-slate-400">Solicitante</TableHead>
                                     <TableHead className="text-slate-400">Prioridad</TableHead>
                                     <TableHead className="text-slate-400">Estado</TableHead>
                                     <TableHead className="text-slate-400">Fecha</TableHead>
@@ -166,6 +177,10 @@ export default function TicketList() {
                                         <TableCell className="font-medium text-white">
                                             {ticket.subject}
                                             <div className="text-xs text-slate-500 truncate max-w-[300px]">{ticket.description}</div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-sm text-slate-300 font-medium">{ticket.organizations?.name || 'Sistema'}</div>
+                                            <div className="text-xs text-slate-500">{ticket.profiles?.email}</div>
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className={`${getPriorityColor(ticket.priority)} capitalize`}>
@@ -210,6 +225,15 @@ export default function TicketList() {
                     </DialogHeader>
 
                     <div className="space-y-4 py-4">
+                        <div className="space-y-1">
+                            <h4 className="text-sm font-medium text-slate-400">Solicitante</h4>
+                            <div className="text-sm text-slate-200 bg-slate-800/50 p-2 rounded-md border border-slate-700/50">
+                                <span className="font-bold">{selectedTicket?.organizations?.name || 'Sin Org'}</span>
+                                <span className="mx-2 text-slate-500">|</span>
+                                <span className="text-slate-400">{selectedTicket?.profiles?.email}</span>
+                            </div>
+                        </div>
+
                         <div className="space-y-1">
                             <h4 className="text-sm font-medium text-slate-400">Descripción</h4>
                             <p className="text-sm text-slate-200 bg-slate-800/50 p-3 rounded-md border border-slate-700/50">
