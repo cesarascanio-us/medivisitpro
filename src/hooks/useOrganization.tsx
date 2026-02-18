@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 interface OrganizationContextType {
     organization: Organization | null;
     allOrganizations: Organization[];
+    planFeatures: string[]; // NEW
     isLoading: boolean;
     error: Error | null;
     isOrgAdmin: boolean;
@@ -29,12 +30,15 @@ const DEMO_ORG = {
     updated_at: new Date().toISOString()
 };
 
-
+const DEMO_FEATURES = [
+    'basic_visits', 'advanced_reports', 'smart_agenda', 'sample_tracking', 'export_data', 'offline_sync', 'unlimited_doctors'
+];
 
 export function OrganizationProvider({ children }: { children: ReactNode }) {
     const { enterAuditMode, exitAuditMode } = useAuth();
     const [organization, setOrganization] = useState<Organization | null>(null);
     const [allOrganizations, setAllOrganizations] = useState<Organization[]>([]);
+    const [planFeatures, setPlanFeatures] = useState<string[]>([]); // NEW
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
     const [isOrgAdmin, setIsOrgAdmin] = useState(false);
@@ -49,21 +53,21 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             if (!user) {
                 setOrganization(null);
                 setIsOrgAdmin(false);
+                setPlanFeatures([]);
                 return;
             }
 
             // [STRICT FAIL-SAFE] Demo Bypass
             const lowerEmail = user.email?.trim().toLowerCase();
             if (lowerEmail === 'demo.medivisitpro@gmail.com') {
-                console.log('AuthProvider: Modo Demo detectado (Bypass RLS activo)');
                 setOrganization(DEMO_ORG as any);
                 setAllOrganizations([DEMO_ORG as any]);
+                setPlanFeatures(DEMO_FEATURES);
                 setIsOrgAdmin(false);
                 setIsLoading(false);
                 return;
             }
 
-            // Let isMaster be determined by the actual role in the database
             let isMasterUser = false;
 
             // Get profile and role data
@@ -84,7 +88,6 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             isMasterUser = userRoleName === 'master';
             setIsMaster(isMasterUser);
 
-            // Access control: admins and managers are considered org admins
             setIsOrgAdmin(
                 profile?.is_org_admin ||
                 userRoleName === 'admin' ||
@@ -92,58 +95,64 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 isMasterUser
             );
 
+            let currentOrg: Organization | null = null;
+            let currentOrgsList: Organization[] = [];
+
             if (isMasterUser) {
-                // MASTER FLOW: Load ALL organizations
-                const { data: allOrgs, error: allOrgsError } = await supabase
+                const { data: allOrgs } = await supabase
                     .from('organizations')
                     .select('*')
                     .order('name');
-
-                if (allOrgsError) console.error('Error fetching all orgs for master:', allOrgsError);
 
                 const orgs = (allOrgs || []).map(o => ({
                     ...o,
                     plan_tier: o.plan_tier as PlanTier,
                     subscription_status: o.subscription_status as SubscriptionStatus
                 })) as Organization[];
-                setAllOrganizations(orgs);
 
+                currentOrgsList = orgs;
                 const assignedOrgId = profile?.organization_id || userRole?.organization_id;
-
-                if (!organization) {
-                    const initialOrg = orgs.find(o => o.id === assignedOrgId) || orgs[0];
-                    setOrganization(initialOrg || null);
-                }
+                currentOrg = orgs.find(o => o.id === assignedOrgId) || orgs[0] || null;
             } else {
-                // NORMAL USER FLOW
                 let organizationId = profile?.organization_id || userRole?.organization_id;
+                if (organizationId) {
+                    const { data: org } = await supabase
+                        .from('organizations')
+                        .select('*')
+                        .eq('id', organizationId)
+                        .maybeSingle();
 
-                if (!organizationId) {
-                    setOrganization(null);
-                    setAllOrganizations([]);
-                    return;
+                    if (org) {
+                        currentOrg = {
+                            ...org,
+                            plan_tier: org.plan_tier as PlanTier,
+                            subscription_status: org.subscription_status as SubscriptionStatus
+                        } as Organization;
+                        currentOrgsList = [currentOrg];
+                    }
                 }
+            }
 
-                const { data: org, error: orgError } = await supabase
-                    .from('organizations')
-                    .select('*')
-                    .eq('id', organizationId)
+            setOrganization(currentOrg);
+            setAllOrganizations(currentOrgsList);
+
+            // FETCH FEATURES DYNAMICALLY
+            if (currentOrg) {
+                const { data: planData } = await supabase
+                    .from('subscription_plans')
+                    .select('features')
+                    .ilike('name', `%${currentOrg.plan_tier}%`)
+                    .eq('active', true)
                     .maybeSingle();
 
-                if (orgError) {
-                    console.warn('Organization fetch error:', orgError);
-                    setOrganization(null);
-                    return;
+                if (planData) {
+                    setPlanFeatures(planData.features || []);
+                } else {
+                    // Fallback to basic features if plan not found
+                    setPlanFeatures(['basic_visits', 'basic_reports']);
                 }
-
-                const typedOrg = org ? {
-                    ...org,
-                    plan_tier: org.plan_tier as PlanTier,
-                    subscription_status: org.subscription_status as SubscriptionStatus
-                } as Organization : null;
-
-                setOrganization(typedOrg);
-                setAllOrganizations(typedOrg ? [typedOrg] : []);
+            } else {
+                setPlanFeatures([]);
             }
 
         } catch (err) {
@@ -162,10 +171,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         if (targetOrg) {
             setOrganization(targetOrg);
             localStorage.setItem('medivisit_master_active_org', orgId);
-
-            // SYNC: Update AuthProvider to reflect this org change
             await enterAuditMode(orgId);
-
+            fetchOrganization(); // Re-fetch to update features
             toast.success(`Organización cambiada a: ${targetOrg.name}`);
         }
     };
@@ -184,6 +191,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         <OrganizationContext.Provider value={{
             organization,
             allOrganizations,
+            planFeatures,
             isLoading,
             error,
             isOrgAdmin,
@@ -244,18 +252,14 @@ export function useSubscriptionStatus(): {
 
 // Hook to check if user has access to a feature
 export function useFeatureAccess(feature: string): boolean {
-    const { organization } = useOrganization();
+    const { organization, planFeatures } = useOrganization();
 
     if (!organization) return false;
 
-    // Import plan limits dynamically to avoid circular dependencies
-    const PLAN_FEATURES: Record<PlanTier, string[]> = {
-        free: ['basic_visits', 'basic_reports', 'smart_agenda'],
-        starter: ['basic_visits', 'basic_reports', 'smart_agenda', 'sample_tracking', 'export_data'],
-        professional: ['basic_visits', 'advanced_reports', 'smart_agenda', 'sample_tracking', 'export_data', 'offline_sync', 'unlimited_doctors'],
-        enterprise: ['all_features', 'advanced_reports', 'smart_agenda', 'sample_tracking', 'export_data', 'offline_sync', 'unlimited_doctors', 'kpi_analytics', 'geolocalization', 'team_management', 'api_access', 'custom_integrations', 'sso']
-    };
+    // Master has access to everything
+    if (organization.plan_tier === 'enterprise' || planFeatures.includes('all_features')) {
+        return true;
+    }
 
-    const features = PLAN_FEATURES[organization.plan_tier] || [];
-    return features.includes(feature);
+    return planFeatures.includes(feature) || planFeatures.some(f => f.toLowerCase() === feature.toLowerCase());
 }

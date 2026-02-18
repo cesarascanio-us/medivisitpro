@@ -50,33 +50,54 @@ export function useBilling() {
         try {
             setLoading(true);
 
-            // Load plans
-            const { data: plansData } = await supabase
-                .from('billing_plans')
+            // Load plans from subscription_plans (Unified System)
+            const { data: plansData, error: plansError } = await supabase
+                .from('subscription_plans')
                 .select('*')
-                .eq('is_active', true);
+                .eq('active', true);
 
-            // Load prices
-            const { data: pricesData } = await supabase
-                .from('billing_prices')
-                .select('*')
-                .eq('is_active', true);
+            if (plansError) throw plansError;
+
+            // Synthesize prices from the same table (subscription_plans has price)
+            const synthesizedPrices: Price[] = (plansData || []).map(p => ({
+                id: `price_${p.id}`,
+                plan_id: p.id,
+                amount: p.price,
+                currency: p.currency || 'USD',
+                interval: p.interval as 'month' | 'year' || 'month'
+            }));
+
+            // Map data to expected Plan interface
+            const formattedPlans: Plan[] = (plansData || []).map(p => {
+                let tier = p.name.toLowerCase();
+                if (tier.includes('starter') || tier.includes('free')) tier = 'starter';
+                if (tier.includes('pro')) tier = 'professional';
+                if (tier.includes('team') || tier.includes('enterprise')) tier = 'enterprise';
+
+                return {
+                    id: p.id,
+                    name: p.name,
+                    tier: tier,
+                    description: p.description || 'Plan de suscripción personalizado',
+                    features: p.features || []
+                };
+            });
 
             // Load current subscription
             const { data: subData } = await supabase
                 .from('subscriptions')
-                .select('*, billing_plans(*)')
+                .select('*, subscription_plans(*)')
                 .eq('organization_id', organizationId)
                 .maybeSingle();
 
-            // Load transaction history (from billing_transactions)
+            // Load transaction history
             const { data: transData } = await supabase
                 .from('billing_transactions')
                 .select('*')
                 .eq('organization_id', organizationId)
                 .order('created_at', { ascending: false });
 
-            // Load pending manual reports to show in history
+            // Load pending manual reports
             const { data: manualReports } = await supabase
                 .from('payment_reports')
                 .select('*')
@@ -93,8 +114,8 @@ export function useBilling() {
                 provider_transaction_id: report.reference_number
             }));
 
-            setPlans((plansData as any) || [] as Plan[]);
-            setPrices((pricesData as any) || [] as Price[]);
+            setPlans(formattedPlans);
+            setPrices(synthesizedPrices);
             setTransactions([...formattedManual, ...((transData as any) || [])]);
             setSubscription(subData);
 

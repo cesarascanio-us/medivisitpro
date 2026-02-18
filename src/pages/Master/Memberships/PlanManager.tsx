@@ -66,6 +66,8 @@ const OFFICIAL_PLANS = [
 export default function PlanManager() {
     const [newPlanName, setNewPlanName] = useState('');
     const [newPlanPrice, setNewPlanPrice] = useState('');
+    const [newPlanFeatures, setNewPlanFeatures] = useState<string[]>([]);
+    const [featureInput, setFeatureInput] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [plans, setPlans] = useState<PlanType[]>([]);
     const [loading, setLoading] = useState(true);
@@ -110,24 +112,25 @@ export default function PlanManager() {
     const handleSavePlan = async () => {
         if (!newPlanName || !newPlanPrice) return;
 
+        const payload = {
+            name: newPlanName,
+            price: parseFloat(newPlanPrice),
+            features: newPlanFeatures
+        };
+
         if (editingPlan) {
             // Update existing plan
             const { error } = await supabase
                 .from('subscription_plans')
-                .update({
-                    name: newPlanName,
-                    price: parseFloat(newPlanPrice)
-                })
+                .update(payload)
                 .eq('id', editingPlan.id);
 
             if (error) {
                 toast({ title: 'Error', description: error.message, variant: 'destructive' });
             } else {
-                setPlans(plans.map(p => p.id === editingPlan.id ? { ...p, name: newPlanName, price: parseFloat(newPlanPrice) } : p));
+                setPlans(plans.map(p => p.id === editingPlan.id ? { ...p, ...payload } : p));
                 setIsDialogOpen(false);
-                setEditingPlan(null);
-                setNewPlanName('');
-                setNewPlanPrice('');
+                resetForm();
                 toast({ title: 'Actualizado', description: 'Plan actualizado exitosamente.' });
             }
         } else {
@@ -135,10 +138,8 @@ export default function PlanManager() {
             const { data, error } = await supabase
                 .from('subscription_plans')
                 .insert({
-                    name: newPlanName,
-                    price: parseFloat(newPlanPrice),
+                    ...payload,
                     interval: 'month',
-                    features: ['Módulo Estándar', 'Soporte Básico'],
                     active: true
                 })
                 .select()
@@ -149,11 +150,28 @@ export default function PlanManager() {
             } else {
                 setPlans([...plans, data as PlanType]);
                 setIsDialogOpen(false);
-                setNewPlanName('');
-                setNewPlanPrice('');
+                resetForm();
                 toast({ title: 'Creado', description: 'Nuevo plan guardado exitosamente.' });
             }
         }
+    };
+
+    const resetForm = () => {
+        setEditingPlan(null);
+        setNewPlanName('');
+        setNewPlanPrice('');
+        setNewPlanFeatures([]);
+        setFeatureInput('');
+    }
+
+    const addFeature = () => {
+        if (!featureInput.trim()) return;
+        setNewPlanFeatures([...newPlanFeatures, featureInput.trim()]);
+        setFeatureInput('');
+    };
+
+    const removeFeature = (index: number) => {
+        setNewPlanFeatures(newPlanFeatures.filter((_, i) => i !== index));
     };
 
     const handleDeletePlan = async (id: string) => {
@@ -250,7 +268,7 @@ export default function PlanManager() {
     };
 
     return (
-        <div className="p-6 space-y-6 animate-in fade-in duration-500">
+        <div className="p-6 space-y-6 animate-in fade-in duration-500 text-white">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
@@ -263,9 +281,7 @@ export default function PlanManager() {
                 <Dialog open={isDialogOpen} onOpenChange={(open) => {
                     setIsDialogOpen(open);
                     if (!open) {
-                        setEditingPlan(null);
-                        setNewPlanName('');
-                        setNewPlanPrice('');
+                        resetForm();
                     }
                 }}>
                     <DialogTrigger asChild>
@@ -277,7 +293,7 @@ export default function PlanManager() {
                         <RefreshCw className="mr-2 h-4 w-4" />
                         Sincronizar con Landing
                     </Button>
-                    <DialogContent className="bg-slate-900 border-slate-700 text-white">
+                    <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
                         <DialogHeader>
                             <DialogTitle>{editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}</DialogTitle>
                         </DialogHeader>
@@ -301,7 +317,34 @@ export default function PlanManager() {
                                     onChange={(e) => setNewPlanPrice(e.target.value)}
                                 />
                             </div>
-                            <Button onClick={handleSavePlan} className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold mt-4">
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Características (Items)</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        className="flex h-10 flex-1 rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                        placeholder="Nueva característica..."
+                                        value={featureInput}
+                                        onChange={(e) => setFeatureInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && addFeature()}
+                                    />
+                                    <Button size="sm" onClick={addFeature} className="bg-emerald-600 hover:bg-emerald-500">
+                                        +
+                                    </Button>
+                                </div>
+                                <div className="max-h-40 overflow-y-auto space-y-2 mt-2">
+                                    {newPlanFeatures.map((feat, idx) => (
+                                        <div key={idx} className="flex items-center justify-between bg-slate-800/50 p-2 rounded-md border border-slate-700">
+                                            <span className="text-xs truncate mr-2">{feat}</span>
+                                            <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-6 w-6 p-0 text-red-500 hover:text-red-400 hover:bg-red-500/10">
+                                                <X className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <Button onClick={handleSavePlan} className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold mt-4 shadow-lg shadow-emerald-500/20">
                                 {editingPlan ? 'Actualizar Plan' : 'Guardar Plan'}
                             </Button>
                         </div>
@@ -349,6 +392,7 @@ export default function PlanManager() {
                                             setEditingPlan(plan);
                                             setNewPlanName(plan.name);
                                             setNewPlanPrice(plan.price.toString());
+                                            setNewPlanFeatures(plan.features || []);
                                             setIsDialogOpen(true);
                                         }}
                                     >
