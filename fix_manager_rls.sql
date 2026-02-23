@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- Script para permitir a Gerentes, Admins y Masters ver TODOS los datos en el Dashboard
 -- 1. Política para VISITAS
 -- Primero eliminamos políticas antiguas si existen para evitar conflictos

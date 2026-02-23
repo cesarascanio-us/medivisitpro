@@ -1,5 +1,15 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface StateData {
     name: string;
@@ -18,17 +28,17 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
 
     const getStateColor = (stateName: string): string => {
         const data = stateData.find(s => s.name === stateName);
-        if (!data) return "#e2e8f0"; // slate-200 default
+        if (!data) return "#f1f5f9"; // slate-100 default
 
         switch (data.status) {
             case 'caliente':
-                return "#10b981"; // emerald-500
+                return "#0056b3"; // primary
             case 'tibio':
-                return "#f59e0b"; // amber-500
+                return "#00a0e9"; // secondary
             case 'frio':
-                return "#ef4444"; // rose-500
+                return "#b3d9ff"; // primary-light
             default:
-                return "#e2e8f0";
+                return "#f1f5f9";
         }
     };
 
@@ -81,83 +91,92 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
     const hoveredData = hoveredState ? getStateData(hoveredState) : null;
 
     return (
-        <Card className="relative">
-            <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                    <span>Mapa de Calor - Venezuela</span>
-                    <div className="flex gap-4 text-sm font-normal">
+        <Card className="corporate-card overflow-hidden">
+            <CardHeader className="bg-gray-50 border-b border-gray-100 pb-3">
+                <CardTitle className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <span className="font-black text-text-main tracking-tight">Mapa de Calor Comercial</span>
+                    <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded" style={{ backgroundColor: "#10b981" }}></div>
-                            <span className="text-slate-600">Caliente</span>
+                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#0056b3" }}></div>
+                            <span className="text-text-muted">Alta</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded" style={{ backgroundColor: "#f59e0b" }}></div>
-                            <span className="text-slate-600">Tibio</span>
+                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#00a0e9" }}></div>
+                            <span className="text-text-muted">Media</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded" style={{ backgroundColor: "#ef4444" }}></div>
-                            <span className="text-slate-600">Frío</span>
+                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#b3d9ff" }}></div>
+                            <span className="text-text-muted">Baja</span>
                         </div>
                     </div>
                 </CardTitle>
             </CardHeader>
-            <CardContent>
-                <svg
-                    width="100%"
-                    height="500"
-                    viewBox="0 0 100 100"
-                    className="border border-slate-200 rounded-lg bg-slate-50"
-                >
-                    {states.map((state) => (
-                        <g key={state.name}>
-                            <rect
-                                x={state.x}
-                                y={state.y}
-                                width={state.width}
-                                height={state.height}
-                                fill={getStateColor(state.name)}
-                                stroke="#ffffff"
-                                strokeWidth="0.5"
-                                className="transition-all duration-200 cursor-pointer hover:opacity-80"
-                                onMouseEnter={(e) => handleMouseEnter(state.name, e)}
-                                onMouseMove={handleMouseMove}
-                                onMouseLeave={handleMouseLeave}
-                            />
-                            <text
-                                x={state.x + state.width / 2}
-                                y={state.y + state.height / 2}
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                                className="text-[2px] fill-white font-semibold pointer-events-none select-none"
-                                style={{ fontSize: '2px' }}
-                            >
-                                {state.name.substring(0, 3).toUpperCase()}
-                            </text>
-                        </g>
-                    ))}
-                </svg>
+            <CardContent className="p-0">
+                <div className="p-4">
+                    <svg
+                        width="100%"
+                        height="400"
+                        viewBox="0 0 100 100"
+                        className="rounded-2xl bg-slate-50 border border-slate-100 shadow-inner"
+                    >
+                        {states.map((state) => (
+                            <g key={state.name}>
+                                <rect
+                                    x={state.x}
+                                    y={state.y}
+                                    width={state.width}
+                                    height={state.height}
+                                    fill={getStateColor(state.name)}
+                                    stroke="#ffffff"
+                                    strokeWidth="0.4"
+                                    rx="1"
+                                    className="transition-all duration-300 cursor-pointer hover:filter hover:brightness-110"
+                                    onMouseEnter={(e) => handleMouseEnter(state.name, e)}
+                                    onMouseMove={handleMouseMove}
+                                    onMouseLeave={handleMouseLeave}
+                                />
+                                <text
+                                    x={state.x + state.width / 2}
+                                    y={state.y + state.height / 2}
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                    className="fill-white font-bold pointer-events-none select-none"
+                                    style={{ fontSize: '1.8px', opacity: 0.8 }}
+                                >
+                                    {state.name.substring(0, 3).toUpperCase()}
+                                </text>
+                            </g>
+                        ))}
+                    </svg>
+                </div>
 
                 {/* Tooltip */}
                 {hoveredData && (
                     <div
-                        className="fixed z-50 bg-slate-900 text-white px-3 py-2 rounded-lg shadow-xl text-sm pointer-events-none"
+                        className="fixed z-[100] bg-white border border-gray-100 px-4 py-3 rounded-2xl shadow-2xl pointer-events-none animate-in fade-in zoom-in-95 duration-200"
                         style={{
                             left: `${tooltipPos.x + 15}px`,
                             top: `${tooltipPos.y + 15}px`,
                         }}
                     >
-                        <div className="font-bold mb-1">{hoveredData.name}</div>
-                        <div className="text-xs space-y-0.5">
-                            <div>Ventas: <span className="font-semibold">${hoveredData.sales.toLocaleString()}</span></div>
-                            <div>Visitas: <span className="font-semibold">{hoveredData.visits}</span></div>
-                            <div>
-                                Estado:
-                                <span className={`ml-1 font-semibold ${hoveredData.status === 'caliente' ? 'text-emerald-400' :
-                                        hoveredData.status === 'tibio' ? 'text-amber-400' :
-                                            'text-rose-400'
+                        <div className="font-black text-text-main text-base mb-2 border-b border-gray-50 pb-1">{hoveredData.name}</div>
+                        <div className="space-y-1.5">
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-bold text-text-muted uppercase">Ventas</span>
+                                <span className="text-sm font-black text-primary">${hoveredData.sales.toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-bold text-text-muted uppercase">Visitas</span>
+                                <span className="text-sm font-bold text-text-main">{hoveredData.visits}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-4 pt-1">
+                                <span className="text-[10px] font-bold text-text-muted uppercase">Nivel</span>
+                                <Badge className={`text-[10px] font-black uppercase ${hoveredData.status === 'caliente' ? 'bg-primary' :
+                                    hoveredData.status === 'tibio' ? 'bg-secondary' :
+                                        'bg-primary-light text-primary'
                                     }`}>
-                                    {hoveredData.status.charAt(0).toUpperCase() + hoveredData.status.slice(1)}
-                                </span>
+                                    {hoveredData.status}
+                                </Badge>
                             </div>
                         </div>
                     </div>

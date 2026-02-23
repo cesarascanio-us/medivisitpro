@@ -1,5 +1,14 @@
-import { useState, useEffect } from "react";
-import { Plus, UserRound, Shield, Building, Search, Trash2, Edit, Check, X, MapPin, Globe, ChevronsUpDown, Loader2 } from "lucide-react";
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+import { useState, useEffect, cloneElement } from "react";
+import { Plus, UserRound, Shield, Building, Search, Trash2, Edit, Check, X, MapPin, Globe, ChevronsUpDown, Loader2, RefreshCw, LayoutDashboard, Users as UsersIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -416,26 +425,61 @@ export default function Users() {
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Gestión de Usuarios</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Administra roles y permisos del personal
-                    </p>
-                </div>
-            </div>
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
+            {/* Premium White Header Container */}
+            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                {/* Decorative backgrounds */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
 
-            <Card className="border-t-4 border-t-primary">
-                <CardHeader>
-                    <div className="flex justify-between items-center">
-                        <CardTitle>Usuarios del Sistema</CardTitle>
-                        <div className="flex w-full max-w-sm items-center space-x-2">
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <UsersIcon className="text-white h-8 w-8" />
+                        </div>
+                        <div>
+                            <p className="text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Sistema de Administración</p>
+                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                Gestión de Usuarios
+                            </h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
+                                    {isMaster ? 'Modo Master' : (ROLE_LABELS[profile?.role as UserRole] || 'Admin')}
+                                </Badge>
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{users.length} Colaboradores</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-3">
+                        <Button
+                            onClick={loadUsers}
+                            variant="outline"
+                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl h-12 px-6 font-bold shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                        >
+                            <RefreshCw className={cn("h-4 w-4 mr-2 text-slate-500 group-hover:text-purple-600 transition-colors", loading && "animate-spin")} />
+                            Actualizar Listado
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight">
+                            Personal del Sistema
+                        </CardTitle>
+                        <div className="relative w-full md:w-80">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input
-                                placeholder="Buscar usuario..."
+                                placeholder="Buscar colaborador..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="h-9"
+                                className="pl-10 h-11 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus-visible:ring-purple-500 font-medium"
                             />
                         </div>
                     </div>
@@ -446,16 +490,16 @@ export default function Users() {
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                         </div>
                     ) : (
-                        <div className="rounded-md border">
+                        <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Usuario</TableHead>
-                                        <TableHead>Rol</TableHead>
-                                        <TableHead>Ubicación</TableHead>
-                                        <TableHead>Zonas Asignadas</TableHead>
-                                        <TableHead>Estado</TableHead>
-                                        <TableHead className="text-right">Acciones</TableHead>
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
+                                    <TableRow className="hover:bg-transparent border-none">
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">Usuario</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Rol</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Ubicación</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Zonas Asignadas</TableHead>
+                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Estado</TableHead>
+                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Acciones</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -571,15 +615,15 @@ export default function Users() {
 
             {/* Edit User Dialog */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent className="sm:max-w-[600px]">
-                    <DialogHeader>
-                        <DialogTitle>Editar Usuario</DialogTitle>
-                        <DialogDescription>
-                            Modifique los permisos y asignaciones del usuario.
+                <DialogContent className="sm:max-w-[600px] rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden">
+                    <DialogHeader className="bg-slate-50 dark:bg-slate-900 p-8 pb-6 border-b border-slate-100 dark:border-slate-800">
+                        <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Editar Usuario</DialogTitle>
+                        <DialogDescription className="text-slate-500 font-medium">
+                            Modifique los permisos y asignaciones del colaborador en el sistema.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-4 py-4">
+                    <div className="grid gap-6 p-8">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="firstName">Nombre</Label>
@@ -771,11 +815,11 @@ export default function Users() {
                         </div>
                     </div>
 
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                    <DialogFooter className="bg-slate-50 dark:bg-slate-900 p-6 px-8 border-t border-slate-100 dark:border-slate-800">
+                        <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold">
                             Cancelar
                         </Button>
-                        <Button onClick={handleSaveUser} disabled={isSaving}>
+                        <Button onClick={handleSaveUser} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-8 font-black shadow-lg shadow-purple-200 dark:shadow-none transition-all active:scale-95">
                             {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Guardar Cambios
                         </Button>

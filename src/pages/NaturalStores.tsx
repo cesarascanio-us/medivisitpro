@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 
 import { useState, useEffect } from "react";
 import {
@@ -261,11 +270,13 @@ export default function NaturalStores() {
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-2 text-emerald-700">
-                        <Leaf className="h-8 w-8" />
+                    <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+                            <Leaf className="h-6 w-6 text-indigo-600" />
+                        </div>
                         Tiendas Naturistas
                     </h1>
-                    <p className="text-muted-foreground font-medium">Gestión de Alta Comercial 🌿</p>
+                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1 ml-14">Gestión de Canal Elite 🌿</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <Button variant="outline" onClick={() => exportToCSV(naturalStores, 'tiendas_naturistas')} className="bg-card border-border text-foreground hover:bg-muted">
@@ -299,18 +310,18 @@ export default function NaturalStores() {
                             });
                             setFormDialogOpen(true);
                         }}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md font-medium"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/20 font-black uppercase tracking-widest text-[10px] h-11 px-6 rounded-xl transition-all hover:scale-105"
                     >
-                        <Plus className="h-4 w-4 mr-2" /> Nueva Tienda
+                        <Plus className="h-4 w-4 mr-2" /> Nueva Tienda Naturista
                     </Button>
                 </div>
             </div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="bg-card border border-border rounded-xl shadow-sm text-center p-4">
-                    <div className="text-2xl font-bold text-emerald-600">{naturalStores.length}</div>
-                    <div className="text-sm text-muted-foreground font-medium">Total Tiendas</div>
+                <Card className="bg-white border border-slate-100 rounded-2xl shadow-soft p-6 transition-all hover:shadow-card">
+                    <div className="text-3xl font-black text-indigo-600 mb-1">{naturalStores.length}</div>
+                    <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Total Registros</div>
                 </Card>
                 <Card className="bg-card border border-border rounded-xl shadow-sm text-center p-4">
                     <div className="text-2xl font-bold text-primary">{naturalStores.filter(s => s.priority === 'high' || s.status === 'high_potential').length}</div>
@@ -341,7 +352,7 @@ export default function NaturalStores() {
                                 placeholder="Buscar por nombre o RIF..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 bg-background border-input focus-visible:ring-emerald-500"
+                                className="pl-10 h-12 bg-slate-50 border-slate-100 focus-visible:ring-indigo-500 font-bold rounded-xl"
                             />
                         </div>
                     </div>
@@ -353,22 +364,24 @@ export default function NaturalStores() {
 
             {/* List Table */}
             <Card className="bg-card border border-border rounded-xl shadow-sm">
-                <CardHeader className="pb-3 border-b border-border">
-                    <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
-                        <Building className="h-4 w-4 text-emerald-600" />
-                        Directorio Comercial
+                <CardHeader className="pb-4 border-b border-slate-50">
+                    <CardTitle className="text-base font-black text-slate-800 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+                            <Building className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        Directorio de Establecimientos
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6 px-0">
                     <div className="overflow-x-auto">
                         <Table>
-                            <TableHeader className="bg-emerald-50/30">
-                                <TableRow>
-                                    <TableHead className="pl-6">Tienda Naturista</TableHead>
-                                    <TableHead>Ciudad / Dirección</TableHead>
-                                    <TableHead>RIF</TableHead>
-                                    <TableHead>Estatus</TableHead>
-                                    <TableHead className="text-right pr-6">Acciones</TableHead>
+                            <TableHeader className="bg-slate-50/50">
+                                <TableRow className="border-slate-50 hover:bg-transparent">
+                                    <TableHead className="pl-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Tienda Naturista</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ubicación Estratégica</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">RIF / ID</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Estatus Operativo</TableHead>
+                                    <TableHead className="text-right pr-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Acciones</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -394,43 +407,43 @@ export default function NaturalStores() {
                                     </TableRow>
                                 ) : (
                                     naturalStores.map(store => (
-                                        <TableRow key={store.id} className="hover:bg-emerald-50/10 transition-colors">
-                                            <TableCell className="pl-6 font-medium text-emerald-950">
+                                        <TableRow key={store.id} className="hover:bg-indigo-50/30 transition-all border-slate-50 group">
+                                            <TableCell className="pl-8 py-5">
                                                 <div className="flex flex-col">
-                                                    <span className="font-bold text-slate-800">{store.name}</span>
-                                                    <span className="text-[10px] text-muted-foreground flex items-center gap-1 font-normal">
-                                                        <Phone className="h-2.5 w-2.5" /> {store.phone || 'Sin teléfono'}
+                                                    <span className="font-black text-sm text-slate-700 group-hover:text-indigo-700 transition-colors">{store.name}</span>
+                                                    <span className="text-[10px] text-slate-400 flex items-center gap-1.5 font-bold uppercase tracking-tighter mt-1">
+                                                        <Phone className="h-3 w-3 text-indigo-400" /> {store.phone || 'Pendiente'}
                                                     </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex flex-col max-w-[200px]">
-                                                    <span className="text-xs font-semibold text-slate-700">{store.city || 'S/C'}</span>
-                                                    <span className="text-xs text-muted-foreground truncate">{store.address || 'Sin dirección'}</span>
+                                                <div className="flex flex-col max-w-[220px]">
+                                                    <span className="text-xs font-black text-slate-600 uppercase tracking-tight">{store.city || 'N/A'}</span>
+                                                    <span className="text-xs text-slate-400 truncate mt-0.5">{store.address || 'Sin dirección registrada'}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="font-mono text-[10px] border-emerald-100 text-emerald-800">
+                                                <Badge variant="outline" className="font-mono text-[10px] border-slate-200 text-slate-600 bg-white">
                                                     {store.rif}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className={store.priority === 'high' || store.status === 'high_potential' ? "bg-rose-100 text-rose-700 border-rose-200" : "bg-emerald-100 text-emerald-800 border-emerald-200"}>
+                                                <Badge className={store.priority === 'high' || store.status === 'high_potential' ? "bg-rose-50 text-rose-600 border-rose-100 font-black text-[9px] uppercase tracking-widest px-2.5" : "bg-indigo-50 text-indigo-600 border-indigo-100 font-black text-[9px] uppercase tracking-widest px-2.5"}>
                                                     {store.priority === 'high' || store.status === 'high_potential' ? "Alta Prioridad" : "Activa"}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-right pr-6">
-                                                <div className="flex justify-end gap-2 text-right">
-                                                    <Button variant="ghost" size="sm" onClick={() => handleViewDetails(store)}>
-                                                        <Eye className="h-4 w-4 text-emerald-600" />
+                                            <TableCell className="text-right pr-8">
+                                                <div className="flex justify-end gap-1">
+                                                    <Button variant="ghost" size="sm" onClick={() => handleViewDetails(store)} className="h-9 w-9 p-0 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-all">
+                                                        <Eye className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="sm" onClick={() => handleEditStore(store)}>
-                                                        <Edit className="h-4 w-4 text-emerald-600" />
+                                                    <Button variant="ghost" size="sm" onClick={() => handleEditStore(store)} className="h-9 w-9 p-0 hover:bg-slate-100 hover:text-slate-900 rounded-lg transition-all">
+                                                        <Edit className="h-4 w-4" />
                                                     </Button>
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
-                                                            <Button variant="ghost" size="sm">
-                                                                <Trash2 className="h-4 w-4 text-red-500" />
+                                                            <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition-all">
+                                                                <Trash2 className="h-4 w-4" />
                                                             </Button>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>
@@ -461,71 +474,80 @@ export default function NaturalStores() {
 
             {/* Detail View Dialog */}
             <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-emerald-900 border-b pb-4">
-                            <Leaf className="h-6 w-6 text-emerald-600" />
-                            {selectedStore?.name}
-                        </DialogTitle>
-                        <DialogDescription>
-                            Detalle completo de la tienda, historial de visitas y pedidos realizados.
-                        </DialogDescription>
-                    </DialogHeader>
+                <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-3xl rounded-[2rem] bg-white">
+                    <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-10 py-10 text-white relative">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                                <Leaf className="h-7 w-7 text-white" />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-2xl font-black tracking-tight text-white m-0">
+                                    {selectedStore?.name}
+                                </DialogTitle>
+                                <p className="text-indigo-200/70 text-xs font-bold uppercase tracking-widest mt-1">
+                                    Expediente Comercial de Establecimiento
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                     {selectedStore && (
                         <Tabs defaultValue="overview" className="mt-4">
-                            <TabsList className="grid w-full grid-cols-3 bg-emerald-50/50">
-                                <TabsTrigger value="overview">General</TabsTrigger>
-                                <TabsTrigger value="visits">Visitas</TabsTrigger>
-                                <TabsTrigger value="orders">Pedidos</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-3 bg-slate-50 p-1 rounded-xl">
+                                <TabsTrigger value="overview" className="rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">General</TabsTrigger>
+                                <TabsTrigger value="visits" className="rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">Visitas</TabsTrigger>
+                                <TabsTrigger value="orders" className="rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">Pedidos</TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="overview" className="space-y-6 py-4">
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
-                                        <div className="bg-white p-4 rounded-xl border border-emerald-50 shadow-sm">
-                                            <h3 className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2 text-muted-foreground uppercase tracking-wider">
-                                                <Building className="h-4 w-4" /> Información Comercial
+                                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                                            <h3 className="text-[10px] font-black text-slate-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                                                <Building className="h-3.5 w-3.5 text-indigo-500" /> Información Comercial
                                             </h3>
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between border-b border-emerald-50 pb-2">
-                                                    <span className="text-sm text-muted-foreground">RIF:</span>
-                                                    <span className="text-sm font-mono font-bold text-emerald-800">{selectedStore.rif}</span>
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between border-b border-slate-50 pb-2">
+                                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">RIF Identificador</span>
+                                                    <span className="text-xs font-mono font-black text-indigo-700">{selectedStore.rif}</span>
                                                 </div>
-                                                <div className="flex justify-between border-b border-emerald-50 pb-2">
-                                                    <span className="text-sm text-muted-foreground">Dueño/Encargado:</span>
-                                                    <span className="text-sm font-medium">{selectedStore.owner_name || 'No especificado'}</span>
+                                                <div className="flex justify-between border-b border-slate-50 pb-2">
+                                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Dueño / Regente</span>
+                                                    <span className="text-xs font-black text-slate-700">{selectedStore.owner_name || 'No especificado'}</span>
                                                 </div>
-                                                <div className="flex justify-between pt-2">
-                                                    <span className="text-sm text-muted-foreground">Estatus Legal:</span>
-                                                    <Badge className={selectedStore.sanitary_permits ? "bg-emerald-100 text-emerald-800" : "bg-yellow-100 text-yellow-800"}>
+                                                <div className="flex justify-between pt-1">
+                                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Estatus Legal</span>
+                                                    <Badge className={selectedStore.sanitary_permits ? "bg-indigo-50 text-indigo-700 border-none font-black text-[9px] uppercase" : "bg-amber-50 text-amber-700 border-none font-black text-[9px] uppercase"}>
                                                         {selectedStore.sanitary_permits ? "Permisos al día" : "Permisos Pendientes"}
                                                     </Badge>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="bg-white p-4 rounded-xl border border-emerald-50 shadow-sm">
-                                            <h3 className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2 text-muted-foreground uppercase tracking-wider">
-                                                <MapPin className="h-4 w-4" /> Ubicación
+                                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                                            <h3 className="text-[10px] font-black text-slate-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                                                <MapPin className="h-3.5 w-3.5 text-indigo-500" /> Ubicación Geográfica
                                             </h3>
-                                            <p className="text-sm font-medium">{selectedStore.city}, {selectedStore.state || ''}</p>
-                                            <p className="text-sm text-muted-foreground mt-1">{selectedStore.address}</p>
+                                            <p className="text-sm font-black text-slate-700 uppercase tracking-tight">{selectedStore.city}, {selectedStore.state || ''}</p>
+                                            <p className="text-xs text-slate-400 font-bold mt-1.5 leading-relaxed">{selectedStore.address}</p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <div className="bg-emerald-900 text-white p-6 rounded-2xl shadow-xl shadow-emerald-500/10 h-full flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-lg font-bold mb-2">Operación Rápida</h3>
-                                                <p className="text-emerald-100/70 text-sm mb-6">Inicia una visita técnica o comercial ahora mismo.</p>
+                                        <div className="bg-slate-900 text-white p-8 rounded-[2rem] shadow-2xl relative overflow-hidden h-full flex flex-col justify-between">
+                                            <div className="absolute top-0 right-0 p-8 opacity-10">
+                                                <Navigation className="w-24 h-24" />
                                             </div>
-                                            <div className="space-y-3">
-                                                <Button onClick={handleRegisterVisit} className="w-full bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold h-12">
-                                                    <Navigation className="mr-2 h-5 w-5" /> Registrar Visita
+                                            <div className="relative z-10">
+                                                <h3 className="text-lg font-black mb-2 uppercase tracking-tight">Operación de Impacto</h3>
+                                                <p className="text-indigo-200/50 font-bold text-xs uppercase tracking-widest mb-8 leading-relaxed">Ejecuta una visita de campo o actualiza el perfil comercial.</p>
+                                            </div>
+                                            <div className="space-y-3 relative z-10">
+                                                <Button onClick={handleRegisterVisit} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl shadow-xl shadow-indigo-500/10 transition-all">
+                                                    <Navigation className="mr-3 h-5 w-5" /> Registrar Nueva Visita
                                                 </Button>
-                                                <Button variant="outline" className="w-full border-emerald-700 text-white hover:bg-emerald-800 h-10" onClick={() => handleEditStore(selectedStore)}>
-                                                    <Edit className="mr-2 h-4 w-4" /> Editar Información
+                                                <Button variant="outline" className="w-full border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl transition-all" onClick={() => handleEditStore(selectedStore)}>
+                                                    <Edit className="mr-3 h-4 w-4" /> Modificar Perfil
                                                 </Button>
                                             </div>
                                         </div>
@@ -578,8 +600,8 @@ export default function NaturalStores() {
                                                         <p className="text-xs text-muted-foreground">{new Date(o.order_date).toLocaleDateString()}</p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="font-bold text-emerald-700">${o.total?.toFixed(2)}</p>
-                                                        <Badge variant="outline" className="text-[9px]">{o.status}</Badge>
+                                                        <p className="font-black text-indigo-700">${o.total?.toFixed(2)}</p>
+                                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-slate-100 text-slate-400">{o.status}</Badge>
                                                     </div>
                                                 </div>
                                             ))}

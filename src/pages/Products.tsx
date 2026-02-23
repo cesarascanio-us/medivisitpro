@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect, useRef } from "react";
 import { Package, Plus, Search, Filter, Eye, Download, Heart, Upload, Loader2, Edit, Trash2, Lightbulb, HelpCircle, FileSpreadsheet, Printer } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -262,19 +271,30 @@ export default function Products() {
       />
 
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Package className="h-6 w-6 text-primary" />
-            Catálogo de Productos
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -mr-32 -mt-32 transition-colors group-hover:bg-indigo-100/50" />
+        <div className="relative z-10">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-xl shadow-indigo-200">
+              <Package className="h-7 w-7 text-white" />
+            </div>
+            Catálogo Maestro
           </h1>
-          <p className="text-muted-foreground">Explora y gestiona tu portafolio médico completo</p>
+          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-3 ml-18">Portafolio Farmacéutico & Recursos Científicos</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} title="Ver Ayuda">
-            <span className="sr-only">Ayuda</span>
-            <Lightbulb className="h-5 w-5 text-yellow-500" />
+        <div className="flex items-center gap-3 relative z-10">
+          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-11 h-11 rounded-xl hover:bg-slate-50">
+            <Lightbulb className="h-5 w-5 text-amber-500" />
           </Button>
+          <ProductFormDialog
+            onSuccess={loadProducts}
+            trigger={
+              <Button className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02] flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Alta de Producto
+              </Button>
+            }
+          />
         </div>
       </div>
 
@@ -291,30 +311,30 @@ export default function Products() {
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="medical-card">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Productos</p>
-                <p className="text-2xl font-bold text-foreground">{productStats.total}</p>
-              </div>
-              <Package className="h-8 w-8 text-primary opacity-20" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total SKU</p>
+              <p className="text-3xl font-black text-slate-900 tracking-tighter">{productStats.total}</p>
             </div>
-          </CardContent>
+            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center">
+              <Package className="h-6 w-6 text-indigo-600" />
+            </div>
+          </div>
         </Card>
 
         {Object.entries(productStats.byCategory).slice(0, 3).map(([category, count]) => (
-          <Card key={category} className="medical-card">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground truncate max-w-[150px]">{category}</p>
-                  <p className="text-2xl font-bold text-foreground">{count as number}</p>
-                </div>
-                <Package className="h-8 w-8 text-success opacity-20" />
+          <Card key={category} className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 truncate max-w-[120px]">{category}</p>
+                <p className="text-3xl font-black text-slate-900 tracking-tighter">{count as number}</p>
               </div>
-            </CardContent>
+              <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-indigo-400" />
+              </div>
+            </div>
           </Card>
         ))}
       </div>
@@ -427,25 +447,25 @@ export default function Products() {
               <Card key={product.id} className="bg-white border border-slate-200 hover:shadow-lg hover:border-emerald-300 transition-all duration-200 group">
                 <CardContent className="p-4">
                   {/* Product Image or Placeholder */}
-                  <div className="relative mb-3">
+                  <div className="relative mb-4">
                     {product.image_url ? (
-                      <div className="aspect-[4/3] w-full rounded-lg overflow-hidden bg-slate-100">
+                      <div className="aspect-square w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100">
                         <img
                           src={product.image_url}
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display = 'none';
                             (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                           }}
                         />
-                        <div className="hidden w-full h-full bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
-                          <Package className="h-12 w-12 text-emerald-300" />
+                        <div className="hidden w-full h-full bg-gradient-to-br from-indigo-50/50 to-slate-50 flex items-center justify-center">
+                          <Package className="h-10 w-10 text-indigo-200" />
                         </div>
                       </div>
                     ) : (
-                      <div className="aspect-[4/3] w-full rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center border border-emerald-100">
-                        <Package className="h-12 w-12 text-emerald-300" />
+                      <div className="aspect-square w-full rounded-2xl bg-gradient-to-br from-indigo-50/50 to-slate-50 flex items-center justify-center border border-indigo-50/50">
+                        <Package className="h-10 w-10 text-indigo-200" />
                       </div>
                     )}
                   </div>
@@ -482,12 +502,12 @@ export default function Products() {
                   </h3>
 
                   {/* Category & Price */}
-                  <div className="flex items-center justify-between mb-3">
-                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 font-medium">
+                  <div className="flex items-center justify-between mb-4">
+                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 text-[9px] px-2.5 py-1 font-black uppercase tracking-widest border-none">
                       {product.category || 'General'}
                     </Badge>
                     {product.price && (
-                      <span className="text-sm font-bold text-emerald-600">
+                      <span className="text-sm font-black text-slate-900">
                         ${product.price}
                       </span>
                     )}
@@ -500,14 +520,14 @@ export default function Products() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 h-8 text-xs border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                          className="flex-1 h-9 text-[10px] font-black uppercase tracking-widest border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl"
                           onClick={() => setSelectedProductId(product.id)}
                         >
-                          <Eye className="mr-1.5 h-3 w-3" />
-                          Presentación
+                          <Eye className="mr-1.5 h-3.5 w-3.5" />
+                          View
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden">
+                      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[2rem]">
                         <ProductDetailView
                           productId={product.id}
                           onBack={() => setSelectedProductId(null)}
@@ -517,7 +537,7 @@ export default function Products() {
 
                     <ProductSamplesDialog
                       trigger={
-                        <Button size="sm" className="flex-1 h-8 text-xs bg-emerald-500 hover:bg-emerald-600 text-white">
+                        <Button size="sm" className="flex-1 h-9 text-[10px] font-black uppercase tracking-widest bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-200 transition-all">
                           Muestras
                         </Button>
                       }

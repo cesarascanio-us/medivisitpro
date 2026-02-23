@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- Function to register sample delivery and update inventory
 CREATE OR REPLACE FUNCTION register_visit_sample_drop(
     p_visit_id UUID,

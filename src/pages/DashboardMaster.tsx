@@ -1,4 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+import { useState, useEffect, useMemo, cloneElement } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Users, TrendingUp, Activity, Map,
@@ -30,6 +39,7 @@ import { CompetitivenessMonitor } from "@/components/dashboard/CompetitivenessMo
 import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
 import { AdminDataFilter, AdminFilterState } from "@/components/admin/AdminDataFilter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 // --- TIPOS DE DATOS ---
 interface KPIStats {
@@ -417,53 +427,94 @@ export default function DashboardMaster() {
     return (
         <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
 
-            {/* HEADERS FILTER & ACTION */}
-            <div className="flex flex-col gap-4 pt-4 px-1">
-                <div className="flex justify-between items-start md:items-center">
-                    <div className="flex flex-col space-y-1.5">
-                        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Centro de Mando</h2>
-                        <p className="text-slate-500 dark:text-slate-400">Gestión estratégica y control operativo</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} size="icon" variant="outline" className="text-slate-500 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700">
-                            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
-                        </Button>
-                    </div>
-                </div>
+            {/* Premium White Header Container */}
+            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                {/* Decorative backgrounds */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-50 dark:bg-rose-900/10 rounded-full blur-3xl opacity-60"></div>
 
-                {/* Welcome Section */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-lg text-white shadow-md">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <LayoutDashboard className="text-white h-8 w-8" />
+                        </div>
                         <div>
-                            <h1 className="text-2xl font-bold">¡Bienvenido de vuelta, {getUserName()}!</h1>
-                            <div className="flex items-center mt-1">
-                                <Badge variant="secondary" className="bg-background text-foreground hover:bg-background/90 border-0">
+                            <p className="text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Panel de Control Global</p>
+                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                ¡Hola, {getUserName()}!
+                            </h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
                                     {isSystemAdmin ? 'System Admin' : (ROLE_LABELS[role] || role)}
                                 </Badge>
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">Sistema Activo</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <p className="text-primary-foreground/80 mt-2">
-                        Tienes {stats.activeZones} zonas activas y ${stats.totalSales.toLocaleString()} en ventas acumuladas este mes.
-                    </p>
+
+                    <div className="flex flex-col items-end gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="text-right hidden sm:block">
+                                <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">
+                                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                                    {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                                </div>
+                            </div>
+                            <Button
+                                onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })}
+                                size="icon"
+                                variant="outline"
+                                className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                            >
+                                <RefreshCw className={cn("h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-indigo-600 transition-colors", loading && "animate-spin")} />
+                            </Button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                {/* Performance Summary Bar */}
+                <div className="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex flex-wrap items-center gap-x-8 gap-y-3">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-emerald-600" />
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Zonas Activas</p>
+                            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{stats.activeZones} Regiones</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
+                            <TrendingUp className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Ventas Mes</p>
+                            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">${stats.totalSales.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
             <AdminDataFilter onFilterChange={setFilters} />
 
             <Tabs defaultValue="dashboard" className="w-full space-y-6" onValueChange={setActiveTab}>
                 {/* TABS NAVIGATION */}
-                <TabsList className="bg-slate-100 border border-slate-200 p-1 rounded-xl h-auto shadow-sm grid grid-cols-2 md:grid-cols-4 lg:inline-flex lg:w-auto gap-2">
-                    <TabsTrigger value="dashboard" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all">
-                        <LayoutDashboard size={18} /> Tablero
+                <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-1 rounded-2xl h-auto shadow-sm grid grid-cols-2 md:grid-cols-4 lg:inline-flex lg:w-auto gap-2">
+                    <TabsTrigger value="dashboard" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-indigo-200 dark:data-[state=active]:shadow-none rounded-xl transition-all font-bold text-xs uppercase tracking-wider">
+                        <LayoutDashboard size={14} strokeWidth={2.5} /> Tablero
                     </TabsTrigger>
                     {/* Map tab removed to avoid conflict with main map module */}
-                    <TabsTrigger value="pedidos" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-violet-600 data-[state=active]:text-white rounded-lg transition-all">
-                        <ShoppingCart size={18} /> Pedidos
-                        {pendingOrders.length > 0 && <span className="ml-2 bg-white text-violet-600 text-xs px-2 py-0.5 rounded-full font-bold">{pendingOrders.length}</span>}
+                    <TabsTrigger value="pedidos" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-rose-200 dark:data-[state=active]:shadow-none rounded-xl transition-all font-bold text-xs uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                        <ShoppingCart size={14} strokeWidth={2.5} /> Pedidos
+                        {pendingOrders.length > 0 && <span className="ml-2 bg-white text-rose-600 text-[10px] px-2 py-0.5 rounded-full font-black">{pendingOrders.length}</span>}
                     </TabsTrigger>
-                    <TabsTrigger value="equipo" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-amber-500 data-[state=active]:text-white rounded-lg transition-all">
-                        <Users size={18} /> Equipo
+                    <TabsTrigger value="equipo" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-amber-100 dark:data-[state=active]:shadow-none rounded-xl transition-all font-bold text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                        <Users size={14} strokeWidth={2.5} /> Equipo
                     </TabsTrigger>
                 </TabsList>
                 {activeTab === 'equipo' && (
@@ -508,13 +559,13 @@ export default function DashboardMaster() {
                     <Card className="bg-slate-50 border-slate-200 shadow-sm">
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader className="bg-slate-50">
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">Orden #</TableHead>
-                                        <TableHead>Farmacia</TableHead>
-                                        <TableHead>Representante</TableHead>
-                                        <TableHead className="text-right">Total</TableHead>
-                                        <TableHead className="text-center">Acciones</TableHead>
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
+                                    <TableRow className="hover:bg-transparent border-none">
+                                        <TableHead className="w-[120px] text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">Orden #</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Farmacia</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Representante</TableHead>
+                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Total</TableHead>
+                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Acciones</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -576,15 +627,15 @@ export default function DashboardMaster() {
                     <Card className="bg-slate-50 border-slate-200 shadow-sm">
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader className="bg-slate-50">
-                                    <TableRow>
-                                        <TableHead className="w-[50px] text-center">#</TableHead>
-                                        <TableHead>Usuario</TableHead>
-                                        <TableHead>Rol / Zona</TableHead>
-                                        <TableHead className="text-center">Estado</TableHead>
-                                        <TableHead className="text-right">Ventas</TableHead>
-                                        <TableHead className="text-right">Efec.</TableHead>
-                                        <TableHead className="text-center">Editar</TableHead>
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
+                                    <TableRow className="hover:bg-transparent border-none">
+                                        <TableHead className="w-[60px] text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">#</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Usuario</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Rol / Zona</TableHead>
+                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Estado</TableHead>
+                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Ventas</TableHead>
+                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Efec.</TableHead>
+                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Editar</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -726,21 +777,57 @@ export default function DashboardMaster() {
 }
 
 function KPICard({ title, value, icon, color }: any) {
-    const colors: any = {
-        emerald: "text-emerald-600 bg-emerald-50 border-emerald-100",
-        blue: "text-blue-600 bg-blue-50 border-blue-100",
-        violet: "text-violet-600 bg-violet-50 border-violet-100",
-        amber: "text-amber-600 bg-amber-50 border-amber-100",
+    const variants: any = {
+        emerald: {
+            bg: "bg-emerald-50 dark:bg-emerald-950/30",
+            icon: "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30",
+            glow: "shadow-emerald-100 dark:shadow-none"
+        },
+        blue: {
+            bg: "bg-blue-50 dark:bg-blue-950/30",
+            icon: "text-blue-600 bg-blue-100 dark:bg-blue-900/30",
+            glow: "shadow-blue-100 dark:shadow-none"
+        },
+        violet: {
+            bg: "bg-violet-50 dark:bg-violet-950/30",
+            icon: "text-violet-600 bg-violet-100 dark:bg-violet-900/30",
+            glow: "shadow-violet-100 dark:shadow-none"
+        },
+        amber: {
+            bg: "bg-amber-50 dark:bg-amber-950/30",
+            icon: "text-amber-600 bg-amber-100 dark:bg-amber-900/30",
+            glow: "shadow-amber-100 dark:shadow-none"
+        },
     };
+
+    const v = variants[color] || variants.blue;
+
     return (
-        <Card className={`border-l-4 shadow-sm bg-white dark:bg-slate-900 ${color === 'emerald' ? 'border-l-emerald-500' : color === 'blue' ? 'border-l-blue-500' : color === 'violet' ? 'border-l-violet-500' : 'border-l-amber-500'}`}>
-            <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                    <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">{title}</p>
-                    <p className={`text-2xl font-bold ${color === 'emerald' ? 'text-emerald-600 dark:text-emerald-400' : color === 'blue' ? 'text-blue-600 dark:text-blue-400' : color === 'violet' ? 'text-violet-600 dark:text-violet-400' : 'text-amber-600 dark:text-amber-400'}`}>{value}</p>
+        <Card className="border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+            <CardContent className="p-6 relative">
+                {/* Subtle gradient background on hover */}
+                <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-5 transition-opacity duration-500", v.bg)}></div>
+
+                <div className="flex items-center justify-between relative z-10">
+                    <div className="space-y-1">
+                        <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.15em]">{title}</p>
+                        <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+                            {value}
+                        </p>
+                    </div>
+                    <div className={cn("p-4 rounded-[1.25rem] transition-all duration-300 group-hover:scale-110", v.icon)}>
+                        {cloneElement(icon as React.ReactElement, { size: 24, strokeWidth: 2.5 })}
+                    </div>
                 </div>
-                <div className={`p-3 rounded-xl ${color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : color === 'violet' ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'}`}>
-                    {icon}
+
+                {/* Decorative dots pattern */}
+                <div className="absolute -bottom-2 -right-2 w-16 h-16 opacity-[0.03] pointer-events-none">
+                    <svg width="100%" height="100%" viewBox="0 0 100 100">
+                        <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <circle cx="2" cy="2" r="2" fill="currentColor" />
+                        </pattern>
+                        <rect width="100" height="100" fill="url(#dots)" />
+                    </svg>
                 </div>
             </CardContent>
         </Card>

@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- FIX: Resolve "Database error querying schema" on login
 
 -- 1. Ensure 'is_active' exists in user_roles (just in case)

@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- DEBUG: TEMPORARILY DISABLE COMPLEXITY TO FIND 400 ERROR SOURCE
 -- 1. DISABLE RLS (Make everything public for a moment to see if error persists)
 ALTER TABLE public.rep_inventory DISABLE ROW LEVEL SECURITY;

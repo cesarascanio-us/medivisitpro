@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from 'react';
 import { Route, MapPin, Clock, Navigation, Sparkles, RefreshCw, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -28,6 +37,7 @@ interface OptimizedRoute {
     totalDistance: number;
     estimatedDuration: number;
     polyline?: [number, number][];
+    savingsPercent?: number;
 }
 
 interface OptimizedRouteViewProps {
@@ -107,7 +117,8 @@ export function OptimizedRouteView({
                         lng: v.longitude!
                     })),
                     totalDistance: 0,
-                    estimatedDuration: validVisits.length * 20 * 60 // 20 min per visit
+                    estimatedDuration: validVisits.length * 20 * 60, // 20 min per visit
+                    savingsPercent: 0
                 });
                 return;
             }
@@ -127,7 +138,8 @@ export function OptimizedRouteView({
                 stops: optimizedStops,
                 totalDistance: osrmResult.totalDistance / 1000, // Convert to km
                 estimatedDuration: osrmResult.totalDuration,
-                polyline: osrmResult.polyline
+                polyline: osrmResult.polyline,
+                savingsPercent: 0 // Will be calculated if needed
             };
 
             setOptimizedRoute(route);

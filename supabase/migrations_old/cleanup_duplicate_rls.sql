@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- CLEANUP DUPLICATE AND DANGEROUS RLS POLICIES
 -- Goal: Remove "Blindaje_..." and other legacy policies that use the dangerous `get_user_org()` function
 -- or redundant policies that conflict with our new safe "tenant_isolation".

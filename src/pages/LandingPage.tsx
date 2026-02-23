@@ -1,7 +1,19 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+ ======================================================================== */
+
 import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { PricingSection } from '@/components/landing/PricingSection';
+import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
+import { ContactSection } from '@/components/landing/ContactSection';
 import {
   Stethoscope,
   Calendar,
@@ -11,56 +23,40 @@ import {
   Package,
   ArrowRight,
   CheckCircle2,
-  Rocket,
   ShieldCheck,
   Zap,
-  Smartphone
+  Smartphone,
+  Menu,
+  X,
+  PlayCircle,
+  Globe,
+  Lock
 } from 'lucide-react';
-import { AppShowcaseCarousel } from '@/components/common/AppShowcaseCarousel';
+import { useState } from 'react';
 import { SEO } from '@/components/common/SEO';
 import { trackEvent } from '@/lib/analytics';
-import { PricingSection } from '@/components/landing/PricingSection';
-import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
-import { OnlineStatusIndicator } from '@/components/common/OnlineStatusIndicator';
 import { useLandingContent } from '@/hooks/useLandingContent';
 
 const IconMap: Record<string, any> = {
-  Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Rocket, Stethoscope
+  Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Stethoscope
 };
-
-// This is now the fallback if DB fails
-const fallbackFeatures = [
-  { icon: Calendar, title: 'Recupera 10+ Horas Semanales', description: '...' },
-  // others...
-];
-
-const schemaData = (content: any) => ({
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "MediVisit Pro",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web, Android, iOS",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "ratingCount": "520"
-  },
-  "description": content.hero.subtitle,
-  "featureList": content.features.items.map((i: any) => i.title).join(', ')
-});
 
 export default function LandingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { content } = useLandingContent();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     trackEvent('view_landing');
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleAuthNavigation = () => {
@@ -72,390 +68,333 @@ export default function LandingPage() {
     }
   };
 
-  const handleStartFree = () => {
-    trackEvent('click_start_free');
-    handleAuthNavigation();
-  };
-
-  const handleDemo = () => {
-    trackEvent('click_demo');
-    navigate('/demo');
-  };
-
-  const handleWhatsApp = () => {
-    trackEvent('click_whatsapp');
-    window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20MediVisitPro,%20quiero%20mejorar%20mis%20ventas", "_blank");
-  };
+  const activeFeatures = content.features?.items || [
+    { title: "Gestión de Visitas 2.0", description: "Planifica rutas inteligentes, reporta en tiempo real y optimiza cada segundo de tu jornada médica.", icon: "Calendar" },
+    { title: "Bóveda de Muestras", description: "Trazabilidad quirúrgica de muestras médicas (Art. 131 LOTTT). Evita mermas y asegura entregas.", icon: "Package" },
+    { title: "Dashboard Nivel Dios", description: "Analíticas avanzadas con visión Sentinel. Descubre oportunidades donde otros ven datos.", icon: "BarChart3" }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-white font-sans text-text-main selection:bg-primary selection:text-white">
       <SEO
-        title="MediVisit Pro - Aumenta tus Prescripciones Médicas"
-        description={content.hero.subtitle}
-        keywords="visitador médico app, crm visita médica, gestión farmacéutica, control muestras médicas, software visitadores"
+        title="MediVisit Pro - El Sistema Definitivo para Visitadores Médicos"
+        description="Transforma tu gestión de visita médica con IA, control de muestras bajo LOTTT y analíticas de alto impacto. La plataforma #1 en LATAM."
+        keywords="visitador médico, gestión visita médica, crm farma, control muestras, software farmacéutica, lottt venezuela"
         canonical="https://medivisitpro.com/"
       />
 
-      {/* Schema.org Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(schemaData(content))}
-      </script>
-
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-700/50">
+      {/* Navbar - Institutional Glassmorphism */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-xl shadow-soft py-2' : 'bg-transparent py-4'
+          }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <Stethoscope className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-white tracking-tight">MediVisitPro</span>
+              <span className="text-xl font-bold text-slate-900 tracking-tighter">MediVisit<span className="text-primary">Pro</span></span>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:block">
-                <OnlineStatusIndicator />
-              </div>
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-8">
+              {['Características', 'Precios', 'Testimonios', 'FAQ'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm font-semibold text-slate-500 hover:text-primary transition-colors"
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+
+            {/* CTA Buttons */}
+            <div className="hidden md:flex items-center gap-4">
               <Button
+                variant="ghost"
                 onClick={handleAuthNavigation}
-                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all font-medium"
+                className="text-slate-700 hover:text-primary font-bold"
               >
-                {user ? 'Ir al Dashboard' : 'Iniciar Sesión'}
+                {user ? 'Ir al Dashboard' : 'Acceso Clientes'}
+              </Button>
+              <Button
+                onClick={() => navigate('/demo')}
+                className="bg-primary hover:bg-primary-dark text-white shadow-xl hover:shadow-primary/30 transition-all transform hover:-translate-y-0.5 rounded-full px-8 font-bold"
+              >
+                Prueba Gratis
+              </Button>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="md:hidden p-2 text-text-main"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl shadow-2xl border-t border-gray-100 p-6 flex flex-col gap-4 animate-in slide-in-from-top duration-300">
+            {['Características', 'Precios', 'Testimonios', 'FAQ'].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-lg font-bold text-slate-800 py-2 border-b border-slate-50"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item}
+              </a>
+            ))}
+            <div className="pt-4 space-y-3">
+              <Button onClick={handleAuthNavigation} variant="outline" className="w-full justify-center h-12 rounded-xl border-slate-200">
+                Iniciar Sesión
+              </Button>
+              <Button onClick={() => navigate('/demo')} className="w-full justify-center bg-primary h-12 rounded-xl shadow-lg">
+                Comenzar Gratis
               </Button>
             </div>
           </div>
-        </div>
+        )}
       </header>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      {/* Hero Section - Elite Corporate Aesthetic */}
+      <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[radial-gradient(circle_at_top_right,rgba(0,86,179,0.05),transparent_50%)]"></div>
 
-        {/* Background Decorative Images */}
-        <div className="absolute -top-24 -right-24 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute top-1/2 -left-48 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-            <div className="lg:text-left text-center flex-1 space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Text Column */}
+            <div className="lg:col-span-7 text-center lg:text-left space-y-10">
+              <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border border-primary/10 text-primary-dark text-xs font-bold uppercase tracking-widest animate-in fade-in duration-1000">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
-                {content.hero.badge}
+                Sentinel Intelligence Enabled
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-                {content.hero.title_part1} <br />
-                <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent italic">
-                  {content.hero.title_highlight}
-                </span>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] tracking-tighter">
+                Evoluciona tu <br />
+                <span className="text-primary">Visita Médica</span>
               </h1>
 
-              <p className="text-xl sm:text-2xl text-slate-300 max-w-2xl lg:mx-0 mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-                {content.hero.subtitle}
+              <p className="text-xl text-slate-500 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                La orquestación definitiva para visitadores de alto desempeño. Cumplimiento <span className="text-primary font-bold italic">LOTTT</span> integrado, analíticas en tiempo real y gestión Offline-First.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
+              <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 pt-6">
                 <Button
-                  onClick={handleDemo}
                   size="lg"
-                  className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-xl shadow-emerald-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 px-10 h-16 text-lg font-bold rounded-xl"
+                  onClick={() => navigate('/demo')}
+                  className="w-full sm:w-auto px-10 h-16 bg-primary hover:bg-primary-dark text-white rounded-2xl shadow-2xl hover:shadow-primary/40 transition-all text-xl font-bold group"
                 >
-                  <Rocket className="mr-3 h-6 w-6" />
-                  {content.hero.cta_primary}
+                  Obtener Acceso Pro
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <div className="text-slate-500 text-sm font-medium">{content.hero.cta_secondary}</div>
+                <button
+                  className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-slate-700 hover:text-primary font-bold transition-all text-lg group"
+                >
+                  <PlayCircle className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                  Ver Demo Interactiva
+                </button>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap items-center lg:justify-start justify-center gap-x-6 gap-y-3 text-sm font-medium text-slate-400 pt-4 animate-in fade-in duration-1000 delay-700">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                  <span>Sin Tarjeta</span>
+              <div className="pt-10 flex items-center justify-center lg:justify-start gap-10">
+                <div className="flex -space-x-3">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden shadow-sm">
+                      <img src={`https://i.pravatar.cc/100?u=${i}`} alt="user" />
+                    </div>
+                  ))}
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] font-bold text-white shadow-sm">+150</div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                  <span>Modo Offline</span>
+                <div className="text-sm font-bold text-slate-500">
+                  <span className="text-slate-900">+1,200</span> Visitadores activos hoy
                 </div>
               </div>
             </div>
 
-            <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300 lg:block hidden">
-              {/* Floating 3D Device */}
-              <div className="relative z-10 w-full max-w-[500px] mx-auto animate-float">
+            {/* Interface Showcase */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative z-10 bg-white rounded-3xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 p-2 transform perspective-1000 rotate-y-3 hover:rotate-y-0 transition-all duration-700">
                 <img
-                  src={content.hero.hero_image}
-                  alt="MediVisitPro interface"
-                  className="w-full h-auto drop-shadow-[0_35px_35px_rgba(16,185,129,0.3)]"
+                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
+                  alt="MediVisitPro Dashboard"
+                  className="rounded-2xl w-full h-auto"
                 />
-              </div>
 
-              {/* Decorative elements around device */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-500/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
-            </div>
-          </div>
-
-          <div className="mt-24 animate-in fade-in zoom-in duration-1000 delay-500">
-            <AppShowcaseCarousel />
-          </div>
-
-          {/* Social Proof Numbers */}
-          <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-slate-800/50 pt-12">
-            {content.stats.map((stat, i) => (
-              <div key={i} className="text-center group hover:bg-slate-800/20 p-4 rounded-xl transition-colors">
-                <div className="text-3xl sm:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
-                  {stat.value}
-                </div>
-                <div className="text-sm font-medium text-emerald-400 uppercase tracking-wider">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Intelligence Showcase Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 relative bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="flex-1 space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-                Inteligencia de Datos
-              </div>
-              <h2 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
-                Visualiza tu Éxito con <br />
-                <span className="text-emerald-400 font-extrabold italic">Mapas de Calor</span>
-              </h2>
-              <p className="text-slate-400 text-lg leading-relaxed max-w-xl">
-                No dispongas tus esfuerzos al azar. Nuestra tecnología de geolocalización avanzada identifica dónde están tus mayores oportunidades en tiempo real.
-              </p>
-              <ul className="space-y-4">
-                {[
-                  'Identificación de zonas con baja cobertura',
-                  'Optimización de rutas por proximidad',
-                  'Seguimiento visual de objetivos de ciclo'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-slate-300">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                {/* Float Cards */}
+                <div className="absolute -top-10 -right-10 bg-white p-4 rounded-2xl shadow-xl border border-slate-50 animate-bounce-slow max-w-[180px]">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                      <CheckCircle2 className="w-4 h-4" />
                     </div>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button
-                onClick={handleDemo}
-                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 h-14 px-8 rounded-xl font-bold shadow-lg shadow-slate-900/50"
-              >
-                Explorar Mapas Inteligentes
-              </Button>
-            </div>
-
-            <div className="flex-1 relative animate-in fade-in slide-in-from-right-8 duration-1000">
-              {/* Premium Image Container */}
-              <div className="relative z-10 rounded-[3rem] overflow-hidden border-8 border-slate-800/50 shadow-2xl shadow-emerald-500/20">
-                <img
-                  src="/img/landing/territory-3d.png"
-                  alt="Inteligencia de Territorio"
-                  className="w-full h-auto transform hover:scale-105 transition-transform duration-700"
-                />
-                {/* Glassmorphism Badge */}
-                <div className="absolute bottom-6 right-6 p-4 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-500 rounded-lg">
-                      <Zap className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-white font-bold text-xs">Visitas Optimizadas</div>
-                      <div className="text-emerald-400 text-[10px] font-bold">+25% Eficiencia</div>
-                    </div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">Cumplimiento</span>
                   </div>
+                  <p className="text-sm font-bold text-slate-800">LOTTT Audit Certified</p>
                 </div>
               </div>
-              {/* Decorative Glows */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-[60px] animate-pulse"></div>
-              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-[60px] animate-pulse delay-500"></div>
+
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full -z-10"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/30">
+      {/* Trust Section */}
+      <section className="py-12 border-y border-slate-100 bg-slate-50/30">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-10">Confían en nuestro estándar ISO 27001</p>
+          <div className="flex flex-wrap justify-center items-center gap-16 opacity-40 hover:opacity-60 transition-opacity">
+            <span className="text-2xl font-black italic text-slate-600">PHARMA-CORE</span>
+            <span className="text-2xl font-black text-slate-600">BIO-TECH</span>
+            <span className="text-2xl font-black text-slate-600">HEALTH-X</span>
+            <span className="text-2xl font-black text-slate-600">GENESIS</span>
+            <span className="text-2xl font-black italic text-slate-600">MED-LIFE</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="características" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-              {content.features.title}
-            </h2>
-            <p className="text-slate-400 text-xl max-w-2xl mx-auto">
-              {content.features.subtitle}
-            </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 text-center md:text-left">
+            <div className="max-w-2xl">
+              <h2 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Capacidades del Grado Maestro</h2>
+              <p className="text-slate-500 text-xl font-medium">
+                Diseñamos herramientas que no solo gestionan, sino que elevan tu estatus profesional frente al gremio médico.
+              </p>
+            </div>
+            <Button variant="outline" className="rounded-xl h-12 border-slate-200">Ver todas las funciones</Button>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {content.features.items.map((feature, i) => {
+          <div className="grid md:grid-cols-3 gap-10">
+            {activeFeatures.map((feature: any, index: number) => {
               const Icon = IconMap[feature.icon] || Zap;
               return (
                 <div
-                  key={i}
-                  className="group p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800 hover:shadow-2xl hover:shadow-emerald-900/20 transition-all duration-300"
+                  key={index}
+                  className="group bg-slate-50/50 p-10 rounded-3xl border border-transparent hover:border-primary/10 hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-slate-800 group-hover:bg-emerald-500/10 flex items-center justify-center mb-6 transition-colors border border-slate-700 group-hover:border-emerald-500/50">
-                    <Icon className="h-7 w-7 text-emerald-400" />
+                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary transition-all">
+                    <Icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors">{feature.title}</h3>
-                  <p className="text-slate-400 text-base leading-relaxed">{feature.description}</p>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
+                  <p className="text-slate-500 leading-relaxed text-lg font-medium">
+                    {feature.description}
+                  </p>
                 </div>
               );
             })}
           </div>
+        </div>
+      </section>
 
-          {/* Testimonials */}
-          <div className="mt-32 grid md:grid-cols-2 gap-8 items-center">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                {content.testimonials.badge}
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
-                {content.testimonials.title}
-              </h2>
-              <div className="p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 relative">
-                <div className="absolute -top-4 -left-4 w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-3xl text-white font-serif">“</div>
-                <p className="text-lg text-slate-300 italic mb-6">
-                  "{content.testimonials.quote}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-slate-700 border-2 border-emerald-500/30 overflow-hidden">
-                    <img src={content.testimonials.avatar} alt="User" />
-                  </div>
-                  <div>
-                    <div className="text-white font-bold text-sm">{content.testimonials.author}</div>
-                    <div className="text-slate-500 text-xs font-medium">{content.testimonials.role}</div>
-                  </div>
-                </div>
-              </div>
+      {/* Security Banner */}
+      <section className="py-12 bg-slate-900 text-white overflow-hidden relative">
+        <div className="absolute inset-0 bg-primary/10 blur-[100px]"></div>
+        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md">
+              <ShieldCheck className="w-8 h-8 text-primary" />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 text-center">
-                <div className="text-4xl font-bold text-white mb-1">10h</div>
-                <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Ahorradas/Sem</div>
-              </div>
-              <div className="p-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/5 text-center">
-                <div className="text-4xl font-bold text-emerald-400 mb-1">+22%</div>
-                <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Prescripciones</div>
-              </div>
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 text-center col-span-2">
-                <div className="text-4xl font-bold text-white mb-1">100%</div>
-                <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Trazabilidad de Muestras</div>
-              </div>
+            <div>
+              <h3 className="text-xl font-bold">Resiliencia Sentinel</h3>
+              <p className="text-slate-400 text-sm">Cifrado de grado militar y servidores redundantes globales.</p>
             </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 py-1 px-4">ISO 27001 READY</Badge>
+            <Badge className="bg-primary/20 text-primary border-primary/30 py-1 px-4">GDPR COMPLIANT</Badge>
           </div>
         </div>
       </section>
 
-      {/* Lead Magnet: Commission Calculator */}
       <CommissionCalculator />
-
-      {/* Pricing Section */}
       <PricingSection />
+      <ContactSection />
 
-      {/* FAQ Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Preguntas Frecuentes</h2>
-            <p className="text-slate-400">Todo lo que necesitas saber para empezar hoy mismo.</p>
-          </div>
-          <div className="space-y-6">
-            {content.faq.map((item, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-slate-800/30 border border-slate-700/50 hover:border-emerald-500/30 transition-colors">
-                <h3 className="text-lg font-bold text-white mb-2">{item.q}</h3>
-                <p className="text-slate-400 leading-relaxed">{item.a}</p>
+      {/* Footer Final */}
+      <footer className="bg-white pt-24 pb-12 text-slate-500 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-12 gap-12 mb-20">
+            <div className="col-span-2 md:col-span-5 space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                  <Stethoscope className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-2xl font-bold text-slate-900 tracking-tighter">MediVisitPro</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <p className="text-lg max-w-sm font-medium">Liderando la transformación digital de la visita médica en Iberoamérica con tecnología de grado operativo.</p>
+              <div className="flex items-center gap-4">
+                <Globe className="w-5 h-5" /> <span className="font-bold">Global Presence</span>
+              </div>
+            </div>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="relative p-8 sm:p-16 rounded-[2.5rem] bg-gradient-to-br from-emerald-900/50 via-teal-900/30 to-slate-900 border border-emerald-500/30 overflow-hidden">
-            {/* Glossy Effect */}
-            <div className="absolute inset-0 bg-white/5 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="md:col-span-2 space-y-6">
+              <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Plataforma</h4>
+              <ul className="space-y-4 font-medium italic">
+                <li><a href="#" className="hover:text-primary transition-colors">Sentinel AI</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Offline PWA</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">API Docs</a></li>
+              </ul>
+            </div>
 
-            <div className="relative z-10">
-              <h2 className="text-3xl sm:text-5xl font-bold text-white mb-6">
-                {content.cta.title}
-              </h2>
-              <p className="text-slate-300 text-lg mb-10 max-w-xl mx-auto">
-                {content.cta.subtitle}
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Button
-                  onClick={handleStartFree}
-                  size="lg"
-                  className="bg-white text-emerald-900 hover:bg-slate-100 shadow-xl px-12 h-14 text-lg font-bold rounded-xl"
-                >
-                  {content.cta.button_primary}
-                </Button>
-                <Button
-                  onClick={handleDemo}
-                  size="lg"
-                  variant="outline"
-                  className="border-slate-600 text-white hover:bg-slate-800/50 hover:border-emerald-400 px-12 h-14 text-lg font-medium rounded-xl"
-                >
-                  {content.cta.button_secondary}
-                </Button>
+            <div className="md:col-span-2 space-y-6">
+              <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Compañía</h4>
+              <ul className="space-y-4 font-medium italic">
+                <li><a href="#" className="hover:text-primary transition-colors">Sobre CA Labs</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Carreras</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Legal</a></li>
+              </ul>
+            </div>
+
+            <div className="md:col-span-3 space-y-6">
+              <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Soporte Mission Control</h4>
+              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                <p className="text-sm font-bold text-slate-800 mb-2">¿Necesitas ayuda técnica?</p>
+                <p className="text-xs mb-4">Nuestro equipo orquestador está disponible 24/7 para ti.</p>
+                <Button className="w-full bg-slate-900 text-white rounded-xl">Inicia Ticket</Button>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 border-t border-slate-800 bg-slate-900">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                <Stethoscope className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-lg font-bold text-white">MediVisitPro</span>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-slate-50 text-[11px] font-bold uppercase tracking-widest">
+            <p>© 2026 EMPRESA CA - MEDIVISITPRO. NIVEL DE ACCESO: CONFIDENCIAL.</p>
+            <div className="flex items-center gap-8">
+              <a href="#" className="hover:text-primary">Privacidad</a>
+              <a href="#" className="hover:text-primary">Seguridad</a>
+              <a href="#" className="hover:text-primary">EULA</a>
             </div>
-            <p className="text-sm text-slate-500 max-w-xs">
-              Potenciando profesionales de la salud con tecnología simple y poderosa.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center gap-6 text-sm text-slate-400">
-            <Link to="/auth" className="hover:text-emerald-400 transition-colors">Login</Link>
-            <Link to="/demo" className="hover:text-emerald-400 transition-colors">Demo</Link>
-            <span>© 2024 MediVisitPro</span>
           </div>
         </div>
       </footer>
 
-      {/* WhatsApp Floating Button */}
+      {/* WhatsApp Button Elite */}
       <button
         onClick={handleWhatsApp}
-        className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-lg hover:shadow-[0_0_20px_rgba(37,211,102,0.5)] transition-all hover:-translate-y-1 flex items-center justify-center group animate-in fade-in zoom-in duration-300"
-        aria-label="Contactar por WhatsApp"
+        className="fixed bottom-8 right-8 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-3xl shadow-[0_20px_40px_-5px_rgba(37,211,102,0.3)] hover:shadow-[0_25px_50px_-5px_rgba(37,211,102,0.4)] transition-all hover:scale-110 group"
+        aria-label="Contactar Mission Control"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-8 h-8"
-        >
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-        </svg>
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-semibold">
-          Chatea con nosotros
+        <Smartphone className="w-7 h-7" />
+        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-slate-900 px-4 py-2 rounded-2xl text-xs font-black shadow-2xl opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 whitespace-nowrap pointer-events-none border border-slate-100">
+          CONECTAR CON MISSION CONTROL
         </span>
       </button>
     </div>
   );
+
+  function handleWhatsApp() {
+    trackEvent('click_whatsapp');
+    window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20MediVisitPro,%20solicito%20acceso%20al%20Centro%20de%20Mando", "_blank");
+  }
 }

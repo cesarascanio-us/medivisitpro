@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect, useRef } from "react";
 import { InstructionCard } from "@/components/ui/InstructionCard";
 import {
@@ -157,20 +166,20 @@ interface PharmacyReport {
 
 // Status configuration
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-    pending: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: Clock },
-    sent: { label: 'Enviado', color: 'bg-blue-100 text-blue-800 border-blue-300', icon: Send },
-    confirmed: { label: 'Confirmado', color: 'bg-green-100 text-green-800 border-green-300', icon: CheckCircle },
-    delivered: { label: 'Entregado', color: 'bg-emerald-100 text-emerald-800 border-emerald-300', icon: Package },
-    cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-800 border-red-300', icon: XCircle },
+    pending: { label: 'Pendiente', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: Clock },
+    sent: { label: 'Enviado', color: 'bg-blue-50 text-blue-700 border-blue-200', icon: Send },
+    confirmed: { label: 'Confirmado', color: 'bg-indigo-50 text-indigo-700 border-indigo-200', icon: CheckCircle },
+    delivered: { label: 'Entregado', color: 'bg-slate-900 text-white border-transparent', icon: Package },
+    cancelled: { label: 'Cancelado', color: 'bg-rose-50 text-rose-700 border-rose-200', icon: XCircle },
 };
 
 const ACTION_LABELS: Record<string, { label: string; color: string }> = {
-    created: { label: 'Creado', color: 'bg-blue-500' },
-    updated: { label: 'Modificado', color: 'bg-yellow-500' },
-    status_changed: { label: 'Estado Cambiado', color: 'bg-purple-500' },
-    document_generated: { label: 'Documento Generado', color: 'bg-green-500' },
-    cancelled: { label: 'Cancelado', color: 'bg-red-500' },
-    deleted: { label: 'Eliminado', color: 'bg-gray-500' },
+    created: { label: 'Creado', color: 'bg-indigo-600' },
+    updated: { label: 'Modificado', color: 'bg-amber-500' },
+    status_changed: { label: 'Estado Cambiado', color: 'bg-violet-500' },
+    document_generated: { label: 'Documento Generado', color: 'bg-slate-900' },
+    cancelled: { label: 'Cancelado', color: 'bg-rose-500' },
+    deleted: { label: 'Eliminado', color: 'bg-slate-400' },
 };
 
 export default function Pharmacies() {
@@ -1158,12 +1167,12 @@ export default function Pharmacies() {
 
     const getPriorityBadge = (priority: string | null) => {
         const styles: Record<string, string> = {
-            high: "bg-red-100 text-red-800 border-red-300",
-            medium: "bg-yellow-100 text-yellow-800 border-yellow-300",
-            low: "bg-green-100 text-green-800 border-green-300"
+            high: "bg-rose-50 text-rose-700 border-rose-200",
+            medium: "bg-amber-50 text-amber-700 border-amber-200",
+            low: "bg-indigo-50 text-indigo-700 border-indigo-200"
         };
         const labels: Record<string, string> = { high: "Alta", medium: "Media", low: "Baja" };
-        return <Badge className={`${styles[priority || 'medium']} border`}>{labels[priority || 'medium']}</Badge>;
+        return <Badge className={`${styles[priority || 'medium']} border uppercase font-black text-[9px] tracking-widest px-2 py-0.5`}>{labels[priority || 'medium']}</Badge>;
     };
 
     const filteredTransfers = transfers.filter(t => {
@@ -1218,11 +1227,13 @@ export default function Pharmacies() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                        <Store className="h-6 w-6 text-primary" />
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+                            <Store className="h-5 w-5 text-white" />
+                        </div>
                         Gestión de Farmacias
                     </h1>
-                    <p className="text-muted-foreground">Farmacias, droguerías y pedidos de transferencia</p>
+                    <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1 ml-13">Fichero Comercial & Órdenes de Transferencia</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} title="Ver Ayuda">
@@ -1302,21 +1313,21 @@ export default function Pharmacies() {
 
             {/* Main Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid grid-cols-5 w-full max-w-2xl">
-                    <TabsTrigger value="pharmacies" className="flex items-center gap-2">
-                        <Store className="h-4 w-4" /> Farmacias
+                <TabsList className="grid grid-cols-5 w-full max-w-2xl bg-slate-100 p-1 rounded-xl">
+                    <TabsTrigger value="pharmacies" className="flex items-center gap-2 rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm transition-all">
+                        <Store className="h-3.5 w-3.5" /> Farmacias
                     </TabsTrigger>
-                    <TabsTrigger value="natural_store" className="flex items-center gap-2">
-                        <LeafIcon className="h-4 w-4" /> Naturistas
+                    <TabsTrigger value="natural_store" className="flex items-center gap-2 rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm transition-all">
+                        <LeafIcon className="h-3.5 w-3.5" /> Naturistas
                     </TabsTrigger>
-                    <TabsTrigger value="drugstores" className="flex items-center gap-2">
-                        <Building className="h-4 w-4" /> Droguerías
+                    <TabsTrigger value="drugstores" className="flex items-center gap-2 rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm transition-all">
+                        <Building className="h-3.5 w-3.5" /> Droguerías
                     </TabsTrigger>
-                    <TabsTrigger value="all" className="flex items-center gap-2">
-                        <UsersIcon className="h-4 w-4" /> Ver Todo
+                    <TabsTrigger value="all" className="flex items-center gap-2 rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm transition-all">
+                        <UsersIcon className="h-3.5 w-3.5" /> Ver Todo
                     </TabsTrigger>
-                    <TabsTrigger value="transfers" className="flex items-center gap-2">
-                        <Send className="h-4 w-4" /> Transferencias
+                    <TabsTrigger value="transfers" className="flex items-center gap-2 rounded-lg font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm transition-all">
+                        <Send className="h-3.5 w-3.5" /> Transferencias
                     </TabsTrigger>
                 </TabsList>
 

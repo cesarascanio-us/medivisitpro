@@ -1,3 +1,13 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,12 +16,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { User, Building, MapPin, X, Leaf, Rocket, AlertCircle } from "lucide-react";
+import { User, Building, MapPin, X, Leaf, Rocket, AlertCircle, Phone, Mail, Clock, ShieldCheck, Target, GraduationCap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscriptionQuota } from "@/hooks/useSubscriptionQuota";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface ContactDialogProps {
   trigger: React.ReactNode;
@@ -156,13 +167,11 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
       }
 
       // Update health center associations
-      // First, delete existing associations
       await supabase
         .from('contact_health_centers')
         .delete()
         .eq('contact_id', contactId);
 
-      // Then, insert new associations
       if (selectedCenters.length > 0) {
         const associations = selectedCenters.map(centerId => ({
           contact_id: contactId,
@@ -178,7 +187,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
 
       toast({
         title: contactData ? "Contacto actualizado" : "Contacto creado",
-        description: contactData ? "El contacto ha sido actualizado correctamente." : "Nuevo contacto añadido al directorio.",
+        description: contactData ? "El registro ha sido actualizado correctamente." : "Nuevo contacto integrado al sistema.",
       });
 
       setOpen(false);
@@ -187,7 +196,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
       console.error('Error saving contact:', error);
       toast({
         title: "Error",
-        description: "No se pudo guardar el contacto. Inténtalo de nuevo.",
+        description: "No se pudo procesar la solicitud.",
         variant: "destructive",
       });
     } finally {
@@ -204,284 +213,297 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center">
-            <User className="mr-2 h-5 w-5 icon-medical" />
-            {contactData ? "Editar Contacto" : "Nuevo Contacto"}
-          </DialogTitle>
-          <DialogDescription>
-            Ingrese los detalles del contacto para mantener su directorio actualizado.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-3xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl bg-white">
+        {/* Header with Gradient */}
+        <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-8 text-white">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-inner">
+              <User className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-black tracking-tight text-white m-0">
+                {contactData ? "Editar Perfil de Contacto" : "Registro Rápido de Contacto"}
+              </DialogTitle>
+              <DialogDescription className="text-indigo-100/70 font-bold text-[10px] uppercase tracking-widest mt-1">
+                Directorio Unificado de Profesionales & Canal
+              </DialogDescription>
+            </div>
+          </div>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Información Básica</h3>
+        <form onSubmit={handleSubmit} className="px-8 py-6 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-slate-50/30">
+          {/* Section: Core Info */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Identidad del Contacto</h3>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Nombre Completo *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Dr./Dra. Nombre Apellido"
-                  required
-                />
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nombre Completo *</Label>
+                <div className="relative group">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Ej: Dr. Juan Pérez o Farmacia La Paz"
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 shadow-sm"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contact_type">Tipo de Contacto</Label>
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Tipo de Contacto</Label>
                 <Select
                   value={formData.contact_type}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, contact_type: value }))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold bg-white shadow-sm">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="doctor">Médico</SelectItem>
-                    <SelectItem value="pharmacy">Farmacia</SelectItem>
-                    <SelectItem value="natural_store">Tienda Naturista</SelectItem>
-                    <SelectItem value="drugstore">Droguería</SelectItem>
-                    <SelectItem value="hospital">Hospital</SelectItem>
-                    <SelectItem value="clinic">Clínica</SelectItem>
+                  <SelectContent className="rounded-xl font-bold">
+                    <SelectItem value="doctor">🩺 Médico</SelectItem>
+                    <SelectItem value="pharmacy">💊 Farmacia</SelectItem>
+                    <SelectItem value="natural_store">🌿 Tienda Naturista</SelectItem>
+                    <SelectItem value="drugstore">🚛 Droguería</SelectItem>
+                    <SelectItem value="hospital">🏥 Hospital</SelectItem>
+                    <SelectItem value="clinic">🏢 Clínica</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {(formData.contact_type === 'doctor' || formData.contact_type === 'hospital' || formData.contact_type === 'clinic') && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="specialty">Especialidad</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Especialidad / Ramo</Label>
+                <div className="relative group">
+                  <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
-                    id="specialty"
                     value={formData.specialty}
                     onChange={(e) => setFormData(prev => ({ ...prev, specialty: e.target.value }))}
-                    placeholder="ej. Cardiología, Neurología..."
+                    placeholder="Pediatría, Farmacia, etc..."
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
                   />
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="priority">Prioridad</Label>
-                  <Select
-                    value={formData.priority}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Baja</SelectItem>
-                      <SelectItem value="medium">Media</SelectItem>
-                      <SelectItem value="high">Alta</SelectItem>
-                      <SelectItem value="urgent">Urgente</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
-            )}
 
-            {(formData.contact_type === 'natural_store' || formData.contact_type === 'pharmacy' || formData.contact_type === 'drugstore') && (
-              <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
-                <h4 className="text-sm font-semibold flex items-center">
-                  <Leaf className="mr-2 h-4 w-4 text-emerald-600" />
-                  Alta Comercial (Profiling)
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="rif">RIF *</Label>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Prioridad de Atención</Label>
+                <Select
+                  value={formData.priority}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
+                >
+                  <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold bg-white shadow-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl font-bold">
+                    <SelectItem value="low" className="text-slate-400">Baja</SelectItem>
+                    <SelectItem value="medium" className="text-blue-600">Media (Estándar)</SelectItem>
+                    <SelectItem value="high" className="text-orange-600">Alta (VIP)</SelectItem>
+                    <SelectItem value="urgent" className="text-rose-600">Crítica / Lanzamiento</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <Separator className="bg-slate-200/50" />
+
+          {/* Section: Business Logic (Conditional) */}
+          {(formData.contact_type === 'natural_store' || formData.contact_type === 'pharmacy' || formData.contact_type === 'drugstore') && (
+            <div className="space-y-6 animate-in slide-in-from-top-2">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-6 bg-emerald-500 rounded-full" />
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Validación Comercial</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-emerald-50/30 p-6 rounded-3xl border border-emerald-100">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-emerald-700 ml-1">RIF / ID Fiscal *</Label>
+                  <div className="relative group">
+                    <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500/50" />
                     <Input
-                      id="rif"
                       value={formData.rif}
                       onChange={(e) => setFormData(prev => ({ ...prev, rif: e.target.value }))}
-                      placeholder="J-12345678-9"
+                      placeholder="J-00000000-0"
+                      className="h-11 pl-10 border-emerald-200 bg-white rounded-xl font-bold focus:ring-emerald-500/10"
                       required={formData.contact_type === 'natural_store'}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="owner_name">Dueño / Encargado</Label>
-                    <Input
-                      id="owner_name"
-                      value={formData.owner_name}
-                      onChange={(e) => setFormData(prev => ({ ...prev, owner_name: e.target.value }))}
-                      placeholder="Nombre del responsable"
-                    />
-                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-emerald-700 ml-1">Responsable Legal</Label>
+                  <Input
+                    value={formData.owner_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, owner_name: e.target.value }))}
+                    placeholder="Nombre del encargado"
+                    className="h-11 border-emerald-200 bg-white rounded-xl font-bold"
+                  />
+                </div>
+                <div className="md:col-span-2 flex items-center gap-3 p-3 bg-white border border-emerald-100 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
                   <Checkbox
                     id="sanitary_permits"
                     checked={formData.sanitary_permits}
                     onCheckedChange={(checked) => setFormData(prev => ({ ...prev, sanitary_permits: !!checked }))}
+                    className="data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
                   />
-                  <Label htmlFor="sanitary_permits" className="text-sm font-normal cursor-pointer">
-                    Cuenta con Permisos Sanitarios vigentes
+                  <Label htmlFor="sanitary_permits" className="text-xs font-bold text-slate-600 cursor-pointer">
+                    Confirmar posesión de Permisos Sanitarios vigentes
                   </Label>
                 </div>
-
-                <div className="space-y-2 mt-2">
-                  <Label htmlFor="priority">Prioridad Comercial</Label>
-                  <Select
-                    value={formData.priority}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Baja</SelectItem>
-                      <SelectItem value="medium">Media</SelectItem>
-                      <SelectItem value="high">Alta</SelectItem>
-                      <SelectItem value="urgent">Urgente</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Health Centers Association */}
+          {/* Section: Medical Institutions (Conditional) */}
           {(formData.contact_type === 'doctor' || formData.contact_type === 'hospital' || formData.contact_type === 'clinic') && (
-            <>
-              <Separator />
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-foreground">Centros de Salud</h3>
-                  <span className="text-sm text-muted-foreground">
-                    {selectedCenters.length} seleccionados
-                  </span>
-                </div>
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Centros de Operación</h3>
+              </div>
 
+              <div className="space-y-4">
                 {selectedCenters.length > 0 && (
-                  <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
+                  <div className="flex flex-wrap gap-2 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
                     {selectedCenters.map(centerId => {
                       const center = getSelectedCenter(centerId);
                       return center ? (
-                        <Badge key={centerId} variant="secondary" className="flex items-center gap-1">
+                        <Badge key={centerId} variant="secondary" className="h-8 pl-3 pr-2 rounded-lg bg-indigo-50 text-indigo-700 border-indigo-100 font-bold flex items-center gap-2">
                           <Building className="h-3 w-3" />
                           {center.name}
-                          <X
-                            className="h-3 w-3 cursor-pointer hover:text-destructive"
-                            onClick={() => toggleCenter(centerId)}
-                          />
+                          <button
+                            type="button"
+                            className="p-1 hover:bg-indigo-200 rounded-md transition-colors"
+                            onClick={(e) => { e.stopPropagation(); toggleCenter(centerId); }}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
                         </Badge>
                       ) : null;
                     })}
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-2 border rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-4 bg-white border border-slate-100 rounded-3xl custom-scrollbar">
                   {healthCenters.map((center) => (
                     <div
                       key={center.id}
-                      className="flex items-start space-x-2 p-3 rounded-lg hover:bg-accent cursor-pointer"
+                      className={cn(
+                        "flex items-start space-x-3 p-3 rounded-xl cursor-pointer transition-all border",
+                        selectedCenters.includes(center.id)
+                          ? "bg-indigo-50/50 border-indigo-200"
+                          : "hover:bg-slate-50 border-transparent"
+                      )}
                       onClick={() => toggleCenter(center.id)}
                     >
                       <Checkbox
                         checked={selectedCenters.includes(center.id)}
                         onCheckedChange={() => toggleCenter(center.id)}
+                        className="mt-1 data-[state=checked]:bg-indigo-600"
                       />
                       <div className="flex-1">
-                        <p className="font-medium text-sm text-foreground">{center.name}</p>
-                        <p className="text-xs text-muted-foreground">{center.type} - {center.city}</p>
+                        <p className="font-bold text-sm text-slate-700">{center.name}</p>
+                        <p className="text-[10px] font-black uppercase text-slate-400">{center.city}</p>
                       </div>
                     </div>
                   ))}
+                  {healthCenters.length === 0 && (
+                    <div className="col-span-full py-6 text-center">
+                      <AlertCircle className="h-8 w-8 text-slate-200 mx-auto mb-2" />
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-tight">Sin centros de salud vinculados</p>
+                    </div>
+                  )}
                 </div>
-
-                {healthCenters.length === 0 && (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    No hay centros de salud disponibles. Crea uno primero en el módulo de Centros de Salud.
-                  </p>
-                )}
               </div>
-              <Separator />
-            </>
+            </div>
           )}
 
-          {/* Contact Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Información de Contacto</h3>
+          <Separator className="bg-slate-200/50" />
 
-            <div className="space-y-2">
-              <Label htmlFor="address">Dirección</Label>
-              <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                placeholder="Dirección completa"
-              />
+          {/* Section: Contact & Location */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-6 bg-slate-400 rounded-full" />
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Localización & Canales</h3>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="city">Ciudad</Label>
-              <Input
-                id="city"
-                value={formData.city}
-                onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                placeholder="Ciudad"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="phone">Teléfono</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+58 XXX XXX XXXX"
-                />
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Dirección Física</Label>
+                <div className="relative group">
+                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    value={formData.address}
+                    onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                    placeholder="Ubicación completa..."
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Teléfono Directo</Label>
+                  <div className="relative group">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      placeholder="+58 000 000 0000"
+                      className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Correo Electrónico</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      placeholder="email@servidor.com"
+                      className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="email@ejemplo.com"
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Disponibilidad / Horario</Label>
+                <div className="relative group">
+                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    value={formData.work_hours}
+                    onChange={(e) => setFormData(prev => ({ ...prev, work_hours: e.target.value }))}
+                    placeholder="Ej: Lun-Vie 8am a 4pm"
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Observaciones Críticas</Label>
+                <Textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Detalles sobre trato, preferencias o advertencias..."
+                  className="min-h-[100px] border-slate-200 bg-white rounded-2xl font-medium p-4 resize-none shadow-sm"
                 />
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="work_hours">Horario de Atención</Label>
-              <Input
-                id="work_hours"
-                value={formData.work_hours}
-                onChange={(e) => setFormData(prev => ({ ...prev, work_hours: e.target.value }))}
-                placeholder="ej. Lunes a Viernes: 9:00-17:00"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notas</Label>
-              <Textarea
-                id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Información adicional sobre el contacto..."
-                rows={3}
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={loading} className="btn-medical">
-              {loading ? "Guardando..." : (contactData ? "Actualizar" : "Crear Contacto")}
-            </Button>
           </div>
         </form>
+
+        <div className="bg-white border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+          <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-400 hover:text-slate-600">Cancelar</Button>
+          <Button onClick={handleSubmit} disabled={loading} className="h-12 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02]">
+            {loading ? "Sincronizando..." : (contactData ? "Actualizar Perfil" : "Crear Contacto")}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

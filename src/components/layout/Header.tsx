@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from "react";
 import { Bell, Search, Calendar, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,16 +31,16 @@ export function Header() {
   });
 
   return (
-    <header className="bg-slate-950/40 backdrop-blur-xl border-b border-emerald-500/10 px-4 py-3 shadow-2xl shrink-0 h-14 z-20">
+    <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200 px-6 py-3 shadow-sm shrink-0 h-16 z-20">
       <div className="flex items-center justify-between h-full gap-4">
         {/* Left side - Date */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-white capitalize">
-            <Calendar className="h-4 w-4 text-emerald-400" />
-            <span className="hidden sm:inline">{todayFormatted}</span>
+          <div className="flex items-center gap-2 text-sm font-semibold text-text-main capitalize">
+            <Calendar className="h-4 w-4 text-primary" />
+            <span className="hidden sm:inline opacity-80">{todayFormatted}</span>
           </div>
           {isSystemAdmin && (
-            <Badge variant="outline" className="ml-2 bg-purple-500/10 text-purple-400 border-purple-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+            <Badge variant="outline" className="ml-2 bg-primary/10 text-primary border-primary/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
               System Admin
             </Badge>
           )}
@@ -42,12 +51,12 @@ export function Header() {
 
         {/* Center - Search (hidden on small screens) */}
         <div className="hidden md:block flex-1 max-w-md mx-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-primary transition-colors" />
             <Input
               type="text"
               placeholder="Buscar..."
-              className="pl-10 h-9 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-emerald-500 focus-visible:border-emerald-500"
+              className="pl-10 h-10 bg-gray-50 border-gray-200 text-text-main placeholder:text-gray-400 focus-visible:ring-primary focus-visible:border-primary rounded-xl"
             />
           </div>
         </div>

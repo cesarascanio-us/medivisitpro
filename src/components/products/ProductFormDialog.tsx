@@ -1,5 +1,15 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input as BaseInput } from "@/components/ui/input";
 import { Textarea as BaseTextarea } from "@/components/ui/textarea";
@@ -12,7 +22,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import {
     Loader2, Plus, Edit, Check, ChevronsUpDown, X, Upload, ImageIcon, FileText, Trash2,
-    Package, Stethoscope, ShoppingBag, GraduationCap, Files, Sparkles
+    Package, Stethoscope, ShoppingBag, GraduationCap, Files, Sparkles, Beaker, Tag, BarChart3, Info, Globe, ShieldAlert,
+    ChevronRight,
+    Search,
+    LayoutDashboard,
+    Clock,
+    Target
 } from "lucide-react";
 import {
     Command,
@@ -29,13 +44,14 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 // -- High Contrast Wrappers --
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof BaseInput>>((props, ref) => (
     <BaseInput
         ref={ref}
         {...props}
-        className={cn("bg-surface-card text-brand-primary border-slate-300 placeholder:text-slate-500 focus-visible:ring-brand-secondary focus-visible:border-brand-secondary", props.className)}
+        className={cn("h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500 bg-white shadow-sm transition-all", props.className)}
     />
 ));
 Input.displayName = "HighContrastInput";
@@ -44,7 +60,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<type
     <BaseTextarea
         ref={ref}
         {...props}
-        className={cn("bg-surface-card text-brand-primary border-slate-300 placeholder:text-slate-500 focus-visible:ring-brand-secondary focus-visible:border-brand-secondary", props.className)}
+        className={cn("border-slate-200 rounded-xl font-medium focus:ring-indigo-500/10 focus:border-indigo-500 bg-white shadow-sm transition-all p-4", props.className)}
     />
 ));
 Textarea.displayName = "HighContrastTextarea";
@@ -53,108 +69,11 @@ const SelectTrigger = React.forwardRef<React.ElementRef<typeof BaseSelectTrigger
     <BaseSelectTrigger
         ref={ref}
         {...props}
-        className={cn("bg-surface-card text-brand-primary border-slate-300 placeholder:text-slate-500 focus:ring-brand-secondary focus:border-brand-secondary [&>span]:line-clamp-1", props.className)}
+        className={cn("h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500 bg-slate-50/50 shadow-sm [&>span]:line-clamp-1", props.className)}
     />
 ));
 SelectTrigger.displayName = "HighContrastSelectTrigger";
 // ----------------------------
-
-// Helper MultiSelect Component
-function MultiSelect({
-    options,
-    selected,
-    onChange,
-    placeholder = "Seleccionar...",
-    emptyMessage = "No se encontraron resultados."
-}: {
-    options: { label: string; value: string }[];
-    selected: string[];
-    onChange: (selected: string[]) => void;
-    placeholder?: string;
-    emptyMessage?: string;
-}) {
-    const [open, setOpen] = useState(false);
-
-    const handleUnselect = (item: string) => {
-        onChange(selected.filter((i) => i !== item));
-    };
-
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-full justify-between h-auto min-h-[40px] px-3 py-2"
-                >
-                    <div className="flex flex-wrap gap-1">
-                        {selected.length === 0 && <span className="text-muted-foreground font-normal">{placeholder}</span>}
-                        {selected.map((item) => (
-                            <Badge variant="secondary" key={item} className="mr-1 mb-1" onClick={(e) => {
-                                e.stopPropagation();
-                                handleUnselect(item);
-                            }}>
-                                {options.find(opt => opt.value === item)?.label || item}
-                                <div
-                                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            handleUnselect(item);
-                                        }
-                                    }}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                    }}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        handleUnselect(item);
-                                    }}
-                                >
-                                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                                </div>
-                            </Badge>
-                        ))}
-                    </div>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                <Command>
-                    <CommandInput placeholder="Buscar..." />
-                    <CommandList>
-                        <CommandEmpty>{emptyMessage}</CommandEmpty>
-                        <CommandGroup>
-                            {options.map((option) => (
-                                <CommandItem
-                                    key={option.value}
-                                    value={option.label}
-                                    onSelect={() => {
-                                        if (selected.includes(option.value)) {
-                                            onChange(selected.filter((item) => item !== option.value));
-                                        } else {
-                                            onChange([...selected, option.value]);
-                                        }
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            selected.includes(option.value) ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {option.label}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
-    );
-}
 
 interface ProductFormDialogProps {
     trigger?: React.ReactNode;
@@ -165,7 +84,7 @@ interface ProductFormDialogProps {
 }
 
 export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: constrainedOpen, onOpenChange }: ProductFormDialogProps) {
-    const { organizationId } = useAuth(); // Get organizationId from useAuth
+    const { organizationId } = useAuth();
     const [internalOpen, setInternalOpen] = useState(false);
     const isControlled = typeof constrainedOpen !== "undefined";
     const open = isControlled ? constrainedOpen : internalOpen;
@@ -190,7 +109,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
         therapeutic_area: "",
         price: "",
 
-        // Medical Info (Sección Médica)
+        // Medical Info
         indications: "",
         composition: "",
         dosage: "",
@@ -201,7 +120,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
         safety_info: "",
         clinical_evidence: "",
 
-        // Commercial Info (Sección Comercial)
+        // Commercial Info
         key_message: "",
         selling_points: {
             clinical: "",
@@ -210,7 +129,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
         } as any,
         profitability_info: "",
 
-        // Training Info (Sección Entrenamiento)
+        // Training Info
         sales_tips: "",
         objection_handling: "",
 
@@ -271,7 +190,6 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                 }
             });
         } else if (open) {
-            // Reset form
             setFormData({
                 product_code: "", sku: "", name: "", active_ingredients: "", presentation: "",
                 category: "", description: "", therapeutic_area: "", price: "",
@@ -310,92 +228,40 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleSellingPointChange = (category: string, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            selling_points: {
-                ...prev.selling_points,
-                [category]: value
-            }
-        }));
-    };
-
-    // File upload handler for images
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-
-        if (!file.type.startsWith('image/')) {
-            toast({ title: "Error", description: "Por favor selecciona un archivo de imagen", variant: "destructive" });
-            return;
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-            toast({ title: "Error", description: "La imagen debe ser menor a 5MB", variant: "destructive" });
-            return;
-        }
-
         setUploadingImage(true);
         try {
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
             const filePath = `products/${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('product-assets')
-                .upload(filePath, file, { cacheControl: '3600', upsert: false });
-
+            const { error: uploadError } = await supabase.storage.from('product-assets').upload(filePath, file);
             if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('product-assets')
-                .getPublicUrl(filePath);
-
+            const { data: { publicUrl } } = supabase.storage.from('product-assets').getPublicUrl(filePath);
             handleChange('image_url', publicUrl);
             toast({ title: "Éxito", description: "Imagen subida correctamente" });
         } catch (error: any) {
-            console.error('Error uploading image:', error);
-            toast({ title: "Error", description: error.message || "Error al subir la imagen", variant: "destructive" });
+            toast({ title: "Error", description: error.message, variant: "destructive" });
         } finally {
             setUploadingImage(false);
         }
     };
 
-    // File upload handler for PDFs
     const handlePdfUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (!file) return;
-
-        if (file.type !== 'application/pdf') {
-            toast({ title: "Error", description: "Por favor selecciona un archivo PDF", variant: "destructive" });
-            return;
-        }
-
-        if (file.size > 10 * 1024 * 1024) {
-            toast({ title: "Error", description: "El PDF debe ser menor a 10MB", variant: "destructive" });
-            return;
-        }
-
+        if (!file || file.type !== 'application/pdf') return;
         setUploadingPdf(true);
         try {
             const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.pdf`;
             const filePath = `products/pdfs/${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('product-assets')
-                .upload(filePath, file, { cacheControl: '3600', upsert: false });
-
+            const { error: uploadError } = await supabase.storage.from('product-assets').upload(filePath, file);
             if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('product-assets')
-                .getPublicUrl(filePath);
-
+            const { data: { publicUrl } } = supabase.storage.from('product-assets').getPublicUrl(filePath);
             handleChange('pdf_link', publicUrl);
             toast({ title: "Éxito", description: "PDF subido correctamente" });
         } catch (error: any) {
-            console.error('Error uploading PDF:', error);
-            toast({ title: "Error", description: error.message || "Error al subir el PDF", variant: "destructive" });
+            toast({ title: "Error", description: error.message, variant: "destructive" });
         } finally {
             setUploadingPdf(false);
         }
@@ -404,15 +270,10 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
         try {
-            if (!formData.name || !formData.category) {
-                throw new Error("El nombre y la categoría son obligatorios");
-            }
-
+            if (!formData.name || !formData.category) throw new Error("Nombre y categoría requeridos");
             const productPayload = {
-                // Basic
-                organization_id: organizationId, // Include organizationId
+                organization_id: organizationId,
                 product_code: formData.product_code || null,
                 sku: formData.sku || null,
                 name: formData.name,
@@ -422,8 +283,6 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                 description: formData.description || null,
                 therapeutic_area: formData.therapeutic_area || null,
                 price: formData.price ? parseFloat(formData.price) : null,
-
-                // Medical
                 indications: formData.indications || null,
                 composition: formData.composition || null,
                 dosage: formData.dosage || null,
@@ -433,17 +292,11 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                 side_effects: formData.side_effects || null,
                 safety_info: formData.safety_info || null,
                 clinical_evidence: formData.clinical_evidence || null,
-
-                // Commercial
                 key_message: formData.key_message || null,
                 selling_points: formData.selling_points || null,
                 profitability_info: formData.profitability_info || null,
-
-                // Training
                 sales_tips: formData.sales_tips || null,
                 objection_handling: formData.objection_handling || null,
-
-                // Resources
                 image_url: formData.image_url || null,
                 pdf_link: formData.pdf_link || null,
                 dosage_config: formData.dosage_config
@@ -451,36 +304,18 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
             let error;
             if (productToEdit?.id) {
-                const { error: updateError } = await supabase
-                    .from('products')
-                    .update(productPayload)
-                    .eq('id', productToEdit.id);
+                const { error: updateError } = await supabase.from('products').update(productPayload).eq('id', productToEdit.id);
                 error = updateError;
             } else {
-                const { error: insertError } = await supabase
-                    .from('products')
-                    .insert([productPayload]);
+                const { error: insertError } = await supabase.from('products').insert([productPayload]);
                 error = insertError;
             }
-
             if (error) throw error;
-
-            toast({
-                title: productToEdit ? "Producto actualizado" : "Producto creado",
-                description: `El producto ${formData.name} ha sido guardado exitosamente.`,
-                variant: "default",
-            });
-
+            toast({ title: "Producto guardado", variant: "default" });
             if (setOpen) setOpen(false);
             if (onSuccess) onSuccess();
-
         } catch (error: any) {
-            console.error("Error saving product:", error);
-            toast({
-                title: "Error",
-                description: error.message || "No se pudo guardar el producto.",
-                variant: "destructive",
-            });
+            toast({ title: "Error", description: error.message, variant: "destructive" });
         } finally {
             setLoading(false);
         }
@@ -494,567 +329,265 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                {trigger}
-            </DialogTrigger>
-            <DialogContent className="max-w-5xl max-h-[95vh] overflow-hidden flex flex-col bg-surface-card">
-                <DialogHeader className="pb-2">
-                    <DialogTitle className="flex items-center gap-2 text-xl text-brand-primary">
-                        {productToEdit ? <Edit className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-                        {productToEdit ? "Editar Producto" : "Nuevo Producto"}
-                    </DialogTitle>
-                </DialogHeader>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
+            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
+                {/* Product Header */}
+                <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-8 py-10 text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                        <Package className="w-32 h-32" />
+                    </div>
+                    <div className="relative z-10 flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                            {formData.image_url ? (
+                                <img src={formData.image_url} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
+                            ) : (
+                                <Beaker className="w-8 h-8 text-white" />
+                            )}
+                        </div>
+                        <div>
+                            <DialogTitle className="text-3xl font-black tracking-tight text-white mb-1">
+                                {productToEdit ? 'Master Record de Producto' : 'Lanzamiento de Producto'}
+                            </DialogTitle>
+                            <p className="text-indigo-200/70 font-bold text-xs uppercase tracking-[0.2em] mt-1.5">
+                                Portafolio Farmacéutico & Recursos Científicos 💊
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-                <form onSubmit={handleSubmit} className="flex-1 overflow-hidden flex flex-col">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-                        <TabsList className="grid w-full grid-cols-5 h-12 mb-4 bg-muted p-1">
-                            <TabsTrigger value="basic" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm">
-                                <Package className="h-4 w-4" />
-                                <span className="hidden sm:inline">Básico</span>
+                <div className="flex flex-col md:flex-row h-[650px]">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
+                        {/* Sidebar */}
+                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
+                            <TabsTrigger
+                                value="basic"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <Tag className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Ficha Básica</span>
                             </TabsTrigger>
-                            <TabsTrigger value="medical" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm">
-                                <Stethoscope className="h-4 w-4" />
-                                <span className="hidden sm:inline">Médica</span>
+                            <TabsTrigger
+                                value="medical"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <Stethoscope className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Científica</span>
                             </TabsTrigger>
-                            <TabsTrigger value="commercial" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm">
-                                <ShoppingBag className="h-4 w-4" />
-                                <span className="hidden sm:inline">Comercial</span>
+                            <TabsTrigger
+                                value="commercial"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <BarChart3 className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Marketing</span>
                             </TabsTrigger>
-                            <TabsTrigger value="training" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm">
-                                <GraduationCap className="h-4 w-4" />
-                                <span className="hidden sm:inline">Entrenamiento</span>
+                            <TabsTrigger
+                                value="training"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <GraduationCap className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Entrenamiento</span>
                             </TabsTrigger>
-                            <TabsTrigger value="resources" className="gap-1.5 text-xs sm:text-sm data-[state=inactive]:text-slate-500 data-[state=active]:bg-white data-[state=active]:text-orange-700 data-[state=active]:shadow-sm">
-                                <Files className="h-4 w-4" />
-                                <span className="hidden sm:inline">Recursos</span>
+                            <TabsTrigger
+                                value="resources"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-orange-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <Files className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Activos Digitales</span>
                             </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex-1 overflow-y-auto pr-2">
-                            {/* Tab: Basic Info */}
-                            <TabsContent value="basic" className="mt-0 space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="product_code">Código Producto</Label>
-                                        <Input
-                                            id="product_code"
-                                            value={formData.product_code}
-                                            onChange={(e) => handleChange("product_code", e.target.value)}
-                                            placeholder="Ej: PRD-001"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="sku">SKU</Label>
-                                        <Input
-                                            id="sku"
-                                            value={formData.sku}
-                                            onChange={(e) => handleChange("sku", e.target.value)}
-                                            placeholder="Código de barras"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="price">Precio ($)</Label>
-                                        <Input
-                                            id="price"
-                                            type="number"
-                                            step="0.01"
-                                            value={formData.price}
-                                            onChange={(e) => handleChange("price", e.target.value)}
-                                            placeholder="0.00"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Nombre del Producto *</Label>
-                                    <Input
-                                        id="name"
-                                        value={formData.name}
-                                        onChange={(e) => handleChange("name", e.target.value)}
-                                        placeholder="Nombre comercial del producto"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="active_ingredients">Principios Activos</Label>
-                                        <Input
-                                            id="active_ingredients"
-                                            value={formData.active_ingredients}
-                                            onChange={(e) => handleChange("active_ingredients", e.target.value)}
-                                            placeholder="Separados por comas"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="presentation">Presentación</Label>
-                                        <Input
-                                            id="presentation"
-                                            value={formData.presentation}
-                                            onChange={(e) => handleChange("presentation", e.target.value)}
-                                            placeholder="Ej: Cápsulas 500mg x 30"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="category">Categoría *</Label>
-                                        <Select value={formData.category} onValueChange={(val) => handleChange("category", val)}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccionar categoría" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {categories.map((cat) => (
-                                                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="therapeutic_area">Área Terapéutica</Label>
-                                        <Input
-                                            id="therapeutic_area"
-                                            value={formData.therapeutic_area}
-                                            onChange={(e) => handleChange("therapeutic_area", e.target.value)}
-                                            placeholder="Ej: Sistema Nervioso Central"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="description">Descripción General</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={formData.description}
-                                        onChange={(e) => handleChange("description", e.target.value)}
-                                        placeholder="Descripción breve del producto"
-                                        rows={3}
-                                    />
-                                </div>
-                            </TabsContent>
-
-                            {/* Tab: Medical Info */}
-                            <TabsContent value="medical" className="mt-0 space-y-4">
-                                <Card className="border-blue-100 bg-blue-50/30">
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-base flex items-center gap-2 text-blue-800">
-                                            <Stethoscope className="h-5 w-5" />
-                                            Información Médica
-                                        </CardTitle>
-                                        <CardDescription>Datos clínicos para presentaciones médicas</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="indications">Indicaciones</Label>
-                                            <Textarea
-                                                id="indications"
-                                                value={formData.indications}
-                                                onChange={(e) => handleChange("indications", e.target.value)}
-                                                placeholder="¿Para qué está indicado este medicamento?"
-                                                rows={3}
-                                            />
+                        <div className="flex-1 overflow-y-auto bg-white">
+                            <form onSubmit={handleSubmit} id="product-form" className="h-full flex flex-col">
+                                {/* Tab: Básico */}
+                                <TabsContent value="basic" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                    <section className="space-y-6">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
+                                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Identificación de Mercado</h3>
                                         </div>
-
                                         <div className="space-y-2">
-                                            <Label htmlFor="composition">Composición</Label>
-                                            <Textarea
-                                                id="composition"
-                                                value={formData.composition}
-                                                onChange={(e) => handleChange("composition", e.target.value)}
-                                                placeholder="Composición detallada del producto"
-                                                rows={2}
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label htmlFor="dosage">Dosis Recomendada</Label>
-                                                <Input
-                                                    id="dosage"
-                                                    value={formData.dosage}
-                                                    onChange={(e) => handleChange("dosage", e.target.value)}
-                                                    placeholder="Ej: 500mg cada 8 horas"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="posology">Posología Detallada</Label>
-                                                <Input
-                                                    id="posology"
-                                                    value={formData.posology}
-                                                    onChange={(e) => handleChange("posology", e.target.value)}
-                                                    placeholder="Régimen de dosificación"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="medical_specialties">Especialidades Médicas</Label>
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nombre Comercial *</Label>
                                             <Input
-                                                id="medical_specialties"
-                                                value={formData.medical_specialties}
-                                                onChange={(e) => handleChange("medical_specialties", e.target.value)}
-                                                placeholder="Especialidades target: Cardiología, Neurología..."
+                                                value={formData.name}
+                                                onChange={(e) => handleChange("name", e.target.value)}
+                                                placeholder="Ej: Cardioprotect Plus"
+                                                required
                                             />
                                         </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="border-amber-100 bg-amber-50/30">
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-base flex items-center gap-2 text-amber-800">
-                                            <Sparkles className="h-5 w-5" />
-                                            Seguridad y Evidencia
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div className="space-y-2">
-                                                <Label htmlFor="contraindications">Contraindicaciones</Label>
-                                                <Textarea
-                                                    id="contraindications"
-                                                    value={formData.contraindications}
-                                                    onChange={(e) => handleChange("contraindications", e.target.value)}
-                                                    placeholder="Cuándo NO usar este producto"
-                                                    rows={3}
-                                                />
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Código PRD</Label>
+                                                <Input value={formData.product_code} onChange={(e) => handleChange("product_code", e.target.value)} placeholder="PRD-000" />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="side_effects">Efectos Secundarios</Label>
-                                                <Textarea
-                                                    id="side_effects"
-                                                    value={formData.side_effects}
-                                                    onChange={(e) => handleChange("side_effects", e.target.value)}
-                                                    placeholder="Efectos adversos conocidos"
-                                                    rows={3}
-                                                />
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">GTIN / SKU</Label>
+                                                <Input value={formData.sku} onChange={(e) => handleChange("sku", e.target.value)} placeholder="00000000" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">PVP Sugerido ($)</Label>
+                                                <Input type="number" step="0.01" value={formData.price} onChange={(e) => handleChange("price", e.target.value)} placeholder="0.00" />
                                             </div>
                                         </div>
-
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Categoría Farmacéutica *</Label>
+                                                <Select value={formData.category} onValueChange={(val) => handleChange("category", val)}>
+                                                    <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Área Terapéutica</Label>
+                                                <Input value={formData.therapeutic_area} onChange={(e) => handleChange("therapeutic_area", e.target.value)} placeholder="Ej: Cardiovascular" />
+                                            </div>
+                                        </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="safety_info">Información de Seguridad / Advertencias</Label>
-                                            <Textarea
-                                                id="safety_info"
-                                                value={formData.safety_info}
-                                                onChange={(e) => handleChange("safety_info", e.target.value)}
-                                                placeholder="Advertencias importantes..."
-                                                rows={3}
-                                            />
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Presentación Pública</Label>
+                                            <Input value={formData.presentation} onChange={(e) => handleChange("presentation", e.target.value)} placeholder="Ej: Cápsulas 500mg x 30" />
                                         </div>
+                                    </section>
+                                </TabsContent>
 
+                                {/* Tab: Científica */}
+                                <TabsContent value="medical" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                    <section className="space-y-6">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Dossier Científico</h3>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 text-blue-600">Indicaciones Terapéuticas</Label>
+                                            <Textarea value={formData.indications} onChange={(e) => handleChange("indications", e.target.value)} rows={3} />
+                                        </div>
                                         <div className="space-y-4 pt-4 border-t">
-                                            <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm bg-emerald-50 p-2 rounded">
-                                                <Sparkles className="h-4 w-4" />
-                                                Parámetros de Dosificación (Simulador 360)
-                                            </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label className="text-xs">Dosis Defecto (mg/kg)</Label>
-                                                    <Input
-                                                        type="number"
-                                                        value={formData.dosage_config.default_dose_mg_kg}
-                                                        onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, default_dose_mg_kg: Number(e.target.value) })}
-                                                        className="h-8 text-xs"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label className="text-xs">Conc. (mg/mL)</Label>
-                                                    <Input
-                                                        type="number"
-                                                        value={formData.dosage_config.concentration_mg_ml}
-                                                        onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, concentration_mg_ml: Number(e.target.value) })}
-                                                        className="h-8 text-xs"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label className="text-xs">Unidad</Label>
-                                                    <Input
-                                                        value={formData.dosage_config.presentation_unit}
-                                                        onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, presentation_unit: e.target.value })}
-                                                        placeholder="mL, gotas..."
-                                                        className="h-8 text-xs"
-                                                    />
+                                            <div className="bg-blue-50/50 p-6 rounded-3xl space-y-4">
+                                                <h4 className="text-xs font-black uppercase tracking-widest text-blue-800 flex items-center gap-2">
+                                                    <Sparkles className="h-4 w-4" /> Algoritmo de Dosificación
+                                                </h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[9px] font-bold uppercase text-blue-400">Dosis (mg/kg)</Label>
+                                                        <Input type="number" value={formData.dosage_config.default_dose_mg_kg} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, default_dose_mg_kg: Number(e.target.value) })} className="h-10 bg-white" />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[9px] font-bold uppercase text-blue-400">Conc. (mg/mL)</Label>
+                                                        <Input type="number" value={formData.dosage_config.concentration_mg_ml} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, concentration_mg_ml: Number(e.target.value) })} className="h-10 bg-white" />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[9px] font-bold uppercase text-blue-400">Unidad</Label>
+                                                        <Input value={formData.dosage_config.presentation_unit} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, presentation_unit: e.target.value })} className="h-10 bg-white" />
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <p className="text-[10px] text-muted-foreground italic">
-                                                * Estos valores pre-cargarán el Motor de Dosificación durante la visita médica.
-                                            </p>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="clinical_evidence">Evidencia Clínica</Label>
-                                            <Textarea
-                                                id="clinical_evidence"
-                                                value={formData.clinical_evidence}
-                                                onChange={(e) => handleChange("clinical_evidence", e.target.value)}
-                                                placeholder="Estudios clínicos, ensayos, publicaciones relevantes..."
-                                                rows={4}
-                                            />
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Efectos & Seguridad</Label>
+                                            <Textarea value={formData.safety_info} onChange={(e) => handleChange("safety_info", e.target.value)} placeholder="Contraindicaciones, efectos adversos..." rows={4} />
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
+                                    </section>
+                                </TabsContent>
 
-                            {/* Tab: Commercial Info */}
-                            <TabsContent value="commercial" className="mt-0 space-y-4">
-                                <Card className="border-emerald-100 bg-emerald-50/30">
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-base flex items-center gap-2 text-emerald-800">
-                                            <ShoppingBag className="h-5 w-5" />
-                                            Información Comercial
-                                        </CardTitle>
-                                        <CardDescription>Datos para el equipo de ventas y farmacias</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
+                                {/* Tab: Marketing */}
+                                <TabsContent value="commercial" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                    <section className="space-y-6">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
+                                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Estrategia Comercial</h3>
+                                        </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="key_message">Mensaje Clave</Label>
-                                            <Textarea
-                                                id="key_message"
-                                                value={formData.key_message}
-                                                onChange={(e) => handleChange("key_message", e.target.value)}
-                                                placeholder="El mensaje principal que el representante debe comunicar"
-                                                rows={2}
-                                            />
-                                            <p className="text-xs text-slate-500">Este mensaje se muestra destacado en la presentación del producto</p>
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Mensaje Clave (Marketing Copy)</Label>
+                                            <Textarea value={formData.key_message} onChange={(e) => handleChange("key_message", e.target.value)} placeholder="El core visual y textual del producto..." rows={3} />
                                         </div>
-
-                                        <div className="space-y-4">
-                                            <Label className="text-sm font-semibold text-emerald-800">Etiquetas de Valor (Inteligencia 360)</Label>
-
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <Label htmlFor="sp_clinical" className="text-xs">Diferencial Clínico</Label>
-                                                <Input
-                                                    id="sp_clinical"
-                                                    value={formData.selling_points.clinical}
-                                                    onChange={(e) => handleSellingPointChange("clinical", e.target.value)}
-                                                    placeholder="Ej: Absorción, Biodisponibilidad, Mecanismo..."
-                                                />
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Argumento Clínico</Label>
+                                                <Textarea value={formData.selling_points?.clinical} onChange={(e) => handleChange("selling_points", { ...formData.selling_points, clinical: e.target.value })} rows={2} />
                                             </div>
-
                                             <div className="space-y-2">
-                                                <Label htmlFor="sp_experience" className="text-xs">Experiencia del Paciente</Label>
-                                                <Input
-                                                    id="sp_experience"
-                                                    value={formData.selling_points.experience}
-                                                    onChange={(e) => handleSellingPointChange("experience", e.target.value)}
-                                                    placeholder="Ej: Sabor, Tolerancia, Fácil Dosificación..."
-                                                />
+                                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Argumento Económico</Label>
+                                                <Textarea value={formData.profitability_info} onChange={(e) => handleChange("profitability_info", e.target.value)} rows={2} />
                                             </div>
+                                        </div>
+                                    </section>
+                                </TabsContent>
 
-                                            <div className="space-y-2">
-                                                <Label htmlFor="sp_evidence" className="text-xs">Evidencia</Label>
-                                                <Input
-                                                    id="sp_evidence"
-                                                    value={formData.selling_points.evidence}
-                                                    onChange={(e) => handleSellingPointChange("evidence", e.target.value)}
-                                                    placeholder="Ej: Estudios Clínicos, Guías, Respaldo..."
-                                                />
+                                {/* Tab: Training */}
+                                <TabsContent value="training" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                    <section className="space-y-6">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
+                                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Guía del Visitador</h3>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 text-purple-600">Tips de Ventas & Objeciones</Label>
+                                            <Textarea value={formData.sales_tips} onChange={(e) => handleChange("sales_tips", e.target.value)} placeholder="¿Cómo presentar este producto exitosamente?" rows={6} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Manejo de Objeciones</Label>
+                                            <Textarea value={formData.objection_handling} onChange={(e) => handleChange("objection_handling", e.target.value)} placeholder="¿Qué responder si el médico dice X?" rows={4} />
+                                        </div>
+                                    </section>
+                                </TabsContent>
+
+                                {/* Tab: Activos */}
+                                <TabsContent value="resources" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-6">
+                                            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Visuales del Pack</h3>
+                                            <div className="group relative aspect-square w-full max-w-[240px] rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center overflow-hidden hover:border-emerald-500 transition-all">
+                                                {formData.image_url ? (
+                                                    <>
+                                                        <img src={formData.image_url} className="w-full h-full object-contain p-4" alt="Product" />
+                                                        <Button onClick={() => handleChange('image_url', '')} variant="destructive" size="icon" className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex flex-col items-center gap-3">
+                                                        <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-300"><ImageIcon className="h-6 w-6" /></div>
+                                                        <div className="text-center"><Label className="cursor-pointer text-[10px] font-black text-emerald-600 block">SUBIR IMAGEN</Label><Input type="file" className="hidden" id="img-up" onChange={handleImageUpload} accept="image/*" /></div>
+                                                    </div>
+                                                )}
+                                                <label htmlFor="img-up" className="absolute inset-0 cursor-pointer" />
                                             </div>
-
-                                            <p className="text-[10px] text-slate-500 italic">Estas etiquetas se utilizarán para medir el 'Message Reach' en las visitas médicas.</p>
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="profitability_info">Información de Rentabilidad</Label>
-                                            <Textarea
-                                                id="profitability_info"
-                                                value={formData.profitability_info}
-                                                onChange={(e) => handleChange("profitability_info", e.target.value)}
-                                                placeholder="Márgenes, rotación, comparación de precios, ofertas disponibles..."
-                                                rows={4}
-                                            />
-                                            <p className="text-xs text-slate-500">Información para convencer a farmacias sobre la rentabilidad</p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
-
-                            {/* Tab: Training Info */}
-                            <TabsContent value="training" className="mt-0 space-y-4">
-                                <Card className="border-purple-100 bg-purple-50/30">
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-base flex items-center gap-2 text-purple-800">
-                                            <GraduationCap className="h-5 w-5" />
-                                            Material de Entrenamiento
-                                        </CardTitle>
-                                        <CardDescription>Tips y guías para el equipo de representantes</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="sales_tips">Tips de Venta</Label>
-                                            <Textarea
-                                                id="sales_tips"
-                                                value={formData.sales_tips}
-                                                onChange={(e) => handleChange("sales_tips", e.target.value)}
-                                                placeholder="• Cómo abrir la conversación&#10;• Preguntas clave para el médico&#10;• Momentos ideales para presentar el producto"
-                                                rows={6}
-                                            />
-                                            <p className="text-xs text-slate-500">Técnicas y consejos prácticos para la fuerza de ventas</p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="objection_handling">Manejo de Objeciones</Label>
-                                            <Textarea
-                                                id="objection_handling"
-                                                value={formData.objection_handling}
-                                                onChange={(e) => handleChange("objection_handling", e.target.value)}
-                                                placeholder="Objeción: 'Es muy caro'&#10;Respuesta: ...&#10;&#10;Objeción: 'Ya tengo otro producto'&#10;Respuesta: ..."
-                                                rows={6}
-                                            />
-                                            <p className="text-xs text-slate-500">Respuestas preparadas para las objeciones más comunes</p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
-
-                            {/* Tab: Resources */}
-                            <TabsContent value="resources" className="mt-0 space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Image Upload */}
-                                    <Card>
-                                        <CardHeader className="pb-3">
-                                            <CardTitle className="text-base flex items-center gap-2">
-                                                <ImageIcon className="h-5 w-5 text-blue-600" />
-                                                Imagen del Producto
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            {formData.image_url ? (
-                                                <div className="relative">
-                                                    <img
-                                                        src={formData.image_url}
-                                                        alt="Preview"
-                                                        className="w-full h-40 object-contain rounded-lg border bg-slate-50"
-                                                    />
-                                                    <Button
-                                                        type="button"
-                                                        variant="destructive"
-                                                        size="icon"
-                                                        className="absolute top-2 right-2 h-8 w-8"
-                                                        onClick={() => handleChange('image_url', '')}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
+                                        <div className="space-y-6">
+                                            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Literatura Médica (PDF)</h3>
+                                            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
+                                                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-orange-500"><FileText className="h-6 w-6" /></div>
+                                                <div className="space-y-1">
+                                                    <p className="font-bold text-slate-700">Dossier de Producto</p>
+                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Vademécum & Estudios</p>
+                                                </div>
+                                                {formData.pdf_link ? (
+                                                    <div className="flex items-center justify-between gap-3 p-3 bg-white rounded-xl border border-slate-100">
+                                                        <span className="text-[10px] font-bold text-emerald-600 truncate">ARCHIVO VINCULADO</span>
+                                                        <Button onClick={() => handleChange('pdf_link', '')} variant="ghost" size="sm" className="h-7 w-7 p-0 text-slate-400"><X className="h-4 w-4" /></Button>
+                                                    </div>
+                                                ) : (
+                                                    <Button variant="outline" className="w-full h-12 rounded-xl border-slate-200 font-bold text-slate-500 relative overflow-hidden">
+                                                        <Upload className="h-4 w-4 mr-2" /> Subir PDF
+                                                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handlePdfUpload} accept=".pdf" />
                                                     </Button>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer">
-                                                    <div className={`flex flex-col items-center justify-center h-40 border-2 border-dashed rounded-lg transition-colors ${uploadingImage ? 'border-blue-300 bg-blue-50' : 'border-slate-300 hover:border-blue-400 hover:bg-blue-50/50'}`}>
-                                                        {uploadingImage ? (
-                                                            <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-                                                        ) : (
-                                                            <>
-                                                                <Upload className="h-8 w-8 text-slate-400 mb-2" />
-                                                                <span className="text-sm text-slate-600">Click para subir imagen</span>
-                                                                <span className="text-xs text-slate-400 mt-1">JPG, PNG (máx. 5MB)</span>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
-                                                        onChange={handleImageUpload}
-                                                        disabled={uploadingImage}
-                                                    />
-                                                </label>
-                                            )}
-                                            <div className="mt-3">
-                                                <Label htmlFor="image_url_manual" className="text-xs text-slate-500">O pegar URL</Label>
-                                                <Input
-                                                    id="image_url_manual"
-                                                    value={formData.image_url}
-                                                    onChange={(e) => handleChange("image_url", e.target.value)}
-                                                    placeholder="https://..."
-                                                    className="mt-1"
-                                                />
+                                                )}
                                             </div>
-                                        </CardContent>
-                                    </Card>
+                                        </div>
+                                    </div>
+                                </TabsContent>
+                            </form>
+                        </div>
+                    </Tabs>
+                </div>
 
-                                    {/* PDF Upload */}
-                                    <Card>
-                                        <CardHeader className="pb-3">
-                                            <CardTitle className="text-base flex items-center gap-2">
-                                                <FileText className="h-5 w-5 text-red-600" />
-                                                Ficha Técnica (PDF)
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            {formData.pdf_link ? (
-                                                <div className="relative p-4 bg-slate-50 rounded-lg border">
-                                                    <div className="flex items-center gap-3">
-                                                        <FileText className="h-10 w-10 text-red-500" />
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-medium text-slate-700 truncate">Ficha Técnica</p>
-                                                            <a
-                                                                href={formData.pdf_link}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="text-xs text-blue-600 hover:underline"
-                                                            >
-                                                                Ver documento
-                                                            </a>
-                                                        </div>
-                                                        <Button
-                                                            type="button"
-                                                            variant="destructive"
-                                                            size="icon"
-                                                            className="h-8 w-8"
-                                                            onClick={() => handleChange('pdf_link', '')}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer">
-                                                    <div className={`flex flex-col items-center justify-center h-40 border-2 border-dashed rounded-lg transition-colors ${uploadingPdf ? 'border-red-300 bg-red-50' : 'border-slate-300 hover:border-red-400 hover:bg-red-50/50'}`}>
-                                                        {uploadingPdf ? (
-                                                            <Loader2 className="h-8 w-8 text-red-500 animate-spin" />
-                                                        ) : (
-                                                            <>
-                                                                <Upload className="h-8 w-8 text-slate-400 mb-2" />
-                                                                <span className="text-sm text-slate-600">Click para subir PDF</span>
-                                                                <span className="text-xs text-slate-400 mt-1">Máx. 10MB</span>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                    <input
-                                                        type="file"
-                                                        accept="application/pdf"
-                                                        className="hidden"
-                                                        onChange={handlePdfUpload}
-                                                        disabled={uploadingPdf}
-                                                    />
-                                                </label>
-                                            )}
-                                            <div className="mt-3">
-                                                <Label htmlFor="pdf_link_manual" className="text-xs text-slate-500">O pegar URL</Label>
-                                                <Input
-                                                    id="pdf_link_manual"
-                                                    value={formData.pdf_link}
-                                                    onChange={(e) => handleChange("pdf_link", e.target.value)}
-                                                    placeholder="https://..."
-                                                    className="mt-1"
-                                                />
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </TabsContent>
-                        </div >
-                    </Tabs >
-
-                    <DialogFooter className="pt-4 border-t mt-4">
-                        <Button type="button" variant="outline" onClick={() => setOpen?.(false)}>
-                            Cancelar
-                        </Button>
-                        <Button type="submit" disabled={loading} className="gap-2 bg-emerald-600 hover:bg-emerald-700">
-                            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                            {productToEdit ? "Guardar Cambios" : "Crear Producto"}
-                        </Button>
-                    </DialogFooter>
-                </form >
-            </DialogContent >
-        </Dialog >
+                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                    <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-500 rounded-xl">Cerrar</Button>
+                    <Button type="submit" form="product-form" disabled={loading} className="h-12 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02]">
+                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {productToEdit ? 'Actualizar Master Record' : 'Publicar Producto'}
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }

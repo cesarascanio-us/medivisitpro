@@ -46,3 +46,11 @@ tables_list.json
 supabase_diagnostic.md
 .vercel
 .env*.local
+
+# --- CONFIGURACION LOCAL DE IA (NO SUBIR) ---
+.cursorrules
+.windsurfrules
+AI_RULES_MASTER.md
+mcp_settings.json
+setup_reglas.ps1
+proteger_git.ps1

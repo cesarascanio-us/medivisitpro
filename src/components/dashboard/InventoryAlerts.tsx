@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Clock, Package, Bell, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -110,16 +119,16 @@ export function InventoryAlerts({
 
     if (loading) {
         return (
-            <div className="medical-card p-12 text-center animate-pulse">
-                <Package className="mx-auto h-8 w-8 text-emerald-500/50 mb-4 animate-bounce" />
-                <p className="text-slate-400 text-sm font-medium">Sincronizando inventario premium...</p>
+            <div className="corporate-card p-12 text-center animate-pulse">
+                <Package className="mx-auto h-8 w-8 text-primary/50 mb-4 animate-bounce" />
+                <p className="text-text-muted text-sm font-medium">Sincronizando inventario premium...</p>
             </div>
         );
     }
 
     if (totalAlerts === 0) {
         return compact ? null : (
-            <Card className="medical-card">
+            <Card className="corporate-card">
                 <CardHeader className="pb-2">
                     <CardTitle className="flex items-center text-lg">
                         <Package className="mr-2 h-5 w-5 text-primary" />
@@ -128,11 +137,11 @@ export function InventoryAlerts({
                 </CardHeader>
                 <CardContent className="text-center py-12">
                     <div className="relative inline-block mb-4">
-                        <div className="absolute inset-0 bg-emerald-500/10 blur-xl rounded-full scale-150"></div>
-                        <Package className="relative mx-auto h-12 w-12 text-emerald-500/40" />
+                        <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full scale-150"></div>
+                        <Package className="relative mx-auto h-12 w-12 text-primary/40" />
                     </div>
-                    <p className="text-slate-300 font-semibold tracking-tight">Inventario Optimizado</p>
-                    <p className="text-slate-500 text-xs mt-1">No hay alertas críticas en tu zona hoy.</p>
+                    <p className="text-text-main font-bold tracking-tight">Inventario Optimizado</p>
+                    <p className="text-text-muted text-xs mt-1">No hay alertas críticas en tu zona hoy.</p>
                 </CardContent>
             </Card>
         );
@@ -151,7 +160,7 @@ export function InventoryAlerts({
     };
 
     return (
-        <Card className="medical-card">
+        <Card className="corporate-card">
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                     <div>

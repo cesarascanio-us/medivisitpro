@@ -6,7 +6,7 @@
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
-        "sbp_cf3d61f4421dd66373e79360a3e6975bb30c512a"
+        "sbp_2947376f55640139bbafbbec08529fcb6189e0a4"
       ],
       "env": {}
     },
@@ -17,7 +17,7 @@
         "@modelcontextprotocol/server-github"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
       }
     }
   }

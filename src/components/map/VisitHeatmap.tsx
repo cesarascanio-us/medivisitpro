@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -54,6 +63,11 @@ export function VisitHeatmap({
 
         // Crear nueva capa de heatmap
         // @ts-ignore - leaflet.heat no tiene tipos completos
+        if (typeof L.heatLayer !== 'function') {
+            console.error('L.heatLayer is not a function. Heatmap plugin may not be loaded.');
+            return;
+        }
+
         heatLayerRef.current = L.heatLayer(heatData, {
             radius,
             blur,

@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Search, Filter, Users as UsersIcon, Building2, Building, Hospital, RefreshCw, Leaf as LeafIcon } from "lucide-react";
@@ -452,15 +461,7 @@ export default function CoverageMap() {
     }), [contacts, showDoctors, showPharmacies, showHospitals, showClinics, searchTerm]);
 
 
-    const getTypeLabel = (type: string) => {
-        switch (type) {
-            case 'doctor': return 'Médico';
-            case 'pharmacy': return 'Farmacia';
-            case 'hospital': return 'Hospital';
-            case 'clinic': return 'Clínica';
-            default: return 'Contacto';
-        }
-    };
+
 
     const focusOnContact = (contact: MapContact) => {
         setMapCenter([contact.latitude, contact.longitude]);

@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+ ======================================================================== */
+
 // MediVisitPro - Optimized with Lazy Loading & SEO
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -52,6 +61,7 @@ const TransferOrders = lazy(() => import("./pages/TransferOrders"));
 const CoverageMap = lazy(() => import("./pages/CoverageMap"));
 const PromotionalCycles = lazy(() => import("./pages/PromotionalCycles"));
 const DashboardMaster = lazy(() => import("./pages/DashboardMaster"));
+const HumanResources = lazy(() => import("./pages/HumanResources"));
 
 const PublicProductPage = lazy(() => import("./pages/Public/ProductPage"));
 const Documentation = lazy(() => import("./pages/Documentation"));
@@ -218,6 +228,11 @@ const AppContent = () => (
     <Route path="zones" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
         <Layout><Zones /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="hr" element={
+      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+        <Layout><HumanResources /></Layout>
       </ProtectedRoute>
     } />
     <Route path="master-panel" element={

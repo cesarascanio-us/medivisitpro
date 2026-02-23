@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Organization, PlanTier, SubscriptionStatus } from '@/types/organization';
@@ -12,6 +21,7 @@ interface OrganizationContextType {
     error: Error | null;
     isOrgAdmin: boolean;
     isMaster: boolean;
+    isSaaSStaff: boolean; // NEW
     switchOrganization: (orgId: string) => Promise<void>;
     refetch: () => Promise<void>;
 }
@@ -43,6 +53,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     const [error, setError] = useState<Error | null>(null);
     const [isOrgAdmin, setIsOrgAdmin] = useState(false);
     const [isMaster, setIsMaster] = useState(false);
+    const [isSaaSStaff, setIsSaaSStaff] = useState(false); // NEW
 
     const fetchOrganization = async () => {
         try {
@@ -86,8 +97,11 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
             const userRoleName = userRole?.role || 'representative';
             const isOwner = lowerEmail === 'cesar.ascanio@gmail.com';
-            isMasterUser = userRoleName === 'master' || isOwner;
-            setIsMaster(isMasterUser);
+            const saasRoles = ['master', 'admin_saas', 'soporte_saas', 'desarrollo_saas'];
+
+            isMasterUser = saasRoles.includes(userRoleName) || isOwner;
+            setIsMaster(userRoleName === 'master' || isOwner); // Strict master flag
+            setIsSaaSStaff(isMasterUser); // Internal staff flag (includes master)
 
             setIsOrgAdmin(
                 profile?.is_org_admin ||
@@ -173,7 +187,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
     // Allow manual switching of organization (context only)
     const switchOrganization = async (orgId: string) => {
-        if (!isMaster) return; // Only master can switch
+        if (!isSaaSStaff) return; // All staff can switch
 
         const targetOrg = allOrganizations.find(o => o.id === orgId);
         if (targetOrg) {
@@ -204,6 +218,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             error,
             isOrgAdmin,
             isMaster,
+            isSaaSStaff,
             switchOrganization,
             refetch: fetchOrganization
         }}>

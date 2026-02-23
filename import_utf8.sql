@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 BEGIN;
 UPDATE products SET price_cobeca = 5.9344282848545635, price = 4.3, sku = '1595' WHERE product_code = '7597773000366';
 UPDATE products SET price_cobeca = 5.862713139418256, price = 4.25, sku = '1595' WHERE product_code = '7597773000359';

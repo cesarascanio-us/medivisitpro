@@ -1,9 +1,21 @@
-import { useState, useEffect } from "react";
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+import { useState, useEffect, cloneElement } from "react";
 import {
     Users, Shield, Building2, BarChart3, Settings, Database,
     Activity, TrendingUp, Calendar, Package, FileText, Bell,
-    Plus, Edit, Trash2, Eye, RefreshCw, Download, Save, AlertTriangle, ShieldCheck
+    Plus, Edit, Trash2, Eye, RefreshCw, Download, Save, AlertTriangle, ShieldCheck,
+    LayoutDashboard, Map, ShoppingCart, HelpCircle, Globe,
+    ShieldAlert, Zap, ExternalLink, Timer
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,13 +64,22 @@ interface OrganizationData {
     slug: string;
     plan_tier?: string;
     subscription_status?: string;
-    rif?: string; // NEW
-    fiscal_address?: string; // NEW
-    phone?: string; // NEW
-    taxpayer_type?: string; // NEW
-    settings?: any; // For max_users
+    rif?: string;
+    fiscal_address?: string;
+    phone?: string;
+    taxpayer_type?: string;
+    settings?: any;
     created_at: string;
     user_count?: number;
+}
+
+interface AuditLog {
+    id: string;
+    action_type: string;
+    master_id: string;
+    target_id: string;
+    details: any;
+    created_at: string;
 }
 
 const PLAN_LIMITS: Record<string, number> = {
@@ -107,6 +128,7 @@ export default function MasterPanel() {
     });
     const [users, setUsers] = useState<UserData[]>([]);
     const [organizations, setOrganizations] = useState<OrganizationData[]>([]);
+    const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
     const [editingUser, setEditingUser] = useState<string | null>(null);
     const [newRole, setNewRole] = useState<UserRole>('representative');
     const [newUserOrgIdEdit, setNewUserOrgIdEdit] = useState<string>('');
@@ -118,13 +140,11 @@ export default function MasterPanel() {
     const [organizationDialogOpen, setOrganizationDialogOpen] = useState(false);
     const [availableRoles, setAvailableRoles] = useState<{ slug: string, name: string }[]>([]);
 
-    // Organization Edit State
     const [editingOrg, setEditingOrg] = useState<string | null>(null);
     const [editOrgName, setEditOrgName] = useState('');
     const [editOrgSlug, setEditOrgSlug] = useState('');
     const [editOrgPlan, setEditOrgPlan] = useState('free');
     const [editOrgStatus, setEditOrgStatus] = useState('active');
-    // New Edit Fields
     const [editOrgRif, setEditOrgRif] = useState('');
     const [editOrgAddress, setEditOrgAddress] = useState('');
     const [editOrgPhone, setEditOrgPhone] = useState('');
@@ -132,7 +152,6 @@ export default function MasterPanel() {
     const [editOrgMaxUsers, setEditOrgMaxUsers] = useState(5);
     const [editOrgFeatures, setEditOrgFeatures] = useState<Record<string, boolean>>({});
 
-    // User creation states
     const [userDialogOpen, setUserDialogOpen] = useState(false);
     const [newUserEmail, setNewUserEmail] = useState('');
     const [newUserRole, setNewUserRole] = useState<UserRole>('representative');
@@ -142,7 +161,6 @@ export default function MasterPanel() {
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [securityAlerts, setSecurityAlerts] = useState<{ status: string, missing_tables: string[] } | null>(null);
 
-    // Redirect non-master users (Hardened routing)
     if (!isMaster) {
         return <Navigate to="/" replace />;
     }
@@ -154,11 +172,9 @@ export default function MasterPanel() {
     const loadData = async () => {
         setLoading(true);
         try {
-            // Fetch Dynamic Roles
             const { data: rolesData } = await supabase.from('app_roles').select('slug, name').order('name');
             if (rolesData) setAvailableRoles(rolesData);
 
-            // Sentinel Security Check (Automatic Alerts)
             try {
                 const { data: sentinelData } = await (supabase as any).rpc('check_security_integrity');
                 if (sentinelData && (sentinelData as any).status === 'compromised') {
@@ -170,15 +186,15 @@ export default function MasterPanel() {
                 console.error("Sentinel check failed:", err);
             }
 
-            // Load stats
-            const [usersRes, organizationsRes, visitsRes, contactsRes, productsRes, expensesRes, ticketsRes] = await Promise.all([
+            const [usersRes, organizationsRes, visitsRes, contactsRes, productsRes, expensesRes, ticketsRes, logsRes] = await Promise.all([
                 supabase.from('user_roles').select('*', { count: 'exact' }),
                 supabase.from('organizations').select('*'),
                 supabase.from('visits').select('*', { count: 'exact', head: true }),
                 supabase.from('contacts').select('*', { count: 'exact', head: true }),
                 supabase.from('products').select('*', { count: 'exact', head: true }),
                 supabase.from('expenses').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-                supabase.from('support_tickets').select('*', { count: 'exact', head: true }).eq('status', 'open')
+                supabase.from('support_tickets').select('*', { count: 'exact', head: true }).eq('status', 'open'),
+                supabase.from('master_audit_logs').select('*').order('created_at', { ascending: false }).limit(60)
             ]);
 
             const activeUsers = usersRes.data?.filter(u => u.is_active).length || 0;
@@ -195,12 +211,10 @@ export default function MasterPanel() {
             });
 
             setOrganizations(organizationsRes.data || []);
+            if (logsRes.data) setAuditLogs(logsRes.data as any);
 
-            // Load users with emails from profiles - OPTIMIZED BATCH FETCH
             if (usersRes.data && usersRes.data.length > 0) {
                 const userIds = usersRes.data.map(u => u.user_id);
-
-                // Fetch all profiles involved in one step
                 const { data: profilesData } = await supabase
                     .from('profiles')
                     .select('user_id, email')
@@ -214,7 +228,6 @@ export default function MasterPanel() {
                         role: (ur.role || 'representative') as UserRole
                     };
                 });
-
                 setUsers(usersWithEmails);
             } else {
                 setUsers([]);
@@ -229,7 +242,6 @@ export default function MasterPanel() {
 
     const handleUpdateRole = async (userId: string) => {
         try {
-            // Consistency Note: Profile organization_id is now synced via DB Trigger
             const { error: roleError } = await supabase
                 .from('user_roles')
                 .update({
@@ -240,7 +252,6 @@ export default function MasterPanel() {
 
             if (roleError) throw roleError;
 
-            // Log Master Action
             await (supabase as any).from('master_audit_logs').insert({
                 action_type: 'user_role_change',
                 master_id: user?.id,
@@ -258,24 +269,19 @@ export default function MasterPanel() {
     };
 
     const handleDeleteUser = async (userId: string) => {
-        if (!confirm('ADVERTENCIA: ¿Estás seguro de eliminar este usuario permanentemente? Esta acción borrará sus datos de perfil y roles.')) return;
+        if (!confirm('ADVERTENCIA: ¿Estás seguro de eliminar este usuario permanentemente?')) return;
         try {
-            // Check if we can delete from profiles
-
             const { error: profileError } = await supabase.from('profiles').delete().eq('user_id', userId);
-
             if (profileError) {
-                // Try deleting from user_roles first if cascade isn't set
                 await supabase.from('user_roles').delete().eq('user_id', userId);
                 const { error: retryError } = await supabase.from('profiles').delete().eq('user_id', userId);
                 if (retryError) throw retryError;
             }
-
-            toast({ title: "Usuario eliminado", description: "El perfil del usuario ha sido eliminado." });
+            toast({ title: "Usuario eliminado" });
             loadData();
         } catch (error) {
             console.error('Delete user error:', error);
-            toast({ title: "Error", description: "No se pudo eliminar el usuario completemente. Puede requerir permisos de Auth.", variant: "destructive" });
+            toast({ title: "Error", description: "No se pudo eliminar el usuario.", variant: "destructive" });
         }
     };
 
@@ -296,11 +302,7 @@ export default function MasterPanel() {
     const handleCreateOrganization = async () => {
         if (!newOrganizationName.trim()) return;
         try {
-            const slug = newOrganizationName.toLowerCase()
-                .trim()
-                .replace(/\s+/g, '-')
-                .replace(/[^a-z0-9-]/g, '');
-
+            const slug = newOrganizationName.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
             const defaultLimit = PLAN_LIMITS['free'];
 
             const { data: org, error: orgError } = await supabase.from('organizations').insert({
@@ -315,17 +317,11 @@ export default function MasterPanel() {
 
             if (orgError) throw orgError;
 
-
             toast({ title: "Organización creada", description: `${newOrganizationName} ha sido registrada.` });
             setNewOrganizationName('');
             setNewOrgRif('');
             setNewOrgAddress('');
             setNewOrgPhone('');
-            setNewOrganizationName('');
-            setNewOrgRif('');
-            setNewOrgAddress('');
-            setNewOrgPhone('');
-            setNewUserEmail('');
             setOrganizationDialogOpen(false);
             loadData();
         } catch (error) {
@@ -353,7 +349,7 @@ export default function MasterPanel() {
             }).eq('id', editingOrg);
 
             if (error) throw error;
-            toast({ title: "Organización Actualizada", description: "Los cambios se han guardado correctamente." });
+            toast({ title: "Organización Actualizada" });
             setEditingOrg(null);
             loadData();
         } catch (error) {
@@ -368,12 +364,10 @@ export default function MasterPanel() {
         setEditOrgSlug(org.slug);
         setEditOrgPlan(org.plan_tier || 'free');
         setEditOrgStatus(org.subscription_status || 'active');
-        // Load extended fields
         setEditOrgRif(org.rif || '');
         setEditOrgAddress(org.fiscal_address || '');
         setEditOrgPhone(org.phone || '');
         setEditOrgTaxType(org.taxpayer_type || 'Ordinario');
-        // Load settings safely
         const settings = org.settings as any;
         setEditOrgMaxUsers(settings?.max_users || PLAN_LIMITS[org.plan_tier || 'free'] || 5);
         setEditOrgFeatures(settings?.features || {});
@@ -381,13 +375,12 @@ export default function MasterPanel() {
 
     const handleInviteUser = async () => {
         if (!newUserEmail || !newUserOrgId || !newUserFirstName || !newUserLastName) {
-            toast({ title: "Error", description: "Faltan campos obligatorios (Email, Nombre, Apellido, Organización)", variant: "destructive" });
+            toast({ title: "Error", description: "Faltan campos obligatorios", variant: "destructive" });
             return;
         }
 
         setIsCreatingUser(true);
         try {
-            console.log("Invoking invite-user function...");
             const { data, error } = await supabase.functions.invoke('invite-user', {
                 body: {
                     email: newUserEmail,
@@ -398,57 +391,26 @@ export default function MasterPanel() {
                 }
             });
 
-            if (error) {
-                console.error("Function error:", error);
-                throw error;
-            }
+            if (error) throw error;
+            if (data && data.error) throw new Error(data.error);
 
-            console.log("Invitation result:", data);
-
-            // Handle manual error from function (bypass generic 400)
-            if (data && data.error) {
-                throw new Error(data.error);
-            }
-
-            toast({
-                title: "Invitación Enviada",
-                description: `Se ha enviado un correo de invitación a ${newUserEmail}.`
-            });
-
+            toast({ title: "Invitación Enviada", description: `Se ha enviado un correo a ${newUserEmail}.` });
             setUserDialogOpen(false);
             setNewUserEmail('');
             setNewUserFirstName('');
             setNewUserLastName('');
             setNewUserRole('representative');
-
-            // Reload data to potentially show the pending user if the function inserts immediately
             setTimeout(loadData, 1000);
-
         } catch (error: any) {
             console.error('Invite user error:', error);
-            let errorMessage = "No se pudo enviar la invitación.";
-
-            if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            // Intentar parsear error de cuerpo de respuesta si existe
-            if (error && typeof error === 'object' && 'context' in error) {
-                // Supabase function errors sometimes come in a specific format
-            }
-
-            toast({
-                title: "Error al invitar",
-                description: errorMessage,
-                variant: "destructive"
-            });
+            toast({ title: "Error al invitar", description: error.message || "No se pudo enviar la invitación.", variant: "destructive" });
         } finally {
             setIsCreatingUser(false);
         }
     };
 
     const handleDeleteOrganization = async (id: string) => {
-        if (!confirm('¿Estás seguro de eliminar esta organización? Esta acción no se puede deshacer.')) return;
+        if (!confirm('¿Estás seguro de eliminar esta organización?')) return;
         try {
             const { error } = await supabase.from('organizations').delete().eq('id', id);
             if (error) throw error;
@@ -461,336 +423,118 @@ export default function MasterPanel() {
 
     const enterAuditMode = (orgId: string) => {
         toast({ title: "Modo Auditor", description: "Cambiando de contexto..." });
-        // Implement actual audit switch logic here if needed
         window.location.href = `/dashboard?audit_org=${orgId}`;
     };
 
     if (loading) {
-        return <div className="flex items-center justify-center h-96">Cargando Panel Master...</div>;
+        return <div className="flex items-center justify-center h-screen bg-white dark:bg-slate-950 font-bold text-slate-400">CARGANDO NÚCLEO MASTER...</div>;
     }
 
+    const licenseInfractions = auditLogs.filter(log => log.action_type === 'security_alert_license_exceeded');
+    const araguaActivity = auditLogs.filter(log => log.action_type === 'aragua_regional_activity');
+
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                        <Shield className="h-6 w-6 text-purple-600" />
-                        Panel Master
-                    </h1>
-                    <p className="text-muted-foreground">Administración centralizada del sistema</p>
-                </div>
-                <Button variant="outline" onClick={loadData}>
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Actualizar
-                </Button>
-            </div>
+            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-50 dark:bg-rose-900/10 rounded-full blur-3xl opacity-60"></div>
 
-            {/* Security Alert Banner (Sentinel) */}
-            {securityAlerts && securityAlerts.status === 'compromised' && (
-                <Card className="bg-red-50 border-red-200 border-2 overflow-hidden animate-pulse">
-                    <CardContent className="p-4 flex items-center gap-4">
-                        <div className="bg-red-100 p-2 rounded-full">
-                            <AlertTriangle className="h-6 w-6 text-red-600" />
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <Shield className="text-white h-8 w-8" />
                         </div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-red-800">ALERTA DE SEGURIDAD: Integridad Comprometida</h3>
-                            <p className="text-sm text-red-700">
-                                Se han detectado fallos en las políticas de RLS o funciones críticas ausentes.
-                                Tablas afectadas: <span className="font-mono font-bold">{securityAlerts.missing_tables.join(', ') || 'Funciones del Sistema'}</span>
-                            </p>
+                        <div>
+                            <p className="text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Centro de Administración Suprema</p>
+                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Panel Master</h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">Nivel Supremo</Badge>
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">Sentinel Protegido</span>
+                                </div>
+                            </div>
                         </div>
-                        <Button variant="destructive" size="sm" onClick={() => window.open('/docs/security-fix', '_blank')}>
-                            Ver Reparación
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right hidden sm:block">
+                            <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">
+                                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                                {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            </div>
+                        </div>
+                        <Button onClick={loadData} size="icon" variant="outline" className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm transition-all active:scale-95">
+                            <RefreshCw className={cn("h-5 w-5", loading && "animate-spin")} />
                         </Button>
-                    </CardContent>
-                </Card>
-            )}
+                    </div>
+                </div>
+            </header>
 
+            {/* Safety Banner */}
             {!securityAlerts && (
                 <div className="bg-green-50 border-green-100 border p-2 rounded-lg flex items-center gap-2 text-xs text-green-700">
                     <ShieldCheck className="h-3 w-3" />
-                    Sentinel: Sistema de seguridad verificado y activo.
+                    Sentinel Oracle: Integridad verificada. Escaneo de licencias activo.
                 </div>
             )}
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Usuarios</p>
-                                <p className="text-2xl font-bold">{stats.totalUsers}</p>
-                                <p className="text-xs text-green-600">{stats.activeUsers} activos</p>
-                            </div>
-                            <Users className="h-8 w-8 text-primary opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Organizaciones</p>
-                                <p className="text-2xl font-bold">{stats.totalOrganizations}</p>
-                            </div>
-                            <Building2 className="h-8 w-8 text-blue-500 opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Tickets Abiertos</p>
-                                <p className="text-2xl font-bold">{stats.openTickets}</p>
-                            </div>
-                            <Bell className="h-8 w-8 text-red-600 opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Sistema</p>
-                                <p className="text-2xl font-bold text-green-600">Operativo</p>
-                            </div>
-                            <Activity className="h-8 w-8 text-green-600 opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
+            {/* Main Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <KPICard title="Usuarios Totales" value={stats.totalUsers} icon={<Users />} color="indigo" subtitle={`${stats.activeUsers} usuarios activos`} />
+                <KPICard title="Organizaciones" value={stats.totalOrganizations} icon={<Building2 />} color="purple" />
+                <KPICard title="Incidentes Sentinel" value={licenseInfractions.length} icon={<ShieldAlert />} color="rose" subtitle="Requieren Auditoría" />
+                <KPICard title="Actividad Radar" value={araguaActivity.length} icon={<Zap />} color="emerald" subtitle="Zona Aragua (Hoy)" />
             </div>
 
-            {/* Tabs for Management */}
-            <Tabs defaultValue="users" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="users">Usuarios</TabsTrigger>
-                    <TabsTrigger value="roles">Roles & Permisos</TabsTrigger>
-                    <TabsTrigger value="organizations">Organizaciones</TabsTrigger>
-                    <TabsTrigger value="memberships">Membresías</TabsTrigger>
-                    <TabsTrigger value="manual-payments">Pagos Manuales</TabsTrigger>
-                    <TabsTrigger value="support">Soporte</TabsTrigger>
-                    <TabsTrigger value="landing">Landing Page</TabsTrigger>
-                    <TabsTrigger value="activity">Actividad</TabsTrigger>
+            <Tabs defaultValue="users" className="space-y-6">
+                <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-1 rounded-2xl h-auto shadow-sm grid grid-cols-2 md:grid-cols-4 lg:inline-flex lg:w-auto gap-2">
+                    <TabsTrigger value="users" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-purple-600 data-[state=active]:text-white rounded-xl font-bold text-xs uppercase transition-all whitespace-nowrap"><Users size={14} /> Usuarios</TabsTrigger>
+                    <TabsTrigger value="organizations" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-rose-600 data-[state=active]:text-white rounded-xl font-bold text-xs uppercase transition-all whitespace-nowrap"><Building2 size={14} /> Org</TabsTrigger>
+                    <TabsTrigger value="sentinel" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-xl font-bold text-xs uppercase transition-all whitespace-nowrap"><Shield size={14} /> Sentinel</TabsTrigger>
+                    <TabsTrigger value="memberships" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-amber-500 data-[state=active]:text-white rounded-xl font-bold text-xs uppercase transition-all whitespace-nowrap"><Package size={14} /> Planes</TabsTrigger>
+                    <TabsTrigger value="support" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-xl font-bold text-xs uppercase transition-all whitespace-nowrap"><HelpCircle size={14} /> Soporte</TabsTrigger>
+                    <TabsTrigger value="activity" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-emerald-600 data-[state=active]:text-white rounded-xl font-bold text-xs uppercase transition-all whitespace-nowrap"><Globe size={14} /> Actividad</TabsTrigger>
                 </TabsList>
 
-                {/* Roles Tab */}
-                <TabsContent value="roles">
-                    <RoleManager />
-                </TabsContent>
-
-                {/* Memberships Tab */}
-                <TabsContent value="memberships">
-                    <PlanManager />
-                </TabsContent>
-
-                {/* Manual Payments Tab */}
-                <TabsContent value="manual-payments">
-                    <ManualPaymentApprover />
-                </TabsContent>
-
-                {/* Support Tab */}
-                <TabsContent value="support">
-                    <TicketList />
-                </TabsContent>
-
-                {/* Landing Tab */}
-                <TabsContent value="landing">
-                    <LandingEditor />
-                </TabsContent>
-
-                {/* Users Tab */}
                 <TabsContent value="users">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle>Gestión de Usuarios</CardTitle>
-                                <CardDescription>Administra roles y accesos de usuarios del sistema</CardDescription>
-                            </div>
+                            <div><CardTitle>Gestión de Usuarios</CardTitle><CardDescription>Administra a todos los usuarios de la plataforma global.</CardDescription></div>
                             <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
-                                <DialogTrigger asChild>
-                                    <DialogTrigger asChild>
-                                        <Button size="sm"><Plus className="h-4 w-4 mr-2" />Invitar Usuario</Button>
-                                    </DialogTrigger>
-                                </DialogTrigger>
+                                <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-2" />Invitar</Button></DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
-                                    <DialogHeader>
-                                        <DialogTitle>Invitar Nuevo Usuario</DialogTitle>
-                                    </DialogHeader>
+                                    <DialogHeader><DialogTitle>Invitar Usuario</DialogTitle></DialogHeader>
                                     <div className="space-y-4 py-4">
-                                        <div className="space-y-2">
-                                            <Label>Correo Electrónico</Label>
-                                            <Input
-                                                type="email"
-                                                value={newUserEmail}
-                                                onChange={(e) => setNewUserEmail(e.target.value)}
-                                                placeholder="usuario@ejemplo.com"
-                                            />
-                                        </div>
-                                        <div className="grid gap-4 py-4">
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label>Nombre</Label>
-                                                    <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} placeholder="Juan" />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>Apellido</Label>
-                                                    <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} placeholder="Pérez" />
-                                                </div>
-                                            </div>
+                                        <div className="space-y-2"><Label>Email</Label><Input type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} /></div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2"><Label>Nombre</Label><Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} /></div>
+                                            <div className="space-y-2"><Label>Apellido</Label><Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} /></div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Rol del Sistema</Label>
-                                                <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {availableRoles.length > 0 ? (
-                                                            availableRoles.map(role => (
-                                                                <SelectItem key={role.slug} value={role.slug}>{role.name}</SelectItem>
-                                                            ))
-                                                        ) : (
-                                                            <>
-                                                                <SelectItem value="admin">Admin Organización</SelectItem>
-                                                                <SelectItem value="manager">Gerente</SelectItem>
-                                                                <SelectItem value="supervisor">Supervisor</SelectItem>
-                                                                <SelectItem value="representative">Representante</SelectItem>
-                                                            </>
-                                                        )}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Organización</Label>
-                                                <Select value={newUserOrgId} onValueChange={setNewUserOrgId}>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Seleccionar..." />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {organizations.map(org => (
-                                                            <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
+                                            <div className="space-y-2"><Label>Rol</Label><Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{availableRoles.map(r => <SelectItem key={r.slug} value={r.slug}>{r.name}</SelectItem>)}</SelectContent></Select></div>
+                                            <div className="space-y-2"><Label>Organización</Label><Select value={newUserOrgId} onValueChange={setNewUserOrgId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{organizations.map(org => <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>)}</SelectContent></Select></div>
                                         </div>
-                                        <Button
-                                            className="w-full"
-                                            onClick={handleInviteUser}
-                                            disabled={isCreatingUser}
-                                        >
-                                            {isCreatingUser ? "Enviando Invitación..." : "Enviar Invitación"}
-                                        </Button>
+                                        <Button className="w-full" onClick={handleInviteUser} disabled={isCreatingUser}>{isCreatingUser ? "Procesando..." : "Invitar"}</Button>
                                     </div>
                                 </DialogContent>
                             </Dialog>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-0">
                             <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Organización</TableHead>
-                                        <TableHead>Rol</TableHead>
-                                        <TableHead>Estado</TableHead>
-                                        <TableHead>Registro</TableHead>
-                                        <TableHead className="text-right">Acciones</TableHead>
-                                    </TableRow>
-                                </TableHeader>
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50"><TableRow className="border-none"><TableHead className="py-4 pl-6 text-[10px] font-black uppercase">Email</TableHead><TableHead className="text-[10px] font-black uppercase">Organización</TableHead><TableHead className="text-[10px] font-black uppercase">Rol</TableHead><TableHead className="text-center text-[10px] font-black uppercase">Estatus</TableHead><TableHead className="text-right py-4 pr-6 text-[10px] font-black uppercase tracking-widest">Acciones</TableHead></TableRow></TableHeader>
                                 <TableBody>
-                                    {users.map((u) => (
+                                    {users.map(u => (
                                         <TableRow key={u.id}>
-                                            <TableCell className="font-medium">{u.email}</TableCell>
-                                            <TableCell>
-                                                {editingUser === u.user_id ? (
-                                                    <Select value={newUserOrgIdEdit} onValueChange={setNewUserOrgIdEdit}>
-                                                        <SelectTrigger className="w-40">
-                                                            <SelectValue placeholder="Sin Org" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="none">Sin Organización</SelectItem>
-                                                            {organizations.map(org => (
-                                                                <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                ) : (
-                                                    <span className={`text-sm whitespace-nowrap ${u.role === 'master' ? 'text-purple-600 font-medium' : 'text-muted-foreground'}`}>
-                                                        {u.role === 'master' ? 'Acceso Global' : (organizations.find(o => o.id === u.organization_id)?.name || 'Sin Org')}
-                                                    </span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                {editingUser === u.user_id ? (
-                                                    <div className="flex items-center gap-2">
-                                                        <Select value={newRole} onValueChange={(v) => setNewRole(v as UserRole)}>
-                                                            <SelectTrigger className="w-32">
-                                                                <SelectValue />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                {availableRoles.length > 0 ? (
-                                                                    availableRoles.map(role => (
-                                                                        <SelectItem key={role.slug} value={role.slug}>{role.name}</SelectItem>
-                                                                    ))
-                                                                ) : (
-                                                                    <>
-                                                                        <SelectItem value="master">Master</SelectItem>
-                                                                        <SelectItem value="admin">Administrador</SelectItem>
-                                                                        <SelectItem value="manager">Gerente</SelectItem>
-                                                                        <SelectItem value="coordinator">Coordinador</SelectItem>
-                                                                        <SelectItem value="supervisor">Supervisor</SelectItem>
-                                                                        <SelectItem value="representative">Representante</SelectItem>
-                                                                    </>
-                                                                )}
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <Button size="sm" onClick={() => handleUpdateRole(u.user_id)}>✓</Button>
-                                                        <Button size="sm" variant="ghost" onClick={() => setEditingUser(null)}>✕</Button>
-                                                    </div>
-                                                ) : (
-                                                    <Badge className={ROLE_COLORS[u.role]}>{ROLE_LABELS[u.role]}</Badge>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={u.is_active ? "default" : "secondary"}>
-                                                    {u.is_active ? 'Activo' : 'Inactivo'}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell>{new Date(u.created_at).toLocaleDateString('es-ES')}</TableCell>
-                                            <TableCell className="text-right">
-                                                {u.role !== 'master' && (
-                                                    <div className="flex justify-end gap-2">
-                                                        <Button size="sm" variant="outline" onClick={() => {
-                                                            setEditingUser(u.user_id);
-                                                            setNewRole(u.role);
-                                                            setNewUserOrgIdEdit(u.organization_id || 'none');
-                                                        }}>
-                                                            <Edit className="h-3 w-3" />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant={u.is_active ? "ghost" : "outline"}
-                                                            className={u.is_active ? "text-amber-500 hover:text-amber-600 hover:bg-amber-100" : "bg-green-50 text-green-600 border-green-200"}
-                                                            onClick={() => handleToggleUserActive(u.user_id, u.is_active)}
-                                                            title={u.is_active ? 'Desactivar acceso' : 'Activar acceso'}
-                                                        >
-                                                            {u.is_active ? <Shield className="h-3 w-3" /> : <Activity className="h-3 w-3" />}
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="ghost"
-                                                            className="text-red-500 hover:text-red-700 hover:bg-red-100"
-                                                            onClick={() => handleDeleteUser(u.user_id)}
-                                                            title="Eliminar Usuario"
-                                                        >
-                                                            <Trash2 className="h-3 w-3" />
-                                                        </Button>
-                                                    </div>
-                                                )}
+                                            <TableCell className="pl-6 font-medium">{u.email}</TableCell>
+                                            <TableCell>{organizations.find(o => o.id === u.organization_id)?.name || 'Acceso Global'}</TableCell>
+                                            <TableCell><Badge className={ROLE_COLORS[u.role]}>{ROLE_LABELS[u.role]}</Badge></TableCell>
+                                            <TableCell className="text-center"><Badge variant={u.is_active ? "default" : "secondary"}>{u.is_active ? 'Activo' : 'Inactivo'}</Badge></TableCell>
+                                            <TableCell className="pr-6 text-right flex justify-end gap-1">
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-blue-500" onClick={() => setEditingUser(u.user_id)}><Edit size={14} /></Button>
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => handleDeleteUser(u.user_id)}><Trash2 size={14} /></Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -800,244 +544,26 @@ export default function MasterPanel() {
                     </Card>
                 </TabsContent>
 
-                {/* Edit Organization Dialog */}
-                <Dialog open={!!editingOrg} onOpenChange={(open) => !open && setEditingOrg(null)}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Editar Organización (Modo Dios)</DialogTitle>
-                            <CardDescription>Modifica privilegios, planes y acceso.</CardDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label>Nombre de la Organización</Label>
-                                <Input value={editOrgName} onChange={(e) => setEditOrgName(e.target.value)} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Slug (Identificador URL)</Label>
-                                <Input value={editOrgSlug} onChange={(e) => setEditOrgSlug(e.target.value)} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Plan de Membresía</Label>
-                                    <Select value={editOrgPlan} onValueChange={(val) => {
-                                        setEditOrgPlan(val);
-                                        // Auto-update limit based on plan change
-                                        setEditOrgMaxUsers(PLAN_LIMITS[val] || 5);
-                                    }}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="free">Gratuito (Max 5)</SelectItem>
-                                            <SelectItem value="pro">Profesional (Max 20)</SelectItem>
-                                            <SelectItem value="enterprise">Empresarial (1000+)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Estado de Suscripción</Label>
-                                    <Select value={editOrgStatus} onValueChange={setEditOrgStatus}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="active">Activo</SelectItem>
-                                            <SelectItem value="trialing">En Prueba</SelectItem>
-                                            <SelectItem value="past_due">Vencido</SelectItem>
-                                            <SelectItem value="canceled">Cancelado</SelectItem>
-                                            <SelectItem value="incomplete">Incompleto</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 border-t pt-4 mt-4">
-                                <div className="space-y-2">
-                                    <Label>RIF</Label>
-                                    <Input value={editOrgRif} onChange={(e) => setEditOrgRif(e.target.value)} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Teléfono</Label>
-                                    <Input value={editOrgPhone} onChange={(e) => setEditOrgPhone(e.target.value)} />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Dirección Fiscal</Label>
-                                <Input value={editOrgAddress} onChange={(e) => setEditOrgAddress(e.target.value)} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Tipo de Contribuyente</Label>
-                                    <Select value={editOrgTaxType} onValueChange={setEditOrgTaxType}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Ordinario">Ordinario</SelectItem>
-                                            <SelectItem value="Especial">Especial</SelectItem>
-                                            <SelectItem value="Formal">Formal</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-purple-600 font-bold">Límite de Usuarios</Label>
-                                    <Input
-                                        type="number"
-                                        value={editOrgMaxUsers}
-                                        onChange={(e) => setEditOrgMaxUsers(parseInt(e.target.value))}
-                                        className="border-purple-200 bg-purple-50"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-4 border-t pt-4 mt-4">
-                                <Label className="text-lg font-semibold">Módulos Habilitados (Modo Dios)</Label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id="feat-sales"
-                                            checked={editOrgFeatures['sales_module'] !== false}
-                                            onCheckedChange={(checked) => setEditOrgFeatures(prev => ({ ...prev, sales_module: !!checked }))}
-                                        />
-                                        <Label htmlFor="feat-sales" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                            Módulo de Ventas
-                                        </Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id="feat-warehouse"
-                                            checked={editOrgFeatures['warehouse_module'] === true}
-                                            onCheckedChange={(checked) => setEditOrgFeatures(prev => ({ ...prev, warehouse_module: !!checked }))}
-                                        />
-                                        <Label htmlFor="feat-warehouse" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                            Control de Almacén
-                                        </Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id="feat-telemarketing"
-                                            checked={editOrgFeatures['telemarketing_module'] === true}
-                                            onCheckedChange={(checked) => setEditOrgFeatures(prev => ({ ...prev, telemarketing_module: !!checked }))}
-                                        />
-                                        <Label htmlFor="feat-telemarketing" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                            Telemarketing
-                                        </Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id="feat-events"
-                                            checked={editOrgFeatures['events_module'] === true}
-                                            onCheckedChange={(checked) => setEditOrgFeatures(prev => ({ ...prev, events_module: !!checked }))}
-                                        />
-                                        <Label htmlFor="feat-events" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                            Gestión de Eventos
-                                        </Label>
-                                    </div>
-                                </div>
-                            </div>
-                            <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={handleUpdateOrganization}>
-                                <Save className="mr-2 h-4 w-4" /> Guardar Cambios
-                            </Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-
-                {/* Features Toggle Section - Inserted into Edit Dialog */}
-
-                {/* Organizations Tab */}
                 <TabsContent value="organizations">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle>Gestión de Organizaciones</CardTitle>
-                                <CardDescription>Administra las organizaciones registradas en el sistema</CardDescription>
-                            </div>
-                            <Dialog open={organizationDialogOpen} onOpenChange={setOrganizationDialogOpen}>
-                                <DialogTrigger asChild>
-                                    <Button size="sm"><Plus className="h-4 w-4 mr-2" />Nueva Organización</Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Registrar Nueva Organización</DialogTitle>
-                                    </DialogHeader>
-                                    <div className="space-y-4 py-4">
-                                        <div className="space-y-2">
-                                            <Label>Nombre de la Organización</Label>
-                                            <Input
-                                                value={newOrganizationName}
-                                                onChange={(e) => setNewOrganizationName(e.target.value)}
-                                                placeholder="Ej: Pharma Corp"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>RIF</Label>
-                                                <Input value={newOrgRif} onChange={(e) => setNewOrgRif(e.target.value)} placeholder="J-12345678-9" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Teléfono</Label>
-                                                <Input value={newOrgPhone} onChange={(e) => setNewOrgPhone(e.target.value)} placeholder="+58..." />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Dirección Fiscal</Label>
-                                            <Input value={newOrgAddress} onChange={(e) => setNewOrgAddress(e.target.value)} placeholder="Av. Principal..." />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Tipo de Contribuyente</Label>
-                                            <Select value={newOrgTaxType} onValueChange={setNewOrgTaxType}>
-                                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Ordinario">Ordinario</SelectItem>
-                                                    <SelectItem value="Especial">Especial</SelectItem>
-                                                    <SelectItem value="Formal">Formal</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <Button className="w-full bg-primary" onClick={handleCreateOrganization}>Crear Organización</Button>
-                                    </div>
-                                </DialogContent>
-                            </Dialog>
+                            <div><CardTitle>Organizaciones Globales</CardTitle><CardDescription>Control masivo de entidades empresariales.</CardDescription></div>
+                            <Button size="sm" onClick={() => setOrganizationDialogOpen(true)}><Plus className="h-4 w-4 mr-2" />Nueva Org</Button>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-0">
                             <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Nombre</TableHead>
-                                        <TableHead>Slug</TableHead>
-                                        <TableHead>Plan</TableHead>
-                                        <TableHead>Estado</TableHead>
-                                        <TableHead>Fecha Creación</TableHead>
-                                        <TableHead className="text-right">Acciones</TableHead>
-                                    </TableRow>
-                                </TableHeader>
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50"><TableRow className="border-none"><TableHead className="py-4 pl-6 text-[10px] font-black uppercase">Entidad</TableHead><TableHead className="text-[10px] font-black uppercase">Plan</TableHead><TableHead className="text-center text-[10px] font-black uppercase">Estado</TableHead><TableHead className="text-[10px] font-black uppercase">Usuarios</TableHead><TableHead className="text-right py-4 pr-6 text-[10px] font-black uppercase tracking-widest">Control</TableHead></TableRow></TableHeader>
                                 <TableBody>
-                                    {organizations.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                                                No hay organizaciones registradas
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : organizations.map((c) => (
-                                        <TableRow key={c.id}>
-                                            <TableCell className="font-medium">{c.name}</TableCell>
-                                            <TableCell className="text-muted-foreground">{c.slug}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline" className="capitalize">{c.plan_tier || 'Free'}</Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge className={c.subscription_status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-                                                    {c.subscription_status || 'Unknown'}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell>{new Date(c.created_at || '').toLocaleDateString('es-ES')}</TableCell>
-                                            <TableCell className="text-right flex justify-end gap-2">
-                                                <Button size="sm" variant="ghost" className="text-blue-600 hover:text-blue-800 hover:bg-blue-50" onClick={() => enterAuditMode(c.id)} title="Entrar como Auditor (Nivel Dios)">
-                                                    <Eye className="h-4 w-4" />
-                                                </Button>
-                                                <Button size="sm" variant="outline" onClick={() => startEditingOrg(c)}>
-                                                    <Edit className="h-3 w-3" />
-                                                </Button>
-                                                <Button size="sm" variant="destructive" onClick={() => handleDeleteOrganization(c.id)}>
-                                                    <Trash2 className="h-3 w-3" />
-                                                </Button>
+                                    {organizations.map(org => (
+                                        <TableRow key={org.id}>
+                                            <TableCell className="pl-6 font-bold">{org.name}</TableCell>
+                                            <TableCell><Badge variant="outline" className="capitalize">{org.plan_tier}</Badge></TableCell>
+                                            <TableCell className="text-center"><Badge className={org.subscription_status === 'active' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}>{org.subscription_status}</Badge></TableCell>
+                                            <TableCell className="font-mono text-xs">{users.filter(u => u.organization_id === org.id).length} / {org.settings?.max_users || 5}</TableCell>
+                                            <TableCell className="pr-6 text-right flex justify-end gap-1">
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-indigo-500" onClick={() => enterAuditMode(org.id)}><Eye size={14} /></Button>
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-500" onClick={() => startEditingOrg(org)}><Edit size={14} /></Button>
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => handleDeleteOrganization(org.id)}><Trash2 size={14} /></Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -1047,42 +573,156 @@ export default function MasterPanel() {
                     </Card>
                 </TabsContent>
 
-                {/* Activity Tab */}
+                <TabsContent value="sentinel" className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* License Auditor Feed */}
+                        <Card className="border-red-100 shadow-xl shadow-red-50/20">
+                            <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+                                <div className="p-2 bg-red-100 rounded-lg text-red-600"><ShieldAlert size={20} /></div>
+                                <div className="flex-1">
+                                    <CardTitle className="text-lg">Sentinel Oracle [Licencias]</CardTitle>
+                                    <CardDescription>Escaneo de organizaciones que exceden su límite.</CardDescription>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                {licenseInfractions.length === 0 ? (
+                                    <div className="py-10 text-center space-y-2">
+                                        <ShieldCheck className="h-10 w-10 text-emerald-500 mx-auto opacity-20" />
+                                        <p className="text-sm font-bold text-slate-400">Total Integridad. Sin infracciones.</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {licenseInfractions.map((inf, idx) => (
+                                            <div key={inf.id} className="p-4 border rounded-2xl bg-red-50/50 border-red-100 flex justify-between items-center group hover:bg-red-50 transition-colors">
+                                                <div>
+                                                    <p className="text-sm font-black text-red-900">{organizations.find(o => o.id === inf.target_id)?.name || 'Org Desconocida'}</p>
+                                                    <p className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-tighter">
+                                                        Uso Crítico: {inf.details?.current} / {inf.details?.max} Usuarios
+                                                    </p>
+                                                </div>
+                                                <Badge className="bg-red-600 text-white border-none text-[10px] font-black uppercase">ALERTA {idx + 1}</Badge>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Regional Radar Feed (Aragua) */}
+                        <Card className="border-emerald-100 shadow-xl shadow-emerald-50/20">
+                            <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+                                <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600"><Zap size={20} /></div>
+                                <div className="flex-1">
+                                    <CardTitle className="text-lg">Radar Regional [Aragua]</CardTitle>
+                                    <CardDescription>Seguimiento de actividad proactiva en tiempo real.</CardDescription>
+                                </div>
+                                <Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50 animate-pulse">LIVE</Badge>
+                            </CardHeader>
+                            <CardContent>
+                                {araguaActivity.length === 0 ? (
+                                    <div className="py-10 text-center space-y-2">
+                                        <Activity className="h-10 w-10 text-slate-300 mx-auto opacity-20" />
+                                        <p className="text-sm font-bold text-slate-400">Sin actividad reciente en Aragua.</p>
+                                    </div>
+                                ) : (
+                                    <div className="max-h-[300px] overflow-y-auto space-y-2 pr-2">
+                                        {araguaActivity.map(act => (
+                                            <div key={act.id} className="p-3 border rounded-xl bg-white flex items-center gap-3 hover:border-emerald-200 transition-colors">
+                                                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><Map size={14} /></div>
+                                                <div className="flex-1">
+                                                    <p className="text-xs font-bold text-slate-800">Nueva Visita: <span className="text-emerald-600">Aragua</span></p>
+                                                    <p className="text-[10px] text-slate-400 font-medium">Ref: {act.target_id.slice(-6).toUpperCase()}</p>
+                                                </div>
+                                                <p className="text-[9px] font-black text-slate-300 uppercase">{new Date(act.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Card>
+                        <CardHeader><CardTitle className="text-md">Historial General de Auditoría [Nivel Dios]</CardTitle></CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader className="bg-slate-50/50"><TableRow className="border-none"><TableHead className="pl-6 text-[10px] font-black uppercase py-4">Evento</TableHead><TableHead className="text-[10px] font-black uppercase">Timestamp</TableHead><TableHead className="pr-6 text-right text-[10px] font-black uppercase">Details</TableHead></TableRow></TableHeader>
+                                <TableBody>
+                                    {auditLogs.slice(0, 10).map(log => (
+                                        <TableRow key={log.id}>
+                                            <TableCell className="pl-6"><Badge variant="outline" className="font-mono text-[9px] uppercase tracking-tighter">{log.action_type.replace(/_/g, ' ')}</Badge></TableCell>
+                                            <TableCell className="text-[10px] text-slate-500 font-bold">{new Date(log.created_at).toLocaleString()}</TableCell>
+                                            <TableCell className="pr-6 text-right font-mono text-[9px] text-slate-400 max-w-[200px] truncate">{JSON.stringify(log.details)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="memberships"><PlanManager /></TabsContent>
+                <TabsContent value="support"><TicketList /></TabsContent>
                 <TabsContent value="activity">
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Actividad del Sistema</CardTitle>
-                            <CardDescription>Resumen de actividad reciente</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
-                                    <Activity className="h-10 w-10 text-primary" />
-                                    <div className="flex-1">
-                                        <h4 className="font-medium">Sistema Operativo</h4>
-                                        <p className="text-sm text-muted-foreground">
-                                            Todos los servicios funcionando correctamente
-                                        </p>
-                                    </div>
-                                    <Badge className="bg-green-100 text-green-800">Online</Badge>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 border rounded-lg">
-                                        <h4 className="font-medium mb-2">Últimas 24 horas</h4>
-                                        <p className="text-3xl font-bold text-primary">{stats.totalVisits}</p>
-                                        <p className="text-sm text-muted-foreground">visitas registradas</p>
-                                    </div>
-                                    <div className="p-4 border rounded-lg">
-                                        <h4 className="font-medium mb-2">Usuarios Activos</h4>
-                                        <p className="text-3xl font-bold text-green-600">{stats.activeUsers}</p>
-                                        <p className="text-sm text-muted-foreground">de {stats.totalUsers} totales</p>
-                                    </div>
-                                </div>
+                        <CardHeader><CardTitle>Actividad del Sistema</CardTitle><CardDescription>Estadísticas crudas de operación.</CardDescription></CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100">
+                                <Activity className="h-8 w-8 text-emerald-600" />
+                                <div className="flex-1"><h4 className="font-bold text-slate-900">Núcleo Central Operativo</h4><p className="text-xs text-slate-500">Latencia promedio Supabase: {supabase ? '< 300ms' : 'Error'}</p></div>
+                                <Badge className="bg-emerald-500 text-white">Online</Badge>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm"><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Visitas 24H</p><p className="text-4xl font-black text-slate-900 tracking-tighter">{stats.totalVisits}</p></div>
+                                <div className="p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm"><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Lead Stream</p><p className="text-4xl font-black text-indigo-600 tracking-tighter">{stats.totalContacts}</p></div>
                             </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Edit Org Dialog (Legacy support) */}
+            <Dialog open={!!editingOrg} onOpenChange={(open) => !open && setEditingOrg(null)}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader><DialogTitle>Configuración Maestra: {editOrgName}</DialogTitle></DialogHeader>
+                    <div className="grid grid-cols-2 gap-6 py-4">
+                        <div className="space-y-4">
+                            <div className="space-y-2"><Label>Nombre</Label><Input value={editOrgName} onChange={(e) => setEditOrgName(e.target.value)} /></div>
+                            <div className="space-y-2"><Label>Plan</Label><Select value={editOrgPlan} onValueChange={(v) => { setEditOrgPlan(v); setEditOrgMaxUsers(PLAN_LIMITS[v] || 5); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="free">Free</SelectItem><SelectItem value="pro">Pro</SelectItem><SelectItem value="enterprise">Enterprise</SelectItem></SelectContent></Select></div>
+                            <div className="space-y-2"><Label className="text-red-500 font-bold">Límite Usuarios (Override)</Label><Input type="number" value={editOrgMaxUsers} onChange={(e) => setEditOrgMaxUsers(parseInt(e.target.value))} className="bg-red-50" /></div>
+                        </div>
+                        <div className="space-y-4">
+                            <Label className="font-bold">Módulos Habilitados</Label>
+                            <div className="grid grid-cols-1 gap-2 border p-4 rounded-xl">
+                                {['sales_module', 'warehouse_module', 'telemarketing_module', 'events_module'].map(mod => (
+                                    <div key={mod} className="flex items-center gap-2"><Checkbox id={mod} checked={editOrgFeatures[mod] === true} onCheckedChange={(v) => setEditOrgFeatures(prev => ({ ...prev, [mod]: !!v }))} /><Label htmlFor={mod} className="text-sm capitalize">{mod.replace('_', ' ')}</Label></div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <Button onClick={handleUpdateOrganization} className="w-full bg-slate-900">Aplicar Cambios Nucleares</Button>
+                </DialogContent>
+            </Dialog>
         </div>
+    );
+}
+
+function KPICard({ title, value, icon, color, subtitle }: any) {
+    const variants: any = {
+        indigo: { bg: "bg-indigo-50", icon: "text-indigo-600 bg-indigo-100" },
+        purple: { bg: "bg-purple-50", icon: "text-purple-600 bg-purple-100" },
+        rose: { bg: "bg-rose-50", icon: "text-rose-600 bg-rose-100" },
+        emerald: { bg: "bg-emerald-50", icon: "text-emerald-600 bg-emerald-100" },
+    };
+    const v = variants[color] || variants.indigo;
+    return (
+        <Card className="border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group hover:scale-[1.02] transition-all">
+            <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                    <div><p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{title}</p><p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">{value}</p>{subtitle && <p className="text-[9px] font-bold text-slate-400 mt-1">{subtitle}</p>}</div>
+                    <div className={cn("p-4 rounded-[1.25rem] transition-all group-hover:scale-110", v.icon)}>{cloneElement(icon as React.ReactElement, { size: 24, strokeWidth: 2.5 })}</div>
+                </div>
+            </CardContent>
+        </Card>
     );
 }

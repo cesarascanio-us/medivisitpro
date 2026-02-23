@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 const OSRM_URL = 'https://router.project-osrm.org';
 
 export interface OSRMRoute {
@@ -111,9 +120,15 @@ export async function optimizeRoute(
         }
 
         const trip = data.trips[0];
+        const waypoints = data.waypoints;
+
+        if (!waypoints || waypoints.length === 0) {
+            console.error('OSRM trip: No waypoints returned');
+            return null;
+        }
 
         // Obtener orden optimizado (excluyendo el punto de inicio)
-        const waypointIndices = trip.waypoints
+        const waypointIndices = waypoints
             .slice(1) // Excluir punto de inicio
             .map((wp: any) => wp.waypoint_index - 1); // Ajustar índice
 

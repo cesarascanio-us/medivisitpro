@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- Fix RLS for doctors table - allow authenticated users to manage their own records
 DROP POLICY IF EXISTS "Users can view own doctors" ON public.doctors;
 DROP POLICY IF EXISTS "Users can insert own doctors" ON public.doctors;

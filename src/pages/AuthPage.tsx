@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -168,219 +177,226 @@ export default function AuthPage() {
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#020617]">
-                <Loader2 className="h-12 w-12 animate-spin text-emerald-500" />
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#020617] flex flex-col lg:flex-row overflow-hidden">
-            {/* Left Side: Hero & Features */}
-            <div className="hidden lg:flex flex-1 relative flex-col justify-center p-12 xl:p-24 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/20 via-blue-900/40 to-slate-900 z-0" />
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] -mr-48 -mt-48 animate-pulse" />
+        <div className="min-h-screen bg-[#f8f9fa] flex flex-col lg:flex-row overflow-hidden font-sans">
+            {/* Left Side: Hero & Features - Corporate Blue Gradient */}
+            <div className="hidden lg:flex flex-1 relative flex-col justify-center p-12 xl:p-24 overflow-hidden bg-primary-dark">
+                {/* Decorative Pattern / Mesh Gradient */}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px] -mr-48 -mt-48 animate-pulse" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] -ml-32 -mb-32" />
 
                 <div className="relative z-10 max-w-2xl">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-8">
-                        <Zap className="w-4 h-4 text-emerald-400" />
-                        <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Nueva Era en Visita Médica</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full mb-10 backdrop-blur-sm">
+                        <Zap className="w-4 h-4 text-secondary" />
+                        <span className="text-xs font-bold text-white uppercase tracking-widest">Nueva Era en Visita Médica</span>
                     </div>
 
-                    <h1 className="text-5xl xl:text-7xl font-extrabold text-white leading-tight mb-6">
+                    <h1 className="text-5xl xl:text-7xl font-bold text-white leading-tight mb-8">
                         Optimiza tu fuerza <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Comercial Médica</span>
+                        <span className="text-secondary">Comercial Médica</span>
                     </h1>
 
-                    <p className="text-xl text-slate-400 mb-12 leading-relaxed">
+                    <p className="text-xl text-blue-100/80 mb-12 leading-relaxed font-medium">
                         Gestiona visitas, muestras, farmacias y análisis de mercado en una única plataforma diseñada para el éxito farmacéutico.
                     </p>
 
-                    <div className="grid grid-cols-2 gap-8 mb-12">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-emerald-500/20 rounded-lg">
-                                    <MapPin className="w-5 h-5 text-emerald-400" />
+                    <div className="grid grid-cols-2 gap-10 mb-16">
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                                    <MapPin className="w-6 h-6 text-secondary" />
                                 </div>
-                                <span className="font-semibold text-white">Rutas Geocalizadas</span>
+                                <span className="font-semibold text-white text-lg">Rutas Geocalizadas</span>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-500/20 rounded-lg">
-                                    <PieChart className="w-5 h-5 text-blue-400" />
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                                    <PieChart className="w-6 h-6 text-secondary" />
                                 </div>
-                                <span className="font-semibold text-white">Analytics Avanzado</span>
+                                <span className="font-semibold text-white text-lg">Analytics Avanzado</span>
                             </div>
                         </div>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-500/20 rounded-lg">
-                                    <Stethoscope className="w-5 h-5 text-purple-400" />
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                                    <Stethoscope className="w-6 h-6 text-secondary" />
                                 </div>
-                                <span className="font-semibold text-white">Panel de Doctores</span>
+                                <span className="font-semibold text-white text-lg">Panel de Doctores</span>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-teal-500/20 rounded-lg">
-                                    <CheckCircle2 className="w-5 h-5 text-teal-400" />
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                                    <CheckCircle2 className="w-6 h-6 text-secondary" />
                                 </div>
-                                <span className="font-semibold text-white">Control de Muestras</span>
+                                <span className="font-semibold text-white text-lg">Control de Muestras</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Trust Badges */}
-                    <div className="flex items-center gap-8 pt-8 border-t border-slate-800">
-                        <div className="flex flex-col gap-1">
-                            <ShieldCheck className="w-6 h-6 text-emerald-500/50" />
-                            <span className="text-[10px] uppercase tracking-tighter text-slate-500 font-bold">HIPAA Compliant</span>
+                    <div className="flex items-center gap-10 pt-10 border-t border-white/10">
+                        <div className="flex flex-col gap-2 items-center opacity-70 hover:opacity-100 transition-opacity">
+                            <ShieldCheck className="w-6 h-6 text-white" />
+                            <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">HIPAA Compliant</span>
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <Lock className="w-6 h-6 text-blue-500/50" />
-                            <span className="text-[10px] uppercase tracking-tighter text-slate-500 font-bold">SSL Secure</span>
+                        <div className="flex flex-col gap-2 items-center opacity-70 hover:opacity-100 transition-opacity">
+                            <Lock className="w-6 h-6 text-white" />
+                            <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">SSL Secure</span>
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <Shield className="w-6 h-6 text-amber-500/50" />
-                            <span className="text-[10px] uppercase tracking-tighter text-slate-500 font-bold">ISO 27001 Certified</span>
+                        <div className="flex flex-col gap-2 items-center opacity-70 hover:opacity-100 transition-opacity">
+                            <Shield className="w-6 h-6 text-white" />
+                            <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">ISO 27001 Certified</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Right Side: Auth Form */}
-            <div className="flex-1 flex flex-col justify-center items-center p-6 lg:bg-slate-900/50 relative">
-                <div className="w-full max-w-[420px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Right Side: Auth Form - Clean Light Style */}
+            <div className="flex-1 flex flex-col justify-center items-center p-6 bg-white lg:bg-[#f8f9fa] relative">
+                <div className="w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div className="lg:hidden text-center mb-12">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/25 mb-4">
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary shadow-lg shadow-primary/20 mb-4 transition-transform hover:scale-110">
                             <Stethoscope className="h-7 w-7 text-white" />
                         </div>
-                        <h1 className="text-3xl font-bold text-white tracking-tight">MediVisitPro</h1>
+                        <h1 className="text-3xl font-bold text-text-main tracking-tight">MediVisitPro</h1>
                     </div>
 
-                    <div className="mb-8 hidden lg:block">
-                        <h2 className="text-2xl font-bold text-white mb-2">Comienza ahora</h2>
-                        <p className="text-slate-400">Ingresa tus credenciales para acceder al panel.</p>
+                    <div className="mb-10 hidden lg:block">
+                        <h2 className="text-3xl font-bold text-text-main mb-3">Comienza ahora</h2>
+                        <p className="text-text-muted text-lg font-medium">Ingresa tus credenciales para acceder al panel profesional.</p>
                     </div>
 
-                    {/* Demo Banner Button */}
+                    {/* Demo Banner Button - Primary Blue */}
                     <Button
                         onClick={handleDemoLogin}
-                        className="w-full mb-8 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold h-14 rounded-xl shadow-xl shadow-emerald-500/10 border-b-4 border-emerald-800 transition-all hover:-translate-y-1 group relative overflow-hidden"
+                        className="w-full mb-10 bg-primary hover:bg-primary-dark text-white font-bold h-14 rounded-xl shadow-xl shadow-primary/10 transition-all hover:-translate-y-1 group relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
-                        <Rocket className="mr-3 w-5 h-5 animate-bounce" />
+                        <Rocket className="mr-3 w-5 h-5" />
                         PROBAR DEMO EN VIVO
                         <ArrowRight className="ml-2 w-4 h-4" />
                     </Button>
 
-                    <div className="relative mb-8">
+                    <div className="relative mb-10">
                         <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-slate-800" />
+                            <span className="w-full border-t border-gray-200" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-[#020617] lg:bg-transparent px-2 text-slate-500 font-medium">O accede con tu cuenta</span>
+                            <span className="bg-[#f8f9fa] px-4 text-text-muted font-bold tracking-widest">O accede con tu cuenta</span>
                         </div>
                     </div>
 
-                    <Card className="border-slate-800 bg-slate-900/40 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden">
+                    <Card className="border-gray-200 bg-white shadow-2xl rounded-2xl overflow-hidden border-t-4 border-t-primary">
                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 bg-slate-900/80 p-1 rounded-none border-b border-slate-800">
-                                <TabsTrigger value="login" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white rounded-md text-slate-400 text-sm font-semibold">Login</TabsTrigger>
-                                <TabsTrigger value="signup" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white rounded-md text-slate-400 text-sm font-semibold">Registro</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-2 bg-gray-50 p-1 rounded-none border-b border-gray-100">
+                                <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md text-text-muted text-sm font-bold transition-all">Login</TabsTrigger>
+                                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md text-text-muted text-sm font-bold transition-all">Registro</TabsTrigger>
                             </TabsList>
 
-                            <CardContent className="pt-6 pb-8">
+                            <CardContent className="pt-8 pb-10">
                                 <TabsContent value="login" className="mt-0 animate-in fade-in duration-300">
-                                    <form onSubmit={handleLogin} className="space-y-5">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="login-email" className="text-slate-300 text-xs font-bold uppercase tracking-wider">Email Corporativo</Label>
+                                    <form onSubmit={handleLogin} className="space-y-6">
+                                        <div className="space-y-3">
+                                            <Label htmlFor="login-email" className="text-text-main text-sm font-bold uppercase tracking-wider opacity-80">Email Corporativo</Label>
                                             <div className="relative">
-                                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                 <Input
                                                     id="login-email"
                                                     type="email"
                                                     placeholder="nombre@laboratorio.com"
                                                     value={loginEmail}
                                                     onChange={(e) => setLoginEmail(e.target.value)}
-                                                    className="pl-10 h-12 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-600 focus:ring-emerald-500 rounded-xl"
+                                                    className="pl-12 h-14 bg-gray-50 border-gray-200 text-text-main placeholder:text-gray-400 focus:ring-primary focus:border-primary rounded-xl text-base transition-all"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="login-password" className="text-slate-300 text-xs font-bold uppercase tracking-wider">Contraseña</Label>
+                                        <div className="space-y-3">
+                                            <Label htmlFor="login-password" className="text-text-main text-sm font-bold uppercase tracking-wider opacity-80">Contraseña</Label>
                                             <div className="relative">
-                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                 <Input
                                                     id="login-password"
                                                     type="password"
                                                     placeholder="••••••••"
                                                     value={loginPassword}
                                                     onChange={(e) => setLoginPassword(e.target.value)}
-                                                    className="pl-10 h-12 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-600 focus:ring-emerald-500 rounded-xl"
+                                                    className="pl-12 h-14 bg-gray-50 border-gray-200 text-text-main placeholder:text-gray-400 focus:ring-primary focus:border-primary rounded-xl text-base transition-all"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
-                                        <Button type="submit" className="w-full bg-slate-100 hover:bg-white text-slate-900 font-bold h-12 rounded-xl transition-all shadow-lg" disabled={loading}>
-                                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Acceder al Sistema'}
+                                        <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold h-14 rounded-xl transition-all shadow-lg text-lg group" disabled={loading}>
+                                            {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+                                                <span className="flex items-center gap-2">
+                                                    Acceder al Sistema
+                                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                                </span>
+                                            )}
                                         </Button>
                                     </form>
                                 </TabsContent>
 
                                 <TabsContent value="signup" className="mt-0 animate-in fade-in duration-300">
-                                    <form onSubmit={handleSignup} className="space-y-4">
+                                    <form onSubmit={handleSignup} className="space-y-5">
                                         <div className="space-y-2">
-                                            <Label htmlFor="signup-name" className="text-slate-300 text-xs font-bold">Nombre Completo</Label>
+                                            <Label htmlFor="signup-name" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Nombre Completo</Label>
                                             <Input
                                                 id="signup-name"
                                                 placeholder="Ej: Manuel García"
                                                 value={signupFullName}
                                                 onChange={(e) => setSignupFullName(e.target.value)}
-                                                className="bg-slate-800/50 border-slate-700 text-white h-11 rounded-lg"
+                                                className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
                                                 required
                                             />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="signup-email" className="text-slate-300 text-xs font-bold">Email</Label>
+                                            <Label htmlFor="signup-email" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Email</Label>
                                             <Input
                                                 id="signup-email"
                                                 type="email"
                                                 placeholder="email@ejemplo.com"
                                                 value={signupEmail}
                                                 onChange={(e) => setSignupEmail(e.target.value)}
-                                                className="bg-slate-800/50 border-slate-700 text-white h-11 rounded-lg"
+                                                className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
                                                 required
                                             />
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <Label htmlFor="signup-password" className="text-slate-300 text-xs font-bold">Password</Label>
+                                                <Label htmlFor="signup-password" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Password</Label>
                                                 <Input
                                                     id="signup-password"
                                                     type="password"
                                                     value={signupPassword}
                                                     onChange={(e) => setSignupPassword(e.target.value)}
-                                                    className="bg-slate-800/50 border-slate-700 text-white h-11 rounded-lg"
+                                                    className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
                                                     required
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="signup-confirm" className="text-slate-300 text-xs font-bold">Confirma</Label>
+                                                <Label htmlFor="signup-confirm" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Confirma</Label>
                                                 <Input
                                                     id="signup-confirm"
                                                     type="password"
                                                     value={signupConfirmPassword}
                                                     onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                                                    className="bg-slate-800/50 border-slate-700 text-white h-11 rounded-lg"
+                                                    className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
-                                        <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-11 rounded-lg mt-4 shadow-lg active:scale-95 transition-all" disabled={loading}>
+                                        <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold h-12 rounded-xl mt-6 shadow-lg active:scale-95 transition-all" disabled={loading}>
                                             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Crear Cuenta'}
                                         </Button>
                                     </form>
@@ -389,8 +405,8 @@ export default function AuthPage() {
                         </Tabs>
                     </Card>
 
-                    <p className="mt-8 text-center text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
-                        Al continuar, aceptas nuestros <strong>Términos de Servicio</strong> y la <strong>Política de Privacidad</strong> para el manejo de datos médicos.
+                    <p className="mt-10 text-center text-xs text-text-muted leading-relaxed max-w-xs mx-auto font-medium">
+                        Al continuar, aceptas nuestros <strong className="text-primary cursor-pointer hover:underline">Términos de Servicio</strong> y la <strong className="text-primary cursor-pointer hover:underline">Política de Privacidad</strong> para el manejo de datos médicos.
                     </p>
                 </div>
             </div>

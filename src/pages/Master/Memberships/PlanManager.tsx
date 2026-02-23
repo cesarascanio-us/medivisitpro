@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, Crown, Check, X, CreditCard, RefreshCw } from "lucide-react";
+import { Loader2, Crown, Check, X, CreditCard, RefreshCw, Rocket, Plus, Edit2, Trash2, Shield, TrendingUp, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
 interface PlanType {
@@ -268,126 +278,175 @@ export default function PlanManager() {
     };
 
     return (
-        <div className="p-6 space-y-6 animate-in fade-in duration-500 text-white">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-                        <Crown className="w-8 h-8 text-emerald-500" />
-                        Planes de Membresía
-                    </h1>
-                    <p className="text-slate-400 mt-1">Configura los niveles de servicio del SaaS.</p>
-                </div>
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-8 p-1">
+            {/* Premium White Header Container */}
+            <header className="bg-white dark:bg-slate-900 px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                {/* Decorative backgrounds */}
+                <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
 
-                <Dialog open={isDialogOpen} onOpenChange={(open) => {
-                    setIsDialogOpen(open);
-                    if (!open) {
-                        resetForm();
-                    }
-                }}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20">
-                            Crear Nuevo Plan
-                        </Button>
-                    </DialogTrigger>
-                    <Button variant="outline" onClick={resetToOfficialPlans} className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 ml-2">
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Sincronizar con Landing
-                    </Button>
-                    <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
-                        <DialogHeader>
-                            <DialogTitle>{editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Nombre del Plan</label>
-                                <input
-                                    className="flex h-10 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900"
-                                    placeholder="Ej: Enterprise"
-                                    value={newPlanName}
-                                    onChange={(e) => setNewPlanName(e.target.value)}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Precio Mensual ($)</label>
-                                <input
-                                    type="number"
-                                    className="flex h-10 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900"
-                                    placeholder="99.99"
-                                    value={newPlanPrice}
-                                    onChange={(e) => setNewPlanPrice(e.target.value)}
-                                />
-                            </div>
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                    <div className="flex items-center gap-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-3xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <Rocket className="text-white h-10 w-10" />
+                        </div>
+                        <div>
+                            <p className="text-indigo-600 dark:text-indigo-400 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Monetización & SaaS</p>
+                            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                                Gestión de Planes
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-lg font-medium">Configura la oferta comercial, límites de uso e infraestructura de precios</p>
+                        </div>
+                    </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Características (Items)</label>
-                                <div className="flex gap-2">
-                                    <input
-                                        className="flex h-10 flex-1 rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                                        placeholder="Nueva característica..."
-                                        value={featureInput}
-                                        onChange={(e) => setFeatureInput(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && addFeature()}
-                                    />
-                                    <Button size="sm" onClick={addFeature} className="bg-emerald-600 hover:bg-emerald-500">
-                                        +
-                                    </Button>
-                                </div>
-                                <div className="max-h-40 overflow-y-auto space-y-2 mt-2">
-                                    {newPlanFeatures.map((feat, idx) => (
-                                        <div key={idx} className="flex items-center justify-between bg-slate-800/50 p-2 rounded-md border border-slate-700">
-                                            <span className="text-xs truncate mr-2">{feat}</span>
-                                            <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-6 w-6 p-0 text-red-500 hover:text-red-400 hover:bg-red-500/10">
-                                                <X className="h-3 w-3" />
+                    <div className="flex flex-wrap items-center gap-3">
+                        <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                            setIsDialogOpen(open);
+                            if (!open) resetForm();
+                        }}>
+                            <DialogTrigger asChild>
+                                <Button className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-200 dark:shadow-none transition-all hover:-translate-y-0.5 active:translate-y-0 font-bold uppercase text-[10px] tracking-widest">
+                                    <Plus className="mr-3 h-4 w-4" />
+                                    Crear Nuevo Plan
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-white dark:bg-slate-900 border-none shadow-2xl rounded-[2rem] max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">
+                                        {editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-6 py-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Nombre del Plan</label>
+                                        <input
+                                            className="flex h-12 w-full rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold"
+                                            placeholder="Ej: Enterprise"
+                                            value={newPlanName}
+                                            onChange={(e) => setNewPlanName(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Precio Mensual ($)</label>
+                                        <input
+                                            type="number"
+                                            className="flex h-12 w-full rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold"
+                                            placeholder="99.99"
+                                            value={newPlanPrice}
+                                            onChange={(e) => setNewPlanPrice(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Características</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                className="flex h-12 flex-1 rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all font-medium"
+                                                placeholder="Nueva característica..."
+                                                value={featureInput}
+                                                onChange={(e) => setFeatureInput(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && addFeature()}
+                                            />
+                                            <Button size="icon" onClick={addFeature} className="bg-indigo-600 hover:bg-indigo-500 rounded-xl w-12 h-12">
+                                                <Plus className="w-5 h-5" />
                                             </Button>
                                         </div>
-                                    ))}
+                                        <div className="max-h-40 overflow-y-auto space-y-2 mt-4 p-1">
+                                            {newPlanFeatures.map((feat, idx) => (
+                                                <div key={idx} className="flex items-center justify-between bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate mr-2">{feat}</span>
+                                                    <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <Button onClick={handleSavePlan} className="w-full h-14 bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-indigo-100 mt-4 transition-all active:scale-[0.98]">
+                                        {editingPlan ? 'Actualizar Plan' : 'Guardar Plan'}
+                                    </Button>
                                 </div>
-                            </div>
+                            </DialogContent>
+                        </Dialog>
 
-                            <Button onClick={handleSavePlan} className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold mt-4 shadow-lg shadow-emerald-500/20">
-                                {editingPlan ? 'Actualizar Plan' : 'Guardar Plan'}
-                            </Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            </div>
+                        <Button
+                            variant="outline"
+                            onClick={resetToOfficialPlans}
+                            disabled={loading}
+                            className="h-14 px-8 rounded-2xl border-slate-200 bg-white shadow-sm hover:shadow-md transition-all active:scale-95 text-slate-600 font-bold uppercase text-[10px] tracking-widest"
+                        >
+                            <RefreshCw className={`mr-3 h-4 w-4 ${loading ? 'animate-spin text-indigo-500' : ''}`} />
+                            Sincronizar Cloud
+                        </Button>
+                    </div>
+                </div>
+            </header>
 
-            {loading ? (
-                <div className="flex justify-center p-12">
-                    <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
+            {loading && plans.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-32 gap-6">
+                    <Loader2 className="w-16 h-16 animate-spin text-indigo-500" />
+                    <p className="text-slate-400 font-black uppercase text-xs tracking-[0.3em]">Cargando ecosistema de cargos...</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 pb-20">
                     {plans.map((plan) => (
-                        <Card key={plan.id} className={`bg-slate-900/50 border-slate-700 relative overflow-hidden transition-all hover:border-emerald-500/50 ${!plan.active ? 'opacity-60' : ''}`}>
-                            {plan.name === 'Pro' && (
-                                <div className="absolute top-0 right-0 p-2">
-                                    <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold">POPULAR</Badge>
+                        <Card
+                            key={plan.id}
+                            className={`relative flex flex-col h-full rounded-[3rem] border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 overflow-hidden group transition-all duration-500 hover:translate-y-[-10px] ${!plan.active ? 'opacity-60 grayscale' : 'hover:shadow-indigo-200/50'}`}
+                        >
+                            {/* Decorative accent */}
+                            <div className="absolute top-0 left-0 w-full h-2.5 bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-600"></div>
+
+                            <CardHeader className="pt-12 pb-8 px-10">
+                                <div className="flex justify-between items-start mb-8">
+                                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-[1.5rem] flex items-center justify-center group-hover:bg-indigo-600 transition-colors duration-500">
+                                        <Shield className="w-8 h-8 text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors" />
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Badge className={`${plan.active ? 'bg-indigo-50 text-indigo-700' : 'bg-red-50 text-red-700'} border-none font-black text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-full`}>
+                                            {plan.active ? 'Activo' : 'Inactivo'}
+                                        </Badge>
+                                        <Switch
+                                            checked={plan.active}
+                                            onCheckedChange={() => togglePlan(plan.id, plan.active)}
+                                            className="data-[state=checked]:bg-indigo-600"
+                                        />
+                                    </div>
                                 </div>
-                            )}
-                            <CardHeader>
-                                <CardTitle className="text-2xl font-bold text-white flex justify-between items-center">
+
+                                <CardTitle className="text-3xl font-black text-slate-800 dark:text-white tracking-tighter mb-3 uppercase flex items-center gap-2">
                                     {plan.name}
-                                    <Switch checked={plan.active} onCheckedChange={() => togglePlan(plan.id, plan.active)} />
+                                    {plan.name === 'Pro' && <Badge className="bg-amber-400 text-amber-950 font-black border-none text-[9px] px-2 py-0.5 rounded-md">POPULAR</Badge>}
                                 </CardTitle>
-                                <div className="mt-4">
-                                    <span className="text-4xl font-extrabold text-white">${plan.price}</span>
-                                    <span className="text-slate-500 ml-1">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter">${plan.price}</span>
+                                    <span className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
                                 </div>
+                                <CardDescription className="text-slate-500 dark:text-slate-400 mt-6 font-medium leading-relaxed italic text-sm">
+                                    {plan.description || "Solución avanzada para la industria farmacéutica."}
+                                </CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-3 mb-6">
-                                    {plan.features?.map((feature, i) => (
-                                        <li key={i} className="flex items-start">
-                                            <Check className="h-5 w-5 text-emerald-500 mr-2 shrink-0" />
-                                            <span className="text-slate-300 text-sm">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className="flex gap-2">
+
+                            <CardContent className="flex-grow px-10 pb-10">
+                                <div className="pt-8 border-t border-slate-50 dark:border-slate-800">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400 mb-6">Capacidades del Plan</p>
+                                    <ul className="space-y-4">
+                                        {plan.features?.map((feature, i) => (
+                                            <li key={i} className="flex items-start group/li">
+                                                <div className="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mr-3 mt-0.5 shrink-0 group-hover/li:bg-emerald-500 group-hover/li:text-white transition-all">
+                                                    <Check className="h-3 w-3 text-emerald-600 dark:text-emerald-400 group-hover/li:text-white transition-all" />
+                                                </div>
+                                                <span className="text-slate-600 dark:text-slate-300 text-sm font-bold leading-tight group-hover/li:text-slate-900 dark:group-hover/li:text-white transition-colors">{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div className="mt-12 grid grid-cols-2 gap-4">
                                     <Button
                                         variant="outline"
-                                        className="flex-1 border-slate-600 text-white hover:bg-slate-800"
+                                        className="rounded-2xl border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/20 font-black uppercase text-[10px] tracking-widest h-14 transition-all"
                                         onClick={() => {
                                             setEditingPlan(plan);
                                             setNewPlanName(plan.name);
@@ -396,14 +455,14 @@ export default function PlanManager() {
                                             setIsDialogOpen(true);
                                         }}
                                     >
-                                        Editar
+                                        <Edit2 className="w-4 h-4 mr-2" /> Editar
                                     </Button>
                                     <Button
-                                        variant="ghost"
-                                        className="text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                                        variant="outline"
+                                        className="rounded-2xl border-red-50 text-red-500 hover:bg-red-50 font-black uppercase text-[10px] tracking-widest h-14 transition-all"
                                         onClick={() => handleDeletePlan(plan.id)}
                                     >
-                                        <X className="w-4 h-4" />
+                                        <Trash2 className="w-4 h-4 mr-2" /> Eliminar
                                     </Button>
                                 </div>
                             </CardContent>

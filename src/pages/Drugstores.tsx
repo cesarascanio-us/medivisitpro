@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState } from "react";
 import {
     Plus,
@@ -236,26 +245,20 @@ export default function Drugstores() {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-2 text-indigo-700">
-                        <Building2 className="h-8 w-8" />
-                        Droguerías y Distribución
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+                            <Building2 className="h-6 w-6 text-white" />
+                        </div>
+                        Canal Distribución
                     </h1>
-                    <p className="text-muted-foreground font-medium">Gestión de Canal Indirecto 📦</p>
+                    <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2 ml-15">Gestión de Droguerías & Operadores Logísticos</p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="bg-card border-border text-foreground hover:bg-muted">
-                        <Download className="mr-2 h-4 w-4" />
+                <div className="flex flex-wrap items-center gap-3">
+                    <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="h-11 px-5 border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                        <Download className="mr-2 h-4 w-4 text-indigo-500" />
                         Exportar
-                    </Button>
-                    <Button variant="outline" className="bg-card border-border text-foreground hover:bg-muted">
-                        <Upload className="mr-2 h-4 w-4" />
-                        Importar
-                    </Button>
-                    <Button variant="outline" onClick={handlePrint} className="hidden sm:flex bg-card border-border text-foreground hover:bg-muted">
-                        <Printer className="mr-2 h-4 w-4" />
-                        Imprimir
                     </Button>
                     <Button
                         onClick={() => {
@@ -273,7 +276,7 @@ export default function Drugstores() {
                             });
                             setFormDialogOpen(true);
                         }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md font-medium"
+                        className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02]"
                     >
                         <Plus className="h-4 w-4 mr-2" /> Nueva Droguería
                     </Button>
@@ -282,25 +285,25 @@ export default function Drugstores() {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="bg-card border border-border rounded-xl shadow-sm text-center p-4">
-                    <div className="text-2xl font-bold text-indigo-600">{drugstores.length}</div>
-                    <div className="text-sm text-muted-foreground font-medium">Total Droguerías</div>
+                <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center group hover:border-indigo-100 transition-all">
+                    <div className="text-3xl font-black text-indigo-600 tracking-tighter mb-1">{drugstores.length}</div>
+                    <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Total Master Data</div>
                 </Card>
-                <Card className="bg-card border border-border rounded-xl shadow-sm text-center p-4">
-                    <div className="text-2xl font-bold text-primary">{drugstores.filter(s => s.priority === 'high' || s.priority === 'urgent').length}</div>
-                    <div className="text-sm text-muted-foreground font-medium">Alta Prioridad</div>
+                <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center group hover:border-indigo-100 transition-all">
+                    <div className="text-3xl font-black text-slate-900 tracking-tighter mb-1">{drugstores.filter(s => s.priority === 'high' || s.priority === 'urgent').length}</div>
+                    <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Foco Prioritario</div>
                 </Card>
-                <Card className="medical-card text-center p-4">
-                    <div className="text-2xl font-bold text-amber-500">{drugstores.filter(s => s.lastVisit && new Date(s.lastVisit).getMonth() === new Date().getMonth()).length}</div>
-                    <div className="text-sm text-muted-foreground">Visitadas Este Mes</div>
+                <Card className="bg-slate-900 border-none rounded-2xl shadow-xl p-6 flex flex-col items-center justify-center">
+                    <div className="text-3xl font-black text-indigo-400 tracking-tighter mb-1">{drugstores.filter(s => s.lastVisit && new Date(s.lastVisit).getMonth() === new Date().getMonth()).length}</div>
+                    <div className="text-[10px] text-indigo-200/50 font-black uppercase tracking-widest">Auditorías / Mes</div>
                 </Card>
-                <Card className="medical-card text-center p-4">
-                    <div className="text-2xl font-bold text-foreground">
+                <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center group hover:border-indigo-100 transition-all">
+                    <div className="text-3xl font-black text-amber-500 tracking-tighter mb-1">
                         {drugstores.length > 0
                             ? (drugstores.reduce((acc, s) => acc + (s.rating || 0), 0) / drugstores.length).toFixed(1)
                             : "0.0"}
                     </div>
-                    <div className="text-sm text-muted-foreground">Reputación Promedio</div>
+                    <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Rating de Desempeño</div>
                 </Card>
             </div>
 
@@ -481,7 +484,7 @@ export default function Drugstores() {
                                                 </div>
                                                 <div className="flex justify-between pt-2">
                                                     <span className="text-sm text-muted-foreground">Estatus Legal:</span>
-                                                    <Badge className={selectedDrugstore.sanitary_permits ? "bg-emerald-100 text-emerald-800" : "bg-yellow-100 text-yellow-800"}>
+                                                    <Badge className={selectedDrugstore.sanitary_permits ? "bg-indigo-50 text-indigo-700 border-none font-black text-[9px] uppercase tracking-widest" : "bg-amber-50 text-amber-700 border-none font-black text-[9px] uppercase tracking-widest"}>
                                                         {selectedDrugstore.sanitary_permits ? "Permisos al día" : "Permisos Pendientes"}
                                                     </Badge>
                                                 </div>

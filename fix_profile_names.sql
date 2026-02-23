@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- Script para corregir nombres vacíos o 'EMPTY' en perfiles
 -- Se asignan nombres derivados del correo electrónico para mejorar la visualización.
 -- 1. Actualizar nombres para el usuario Master (cesar.ascanio@gmail.com)

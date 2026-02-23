@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { InstructionCard } from "@/components/ui/InstructionCard";
@@ -92,11 +101,11 @@ interface AuditLog {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-    pending: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-    sent: { label: 'Enviado', color: 'bg-blue-100 text-blue-800', icon: Send },
-    confirmed: { label: 'Confirmado', color: 'bg-green-100 text-green-800', icon: CheckCircle },
-    delivered: { label: 'Entregado', color: 'bg-emerald-100 text-emerald-800', icon: Package },
-    cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-800', icon: XCircle },
+    pending: { label: 'Pendiente', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: Clock },
+    sent: { label: 'Enviado', color: 'bg-blue-50 text-blue-700 border-blue-200', icon: Send },
+    confirmed: { label: 'Confirmado', color: 'bg-indigo-50 text-indigo-700 border-indigo-200', icon: CheckCircle },
+    delivered: { label: 'Entregado', color: 'bg-slate-900 text-white border-transparent', icon: Package },
+    cancelled: { label: 'Cancelado', color: 'bg-rose-50 text-rose-700 border-rose-200', icon: XCircle },
 };
 
 export default function TransferOrders() {

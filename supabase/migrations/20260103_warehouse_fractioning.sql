@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- 1. ADD NEW MOVEMENT TYPES TO ENUM
 -- Note: PostgreSQL doesn't support easy ALTER TYPE for enums inside transactions without COMMIT.
 -- We'll use a safer approach checking if they exist.

@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -161,23 +170,28 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
         {trigger}
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center">
-            <Package className="mr-2 h-5 w-5 icon-medical" />
-            Gestión de Muestras - {productData.name}
-          </DialogTitle>
+        <DialogHeader className="bg-slate-900 px-8 py-6 text-white rounded-t-2xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center">
+              <Package className="h-5 w-5 text-indigo-400" />
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-black tracking-tight m-0 uppercase">Inventario de Muestras</DialogTitle>
+              <p className="text-indigo-200/50 text-[10px] font-black uppercase tracking-widest mt-1">{productData.name}</p>
+            </div>
+          </div>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Inventory Summary */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-4 bg-primary/5 border border-primary/20 rounded-lg">
-              <div className="text-2xl font-bold text-primary">{inventory}</div>
-              <div className="text-sm text-muted-foreground">Inventario Actual</div>
+          <div className="grid grid-cols-2 gap-4 px-8 pt-6">
+            <div className="text-center p-6 bg-indigo-50/50 border border-indigo-100 rounded-[1.5rem] group hover:bg-white transition-all">
+              <div className="text-3xl font-black text-indigo-600 tracking-tighter mb-1">{inventory}</div>
+              <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">Stock Disponible</div>
             </div>
-            <div className="text-center p-4 bg-muted border rounded-lg">
-              <div className="text-2xl font-bold text-foreground">{movements.length}</div>
-              <div className="text-sm text-muted-foreground">Movimientos Recientes</div>
+            <div className="text-center p-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] group hover:bg-white transition-all">
+              <div className="text-3xl font-black text-slate-900 tracking-tighter mb-1">{movements.length}</div>
+              <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">Operaciones Mes</div>
             </div>
           </div>
 
@@ -202,16 +216,16 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
           <form onSubmit={handleSubmit} className="space-y-4">
 
             {(selectedAction === "request" || selectedAction === "inventory") && (
-              <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 flex items-center mb-2">
+              <div className="bg-indigo-50 p-4 rounded-xl text-xs font-bold text-indigo-700 border border-indigo-100 flex items-center mb-2">
                 <Plus className="h-4 w-4 mr-2" />
-                Esta acción SUMARÁ unidades al inventario.
+                Esta acción SUMARÁ unidades al inventario maestro.
               </div>
             )}
 
             {selectedAction === "distribute" && (
-              <div className="bg-orange-50 p-3 rounded-md text-sm text-orange-700 flex items-center mb-2">
+              <div className="bg-amber-50 p-4 rounded-xl text-xs font-bold text-amber-700 border border-amber-100 flex items-center mb-2">
                 <Minus className="h-4 w-4 mr-2" />
-                Esta acción RESTARÁ unidades del inventario.
+                Esta acción RESTARÁ unidades del inventario personal.
               </div>
             )}
 
@@ -298,9 +312,9 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
                   <div key={mov.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg text-sm">
                     <div className="flex items-center space-x-3">
                       {mov.quantity_change > 0 ? (
-                        <Plus className="h-4 w-4 text-green-600" />
+                        <CheckCircle2 className="h-4 w-4 text-indigo-500" />
                       ) : (
-                        <Minus className="h-4 w-4 text-orange-600" />
+                        <Minus className="h-4 w-4 text-slate-400" />
                       )}
                       <div>
                         <p className="font-medium text-foreground">

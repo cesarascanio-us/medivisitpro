@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- Fix view_farmacia_stock_actual to include user_id/representative_id for filtering
 -- Previous definition caused 400 error because filters tried to query 'user_id' which didn't exist
 DROP VIEW IF EXISTS public.view_farmacia_stock_actual CASCADE;

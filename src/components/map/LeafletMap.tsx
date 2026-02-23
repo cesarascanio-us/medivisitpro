@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useEffect, useState, useRef, ReactNode } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, ZoomControl, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
@@ -186,8 +195,8 @@ export default function LeafletMap({
     return (
         <div style={{ height, width: '100%', borderRadius: '0.5rem', overflow: 'hidden', position: 'relative' }}>
             <MapContainer
-                center={center}
-                zoom={zoom}
+                center={center || [10.2542, -67.5922]}
+                zoom={zoom || 12}
                 style={{ height: '100%', width: '100%' }}
                 zoomControl={false} // Custom zoom control position
             >
@@ -208,7 +217,13 @@ export default function LeafletMap({
                     showCoverageOnHover={false}
                     disableClusteringAtZoom={16}
                 >
-                    {markers.map((marker) => (
+                    {markers.filter(m =>
+                        m.position &&
+                        typeof m.position[0] === 'number' &&
+                        typeof m.position[1] === 'number' &&
+                        !isNaN(m.position[0]) &&
+                        !isNaN(m.position[1])
+                    ).map((marker) => (
                         <MapMarkerItem key={marker.id} marker={marker} />
                     ))}
                 </MarkerClusterGroup>

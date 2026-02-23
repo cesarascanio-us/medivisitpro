@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- FINAL FIX FOR 400 ERROR (RECURSION) AND PERMISSIONS
 -- 1. Redefine Helper Functions as SECURITY DEFINER
 -- This is CRITICAL: It allows the function to bypass RLS on the tables it queries (user_roles),

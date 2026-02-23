@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +29,10 @@ export type UserRole =
     | 'doctor'
     | 'pharmacist'
     | 'service_chief'
-    | 'store_manager';
+    | 'store_manager'
+    | 'admin_saas'
+    | 'soporte_saas'
+    | 'desarrollo_saas';
 
 export interface UserProfile {
     id: string;
@@ -78,6 +90,11 @@ interface AuthContextType {
     isSystemAdmin: boolean; // True if original user is a Master
     enterAuditMode: (orgId: string) => void;
     exitAuditMode: () => void;
+    // SaaS Staff (Internal)
+    isSaaSAdmin: boolean;
+    isSaaSSupport: boolean;
+    isSaaSDev: boolean;
+    isSaaSStaff: boolean;
     // Zone/Location
     organizationName: string | null;
     organizationId: string | null;
@@ -330,8 +347,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isServiceChief = role === 'service_chief';
     const isSpecializedRole = isDoctor || isPharmacist || isServiceChief;
 
+    // SaaS Staff Flags
+    const isSaaSAdmin = role === 'admin_saas';
+    const isSaaSSupport = role === 'soporte_saas';
+    const isSaaSDev = role === 'desarrollo_saas';
+    const isSaaSStaff = isMaster || isSaaSAdmin || isSaaSSupport || isSaaSDev;
+
     const hasPermission = (code: string) => {
-        if (isMaster) return true;
+        if (isMaster || isSaaSAdmin) return true;
         if (permissions.includes('*')) return true;
         return permissions.includes(code);
     };
@@ -346,8 +369,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hasPermission,
         signOut,
         isAuthenticated: !!user,
-        // Masters are NEVER in demo mode for navigation purposes
-        isDemo: !isMaster && profile?.organization_id === 'd3300000-0000-0000-0000-000000000001',
+        // Masters and SaaS Staff are NEVER in demo mode for navigation purposes
+        isDemo: !isSaaSStaff && profile?.organization_id === 'd3300000-0000-0000-0000-000000000001',
         isMaster,
         isAdmin,
         isManager,
@@ -360,19 +383,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isPharmacist,
         isServiceChief,
         isSpecializedRole,
-        canManageUsers: isMaster || role === 'admin' || isManager,
-        canViewAllData: isMaster || role === 'admin' || role === 'manager',
-        canManageCompany: isMaster || role === 'admin' || isManager,
-        canApproveExpenses: isMaster || isManager || role === 'supervisor' || role === 'coordinator',
-        canAssignObjectives: isMaster || isManager || role === 'supervisor' || role === 'coordinator',
-        canManageZones: isMaster || role === 'admin' || isManager,
-        canViewAnalytics: isMaster || isManager || role === 'coordinator',
-        canManageProducts: isMaster || isManager,
-        canViewProducts: isMaster || isManager || isPharmacist || isDoctor,
-        canManageSamples: isMaster || isManager || isPharmacist,
-        canViewMedicalInfo: isMaster || isSupervisor || isDoctor,
-        canManageService: isMaster || isServiceChief || isManager,
-        canViewVisitHistory: isMaster || isSupervisor || isDoctor || isPharmacist,
+        isSaaSAdmin,
+        isSaaSSupport,
+        isSaaSDev,
+        isSaaSStaff,
+        canManageUsers: isMaster || isSaaSAdmin || role === 'admin' || isManager,
+        canViewAllData: isSaaSStaff || role === 'admin' || role === 'manager',
+        canManageCompany: isMaster || isSaaSAdmin || role === 'admin' || isManager,
+        canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
+        canAssignObjectives: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
+        canManageZones: isMaster || isSaaSAdmin || role === 'admin' || isManager,
+        canViewAnalytics: isSaaSStaff || isManager || role === 'coordinator',
+        canManageProducts: isMaster || isSaaSAdmin || isManager,
+        canViewProducts: isSaaSStaff || isManager || isPharmacist || isDoctor,
+        canManageSamples: isMaster || isSaaSAdmin || isManager || isPharmacist,
+        canViewMedicalInfo: isSaaSStaff || isSupervisor || isDoctor,
+        canManageService: isMaster || isSaaSAdmin || isServiceChief || isManager,
+        canViewVisitHistory: isSaaSStaff || isSupervisor || isDoctor || isPharmacist,
         zoneId: profile?.zone_id || null,
         organizationId: profile?.organization_id || null,
         userState: profile?.state || null,
@@ -385,7 +412,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Audit Mode
         isAuditMode: !!auditOrgId,
-        isSystemAdmin: isOwner || profile?.role === 'master' || profile?.is_master === true || originalRole === 'master',
+        isSystemAdmin: isSaaSStaff,
         enterAuditMode,
         exitAuditMode,
         organizationName,

@@ -1,7 +1,16 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
 
-import { useState, useEffect } from "react";
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+import { useState, useEffect, cloneElement } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,8 +37,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
-import { Shield, Plus, Edit, Trash2, Lock, Save } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Shield, Plus, Edit, Trash2, Lock, Save, RefreshCw, LayoutDashboard, Search } from "lucide-react";
 
 interface AppRole {
     id: string;
@@ -239,42 +248,80 @@ export default function RoleManager() {
     if (!isMaster) return <div className="p-8 text-center text-red-500">Acceso Denegado</div>;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-2xl font-bold flex items-center gap-2">
-                        <Shield className="h-6 w-6 text-purple-600" />
-                        Gestión de Roles y Permisos (RBAC)
-                    </h2>
-                    <p className="text-muted-foreground">Define roles personalizados y sus privilegios en el sistema.</p>
-                </div>
-                <Button onClick={() => handleOpenDialog()}>
-                    <Plus className="h-4 w-4 mr-2" /> Nuevo Rol
-                </Button>
-            </div>
+    return (
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
+            {/* Premium White Header Container */}
+            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                {/* Decorative backgrounds */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <Shield className="text-white h-8 w-8" />
+                        </div>
+                        <div>
+                            <p className="text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Administración de Seguridad</p>
+                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                Gestión de Roles y Permisos
+                            </h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
+                                    RBAC Control
+                                </Badge>
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{roles.length} Roles Activos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <Button
+                            onClick={loadData}
+                            size="icon"
+                            variant="outline"
+                            className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                        >
+                            <RefreshCw className={cn("h-5 w-5 text-slate-500 group-hover:text-indigo-600 transition-colors", loading && "animate-spin")} />
+                        </Button>
+                        <Button
+                            onClick={() => handleOpenDialog()}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl h-12 px-6 font-black shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95 flex items-center gap-2"
+                        >
+                            <Plus className="h-5 w-5" />
+                            Nuevo Rol
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {roles.map(role => (
-                    <Card key={role.slug} className="relative overflow-hidden">
-                        <div className={`absolute top-0 left-0 w-1 h-full ${role.color.split(' ')[0] || 'bg-gray-200'}`} />
-                        <CardHeader className="pb-2">
+                    <Card key={role.slug} className="relative overflow-hidden border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] group hover:scale-[1.02] transition-all duration-300">
+                        <div className={cn("absolute top-0 left-0 w-1.5 h-full", role.color.split(' ')[0] || 'bg-slate-200')} />
+                        <CardHeader className="p-6 pb-2">
                             <div className="flex justify-between items-start">
-                                <CardTitle className="text-lg flex items-center gap-2">
+                                <CardTitle className="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                                     {role.name}
-                                    {role.is_system && <Lock className="h-3 w-3 text-muted-foreground" title="Rol del Sistema" />}
+                                    {role.is_system && <Lock className="h-4 w-4 text-amber-500" />}
                                 </CardTitle>
-                                <div className="flex gap-1">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleOpenDialog(role)}>
-                                        <Edit className="h-4 w-4" />
+                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-indigo-600" onClick={() => handleOpenDialog(role)}>
+                                        <Edit className="h-4.5 w-4.5" />
                                     </Button>
                                     {!role.is_system && (
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteRole(role.slug)}>
-                                            <Trash2 className="h-4 w-4" />
+                                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-slate-500 hover:text-rose-600" onClick={() => handleDeleteRole(role.slug)}>
+                                            <Trash2 className="h-4.5 w-4.5" />
                                         </Button>
                                     )}
                                 </div>
                             </div>
-                            <CardDescription>{role.description || "Sin descripción"}</CardDescription>
+                            <CardDescription className="text-slate-500 font-medium text-xs mt-1">
+                                {role.description || "Sin descripción detallada"}
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="text-xs text-muted-foreground mb-2">Permisos ({role.permissions?.length || 0}):</div>
@@ -296,13 +343,17 @@ export default function RoleManager() {
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
-                    <DialogHeader>
-                        <DialogTitle>{editingRole ? 'Editar Rol' : 'Crear Nuevo Rol'}</DialogTitle>
-                        <DialogDescription>Configura los detalles del rol y sus permisos de acceso.</DialogDescription>
+                <DialogContent className="max-w-2xl max-h-[90vh] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col">
+                    <DialogHeader className="bg-slate-50 dark:bg-slate-900 p-8 pb-6 border-b border-slate-100 dark:border-slate-800">
+                        <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {editingRole ? 'Configurar Rol' : 'Nuevo Rol del Sistema'}
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-500 font-medium">
+                            Defina las capacidades y nivel de acceso para este perfil de usuario.
+                        </DialogDescription>
                     </DialogHeader>
 
-                    <ScrollArea className="flex-1 pr-4">
+                    <ScrollArea className="flex-1 px-8">
                         <div className="space-y-6 py-4">
                             {/* Role Details */}
                             <div className="grid grid-cols-2 gap-4">
@@ -378,9 +429,14 @@ export default function RoleManager() {
                         </div>
                     </ScrollArea>
 
-                    <DialogFooter className="pt-4 border-t">
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
-                        <Button onClick={handleSaveRole}>
+                    <DialogFooter className="bg-slate-50 dark:bg-slate-900 p-6 px-8 border-t border-slate-100 dark:border-slate-800">
+                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-xl font-bold">
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={handleSaveRole}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 font-black shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95"
+                        >
                             <Save className="h-4 w-4 mr-2" />
                             Guardar Cambios
                         </Button>

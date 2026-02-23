@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- SCRIPT DE SEEDING PARA DEMO DEDICADA (d33...)
 -- Este script llena la organización "Demo Medical Corp" con datos ficticios
 -- sin tocar la data real de "Laboratorio Alpha BTM".

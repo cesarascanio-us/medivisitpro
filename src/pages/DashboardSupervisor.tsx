@@ -1,11 +1,22 @@
-import { useState, useEffect } from "react";
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+import { useState, useEffect, cloneElement } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import {
     Users,
     Target,
@@ -20,7 +31,9 @@ import {
     Wifi,
     WifiOff,
     RefreshCcw,
-    Clock
+    Clock,
+    LayoutDashboard,
+    RefreshCw
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 
@@ -218,67 +231,63 @@ export default function DashboardSupervisor() {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Alpha BMT Style Header with Clock and Sync */}
-            <header className="bg-slate-900 text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative overflow-hidden -mx-6 -mt-6">
-                {/* Decorative background element */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
+            {/* Premium White Header Container */}
+            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                {/* Decorative backgrounds */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
 
-                {/* Top Row: Greeting + Status + Actions */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 border border-white/10">
-                            <span className="text-2xl font-bold text-white">
-                                {(user?.email || "?")[0].toUpperCase()}
-                            </span>
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <Users className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-blue-400/80 text-xs font-semibold uppercase tracking-widest mb-1">Panel de Supervisión</p>
-                            <h1 className="text-2xl font-bold tracking-tight">¡Hola, {user?.email?.split('@')[0]}!</h1>
-                            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                                <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
+                            <p className="text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Panel de Supervisión Regional</p>
+                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                ¡Hola, {user?.email?.split('@')[0]}!
+                            </h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
                                     Supervisor
                                 </Badge>
-                                {isSystemAdmin && (
-                                    <Badge variant="outline" className="bg-purple-500/20 text-purple-400 border-purple-400/40 text-[10px] px-2 uppercase font-bold tracking-tighter">
-                                        Global View
-                                    </Badge>
-                                )}
-                                {organizationName && !isSystemAdmin && (
-                                    <Badge variant="outline" className="text-blue-400 border-blue-400/30 bg-blue-400/10 text-[10px] px-2 capitalize">
-                                        {organizationName}
-                                    </Badge>
-                                )}
-                                {organizationName && isSystemAdmin && (
-                                    <Badge variant="outline" className="text-purple-400 border-purple-400/30 bg-purple-400/10 text-[10px] px-2 capitalize">
-                                        Auditing: {organizationName}
-                                    </Badge>
-                                )}
-                                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] px-2">
-                                    <MapPin className="h-3 w-3 mr-1" />
-                                    {userRegion || 'Región'}
-                                </Badge>
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{userRegion || 'Región'}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-2">
-                        <div className="text-right">
-                            <div className="text-3xl font-mono font-bold tracking-tighter text-white">
-                                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    <div className="flex flex-col items-end gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="text-right hidden sm:block">
+                                <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">
+                                    {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                                    {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                                </div>
                             </div>
-                            <div className="text-[10px] text-blue-400/60 uppercase tracking-widest font-medium">
-                                {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-                            </div>
+                            <Button
+                                onClick={loadDashboardData}
+                                size="icon"
+                                variant="outline"
+                                className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                            >
+                                <RefreshCw className={cn("h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-emerald-600 transition-colors", loading && "animate-spin")} />
+                            </Button>
                         </div>
                     </div>
                 </div>
 
-                {/* Filter Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 mb-8 backdrop-blur-sm">
+                {/* Performance Summary Bar */}
+                <div className="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex flex-wrap items-center gap-x-8 gap-y-3">
                     <div className="flex items-center gap-4">
+                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.1em]">Filtrar Periodo:</p>
                         <Select value={selectedPeriod} onValueChange={(v: 'week' | 'month') => setSelectedPeriod(v)}>
-                            <SelectTrigger className="w-40 bg-white/10 border-white/10 text-white h-9">
+                            <SelectTrigger className="w-44 bg-slate-100 dark:bg-slate-800 border-none h-10 font-bold rounded-xl">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -287,81 +296,46 @@ export default function DashboardSupervisor() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <p className="text-white/60 text-xs italic">
-                        Visualizando métricas de {data?.totalReps || 0} representantes activos
-                    </p>
+                    <div className="h-8 w-px bg-slate-100 dark:bg-slate-800 hidden md:block"></div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        <p className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                            {data?.totalReps || 0} Representantes en línea
+                        </p>
+                    </div>
                 </div>
             </header>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="bg-white border-emerald-200 shadow-sm">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-slate-500">Visitas del Mes</p>
-                                <p className="text-3xl font-bold text-slate-800">{data?.totalVisitsMonth || 0}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                                <Calendar className="h-6 w-6 text-emerald-600" />
-                            </div>
-                        </div>
-                        <p className="text-xs text-emerald-600 mt-2 flex items-center">
-                            <TrendingUp className="h-3 w-3 mr-1" />
-                            {data?.totalVisitsWeek || 0} esta semana
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-white border-blue-200 shadow-sm">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-slate-500">Representantes</p>
-                                <p className="text-3xl font-bold text-slate-800">{data?.totalReps || 0}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <Users className="h-6 w-6 text-blue-600" />
-                            </div>
-                        </div>
-                        <p className="text-xs text-blue-600 mt-2 flex items-center">
-                            <UserCheck className="h-3 w-3 mr-1" />
-                            Activos en tu región
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-white border-amber-200 shadow-sm">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-slate-500">Cumplimiento</p>
-                                <p className="text-3xl font-bold text-slate-800">{data?.avgCompletionRate || 0}%</p>
-                            </div>
-                            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                                <Target className="h-6 w-6 text-amber-600" />
-                            </div>
-                        </div>
-                        <Progress value={data?.avgCompletionRate || 0} className="mt-3 h-2" />
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-white border-purple-200 shadow-sm">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-slate-500">Promedio/Rep</p>
-                                <p className="text-3xl font-bold text-slate-800">
-                                    {data?.totalReps ? Math.round((data?.totalVisitsMonth || 0) / data.totalReps) : 0}
-                                </p>
-                            </div>
-                            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                                <Activity className="h-6 w-6 text-purple-600" />
-                            </div>
-                        </div>
-                        <p className="text-xs text-purple-600 mt-2">Visitas por representante</p>
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <KPICard
+                    title="Visitas del Mes"
+                    value={data?.totalVisitsMonth || 0}
+                    icon={<Calendar />}
+                    color="emerald"
+                    subtitle={`${data?.totalVisitsWeek || 0} esta semana`}
+                />
+                <KPICard
+                    title="Representantes"
+                    value={data?.totalReps || 0}
+                    icon={<Users />}
+                    color="blue"
+                    subtitle="Activos en tu región"
+                />
+                <KPICard
+                    title="Cumplimiento"
+                    value={`${data?.avgCompletionRate || 0}%`}
+                    icon={<Target />}
+                    color="amber"
+                    subtitle="Objetivos logrados"
+                />
+                <KPICard
+                    title="Promedio/Rep"
+                    value={data?.totalReps ? Math.round((data?.totalVisitsMonth || 0) / data.totalReps) : 0}
+                    icon={<Activity />}
+                    color="purple"
+                    subtitle="Visitas por representante"
+                />
             </div>
 
             {/* Charts Row */}
@@ -437,17 +411,17 @@ export default function DashboardSupervisor() {
                         Rendimiento del Equipo
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-slate-200">
-                                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-600">Representante</th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-slate-600">Visitas Mes</th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-slate-600">Visitas Semana</th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-slate-600">Objetivos</th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-slate-600">Cumplimiento</th>
-                                    <th className="text-right py-3 px-4"></th>
+                                <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-none">
+                                    <th className="text-left py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Representante</th>
+                                    <th className="text-center py-4 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Visitas Mes</th>
+                                    <th className="text-center py-4 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Visitas Sem.</th>
+                                    <th className="text-center py-4 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Objetivos</th>
+                                    <th className="text-center py-4 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Cumplimiento</th>
+                                    <th className="text-right py-4 px-6"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -503,5 +477,49 @@ export default function DashboardSupervisor() {
                 </CardContent>
             </Card>
         </div>
+    );
+}
+
+function KPICard({ title, value, icon, color, subtitle }: any) {
+    const variants: any = {
+        emerald: {
+            bg: "bg-emerald-50 dark:bg-emerald-950/30",
+            icon: "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30",
+        },
+        blue: {
+            bg: "bg-blue-50 dark:bg-blue-950/30",
+            icon: "text-blue-600 bg-blue-100 dark:bg-blue-900/30",
+        },
+        amber: {
+            bg: "bg-amber-50 dark:bg-amber-950/30",
+            icon: "text-amber-600 bg-amber-100 dark:bg-amber-900/30",
+        },
+        purple: {
+            bg: "bg-purple-50 dark:bg-purple-950/30",
+            icon: "text-purple-600 bg-purple-100 dark:bg-purple-900/30",
+        },
+    };
+
+    const v = variants[color] || variants.emerald;
+
+    return (
+        <Card className="border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+            <CardContent className="p-6 relative">
+                <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-5 transition-opacity duration-500", v.bg)}></div>
+
+                <div className="flex items-center justify-between relative z-10">
+                    <div className="space-y-1">
+                        <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.15em]">{title}</p>
+                        <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+                            {value}
+                        </p>
+                        {subtitle && <p className="text-[10px] font-bold text-slate-400 mt-1">{subtitle}</p>}
+                    </div>
+                    <div className={cn("p-4 rounded-[1.25rem] transition-all duration-300 group-hover:scale-110", v.icon)}>
+                        {cloneElement(icon as React.ReactElement, { size: 24, strokeWidth: 2.5 })}
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     );
 }

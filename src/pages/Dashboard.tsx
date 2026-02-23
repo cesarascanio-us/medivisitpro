@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Users, FileCheck, TrendingUp, Clock, MapPin, Package } from "lucide-react";
@@ -68,7 +77,13 @@ export default function Dashboard() {
       if (demoData) {
         console.log("Dashboard: Using mock demo data");
         setProfile({ first_name: 'Usuario', last_name: 'Demo' });
-        setStats(demoData.dashboardStats);
+        setStats({
+          visitsToday: Math.round(demoData.dashboardStats.total_visits / 10), // Scale down for "today"
+          visitsTodayConfirmed: Math.round(demoData.dashboardStats.total_visits / 12),
+          doctorsContactedWeek: demoData.dashboardStats.active_doctors,
+          reportsCompletedMonth: demoData.dashboardStats.total_visits,
+          monthlyGoal: Math.round(demoData.dashboardStats.coverage)
+        });
         setUpcomingVisits(demoData.visits.slice(0, 3));
         setRecentActivity(demoData.visits.filter((v: any) => v.status === 'completed').slice(0, 5));
         setLoading(false);
@@ -229,39 +244,39 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Alpha BMT Style Header with Clock and Sync */}
-      <header className="premium-card px-6 pt-8 pb-10 relative overflow-hidden -mx-4 -mt-10 mb-10">
+      <header className="px-6 pt-8 pb-10 relative overflow-hidden -mx-4 -mt-10 mb-10 bg-gradient-to-br from-primary-dark via-primary to-primary-light rounded-b-[2rem] shadow-xl">
         {/* Background Effects */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full -mr-40 -mt-40 blur-[100px] animate-pulse pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full -ml-32 -mb-32 blur-[100px] animate-pulse delay-700 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -mr-40 -mt-40 blur-[100px] animate-pulse pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/20 rounded-full -ml-32 -mb-32 blur-[100px] animate-pulse delay-700 pointer-events-none"></div>
 
         {/* Top Row: Greeting + Status + Actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
           <div className="flex items-center gap-5">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative w-20 h-20 bg-slate-900 rounded-2xl flex items-center justify-center border border-white/10 shadow-2xl">
-                <span className="text-3xl font-bold bg-gradient-to-br from-emerald-400 to-teal-500 bg-clip-text text-transparent">
+              <div className="absolute -inset-1 bg-gradient-to-br from-white/40 to-secondary/40 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
+                <span className="text-3xl font-bold text-white">
                   {(user?.email || "?")[0].toUpperCase()}
                 </span>
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-[0.2em]">SISTEMA ACTIVO</p>
+                <div className="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_rgba(0,160,233,0.8)]"></div>
+                <p className="text-secondary/90 text-[10px] font-bold uppercase tracking-[0.2em]">SISTEMA ACTIVO</p>
               </div>
               <h1 className="text-3xl font-extrabold text-white tracking-tight">Bienvenido, {getUserName()}</h1>
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20 border-0 text-[10px] px-2">
+                <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 border-0 text-[10px] px-2 font-bold backdrop-blur-sm">
                   {getRoleLabel(role)}
                 </Badge>
                 {isSystemAdmin && (
-                  <Badge variant="outline" className="bg-purple-500/20 text-purple-400 border-purple-500/40 text-[10px] px-2 uppercase font-bold tracking-tighter">
+                  <Badge variant="outline" className="bg-white/10 text-white border-white/40 text-[10px] px-2 uppercase font-bold tracking-tighter">
                     Global View
                   </Badge>
                 )}
                 {organizationName && !isSystemAdmin && (
-                  <Badge variant="outline" className="text-emerald-400 border-emerald-400/30 bg-emerald-400/10 text-[10px] px-2 capitalize">
+                  <Badge variant="outline" className="text-white border-white/30 bg-white/10 text-[10px] px-2 capitalize font-medium">
                     {organizationName}
                   </Badge>
                 )}
@@ -270,34 +285,40 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col items-end gap-1">
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl shadow-inner">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl shadow-inner group transition-all hover:bg-white/15">
               <div className="text-4xl font-mono font-black tracking-tighter text-white tabular-nums drop-shadow-lg">
                 {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </div>
             </div>
-            <div className="text-[10px] text-emerald-400/60 uppercase tracking-widest font-medium text-right w-full">
+            <div className="text-[10px] text-white/60 uppercase tracking-widest font-bold text-right w-full mt-1">
               {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
             </div>
           </div>
         </div>
 
         {/* Sync Info Bar */}
-        <div className="flex flex-wrap items-center gap-4 py-3 px-4 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-4 py-3 px-5 bg-black/10 rounded-2xl border border-white/10 backdrop-blur-sm">
           <div className="flex items-center gap-2 text-xs">
-            <RefreshCcw className={`h-3 w-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span className="text-white/60">Última Sinc:</span>
-            <span className="text-white font-medium">
+            <RefreshCcw className={`h-3.5 w-3.5 text-secondary ${isSyncing ? 'animate-spin' : ''}`} />
+            <span className="text-white/60 font-medium">Última Sinc:</span>
+            <span className="text-white font-bold">
               {lastSync ? new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pendiente'}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
             <OnlineStatusIndicator />
           </div>
-          <div className="ml-auto text-sm text-primary-foreground/80">
+          <div className="ml-auto text-sm text-white/80 font-medium">
             {(isManager || isAdmin || isMaster) ? (
-              `Hoy: ${stats.visitsToday} visitas totales`
+              <span className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+                Hoy: {stats.visitsToday} visitas totales
+              </span>
             ) : (
-              `Hoy: ${stats.visitsToday} visitas programadas`
+              <span className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+                Hoy: {stats.visitsToday} visitas programadas
+              </span>
             )}
           </div>
         </div>

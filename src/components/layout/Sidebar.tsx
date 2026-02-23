@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+ ======================================================================== */
+
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -62,6 +71,7 @@ const SYSTEM_ADMIN_NAV = [
     title: "GESTIÓN COMERCIAL & EQUIPO",
     items: [
       { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
+      { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield },
       { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
       { name: "Planificación & Ciclos", href: "/promotional-cycles", icon: Layers },
       { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
@@ -98,6 +108,7 @@ const OPERATIONAL_NAV = [
     title: "GESTIÓN COMERCIAL & EQUIPO",
     items: [
       { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
+      { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield },
       { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
       { name: "Planificación & Ciclos", href: "/promotional-cycles", icon: Layers },
       { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
@@ -242,15 +253,45 @@ const MASTER_SAAS_NAV = [
     items: [
       { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
       { name: "Gestión de Cuentas", href: "/users", icon: Users },
+      { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield },
       { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
       { name: "Editor Landing Page", href: "/master/landing", icon: Globe },
     ]
+  }
+];
+
+const SOPORTE_SAAS_NAV = [
+  {
+    title: "SOPORTE TÉCNICO",
+    items: [
+      { name: "Dashboard SaaS", href: "/dashboard-master", icon: BarChart3 },
+      { name: "Tickets Activos", href: "/master/tickets", icon: HelpCircle },
+      { name: "Documentación", href: "/documentation", icon: FileText },
+    ]
   },
   {
-    title: "SOPORTE & AYUDA",
+    title: "GESTIÓN DE CLIENTES",
     items: [
-      { name: "Tickets de Soporte", href: "/master/tickets", icon: HelpCircle },
-      { name: "Base de Conocimiento", href: "/documentation", icon: FileText },
+      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
+      { name: "Directorio de Usuarios", href: "/users", icon: Users },
+    ]
+  }
+];
+
+const DESARROLLO_SAAS_NAV = [
+  {
+    title: "DEV & MAINTENANCE",
+    items: [
+      { name: "Dashboard SaaS", href: "/dashboard-master", icon: BarChart3 },
+      { name: "Logs de Auditoría", href: "/master/logs", icon: Shield },
+      { name: "Estado del Sistema", href: "/master/alerts", icon: Bell },
+    ]
+  },
+  {
+    title: "OPERACIÓN TÉCNICA",
+    items: [
+      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
+      { name: "Configuración Base", href: "/documentation", icon: Settings },
     ]
   }
 ];
@@ -284,6 +325,10 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     isSupervisor,
     isTelemarketing,
     isSystemAdmin,
+    isSaaSAdmin,
+    isSaaSSupport,
+    isSaaSDev,
+    isSaaSStaff,
     role,
     organizationId,
     isDemo
@@ -317,15 +362,19 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   // --- SELECT NAVIGATION BY ROLE ---
   const getNavigationGroups = () => {
-    // 1. MASTER - THE POWER OF ALL (God Mode vs SaaS Mode)
-    if (isMaster || isSystemAdmin) {
-      // If Master has selected an Organization (Drill-down / Impersonation Mode)
-      // Show the full Operational Suite for that Org (SYSTEM_ADMIN_NAV is now synced with MANAGER_NAV concept + Master tools)
+    // 1. SAAS STAFF - Internal Team Navigation
+    if (isSaaSStaff) {
+      // If Staff has selected an Organization (Impersonation Mode)
       if (organizationId) {
         return SYSTEM_ADMIN_NAV;
       }
-      // Default: Pure SaaS Admin View
-      return MASTER_SAAS_NAV;
+
+      // Default: Pure SaaS Admin/Support/Dev View
+      if (isMaster || isSaaSAdmin) return MASTER_SAAS_NAV;
+      if (isSaaSSupport) return SOPORTE_SAAS_NAV;
+      if (isSaaSDev) return DESARROLLO_SAAS_NAV;
+
+      return MASTER_SAAS_NAV; // Fallback for staff
     }
 
     // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view. 
@@ -370,7 +419,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen shadow-2xl z-50 transition-all duration-300 ease-in-out",
+        "flex flex-col bg-white text-slate-700 border-r border-gray-200 h-screen shadow-xl z-50 transition-all duration-300 ease-in-out",
         isExpanded ? "w-64" : "w-16",
         className
       )}
@@ -378,14 +427,14 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
       {/* Header */}
-      <div className="flex items-center justify-between h-14 px-3 border-b border-slate-700/50">
+      <div className="flex items-center justify-between h-14 px-3 border-b border-gray-200 bg-white shadow-sm">
         <div className="flex items-center gap-2 overflow-hidden">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
-            <Stethoscope className="h-5 w-5 text-white" />
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+            <Stethoscope className="h-5 w-5 text-primary" />
           </div>
           <div className={cn("transition-all duration-300", isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none")}>
-            <h1 className="text-sm font-bold text-white whitespace-nowrap">MediVisitPro</h1>
-            <p className="text-[9px] text-slate-400 uppercase tracking-wider">Visitador</p>
+            <h1 className="text-sm font-bold text-slate-800 whitespace-nowrap">MediVisitPro</h1>
+            <p className="text-[9px] text-slate-500 uppercase tracking-wider">Visitador</p>
           </div>
         </div>
 
@@ -394,11 +443,11 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-slate-500 hover:text-white"
+            className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-primary/5 transition-colors"
             onClick={togglePin}
             title={isPinned ? "Desafijar Menú" : "Fijar Menú"}
           >
-            <Shield className={cn("h-4 w-4 transition-all", isPinned ? "fill-current text-white rotate-0" : "rotate-45")} />
+            <Shield className={cn("h-4 w-4 transition-all", isPinned ? "fill-current text-primary rotate-0" : "rotate-45")} />
           </Button>
         )}
       </div>
@@ -445,8 +494,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                 isGroupCollapsed ? "hidden" : "block"
               )}>
                 {group.items.map((item: any) => {
-                  // Master users always use root routes (real data) even if in Demo Org
-                  const itemHref = (isMaster || isSystemAdmin) ? item.href : (isDemo ? `/demo${item.href}` : item.href);
+                  // Staff users always use root routes (real data) even if in Demo Org
+                  const itemHref = isSaaSStaff ? item.href : (isDemo ? `/demo${item.href}` : item.href);
                   const isActive = location.pathname === itemHref;
                   return (
                     <NavLink
@@ -466,8 +515,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                       className={cn(
                         "flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-all group",
                         isActive
-                          ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25"
-                          : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                          ? "bg-primary text-white shadow-md shadow-primary/20"
+                          : "text-slate-500 hover:bg-slate-100 hover:text-primary"
                       )}
                     >
                       <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -484,23 +533,23 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       </nav>
 
       {/* Footer - User Info */}
-      <div className="p-2 bg-slate-900/50 border-t border-slate-700/50">
+      <div className="p-2 bg-gray-50 border-t border-gray-200">
         {isExpanded ? (
           // Expanded: show user info and logout
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
-                <span className="text-xs font-bold text-white">{userInitials}</span>
+              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-bold text-primary">{userInitials}</span>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-white truncate">{userName}</p>
-                <p className="text-[10px] text-slate-400 truncate">{roleLabel}</p>
+                <p className="text-xs font-medium text-slate-700 truncate">{userName}</p>
+                <p className="text-[10px] text-slate-500 truncate">{roleLabel}</p>
               </div>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              className="text-slate-400 hover:text-white hover:bg-slate-800 flex-shrink-0 h-8 w-8"
+              className="text-slate-400 hover:text-primary hover:bg-slate-100 flex-shrink-0 h-8 w-8"
               onClick={handleSignOut}
               title="Cerrar Sesión"
             >
@@ -513,7 +562,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="text-slate-400 hover:text-white hover:bg-slate-800 h-10 w-10"
+              className="text-slate-400 hover:text-primary hover:bg-slate-100 h-10 w-10"
               onClick={handleSignOut}
               title="Cerrar Sesión"
             >

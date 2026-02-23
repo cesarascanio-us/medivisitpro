@@ -1,3 +1,13 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -5,10 +15,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, MapPin, User, Clock, Plus } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, User, Clock, Plus, Target, FileText, Activity, Layers, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ContactDialog } from "@/components/contacts/ContactDialog";
+import { Separator } from "@/components/ui/separator";
 
 interface VisitDialogProps {
   trigger: React.ReactNode;
@@ -83,8 +94,8 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
       if (result.error) throw result.error;
 
       toast({
-        title: visitData?.id ? "Visita actualizada" : "Visita creada",
-        description: visitData?.id ? "La visita ha sido actualizada correctamente." : "Nueva visita programada exitosamente.",
+        title: visitData?.id ? "Visita actualizada" : "Visita programada",
+        description: visitData?.id ? "Los cambios se han guardado." : "La visita ha sido agendada exitosamente.",
       });
 
       setOpen(false);
@@ -93,7 +104,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
       console.error('Error saving visit:', error);
       toast({
         title: "Error",
-        description: "No se pudo guardar la visita. Inténtalo de nuevo.",
+        description: "No se pudo agendar la visita.",
         variant: "destructive",
       });
     } finally {
@@ -112,116 +123,145 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
         <DialogTrigger asChild>
           {trigger}
         </DialogTrigger>
-        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Calendar className="mr-2 h-5 w-5 icon-medical" />
-              {visitData?.id ? "Editar Visita" : "Nueva Visita"}
-            </DialogTitle>
-          </DialogHeader>
+        <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl bg-white">
+          {/* Calendar Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-10 text-white relative">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
+                <CalendarIcon className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-black tracking-tight text-white mb-0">
+                  {visitData?.id ? "Reprogramar Gestión" : "Planificar Nueva Visita"}
+                </DialogTitle>
+                <p className="text-blue-100/70 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Agenda de Visita Médica & Comercial</p>
+              </div>
+            </div>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="contact">Contacto Médico</Label>
+          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+            {/* Contacto */}
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Seleccionar Médico o Farmacia *</Label>
               <div className="flex gap-2">
-                <Select
-                  value={formData.contact_id}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, contact_id: value }))}
-                >
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Seleccionar contacto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {contacts.map((contact) => (
-                      <SelectItem key={contact.id} value={contact.id}>
-                        {contact.name} - {contact.specialty || 'Sin especialidad'}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative flex-1 group">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                  <Select
+                    value={formData.contact_id}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, contact_id: value }))}
+                  >
+                    <SelectTrigger className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-slate-50/50 shadow-sm focus:ring-blue-500/10">
+                      <SelectValue placeholder="Buscar en base de contactos..." />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl font-bold">
+                      {contacts.map((contact) => (
+                        <SelectItem key={contact.id} value={contact.id} className="py-3">
+                          👤 {contact.name} <span className="text-[10px] text-slate-400 ml-2">({contact.specialty || 'Canal'})</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
+                  className="h-12 w-12 rounded-xl border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-400 hover:text-blue-600 shadow-sm transition-all"
                   onClick={() => setShowNewContactDialog(true)}
-                  title="Crear nuevo contacto"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-5 w-5" />
                 </Button>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <Separator className="bg-slate-100" />
+
+            {/* Fecha y Hora */}
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="date">Fecha</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.scheduled_date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))}
-                  required
-                />
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Fecha de Visita</Label>
+                <div className="relative group">
+                  <CalendarIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    type="date"
+                    value={formData.scheduled_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))}
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    required
+                  />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="time">Hora</Label>
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Hora Estimada</Label>
+                <div className="relative group">
+                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    type="time"
+                    value={formData.scheduled_time}
+                    onChange={(e) => setFormData(prev => ({ ...prev, scheduled_time: e.target.value }))}
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Separator className="bg-slate-100" />
+
+            {/* Objetivo */}
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Objetivo Estratégico</Label>
+              <div className="relative group">
+                <Target className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
                 <Input
-                  id="time"
-                  type="time"
-                  value={formData.scheduled_time}
-                  onChange={(e) => setFormData(prev => ({ ...prev, scheduled_time: e.target.value }))}
-                  required
+                  value={formData.objective}
+                  onChange={(e) => setFormData(prev => ({ ...prev, objective: e.target.value }))}
+                  placeholder="Ej: Lanzamiento de producto, cierre de venta, seguimiento..."
+                  className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="objective">Objetivo de la Visita</Label>
-              <Input
-                id="objective"
-                value={formData.objective}
-                onChange={(e) => setFormData(prev => ({ ...prev, objective: e.target.value }))}
-                placeholder="ej. Presentar nuevo medicamento, seguimiento..."
-              />
+            {/* Notas */}
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Hoja de Ruta / Notas Privadas</Label>
+              <div className="relative group">
+                <FileText className="absolute left-3.5 top-4 h-4 w-4 text-slate-400" />
+                <Textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Instrucciones adicionales para el visitador o recordatorios..."
+                  className="min-h-[120px] pl-10 border-slate-200 rounded-2xl font-medium p-4 resize-none"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notas</Label>
-              <Textarea
-                id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Notas adicionales sobre la visita..."
-                rows={3}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="status">Estado</Label>
+            {/* Estado */}
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estatus del Compromiso</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold bg-slate-50/50">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="scheduled">Programada</SelectItem>
-                  <SelectItem value="completed">Completada</SelectItem>
-                  <SelectItem value="cancelled">Cancelada</SelectItem>
-                  <SelectItem value="no_show">No se presentó</SelectItem>
+                <SelectContent className="rounded-xl font-bold">
+                  <SelectItem value="scheduled" className="text-blue-600 py-3">📅 PROGRAMADA</SelectItem>
+                  <SelectItem value="completed" className="text-emerald-600 py-3">✅ COMPLETADA</SelectItem>
+                  <SelectItem value="cancelled" className="text-rose-600 py-3">❌ CANCELADA</SelectItem>
+                  <SelectItem value="no_show" className="text-slate-400 py-3">👤 SIN AUDIENCIA</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={loading} className="btn-medical">
-                {loading ? "Guardando..." : (visitData?.id ? "Actualizar" : "Crear Visita")}
-              </Button>
-            </div>
           </form>
+
+          <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-400 hover:text-slate-600">Descartar</Button>
+            <Button onClick={handleSubmit} disabled={loading} className="h-12 px-10 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-blue-500/20 transition-all hover:scale-[1.02]">
+              {loading ? "Sincronizando..." : (visitData?.id ? "Actualizar Gestión" : "Confirmar Agenda")}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 

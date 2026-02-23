@@ -1,3 +1,13 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,11 +18,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Clock, Edit, Trash2 } from "lucide-react";
+import {
+    Plus,
+    Clock,
+    Edit,
+    Trash2,
+    User,
+    Stethoscope,
+    Calendar,
+    MapPin,
+    Mail,
+    Phone,
+    Smartphone,
+    Instagram,
+    Activity,
+    ShieldCheck,
+    Info,
+    GraduationCap,
+    HeartPulse,
+    Building2
+} from "lucide-react";
 import { DoctorScheduleDialog } from "@/components/doctors/DoctorScheduleDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 interface DoctorFormDialogProps {
     open: boolean;
@@ -46,7 +76,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                 .from('specialties')
                 .select('*')
                 .order('name');
-            
+
             if (error) throw error;
             setSpecialties(data || []);
         } catch (error: any) {
@@ -105,296 +135,384 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
-                <Button className="btn-medical">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 rounded-xl shadow-lg shadow-blue-500/20 transition-all">
                     <Plus className="mr-2 h-4 w-4" /> Nuevo Médico
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>{formData?.id ? 'Editar Médico' : 'Agregar Médico'}</DialogTitle>
-                </DialogHeader>
-
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="personal">Personal</TabsTrigger>
-                        <TabsTrigger value="professional">Profesional</TabsTrigger>
-                        <TabsTrigger value="location">Ubicación/Horario</TabsTrigger>
-                        <TabsTrigger value="tracking">Seguimiento</TabsTrigger>
-                    </TabsList>
-
-                    {/* Tab 1: Información Personal */}
-                    <TabsContent value="personal" className="space-y-4 mt-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="col-span-2 space-y-2">
-                                <Label>Nombre Completo *</Label>
-                                <Input
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    placeholder="Dr. Juan Pérez"
-                                />
-                            </div>
+            <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
+                {/* Medical Header */}
+                <div className="bg-gradient-to-br from-blue-600 to-blue-800 px-8 py-10 text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                        <HeartPulse className="w-32 h-32" />
+                    </div>
+                    <div className="relative z-10 flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                            <Stethoscope className="w-8 h-8 text-white" />
                         </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Fecha de Nacimiento</Label>
-                                <Input
-                                    type="date"
-                                    value={formData.birth_date}
-                                    onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Email</Label>
-                                <Input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    placeholder="doctor@hospital.com"
-                                />
-                            </div>
+                        <div>
+                            <DialogTitle className="text-3xl font-black tracking-tight text-white mb-1">
+                                {formData?.id ? 'Ficha Médica Digital' : 'Alta de Facultativo'}
+                            </DialogTitle>
+                            <p className="text-blue-100/70 font-bold text-sm uppercase tracking-widest">
+                                Gestión de Profesionales de la Salud 🩺
+                            </p>
                         </div>
+                    </div>
+                </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Teléfono</Label>
-                                <Input
-                                    value={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                    placeholder="+58 212 1234567"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Móvil</Label>
-                                <Input
-                                    value={formData.mobile}
-                                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                                    placeholder="+58 414 1234567"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label>Instagram</Label>
-                            <Input
-                                value={formData.instagram}
-                                onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                                placeholder="@dr_juanperez"
-                            />
-                        </div>
-                    </TabsContent>
-
-                    {/* Tab 2: Información Profesional */}
-                    <TabsContent value="professional" className="space-y-4 mt-4">
-                        <div className="space-y-2">
-                            <Label>Especialidad</Label>
-                            <Select
-                                value={formData.specialty_id || undefined}
-                                onValueChange={(v) => {
-                                    setFormData({ ...formData, specialty_id: v })
-                                }}
+                <div className="flex flex-col md:flex-row h-[600px]">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
+                        {/* Sidebar */}
+                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
+                            <TabsTrigger
+                                value="personal"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Seleccione especialidad" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {specialties.length === 0 ? (
-                                        <div className="py-2 px-4 text-sm text-muted-foreground">
-                                            Cargando especialidades...
+                                <User className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Datos Personales</span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="professional"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <GraduationCap className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Especialidad</span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="location"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <Clock className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Horarios & Clínicas</span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="tracking"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                            >
+                                <Activity className="w-4 h-4" />
+                                <span className="text-xs uppercase tracking-tight">Seguimiento</span>
+                            </TabsTrigger>
+                        </TabsList>
+
+                        <div className="flex-1 overflow-y-auto bg-white">
+                            {/* Tab 1: Información Personal */}
+                            <TabsContent value="personal" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                <section className="space-y-6">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Identificación Básica</h3>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nombre Completo *</Label>
+                                        <div className="relative group">
+                                            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50 group-hover:text-blue-600 transition-colors" />
+                                            <Input
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                placeholder="Ej: Dr. Juan Pérez"
+                                                className="h-12 pl-10 border-slate-200 rounded-xl font-bold focus:ring-blue-500/10"
+                                            />
                                         </div>
-                                    ) : (
-                                        specialties.map((s) => (
-                                            <SelectItem key={s.id} value={s.id}>
-                                                {s.name}
-                                            </SelectItem>
-                                        ))
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                                    </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>MSDS</Label>
-                                <Input
-                                    value={formData.msds}
-                                    onChange={(e) => setFormData({ ...formData, msds: e.target.value })}
-                                    placeholder="Número MSDS"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>CM</Label>
-                                <Input
-                                    value={formData.cm}
-                                    onChange={(e) => setFormData({ ...formData, cm: e.target.value })}
-                                    placeholder="Código CM"
-                                />
-                            </div>
-                        </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Fecha de Nacimiento</Label>
+                                            <div className="relative group">
+                                                <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
+                                                <Input
+                                                    type="date"
+                                                    value={formData.birth_date}
+                                                    onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
+                                                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Correo Institucional</Label>
+                                            <div className="relative group">
+                                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
+                                                <Input
+                                                    type="email"
+                                                    value={formData.email}
+                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                    placeholder="doctor@medical.com"
+                                                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        <div className="space-y-2">
-                            <Label>Potencial</Label>
-                            <Select value={formData.potential} onValueChange={(v) => setFormData({ ...formData, potential: v })}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Alto">Alto</SelectItem>
-                                    <SelectItem value="Medio">Medio</SelectItem>
-                                    <SelectItem value="Bajo">Bajo</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </TabsContent>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Teléfono Consultorio</Label>
+                                            <div className="relative group">
+                                                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
+                                                <Input
+                                                    value={formData.phone}
+                                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                                    placeholder="+58 212 1234567"
+                                                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Móvil Personal</Label>
+                                            <div className="relative group">
+                                                <Smartphone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
+                                                <Input
+                                                    value={formData.mobile}
+                                                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                                                    placeholder="+58 414 1234567"
+                                                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    {/* Tab 3: Ubicación y Horario */}
-                    <TabsContent value="location" className="space-y-4 mt-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-medium">Horarios de Atención</h3>
-                                <p className="text-sm text-muted-foreground">
-                                    Gestiona las ubicaciones y horarios del médico
-                                </p>
-                            </div>
-                            <Button
-                                onClick={handleAddSchedule}
-                                disabled={!formData.id}
-                                size="sm"
-                            >
-                                <Plus className="mr-2 h-4 w-4" />
-                                Agregar Ubicación
-                            </Button>
-                        </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Perfil Académico / Social</Label>
+                                        <div className="relative group">
+                                            <Instagram className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-pink-500/50" />
+                                            <Input
+                                                value={formData.instagram}
+                                                onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                                                placeholder="@tu_usuario_medico"
+                                                className="h-12 pl-10 border-slate-200 rounded-xl font-bold"
+                                            />
+                                        </div>
+                                    </div>
+                                </section>
+                            </TabsContent>
 
-                        {!formData.id && (
-                            <div className="text-center py-8 text-muted-foreground bg-muted/50 rounded-lg">
-                                Guarda el médico primero para agregar horarios
-                            </div>
-                        )}
+                            {/* Tab 2: Información Profesional */}
+                            <TabsContent value="professional" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                <section className="space-y-8">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Credenciales Médicas</h3>
+                                    </div>
 
-                        {formData.id && schedules.length === 0 && (
-                            <div className="text-center py-8 text-muted-foreground bg-muted/50 rounded-lg">
-                                No hay horarios registrados. Haz clic en "Agregar Ubicación" para comenzar.
-                            </div>
-                        )}
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Especialidad Principal</Label>
+                                        <Select
+                                            value={formData.specialty_id || undefined}
+                                            onValueChange={(v) => {
+                                                setFormData({ ...formData, specialty_id: v })
+                                            }}
+                                        >
+                                            <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner">
+                                                <SelectValue placeholder="Seleccione especialidad" />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                                {specialties.length === 0 ? (
+                                                    <div className="py-2 px-4 text-sm text-muted-foreground italic">
+                                                        Cargando especialidades...
+                                                    </div>
+                                                ) : (
+                                                    specialties.map((s) => (
+                                                        <SelectItem key={s.id} value={s.id} className="font-bold py-3">
+                                                            🌟 {s.name}
+                                                        </SelectItem>
+                                                    ))
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
-                        {formData.id && schedules.length > 0 && (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Ubicación</TableHead>
-                                        <TableHead>Días</TableHead>
-                                        <TableHead>Horario</TableHead>
-                                        <TableHead>Estado</TableHead>
-                                        <TableHead className="text-right">Acciones</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {schedules.map((schedule) => (
-                                        <TableRow key={schedule.id}>
-                                            <TableCell>
-                                                <div>
-                                                    {schedule.health_centers?.name || schedule.direccion || 'Sin ubicación'}
-                                                    {schedule.ciudad && (
-                                                        <div className="text-sm text-muted-foreground">
-                                                            {schedule.ciudad}, {schedule.estado}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Registro MSDS</Label>
+                                            <div className="relative group">
+                                                <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
+                                                <Input
+                                                    value={formData.msds}
+                                                    onChange={(e) => setFormData({ ...formData, msds: e.target.value })}
+                                                    placeholder="Número MSDS"
+                                                    className="h-12 pl-10 border-slate-200 rounded-xl font-mono font-bold"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Código Colegio Médico (CM)</Label>
+                                            <div className="relative group">
+                                                <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500/50" />
+                                                <Input
+                                                    value={formData.cm}
+                                                    onChange={(e) => setFormData({ ...formData, cm: e.target.value })}
+                                                    placeholder="Código CM"
+                                                    className="h-12 pl-10 border-slate-200 rounded-xl font-mono font-bold"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 pt-4 border-t border-slate-50">
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 tracking-[0.2em]">Potencial de Recetado</Label>
+                                        <div className="flex gap-3">
+                                            {['Alto', 'Medio', 'Bajo'].map((p) => (
+                                                <button
+                                                    key={p}
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, potential: p })}
+                                                    className={`flex-1 py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-sm ${formData.potential === p
+                                                        ? 'bg-blue-600 border-blue-600 text-white shadow-blue-500/20'
+                                                        : 'bg-white border-slate-100 text-slate-400 hover:border-blue-100'
+                                                        }`}
+                                                >
+                                                    {p}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </section>
+                            </TabsContent>
+
+                            {/* Tab 3: Ubicación y Horario */}
+                            <TabsContent value="location" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Centros de Trabajo</h3>
+                                    </div>
+                                    <Button
+                                        onClick={handleAddSchedule}
+                                        disabled={!formData.id}
+                                        className="bg-blue-600 hover:bg-blue-700 h-9 rounded-lg font-bold text-xs uppercase tracking-wider"
+                                    >
+                                        <Plus className="mr-2 h-3.5 w-3.5" />
+                                        Añadir Sede
+                                    </Button>
+                                </div>
+
+                                {!formData.id ? (
+                                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center space-y-4">
+                                        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
+                                            <Info className="w-8 h-8 text-blue-300" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="font-bold text-slate-700">Configuración Requerida</p>
+                                            <p className="text-xs text-slate-500 max-w-[200px] mx-auto">Guarda el perfil básico del médico primero para gestionar sus horarios y sedes.</p>
+                                        </div>
+                                    </div>
+                                ) : schedules.length === 0 ? (
+                                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center space-y-4">
+                                        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
+                                            <MapPin className="w-8 h-8 text-blue-300" />
+                                        </div>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Sin sedes registradas</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {schedules.map((schedule) => (
+                                            <div key={schedule.id} className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5 transition-all">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                                                        <Building2 className="w-5 h-5 text-blue-600" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-slate-800">{schedule.health_centers?.name || schedule.direccion || 'Sin ubicación'}</h4>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tight border-slate-200 text-slate-500 px-1.5 py-0">
+                                                                {schedule.dias_atencion}
+                                                            </Badge>
+                                                            <span className="text-[10px] text-slate-400 flex items-center gap-1 font-bold">
+                                                                <Clock className="h-2.5 w-2.5" />
+                                                                {schedule.hora_inicio} - {schedule.hora_fin}
+                                                            </span>
                                                         </div>
-                                                    )}
+                                                    </div>
                                                 </div>
-                                            </TableCell>
-                                            <TableCell>{schedule.dias_atencion}</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center">
-                                                    <Clock className="mr-1 h-3 w-3" />
-                                                    {schedule.hora_inicio} - {schedule.hora_fin}
+                                                <div className="flex items-center gap-1">
+                                                    <Button variant="ghost" size="icon" onClick={() => handleEditSchedule(schedule)} className="h-8 w-8 text-slate-400 hover:text-blue-600">
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button variant="ghost" size="icon" onClick={() => handleDeleteSchedule(schedule.id)} className="h-8 w-8 text-slate-400 hover:text-rose-600">
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
                                                 </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={schedule.activo ? "default" : "secondary"}>
-                                                    {schedule.activo ? "Activo" : "Inactivo"}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleEditSchedule(schedule)}
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDeleteSchedule(schedule.id)}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
 
-                        {/* Schedule Dialog */}
-                        {formData.id && (
-                            <DoctorScheduleDialog
-                                open={scheduleDialog}
-                                onOpenChange={setScheduleDialog}
-                                doctorId={formData.id}
-                                scheduleData={editingSchedule}
-                                onSaved={() => {
-                                    loadSchedules();
-                                    setScheduleDialog(false);
-                                    setEditingSchedule(null);
-                                }}
-                            />
-                        )}
-                    </TabsContent>
+                                {/* Schedule Dialog */}
+                                {formData.id && (
+                                    <DoctorScheduleDialog
+                                        open={scheduleDialog}
+                                        onOpenChange={setScheduleDialog}
+                                        doctorId={formData.id}
+                                        scheduleData={editingSchedule}
+                                        onSaved={() => {
+                                            loadSchedules();
+                                            setScheduleDialog(false);
+                                            setEditingSchedule(null);
+                                        }}
+                                    />
+                                )}
+                            </TabsContent>
 
-                    {/* Tab 4: Seguimiento */}
-                    <TabsContent value="tracking" className="space-y-4 mt-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Última Visita</Label>
-                                <Input
-                                    type="date"
-                                    value={formData.last_visit}
-                                    onChange={(e) => setFormData({ ...formData, last_visit: e.target.value })}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Status</Label>
-                                <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Activo">Activo</SelectItem>
-                                        <SelectItem value="Inactivo">Inactivo</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            {/* Tab 4: Seguimiento */}
+                            <TabsContent value="tracking" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                                <section className="space-y-8">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Control de Visitas</h3>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Última Gestión / Contacto</Label>
+                                            <Input
+                                                type="date"
+                                                value={formData.last_visit}
+                                                onChange={(e) => setFormData({ ...formData, last_visit: e.target.value })}
+                                                className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner"
+                                            />
+                                        </div>
+                                        <div className="space-y-3">
+                                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estatus Profesional</Label>
+                                            <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                                    <SelectItem value="Activo" className="font-bold text-emerald-600 py-3">🟢 ACTIVO (VISITABLE)</SelectItem>
+                                                    <SelectItem value="Inactivo" className="font-bold text-slate-400 py-3">⚪ INACTIVO / PASIVO</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 tracking-[0.2em]">Observaciones Estratégicas</Label>
+                                        <Textarea
+                                            value={formData.observations}
+                                            onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
+                                            placeholder="Describa perfil psicológico, preferencias de receta, influencias..."
+                                            className="min-h-[220px] rounded-2xl border-slate-200 font-medium p-6 resize-none focus:ring-blue-500/10 shadow-inner"
+                                        />
+                                    </div>
+                                </section>
+                            </TabsContent>
                         </div>
+                    </Tabs>
+                </div>
 
-                        <div className="space-y-2">
-                            <Label>Observaciones</Label>
-                            <Textarea
-                                value={formData.observations}
-                                onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
-                                placeholder="Notas sobre el médico, preferencias, etc..."
-                                rows={6}
-                            />
-                        </div>
-                    </TabsContent>
-                </Tabs>
-
-                <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
-                        Cancelar
+                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                    <Button
+                        variant="ghost"
+                        onClick={() => onOpenChange(false)}
+                        className="h-12 px-6 font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl"
+                    >
+                        Descartar
                     </Button>
-                    <Button onClick={onSubmit} className="btn-medical">
-                        {formData?.id ? 'Guardar Cambios' : 'Guardar Médico'}
+                    <Button
+                        onClick={onSubmit}
+                        className="h-12 px-10 bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-2xl shadow-blue-500/30 transition-all hover:scale-[1.02]"
+                    >
+                        {formData?.id ? 'Actualizar Ficha' : 'Crear Ficha Médica'}
                     </Button>
                 </div>
             </DialogContent>

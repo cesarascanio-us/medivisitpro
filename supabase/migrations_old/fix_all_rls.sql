@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- FIX ALL RLS ISSUES (Products & Contacts)
 -- 1. PRODUCTS: Allow viewing by ORGANIZATION_ID (So Reps can see products created by Managers)
 DROP POLICY IF EXISTS "Users can view own and global products" ON public.products;

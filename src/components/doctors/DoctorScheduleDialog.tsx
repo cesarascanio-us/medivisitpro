@@ -1,3 +1,13 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,11 +16,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, MapPin, Calendar } from "lucide-react";
+import { Clock, MapPin, Calendar, Building2, Globe, ShieldCheck, Navigation } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { GeocodingButton } from "@/components/forms/GeocodingButton";
+import { Separator } from "@/components/ui/separator";
 
 interface DoctorScheduleDialogProps {
     open: boolean;
@@ -136,85 +147,86 @@ export function DoctorScheduleDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>
-                        {scheduleData ? "Editar Horario" : "Agregar Ubicación/Horario"}
-                    </DialogTitle>
-                </DialogHeader>
+            <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
+                <div className="bg-slate-800 px-6 py-8 text-white">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                            <Clock className="h-5 w-5" />
+                        </div>
+                        <DialogTitle className="text-xl font-black mt-0">
+                            {scheduleData ? "Modificar Horario" : "Definir Nueva Sede"}
+                        </DialogTitle>
+                    </div>
+                </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Health Center Selection */}
-                    <div className="space-y-2">
-                        <Label htmlFor="health_center">
-                            <MapPin className="inline mr-1 h-4 w-4" />
-                            Centro de Salud (Opcional)
-                        </Label>
+                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 bg-white max-h-[70vh] overflow-y-auto custom-scrollbar">
+                    {/* Centro de Salud */}
+                    <div className="space-y-3">
+                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Centro de Salud Vinculado</Label>
                         <Select
                             value={formData.health_center_id}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, health_center_id: value }))}
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold bg-slate-50/50">
                                 <SelectValue placeholder="Seleccionar centro o usar dirección manual" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="rounded-xl">
                                 <SelectItem value="">Ninguno (usar dirección manual)</SelectItem>
                                 {healthCenters.map(center => (
-                                    <SelectItem key={center.id} value={center.id}>
-                                        {center.name}
+                                    <SelectItem key={center.id} value={center.id} className="font-bold">
+                                        🏢 {center.name}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                     </div>
 
-                    {/* Manual Address Fields */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <Separator className="bg-slate-100" />
+
+                    {/* Dirección Manual */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                            <MapPin className="h-3 w-3 text-slate-400" />
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Detalles de Ubicación</h4>
+                        </div>
                         <div className="space-y-2">
-                            <Label htmlFor="direccion">Dirección</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 ml-1">Dirección Exacta</Label>
                             <Input
-                                id="direccion"
                                 value={formData.direccion}
                                 onChange={(e) => setFormData(prev => ({ ...prev, direccion: e.target.value }))}
-                                placeholder="Av. Principal, Torre Médica, Piso 5"
+                                placeholder="Torre Médica, Piso, Consultorio..."
+                                className="h-11 border-slate-200 rounded-xl font-bold"
                             />
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="zona">Zona/Sector</Label>
-                            <Input
-                                id="zona"
-                                value={formData.zona_sector}
-                                onChange={(e) => setFormData(prev => ({ ...prev, zona_sector: e.target.value }))}
-                                placeholder="Zona Norte, Sector 3"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="ciudad">Ciudad</Label>
-                            <Input
-                                id="ciudad"
-                                value={formData.ciudad}
-                                onChange={(e) => setFormData(prev => ({ ...prev, ciudad: e.target.value }))}
-                                placeholder="Caracas"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="estado">Estado</Label>
-                            <Input
-                                id="estado"
-                                value={formData.estado}
-                                onChange={(e) => setFormData(prev => ({ ...prev, estado: e.target.value }))}
-                                placeholder="Miranda"
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-slate-400 ml-1">Zona / Sector</Label>
+                                <Input
+                                    value={formData.zona_sector}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, zona_sector: e.target.value }))}
+                                    placeholder="Sector"
+                                    className="h-11 border-slate-200 rounded-xl font-bold"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-slate-400 ml-1">Ciudad</Label>
+                                <Input
+                                    value={formData.ciudad}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, ciudad: e.target.value }))}
+                                    placeholder="Ciudad"
+                                    className="h-11 border-slate-200 rounded-xl font-bold"
+                                />
+                            </div>
                         </div>
                     </div>
 
                     {/* Geocoding Section */}
-                    <div className="space-y-3 p-4 bg-muted/30 rounded-lg border">
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 shadow-inner">
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm font-medium">Coordenadas GPS</Label>
+                            <div className="flex items-center gap-2">
+                                <Navigation className="h-4 w-4 text-blue-600" />
+                                <span className="text-[10px] font-black uppercase text-slate-600 tracking-tight">Geolocalización</span>
+                            </div>
                             <GeocodingButton
                                 address={{
                                     street: formData.direccion,
@@ -223,146 +235,120 @@ export function DoctorScheduleDialog({
                                     country: "Venezuela"
                                 }}
                                 onCoordinatesFound={(lat, lng) => {
-                                    setFormData(prev => ({
-                                        ...prev,
-                                        latitude: lat,
-                                        longitude: lng
-                                    }));
-                                    toast({
-                                        title: "Coordenadas obtenidas",
-                                        description: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
-                                    });
+                                    setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
+                                    toast({ title: "Ubicación detectada" });
                                 }}
                                 disabled={!formData.ciudad}
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="latitude" className="text-xs">Latitud</Label>
-                                <Input
-                                    id="latitude"
-                                    type="number"
-                                    step="any"
-                                    value={formData.latitude || ""}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) || null }))}
-                                    placeholder="10.4880"
-                                    className="text-sm"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="longitude" className="text-xs">Longitud</Label>
-                                <Input
-                                    id="longitude"
-                                    type="number"
-                                    step="any"
-                                    value={formData.longitude || ""}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) || null }))}
-                                    placeholder="-66.8792"
-                                    className="text-sm"
-                                />
-                            </div>
-                        </div>
-
-                        {formData.latitude && formData.longitude && (
-                            <p className="text-xs text-muted-foreground">
-                                ✓ Ubicación establecida - Aparecerá en el mapa
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Schedule Fields */}
-                    <div className="space-y-2">
-                        <Label htmlFor="dias">
-                            <Calendar className="inline mr-1 h-4 w-4" />
-                            Días de Atención *
-                        </Label>
-                        <Select
-                            value={formData.dias_atencion}
-                            onValueChange={(value) => setFormData(prev => ({ ...prev, dias_atencion: value }))}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Seleccionar días" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Lunes a Viernes">Lunes a Viernes</SelectItem>
-                                <SelectItem value="Lunes a Sábado">Lunes a Sábado</SelectItem>
-                                <SelectItem value="Lunes, Miércoles y Viernes">Lunes, Miércoles y Viernes</SelectItem>
-                                <SelectItem value="Martes y Jueves">Martes y Jueves</SelectItem>
-                                <SelectItem value="Sábado">Sábado</SelectItem>
-                                <SelectItem value="Domingo">Domingo</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Input
-                            placeholder="O escribir manualmente: ej. Lunes, Miércoles de 2-6pm"
-                            value={formData.dias_atencion}
-                            onChange={(e) => setFormData(prev => ({ ...prev, dias_atencion: e.target.value }))}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="hora_inicio">
-                                <Clock className="inline mr-1 h-4 w-4" />
-                                Hora Inicio *
-                            </Label>
                             <Input
-                                id="hora_inicio"
-                                type="time"
-                                value={formData.hora_inicio}
-                                onChange={(e) => setFormData(prev => ({ ...prev, hora_inicio: e.target.value }))}
-                                required
+                                type="number"
+                                step="any"
+                                value={formData.latitude || ""}
+                                onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) || null }))}
+                                placeholder="Latitud"
+                                className="h-9 text-[10px] font-mono font-bold bg-white"
                             />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="hora_fin">
-                                <Clock className="inline mr-1 h-4 w-4" />
-                                Hora Fin *
-                            </Label>
                             <Input
-                                id="hora_fin"
-                                type="time"
-                                value={formData.hora_fin}
-                                onChange={(e) => setFormData(prev => ({ ...prev, hora_fin: e.target.value }))}
-                                required
+                                type="number"
+                                step="any"
+                                value={formData.longitude || ""}
+                                onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) || null }))}
+                                placeholder="Longitud"
+                                className="h-9 text-[10px] font-mono font-bold bg-white"
                             />
                         </div>
                     </div>
 
-                    {/* Notes */}
+                    <Separator className="bg-slate-100" />
+
+                    {/* Horarios */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                            <Calendar className="h-3 w-3 text-slate-400" />
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Días & Horarios</h4>
+                        </div>
+                        <div className="space-y-3">
+                            <Label className="text-[10px] font-bold text-slate-400 ml-1">Días de Atención</Label>
+                            <Select
+                                value={formData.dias_atencion}
+                                onValueChange={(value) => setFormData(prev => ({ ...prev, dias_atencion: value }))}
+                            >
+                                <SelectTrigger className="h-11 border-slate-200 rounded-xl font-bold">
+                                    <SelectValue placeholder="Seleccionar frecuencia" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-xl font-bold">
+                                    <SelectItem value="Lunes a Viernes">📅 Lunes a Viernes</SelectItem>
+                                    <SelectItem value="Lunes a Sábado">📅 Lunes a Sábado</SelectItem>
+                                    <SelectItem value="Lunes, Miércoles y Viernes">🔄 Lunes, Miércoles y Viernes</SelectItem>
+                                    <SelectItem value="Martes y Jueves">🔄 Martes y Jueves</SelectItem>
+                                    <SelectItem value="Sábado">✨ Sábado</SelectItem>
+                                    <SelectItem value="Domingo">✨ Domingo</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <Input
+                                placeholder="O defina manualmente..."
+                                value={formData.dias_atencion}
+                                onChange={(e) => setFormData(prev => ({ ...prev, dias_atencion: e.target.value }))}
+                                className="h-11 border-slate-200 rounded-xl font-bold"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-slate-400 ml-1">Hora Inicio</Label>
+                                <Input
+                                    type="time"
+                                    value={formData.hora_inicio}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, hora_inicio: e.target.value }))}
+                                    className="h-11 border-slate-200 rounded-xl font-bold"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-slate-400 ml-1">Hora Fin</Label>
+                                <Input
+                                    type="time"
+                                    value={formData.hora_fin}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, hora_fin: e.target.value }))}
+                                    className="h-11 border-slate-200 rounded-xl font-bold"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="space-y-2">
-                        <Label htmlFor="notas">Notas</Label>
+                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Observaciones</Label>
                         <Textarea
-                            id="notas"
                             value={formData.notas}
                             onChange={(e) => setFormData(prev => ({ ...prev, notas: e.target.value }))}
-                            placeholder="Notas adicionales sobre este horario..."
-                            rows={2}
+                            placeholder="Notas sobre parqueo, entrada, o protocolos..."
+                            className="bg-slate-50/30 border-slate-200 rounded-2xl p-4 font-medium min-h-[100px]"
                         />
                     </div>
 
-                    {/* Active Checkbox */}
-                    <div className="flex items-center space-x-2">
+                    <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-3">
                         <Checkbox
                             id="activo"
                             checked={formData.activo}
                             onCheckedChange={(checked) => setFormData(prev => ({ ...prev, activo: !!checked }))}
+                            className="data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
                         />
-                        <Label htmlFor="activo" className="font-normal cursor-pointer">
-                            Horario activo
+                        <Label htmlFor="activo" className="text-xs font-bold text-slate-600 cursor-pointer">
+                            Habilitar esta sede para visitas actuales
                         </Label>
                     </div>
-
-                    {/* Actions */}
-                    <div className="flex justify-end space-x-2 pt-4 border-t">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                            Cancelar
-                        </Button>
-                        <Button type="submit" disabled={loading}>
-                            {loading ? "Guardando..." : (scheduleData ? "Actualizar" : "Guardar")}
-                        </Button>
-                    </div>
                 </form>
+
+                <div className="bg-white border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                    <Button variant="ghost" onClick={() => onOpenChange(false)} className="h-12 px-6 font-bold text-slate-400">Descartar</Button>
+                    <Button onClick={handleSubmit} disabled={loading} className="h-12 px-8 bg-slate-800 hover:bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl transition-all hover:scale-[1.02]">
+                        {loading ? "Sincronizando..." : (scheduleData ? "Actualizar Sede" : "Confirmar Nueva Sede")}
+                    </Button>
+                </div>
             </DialogContent>
         </Dialog>
     );

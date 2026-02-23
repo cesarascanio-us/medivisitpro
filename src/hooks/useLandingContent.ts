@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,7 +23,7 @@ export const useLandingContent = () => {
                     .from('site_settings')
                     .select('value')
                     .eq('key', 'landing_content')
-                    .single();
+                    .maybeSingle();
 
                 if (error) {
                     console.warn('Using default landing content (DB fetch failed or empty)');

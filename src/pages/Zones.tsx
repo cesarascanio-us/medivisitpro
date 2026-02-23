@@ -1,5 +1,14 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect } from "react";
-import { Plus, MapPin, Search, Trash2, Edit, Check, X, Users as UsersIcon } from "lucide-react";
+import { Plus, MapPin, Search, Trash2, Edit, Check, X, Users as UsersIcon, Globe, Map, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -182,225 +191,249 @@ export default function Zones() {
 
     if (!canManageZones) {
         return (
-            <div className="flex items-center justify-center h-96">
-                <Card className="medical-card">
-                    <CardContent className="text-center py-12">
-                        <MapPin className="mx-auto h-12 w-12 text-red-500 mb-4" />
-                        <h3 className="text-lg font-medium mb-2">Acceso Restringido</h3>
-                        <p className="text-muted-foreground">No tienes permisos para gestionar zonas.</p>
-                    </CardContent>
-                </Card>
+            <div className="flex flex-col items-center justify-center min-h-[60vh] p-8">
+                <div className="w-24 h-24 bg-rose-50 dark:bg-rose-900/20 rounded-[2.5rem] flex items-center justify-center mb-6">
+                    <X className="w-12 h-12 text-rose-500" />
+                </div>
+                <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Acceso Restringido</h2>
+                <p className="text-slate-400 dark:text-slate-500 font-medium text-center max-w-sm mt-2">No dispones de los privilegios necesarios para gestionar la infraestructura de zonas.</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">Gestión de Zonas</h1>
-                    <p className="text-muted-foreground">Administra las zonas geográficas del sistema</p>
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-8 p-1 animate-in fade-in duration-700">
+            {/* Premium White Header Container */}
+            <header className="bg-white dark:bg-slate-900 px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+                {/* Decorative backgrounds */}
+                <div className="absolute -top-32 -right-32 w-80 h-80 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-slate-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
+
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                    <div className="flex items-center gap-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-3xl flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-none transform transition-transform hover:scale-105">
+                            <MapPin className="text-white h-10 w-10" />
+                        </div>
+                        <div>
+                            <p className="text-emerald-600 dark:text-emerald-400 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Estructura & Cobertura</p>
+                            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                                Gestión de Zonas
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-lg font-medium">Administración técnica de demarcaciones geográficas y usuarios asignados</p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="h-14 px-8 rounded-2xl bg-slate-900 dark:bg-indigo-600 hover:bg-black dark:hover:bg-indigo-500 text-white shadow-lg shadow-slate-200 dark:shadow-none transition-all hover:-translate-y-0.5 active:translate-y-0 font-bold uppercase text-[10px] tracking-widest">
+                                    <Plus className="w-4 h-4 mr-3" />
+                                    Nueva Zona
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-white dark:bg-slate-900 border-none shadow-2xl rounded-[2.5rem] max-w-md p-0 overflow-hidden">
+                                <div className="bg-slate-900 p-8 text-white relative">
+                                    <div className="absolute top-0 right-0 p-6 opacity-10">
+                                        <Map className="w-24 h-24" />
+                                    </div>
+                                    <DialogTitle className="text-2xl font-black uppercase tracking-tight relative z-10">
+                                        {editingZone ? "Editar Zona" : "Nueva Zona"}
+                                    </DialogTitle>
+                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1 relative z-10">Infraestructura Geográfica SaaS</p>
+                                </div>
+                                <div className="p-8 space-y-6 bg-slate-50/30">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Nombre de la Zona</Label>
+                                        <Input
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            className="h-14 rounded-2xl border-slate-100 bg-white font-bold focus:ring-emerald-500"
+                                            placeholder="Ej: Zona Norte Administrativa"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Descripción</Label>
+                                        <Textarea
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                            className="min-h-[100px] rounded-2xl border-slate-100 bg-white font-medium p-6"
+                                            placeholder="Detalles sobre la cobertura de esta zona..."
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Región</Label>
+                                            <Select value={formData.region} onValueChange={(v) => setFormData({ ...formData, region: v, state: "" })}>
+                                                <SelectTrigger className="h-12 border-slate-100 rounded-xl bg-white focus:ring-emerald-500"><SelectValue /></SelectTrigger>
+                                                <SelectContent className="rounded-xl border-slate-100 shadow-xl">
+                                                    {getAllRegions().map(r => <SelectItem key={r} value={r} className="font-medium">{r}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Estado</Label>
+                                            <Select value={formData.state} onValueChange={(v) => setFormData({ ...formData, state: v })} disabled={!formData.region}>
+                                                <SelectTrigger className="h-12 border-slate-100 rounded-xl bg-white focus:ring-emerald-500"><SelectValue /></SelectTrigger>
+                                                <SelectContent className="rounded-xl border-slate-100 shadow-xl">
+                                                    {formData.region && getStatesInRegion(formData.region).map(s => <SelectItem key={s} value={s} className="font-medium">{s}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                    <Button onClick={handleSubmit} className="w-full h-14 bg-slate-900 dark:bg-indigo-600 hover:bg-black dark:hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg mt-4 transition-all">
+                                        {editingZone ? "Actualizar Zona" : "Validar & Crear Zona"}
+                                    </Button>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="btn-medical" onClick={openCreateDialog}>
-                            <Plus className="mr-2 h-4 w-4" /> Nueva Zona
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md">
-                        <DialogHeader>
-                            <DialogTitle>{editingZone ? "Editar Zona" : "Nueva Zona"}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label>Nombre de la Zona *</Label>
-                                <Input
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    placeholder="Ej: Zona Norte"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Descripción</Label>
-                                <Textarea
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="Descripción opcional de la zona..."
-                                />
-                            </div>
+            </header>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Región</Label>
-                                    <Select
-                                        value={formData.region}
-                                        onValueChange={(v) => setFormData({ ...formData, region: v, state: "" })}
-                                    >
-                                        <SelectTrigger><SelectValue placeholder="Región" /></SelectTrigger>
-                                        <SelectContent>
-                                            {getAllRegions().map(r => (
-                                                <SelectItem key={r} value={r}>{r}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Estado</Label>
-                                    <Select
-                                        value={formData.state}
-                                        onValueChange={(v) => setFormData({ ...formData, state: v })}
-                                        disabled={!formData.region}
-                                    >
-                                        <SelectTrigger><SelectValue placeholder="Estado" /></SelectTrigger>
-                                        <SelectContent>
-                                            {formData.region && getStatesInRegion(formData.region).map(s => (
-                                                <SelectItem key={s} value={s}>{s}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-2">
+                {[
+                    { label: 'Total Zonas', val: zones.length, sub: 'Demarcaciones activas', icon: MapPin, color: 'indigo' },
+                    { label: 'Usuarios Asignados', val: zones.reduce((acc, z) => acc + (z.user_count || 0), 0), sub: 'Personal en campo', icon: UsersIcon, color: 'blue' },
+                    { label: 'Zonas Desiertas', val: zones.filter(z => !z.user_count || z.user_count === 0).length, sub: 'Sin personal activo', icon: Globe, color: 'orange' }
+                ].map((kpi, i) => (
+                    <Card key={i} className="bg-white dark:bg-slate-900 border-none rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none p-8 group hover:translate-y-[-5px] transition-all duration-300">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className={`w-14 h-14 rounded-2xl bg-${kpi.color}-50 dark:bg-${kpi.color}-900/20 flex items-center justify-center group-hover:bg-${kpi.color}-600 transition-colors duration-500`}>
+                                <kpi.icon className={`h-7 w-7 text-${kpi.color}-600 dark:text-${kpi.color}-400 group-hover:text-white transition-colors`} />
                             </div>
-                            <Button onClick={handleSubmit} className="w-full btn-medical">
-                                {editingZone ? "Guardar Cambios" : "Crear Zona"}
-                            </Button>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{kpi.label}</span>
                         </div>
-                    </DialogContent>
-                </Dialog>
+                        <div className="flex flex-col">
+                            <span className="text-4xl font-black tracking-tighter text-slate-900 dark:text-white mb-1">{kpi.val}</span>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{kpi.sub}</span>
+                        </div>
+                    </Card>
+                ))}
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Total Zonas</p>
-                                <p className="text-3xl font-bold text-primary">{zones.length}</p>
-                            </div>
-                            <MapPin className="h-8 w-8 text-primary opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div>
-                            <p className="text-sm text-muted-foreground">Usuarios Asignados</p>
-                            <p className="text-3xl font-bold text-blue-600">
-                                {zones.reduce((acc, z) => acc + (z.user_count || 0), 0)}
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="pt-6">
-                        <div>
-                            <p className="text-sm text-muted-foreground">Zonas Sin Usuarios</p>
-                            <p className="text-3xl font-bold text-orange-600">
-                                {zones.filter(z => !z.user_count || z.user_count === 0).length}
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Search */}
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                    placeholder="Buscar zonas..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                />
+            {/* Search & Actions */}
+            <div className="px-1 flex flex-col md:flex-row items-center gap-4">
+                <div className="relative flex-1">
+                    <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <Input
+                        placeholder="Buscar por nombre o descripción de zona..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="h-16 pl-14 rounded-[1.5rem] border-none bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/50 dark:shadow-none font-bold text-slate-600 focus:ring-2 focus:ring-indigo-500 transition-all"
+                    />
+                </div>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={loadZones}
+                    className="w-16 h-16 rounded-[1.5rem] bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/50 dark:shadow-none hover:bg-slate-50 transition-all active:scale-95"
+                >
+                    <RefreshCw className={`w-6 h-6 ${loading ? 'animate-spin text-indigo-500' : 'text-slate-400'}`} />
+                </Button>
             </div>
 
             {/* Zones Table */}
-            <Card className="medical-card">
-                <CardHeader>
-                    <CardTitle>Zonas del Sistema</CardTitle>
+            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden mx-1">
+                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6 pt-10 px-10">
+                    <div>
+                        <CardTitle className="text-2xl font-black text-slate-800 dark:text-white tracking-tight uppercase">Base Maestra de Zonas</CardTitle>
+                        <p className="text-slate-400 dark:text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">Control logístico y organizativo del sistema</p>
+                    </div>
                 </CardHeader>
-                <CardContent>
-                    {loading ? (
-                        <div className="text-center py-12 text-muted-foreground">Cargando zonas...</div>
+                <CardContent className="p-0">
+                    {loading && zones.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-32 gap-4">
+                            <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sincronizando infraestructura...</p>
+                        </div>
                     ) : filteredZones.length === 0 ? (
-                        <div className="text-center py-12">
-                            <MapPin className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                            <h3 className="text-lg font-medium mb-2">No hay zonas</h3>
-                            <p className="text-muted-foreground mb-4">Crea tu primera zona para organizar los datos</p>
+                        <div className="text-center py-32">
+                            <div className="bg-slate-50 dark:bg-slate-800 w-24 h-24 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6">
+                                <MapPin className="w-12 h-12 text-slate-300" />
+                            </div>
+                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Zona Desconocida</h3>
+                            <p className="text-slate-400 text-sm mt-2 max-w-xs mx-auto font-medium">No se encontraron demarcaciones que coincidan con la búsqueda actual.</p>
                         </div>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Nombre</TableHead>
-                                    <TableHead>Descripción</TableHead>
-                                    <TableHead>Usuarios</TableHead>
-                                    <TableHead>Fecha de Creación</TableHead>
-                                    <TableHead className="text-right">Acciones</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredZones.map((zone) => (
-                                    <TableRow key={zone.id}>
-                                        <TableCell className="font-medium">
-                                            <div className="flex items-center gap-2">
-                                                <MapPin className="h-4 w-4 text-primary" />
-                                                {zone.name}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-muted-foreground">
-                                            {zone.description || "-"}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="secondary">
-                                                <UsersIcon className="h-3 w-3 mr-1" />
-                                                {zone.user_count || 0}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            {new Date(zone.created_at).toLocaleDateString('es-ES')}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex justify-end gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => openEditDialog(zone)}
-                                                >
-                                                    <Edit className="h-4 w-4 mr-1" />
-                                                    Editar
-                                                </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="destructive"
-                                                            disabled={(zone.user_count || 0) > 0}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>¿Eliminar zona?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                Esta acción no se puede deshacer. La zona "{zone.name}" será eliminada permanentemente.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleDelete(zone.id)}>
-                                                                Eliminar
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </div>
-                                        </TableCell>
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+                                    <TableRow className="hover:bg-transparent border-none">
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7 pl-10">Nombre de Zona</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Cobertura / Descripción</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Usuarios</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Creación</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7 text-right pr-10">Acciones</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredZones.map((zone) => (
+                                        <TableRow key={zone.id} className="border-b border-slate-50 dark:border-slate-800 hover:bg-emerald-50/20 dark:hover:bg-slate-800/50 transition-all group">
+                                            <TableCell className="pl-10 py-8">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-50 dark:border-slate-700 flex items-center justify-center shadow-sm group-hover:bg-emerald-600 transition-all duration-300">
+                                                        <MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400 group-hover:text-white" />
+                                                    </div>
+                                                    <span className="font-black text-slate-900 dark:text-slate-200 text-lg tracking-tight group-hover:translate-x-1 transition-transform">{zone.name}</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-8">
+                                                <p className="text-sm font-medium text-slate-500 max-w-md line-clamp-2">{zone.description || "Sin descripción técnica vinculada"}</p>
+                                            </TableCell>
+                                            <TableCell className="py-8">
+                                                <Badge className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-none font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                    <UsersIcon className="h-3 w-3 mr-2" />
+                                                    {zone.user_count || 0} Pers.
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="py-8 text-slate-400 font-bold tabular-nums text-sm">
+                                                {new Date(zone.created_at).toLocaleDateString('es-ES')}
+                                            </TableCell>
+                                            <TableCell className="text-right pr-10 py-8">
+                                                <div className="flex justify-end gap-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => openEditDialog(zone)}
+                                                        className="h-12 w-12 rounded-xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all"
+                                                    >
+                                                        <Edit className="h-5 w-5" />
+                                                    </Button>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                disabled={(zone.user_count || 0) > 0}
+                                                                className="h-12 w-12 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                                                            >
+                                                                <Trash2 className="h-5 w-5" />
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent className="rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden">
+                                                            <div className="bg-rose-600 p-8 text-white">
+                                                                <AlertDialogTitle className="text-2xl font-black uppercase">¿Eliminar Infraestructura?</AlertDialogTitle>
+                                                                <p className="text-rose-100 text-[10px] font-black uppercase tracking-widest mt-1">Esta acción es irreversible en el núcleo del sistema</p>
+                                                            </div>
+                                                            <div className="p-8 space-y-4">
+                                                                <AlertDialogDescription className="text-slate-600 font-medium text-lg leading-relaxed">
+                                                                    La zona <span className="font-black text-slate-900 underline text-rose-600">"{zone.name}"</span> será purgada permanentemente de la base de cobertura geográfica.
+                                                                </AlertDialogDescription>
+                                                            </div>
+                                                            <div className="p-8 pt-0 flex gap-4">
+                                                                <AlertDialogCancel className="flex-1 h-14 rounded-2xl border-slate-100 font-bold text-slate-400">Cancelar Operación</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => handleDelete(zone.id)} className="flex-1 h-14 rounded-2xl bg-rose-600 hover:bg-rose-700 font-black uppercase tracking-widest text-[10px]">Confirmar Purga</AlertDialogAction>
+                                                            </div>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     )}
                 </CardContent>
             </Card>

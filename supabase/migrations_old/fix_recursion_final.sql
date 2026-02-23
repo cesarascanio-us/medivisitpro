@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- FIX INFINITE RECURSION IN RLS (Root Cause of 400 Bad Request)
 -- AND FIX COLUMN DOES NOT EXIST ERROR (rep_inventory.organization_id)
 -- 1. FIX USER_ROLES (The source of recursion)

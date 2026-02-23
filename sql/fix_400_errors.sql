@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- FIX 400 BAD REQUEST ERRORS (Missing View & Functions)
 -- 1. Restore Helper Functions (Required for RLS)
 CREATE OR REPLACE FUNCTION public.get_my_role() RETURNS TEXT AS $$

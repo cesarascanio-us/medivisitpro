@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Header } from './Header';
@@ -86,22 +95,22 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-[#020617] text-slate-200 flex flex-col relative overflow-hidden">
-      {/* Premium War Room Background Orbs */}
-      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-purple-500/5 rounded-full blur-[180px] pointer-events-none"></div>
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col relative overflow-hidden">
+      {/* Premium Corporate Background Orbs - Light Theme */}
+      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-blue-400/10 rounded-full blur-[160px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-cyan-400/10 rounded-full blur-[160px] pointer-events-none animate-pulse delay-1000"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-300/5 rounded-full blur-[180px] pointer-events-none"></div>
 
       {/* Compact Demo Mode Banner - Only shown on explicit demo routes */}
       {location.pathname.startsWith('/demo/') && (
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-3 py-1.5 shadow-md flex items-center justify-between z-50">
+        <div className="bg-gradient-to-r from-primary-dark to-primary text-white px-3 py-1.5 shadow-md flex items-center justify-between z-50">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/20 rounded-full text-xs">
               <Rocket className="h-3 w-3" />
-              <span className="font-bold">DEMO</span>
+              <span className="font-bold">MODO DEMO</span>
             </div>
-            <span className="text-xs hidden sm:inline">
-              Explorando con datos de ejemplo • Sin límites
+            <span className="text-xs hidden sm:inline font-medium">
+              Explorando con datos de ejemplo • Sin límites arquitectónicos
             </span>
           </div>
 
@@ -109,19 +118,19 @@ export const Layout = ({ children }: LayoutProps) => {
             <Button
               onClick={handleCreateAccount}
               size="sm"
-              className="bg-white text-emerald-700 hover:bg-slate-100 text-xs h-6 px-2 hidden sm:inline-flex"
+              className="bg-white text-primary hover:bg-slate-100 text-[10px] font-bold h-6 px-3 hidden sm:inline-flex rounded-full"
             >
               <UserPlus className="h-3 w-3 mr-1" />
-              Crear Cuenta
+              REGISTRARSE
             </Button>
             <Button
               onClick={handleExitDemo}
               size="sm"
               variant="ghost"
-              className="text-white hover:bg-white/20 text-xs h-6 px-2"
+              className="text-white hover:bg-white/20 text-[10px] font-bold h-6 px-3 rounded-full"
             >
               <LogOut className="h-3 w-3 mr-1" />
-              Salir
+              SALIR
             </Button>
           </div>
         </div>
@@ -138,14 +147,14 @@ export const Layout = ({ children }: LayoutProps) => {
         {/* Content area - z-0 to ensure it's below sidebar */}
         <div className="flex-1 flex flex-col overflow-hidden relative z-0">
           {/* Mobile/Tablet Header with hamburger menu */}
-          <div className="lg:hidden p-3 border-b border-sidebar-border flex items-center justify-between bg-brand-primary/95 backdrop-blur-md sticky top-0 z-40">
+          <div className="lg:hidden p-3 border-b border-sidebar-border flex items-center justify-between bg-white backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <MobileNav />
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">M</span>
+                <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-light rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                  <span className="text-xs font-black text-white">M</span>
                 </div>
-                <span className="font-bold text-base text-white">MediVisitPro</span>
+                <span className="font-black text-base text-primary tracking-tight">MediVisitPro</span>
               </div>
             </div>
           </div>

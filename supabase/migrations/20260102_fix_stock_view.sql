@@ -1,3 +1,12 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
 -- Fix view_farmacia_stock_actual to provide real data for ROI Module
 -- 1. Must use DISTINCT ON to get latest audit per product/pharmacy
 -- 2. Must provide columns 'farmacia_id' and 'cantidad' as expected by check_event_eligibility RPC

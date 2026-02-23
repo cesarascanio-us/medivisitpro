@@ -1,3 +1,12 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+======================================================================== */
+
 import { useState, useEffect, useRef } from "react";
 import { InstructionCard } from "@/components/ui/InstructionCard";
 import { Plus, Building, Phone, MapPin, Search, Download, Upload, Printer, HelpCircle, FileSpreadsheet, Trash2, RefreshCw, Edit, Users, Stethoscope, Lightbulb } from "lucide-react";
@@ -407,11 +416,11 @@ export default function HealthCenters() {
 
   const getPotentialBadge = (potential: string | null) => {
     const variants: Record<string, string> = {
-      'Alto': 'bg-green-100 text-green-800',
-      'Medio': 'bg-yellow-100 text-yellow-800',
-      'Bajo': 'bg-red-100 text-red-800'
+      'Alto': 'bg-indigo-100 text-indigo-800',
+      'Medio': 'bg-amber-100 text-amber-800',
+      'Bajo': 'bg-rose-100 text-rose-800'
     };
-    return variants[potential || 'Medio'] || 'bg-gray-100 text-gray-800';
+    return variants[potential || 'Medio'] || 'bg-slate-100 text-slate-800';
   };
 
   const filteredCenters = healthCenters.filter(center =>
@@ -434,19 +443,154 @@ export default function HealthCenters() {
       />
 
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Building className="h-6 w-6 text-primary" />
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -mr-32 -mt-32 transition-colors group-hover:bg-indigo-100/50" />
+        <div className="relative z-10">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-xl shadow-indigo-200">
+              <Building className="h-7 w-7 text-white" />
+            </div>
             Centros de Salud
           </h1>
-          <p className="text-muted-foreground">Gestiona hospitales, clínicas, consultorios y ambulatorios</p>
+          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-3 ml-18">Gestión de Infraestructura Médica & Hospitalaria</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} title="Ver Ayuda">
-            <span className="sr-only">Ayuda</span>
-            <Lightbulb className="h-5 w-5 text-yellow-500" />
+        <div className="flex items-center gap-3 relative z-10">
+          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-11 h-11 rounded-xl hover:bg-slate-50">
+            <Lightbulb className="h-5 w-5 text-amber-500" />
           </Button>
+          <Button variant="outline" onClick={() => handleSync()} disabled={syncing} className="h-11 px-6 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2">
+            <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
+            Sincronizar
+          </Button>
+          <Dialog open={dialogOpen} onOpenChange={open => {
+            if (!open) setFormData({ id: "", name: "", facility_type: "", address: "", city: "", state: "", zone_id: "", phone: "", potential: "Medio", last_visit: "" });
+            setDialogOpen(open);
+          }}>
+            <DialogTrigger asChild>
+              <Button className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02] flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Nueva Sede
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl p-0 overflow-hidden border-none shadow-2xl rounded-[2rem]">
+              <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-8 py-10 text-white relative">
+                <div className="absolute top-0 right-0 p-8 opacity-10">
+                  <Building className="w-32 h-32" />
+                </div>
+                <div className="flex items-center gap-5 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
+                    <Building className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl font-black tracking-tight text-white mb-0 uppercase">
+                      {formData.id ? 'Gestión de Sede' : 'Alta Institucional'}
+                    </DialogTitle>
+                    <p className="text-indigo-200/70 text-[10px] font-black uppercase tracking-[0.2em] mt-1.5">
+                      Registro de Infraestructura Médica 🏥
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-8 py-8 space-y-8 bg-slate-50/30">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nombre Comercial *</Label>
+                    <Input
+                      placeholder="Ej. Hospital Central"
+                      value={formData.name}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Tipo de Institución *</Label>
+                    <Select value={formData.facility_type} onValueChange={val => setFormData({ ...formData, facility_type: val })}>
+                      <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold"><SelectValue placeholder="Seleccionar tipo" /></SelectTrigger>
+                      <SelectContent>{facilityTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Dirección Completa</Label>
+                  <Input
+                    placeholder="Calle, Edificio, Punto de referencia..."
+                    value={formData.address}
+                    onChange={e => setFormData({ ...formData, address: e.target.value })}
+                    className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Ciudad</Label>
+                    <Input
+                      placeholder="Ciudad"
+                      value={formData.city}
+                      onChange={e => setFormData({ ...formData, city: e.target.value })}
+                      className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estado</Label>
+                    <Input
+                      placeholder="Estado"
+                      value={formData.state}
+                      onChange={e => setFormData({ ...formData, state: e.target.value })}
+                      className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">ID Zona</Label>
+                    <Input
+                      placeholder="Zona ID"
+                      value={formData.zone_id}
+                      onChange={e => setFormData({ ...formData, zone_id: e.target.value })}
+                      className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Teléfono</Label>
+                    <Input
+                      placeholder="Teléfono"
+                      value={formData.phone}
+                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                      className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Frecuencia</Label>
+                    <Select value={formData.potential} onValueChange={val => setFormData({ ...formData, potential: val })}>
+                      <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold"><SelectValue /></SelectTrigger>
+                      <SelectContent>{potentialLevels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Última Visita</Label>
+                    <Input
+                      type="date"
+                      value={formData.last_visit}
+                      onChange={e => setFormData({ ...formData, last_visit: e.target.value })}
+                      className="h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                <Button variant="ghost" onClick={() => setDialogOpen(false)} className="h-12 px-6 font-bold text-slate-400 hover:text-slate-600 rounded-xl">
+                  Descartar
+                </Button>
+                <Button onClick={handleSubmit} className="h-12 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] flex-1">
+                  {formData.id ? 'Actualizar Master Record' : 'Finalizar Alta Institucional'}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -466,17 +610,17 @@ export default function HealthCenters() {
       <AdminDataFilter onFilterChange={setAdminFilters} moduleType="contacts" />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="medical-card">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground line-clamp-1">Total Centros</p>
-                <p className="text-2xl font-bold text-foreground">{healthCenters.length}</p>
-              </div>
-              <Building className="h-8 w-8 text-primary opacity-20" />
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Sedes</p>
+              <p className="text-3xl font-black text-slate-900 tracking-tighter">{healthCenters.length}</p>
             </div>
-          </CardContent>
+            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center">
+              <Building className="h-6 w-6 text-indigo-600" />
+            </div>
+          </div>
         </Card>
 
         {['Hospital', 'Clínica', 'Consultorio', 'Ambulatorio'].map(type => {
@@ -491,16 +635,16 @@ export default function HealthCenters() {
           }).length;
 
           return (
-            <Card key={type} className="medical-card">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">{type}s</p>
-                    <p className="text-2xl font-bold text-foreground">{count}</p>
-                  </div>
-                  <Building className="h-8 w-8 text-success opacity-20" />
+            <Card key={type} className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{type}s</p>
+                  <p className="text-3xl font-black text-slate-900 tracking-tighter">{count}</p>
                 </div>
-              </CardContent>
+                <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-indigo-400" />
+                </div>
+              </div>
             </Card>
           );
         })}
@@ -576,86 +720,11 @@ export default function HealthCenters() {
             <span className="hidden md:inline">Exportar</span>
           </Button>
 
-          <Button variant="outline" onClick={() => handlePrint()} title="Imprimir Listado">
-            <Printer className="h-4 w-4 md:mr-2" />
+          <Button variant="outline" onClick={() => handlePrint()} className="h-11 px-4 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2">
+            <Printer className="h-4 w-4" />
             <span className="hidden md:inline">Imprimir</span>
           </Button>
 
-          <Button variant="outline" onClick={() => handleSync()} disabled={syncing} title="Sincronizar con Médicos">
-            <RefreshCw className={`h-4 w-4 md:mr-2 ${syncing ? 'animate-spin' : ''}`} />
-            <span className="hidden md:inline">Sincronizar</span>
-          </Button>
-
-          <Dialog open={dialogOpen} onOpenChange={open => {
-            if (!open) setFormData({ id: "", name: "", facility_type: "", address: "", city: "", state: "", zone_id: "", phone: "", potential: "Medio", last_visit: "" });
-            setDialogOpen(open);
-          }}>
-            <DialogTrigger asChild>
-              <Button className="btn-medical">
-                <Plus className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">Nuevo Centro</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>{formData.id ? 'Editar Centro de Salud' : 'Agregar Centro de Salud'}</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Nombre del Centro *</Label>
-                    <Input placeholder="Ej. Hospital Central" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Tipo de Centro *</Label>
-                    <Select value={formData.facility_type} onValueChange={val => setFormData({ ...formData, facility_type: val })}>
-                      <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                      <SelectContent>{facilityTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Dirección</Label>
-                  <Input placeholder="Dirección completa" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>Ciudad</Label>
-                    <Input placeholder="Ciudad" value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Estado</Label>
-                    <Input placeholder="Estado" value={formData.state} onChange={e => setFormData({ ...formData, state: e.target.value })} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Zona</Label>
-                    <Input placeholder="Zona ID" value={formData.zone_id} onChange={e => setFormData({ ...formData, zone_id: e.target.value })} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>Teléfono</Label>
-                    <Input placeholder="Teléfono" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Potencial</Label>
-                    <Select value={formData.potential} onValueChange={val => setFormData({ ...formData, potential: val })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{potentialLevels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Última Visita</Label>
-                    <Input type="date" value={formData.last_visit} onChange={e => setFormData({ ...formData, last_visit: e.target.value })} />
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-                <Button onClick={handleSubmit} className="btn-medical">Guardar Centro</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
 
@@ -663,38 +732,45 @@ export default function HealthCenters() {
       <Card className="medical-card overflow-hidden">
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-muted/50">
-              <TableRow>
-                <TableHead className="font-bold">Nombre</TableHead>
-                <TableHead className="font-bold">Tipo</TableHead>
-                <TableHead className="font-bold">Ciudad</TableHead>
-                <TableHead className="font-bold">Potencial</TableHead>
-                <TableHead className="font-bold">Última Visita</TableHead>
-                <TableHead className="font-bold text-right">Acciones</TableHead>
+            <TableHeader className="bg-slate-50 border-b border-slate-100">
+              <TableRow className="hover:bg-transparent border-none">
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-5 pl-8">Nombre de Sede</TableHead>
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-5">Nivel Institucional</TableHead>
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-5">Ciudad</TableHead>
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-5">Clasificación</TableHead>
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-5">Last Data Sync</TableHead>
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-5 pr-8 text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={6} className="text-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div></TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div></TableCell></TableRow>
               ) : filteredCenters.length === 0 ? (
-                <TableRow><TableCell colSpan={6} className="text-center py-12 text-muted-foreground font-medium">No se encontraron centros de salud.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">No hay registros vinculados</TableCell></TableRow>
               ) : (
                 filteredCenters.map((center) => (
-                  <TableRow key={center.id} className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleOpenDirectory(center)}>
-                    <TableCell className="font-medium text-foreground">{center.name}</TableCell>
-                    <TableCell><Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10">{center.facility_type}</Badge></TableCell>
-                    <TableCell className="text-muted-foreground">{center.city || '-'}</TableCell>
-                    <TableCell><Badge className={`${getPotentialBadge(center.potential)} border-none`}>{center.potential || 'Medio'}</Badge></TableCell>
-                    <TableCell className="text-muted-foreground">{center.last_visit || '-'}</TableCell>
-                    <TableCell className="text-right" onClick={e => e.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(center)} className="hover:bg-primary/10 hover:text-primary"><Edit className="h-4 w-4" /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDirectory(center)} title="Ver Directorio Médico" className="hover:bg-purple-100 hover:text-purple-600"><Users className="h-4 w-4" /></Button>
+                  <TableRow key={center.id} className="group cursor-pointer hover:bg-slate-50/50 transition-colors border-b border-slate-50 last:border-none" onClick={() => handleOpenDirectory(center)}>
+                    <TableCell className="py-5 pl-8">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+                          <Building className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-bold text-slate-900">{center.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-5"><Badge variant="secondary" className="bg-slate-100 text-slate-600 font-bold uppercase text-[9px] tracking-widest border-none px-2.5 py-1">{center.facility_type}</Badge></TableCell>
+                    <TableCell className="py-5 text-slate-500 font-medium">{center.city || '-'}</TableCell>
+                    <TableCell className="py-5"><Badge className={`${getPotentialBadge(center.potential)} border-none font-black uppercase text-[9px] tracking-widest px-2.5 py-1`}>{center.potential || 'Medio'}</Badge></TableCell>
+                    <TableCell className="py-5 text-slate-400 font-mono text-[11px]">{center.last_visit || '-'}</TableCell>
+                    <TableCell className="py-5 pr-8 text-right" onClick={e => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(center)} className="h-8 w-8 p-0 rounded-lg hover:bg-indigo-50 hover:text-indigo-600"><Edit className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleOpenDirectory(center)} className="h-8 w-8 p-0 rounded-lg hover:bg-purple-50 hover:text-purple-600"><Users className="h-4 w-4" /></Button>
                         <AlertDialog>
-                          <AlertDialogTrigger asChild><Button variant="ghost" size="sm" className="hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></Button></AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader><AlertDialogTitle>¿Eliminar centro?</AlertDialogTitle><AlertDialogDescription>Se eliminará permanentemente {center.name}. Esta acción no se puede deshacer.</AlertDialogDescription></AlertDialogHeader>
-                            <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => handleDelete(center.id)} className="bg-destructive hover:bg-destructive/90 transition-colors">Eliminar</AlertDialogAction></AlertDialogFooter>
+                          <AlertDialogTrigger asChild><Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-rose-50 hover:text-rose-600"><Trash2 className="h-4 w-4" /></Button></AlertDialogTrigger>
+                          <AlertDialogContent className="rounded-[2rem] border-none shadow-2xl">
+                            <AlertDialogHeader><AlertDialogTitle className="text-xl font-black tracking-tight uppercase">¿Eliminar registro maestro?</AlertDialogTitle><AlertDialogDescription className="text-slate-500 font-medium">Se eliminará permanentemente la sede {center.name}. Esta acción no se puede deshacer.</AlertDialogDescription></AlertDialogHeader>
+                            <AlertDialogFooter className="gap-3"><AlertDialogCancel className="rounded-xl font-bold">Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => handleDelete(center.id)} className="bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black uppercase tracking-widest text-[10px]">Confirmar Eliminación</AlertDialogAction></AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
                       </div>
