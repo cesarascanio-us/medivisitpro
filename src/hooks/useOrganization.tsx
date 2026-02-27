@@ -134,6 +134,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 // 2. Prioritize saved org, then assigned org, then first available
                 currentOrg = orgs.find(o => o.id === savedOrgId) ||
                     orgs.find(o => o.id === assignedOrgId) ||
+                    orgs.find(o => o.is_system_owner) ||
                     orgs[0] || null;
             } else {
                 let organizationId = profile?.organization_id || userRole?.organization_id;

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { PricingSection } from '@/components/landing/PricingSection';
 import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
 import { ContactSection } from '@/components/landing/ContactSection';
+import { Badge } from '@/components/ui/badge';
 import {
   Stethoscope,
   Calendar,
@@ -70,7 +71,7 @@ export default function LandingPage() {
 
   const activeFeatures = content.features?.items || [
     { title: "Gestión de Visitas 2.0", description: "Planifica rutas inteligentes, reporta en tiempo real y optimiza cada segundo de tu jornada médica.", icon: "Calendar" },
-    { title: "Bóveda de Muestras", description: "Trazabilidad quirúrgica de muestras médicas (Art. 131 LOTTT). Evita mermas y asegura entregas.", icon: "Package" },
+    { title: "Bóveda de Muestras", description: "Trazabilidad quirúrgica de muestras médicas bajo norma ISO 9000. Evita mermas y asegura entregas de calidad.", icon: "Package" },
     { title: "Dashboard Nivel Dios", description: "Analíticas avanzadas con visión Sentinel. Descubre oportunidades donde otros ven datos.", icon: "BarChart3" }
   ];
 
@@ -78,8 +79,8 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white font-sans text-text-main selection:bg-primary selection:text-white">
       <SEO
         title="MediVisit Pro - El Sistema Definitivo para Visitadores Médicos"
-        description="Transforma tu gestión de visita médica con IA, control de muestras bajo LOTTT y analíticas de alto impacto. La plataforma #1 en LATAM."
-        keywords="visitador médico, gestión visita médica, crm farma, control muestras, software farmacéutica, lottt venezuela"
+        description="Transforma tu gestión de visita médica con IA, calidad bajo estándares ISO 9000 y analíticas de alto impacto. La plataforma #1 en LATAM."
+        keywords="visitador médico, gestión visita médica, crm farma, calidad iso 9000, software farmacéutica, iso venezuela"
         canonical="https://medivisitpro.com/"
       />
 
@@ -187,7 +188,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-xl text-slate-500 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                La orquestación definitiva para visitadores de alto desempeño. Cumplimiento <span className="text-primary font-bold italic">LOTTT</span> integrado, analíticas en tiempo real y gestión Offline-First.
+                La orquestación definitiva para visitadores de alto desempeño. Calidad <span className="text-primary font-bold italic">ISO 9000</span> integrada, analíticas en tiempo real y gestión Offline-First.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 pt-6">
@@ -237,9 +238,9 @@ export default function LandingPage() {
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                       <CheckCircle2 className="w-4 h-4" />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">Cumplimiento</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">Calidad</span>
                   </div>
-                  <p className="text-sm font-bold text-slate-800">LOTTT Audit Certified</p>
+                  <p className="text-sm font-bold text-slate-800">ISO 9000 Certified</p>
                 </div>
               </div>
 
@@ -313,6 +314,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 py-1 px-4">ISO 9000 QUALITY</Badge>
             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 py-1 px-4">ISO 27001 READY</Badge>
             <Badge className="bg-primary/20 text-primary border-primary/30 py-1 px-4">GDPR COMPLIANT</Badge>
           </div>

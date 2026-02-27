@@ -5,7 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
@@ -19,6 +19,7 @@ const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 // Role definitions
 export type UserRole =
     | 'master'
+    | 'organization_admin'
     | 'admin'
     | 'manager'
     | 'chief'
@@ -59,6 +60,7 @@ interface AuthContextType {
     isDemo: boolean;
     // Role checks
     isMaster: boolean;
+    isOrgAdmin: boolean;
     isAdmin: boolean;
     isManager: boolean;
     isChief: boolean;
@@ -236,9 +238,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             let finalRole = (roleData?.role as UserRole) || (isOwner ? 'master' : 'representative');
             let finalOrgId = roleData?.organization_id || profileData?.organization_id || null;
 
+            // [STRICT] Tenant 0 Isolation for Global Master
+            const isTenantZero = finalOrgId === '00000000-0000-0000-0000-000000000000';
+
             // If it's the owner but role record is missing, force master
             if (isOwner && finalRole !== 'master') {
                 finalRole = 'master';
+            }
+
+            // [ARCHITECTURAL REFINEMENT] Auto-migrate local 'master' strings to 'organization_admin'
+            // for UI/Logic consistency, even if the DB record hasn't been migrated yet.
+            if (finalRole === 'master' && !isOwner && !isTenantZero) {
+                console.warn('AuthProvider: Local Master detected, mapping to organization_admin');
+                finalRole = 'organization_admin';
             }
 
             const combinedProfile: UserProfile = {
@@ -331,11 +343,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     // --- Derived Permissions ---
-    // [STRICT] Resilience for System Owner
+    // [STRICT] Resilience for System Owner / Tenant 0
     const isOwner = user?.email?.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
-    const isMaster = isOwner || role === 'master' || profile?.is_master === true || originalRole === 'master';
-    const isAdmin = role === 'admin';
-    const isManager = role === 'manager' || role === 'store_manager';
+    const isTenantZero = profile?.organization_id === '00000000-0000-0000-0000-000000000000';
+
+    // isMaster is now STRICTLY for Global Administration (Tenant 0)
+    const isMaster = isOwner || (isTenantZero && (role === 'master' || originalRole === 'master'));
+
+    const isOrgAdmin = role === 'organization_admin' || (role === 'master' && !isMaster); // Fallback for transition
+    const isAdmin = role === 'admin' || isOrgAdmin;
+    const isManager = role === 'manager' || role === 'store_manager' || isAdmin;
     const isChief = isManager || role === 'chief';
     const isCoordinator = isChief || role === 'coordinator';
     const isSupervisor = isCoordinator || role === 'supervisor';
@@ -372,6 +389,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Masters and SaaS Staff are NEVER in demo mode for navigation purposes
         isDemo: !isSaaSStaff && profile?.organization_id === 'd3300000-0000-0000-0000-000000000001',
         isMaster,
+        isOrgAdmin,
         isAdmin,
         isManager,
         isChief,
@@ -387,9 +405,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSaaSSupport,
         isSaaSDev,
         isSaaSStaff,
-        canManageUsers: isMaster || isSaaSAdmin || role === 'admin' || isManager,
+        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
         canViewAllData: isSaaSStaff || role === 'admin' || role === 'manager',
-        canManageCompany: isMaster || isSaaSAdmin || role === 'admin' || isManager,
+        canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
         canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
         canAssignObjectives: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
         canManageZones: isMaster || isSaaSAdmin || role === 'admin' || isManager,

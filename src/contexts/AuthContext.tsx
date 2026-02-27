@@ -19,6 +19,7 @@ interface AuthContextType {
     loading: boolean;
     signUp: (email: string, password: string, nombre: string) => Promise<{ error: any }>;
     signIn: (email: string, password: string) => Promise<{ error: any }>;
+    signInWithGoogle: () => Promise<{ error: any }>;
     signOut: () => Promise<void>;
 }
 
@@ -41,14 +42,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const fetchUserRole = async (userId: string) => {
         try {
-            // Priority check for hardcoded super admins
             const email = user?.email || '';
             const isSuperAdminInfo = email === 'cesarascaniofp.us@gmail.com' ||
                 email === 'admin@admin.com' ||
                 email === 'cesarascaniofp.us';
 
             if (isSuperAdminInfo) {
-                console.log("Force assigning super_admin role for:", email);
                 setUserRole('super_admin');
                 return;
             }
@@ -60,7 +59,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 .maybeSingle();
 
             if (error) {
-                console.log("Error checking roles:", error);
                 setUserRole(null);
                 return;
             }
@@ -72,13 +70,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
 
         } catch (error) {
-            console.error('Error fetching user role:', error);
             setUserRole(null);
         }
     };
 
     useEffect(() => {
-        // Set up auth state listener
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             (event, session) => {
                 setSession(session);
@@ -94,7 +90,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         );
 
-        // Check for existing session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setUser(session?.user ?? null);
@@ -135,6 +130,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return { error };
     };
 
+    const signInWithGoogle = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/dashboard`,
+            },
+        });
+        return { error };
+    };
+
     const signOut = async () => {
         await supabase.auth.signOut();
         setUserRole(null);
@@ -148,6 +153,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loading,
         signUp,
         signIn,
+        signInWithGoogle,
         signOut,
     };
 

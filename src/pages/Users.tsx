@@ -61,7 +61,8 @@ interface UserWithRole {
 }
 
 const ROLE_LABELS: Record<UserRole, string> = {
-    master: 'Master',
+    master: 'Master Elite CA',
+    organization_admin: 'Admin de Organización',
     admin: 'Administrador',
     manager: 'Gerente',
     coordinator: 'Coordinador',
@@ -72,12 +73,16 @@ const ROLE_LABELS: Record<UserRole, string> = {
     doctor: 'Médico',
     pharmacist: 'Farmacéutico',
     service_chief: 'Jefe de Servicios',
-    telemarketing: 'Telemarketing'
+    telemarketing: 'Telemarketing',
+    admin_saas: 'SaaS Admin',
+    soporte_saas: 'SaaS Soporte',
+    desarrollo_saas: 'SaaS Dev'
 };
 
 
 const ROLE_COLORS: Record<UserRole, string> = {
-    master: 'bg-purple-100 text-purple-800',
+    master: 'bg-purple-900/20 text-purple-900 border-purple-200',
+    organization_admin: 'bg-indigo-100 text-indigo-800',
     admin: 'bg-red-100 text-red-800',
     manager: 'bg-blue-100 text-blue-800',
     coordinator: 'bg-indigo-100 text-indigo-800',
@@ -88,7 +93,10 @@ const ROLE_COLORS: Record<UserRole, string> = {
     doctor: 'bg-teal-100 text-teal-800',
     pharmacist: 'bg-amber-100 text-amber-800',
     service_chief: 'bg-cyan-100 text-cyan-800',
-    telemarketing: 'bg-pink-100 text-pink-800'
+    telemarketing: 'bg-pink-100 text-pink-800',
+    admin_saas: 'bg-slate-900 text-white',
+    soporte_saas: 'bg-slate-700 text-white',
+    desarrollo_saas: 'bg-slate-800 text-white'
 };
 
 
@@ -444,7 +452,7 @@ export default function Users() {
                             </h1>
                             <div className="flex items-center gap-2 mt-2">
                                 <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
-                                    {isMaster ? 'Modo Master' : (ROLE_LABELS[profile?.role as UserRole] || 'Admin')}
+                                    {isMaster ? 'Modo Master Global' : (ROLE_LABELS[profile?.role as UserRole] || 'Admin')}
                                 </Badge>
                                 <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
