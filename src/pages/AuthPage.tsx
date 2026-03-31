@@ -352,4 +352,12 @@ export default function AuthPage() {
                         </p>
                         <div className="flex justify-center gap-10 text-[10px] font-black text-primary opacity-30 uppercase tracking-[0.5em] italic">
                             <span className="cursor-pointer hover:text-primary transition-colors hover:underline">Compliance</span>
-                            <span className="cursor-p
+                            <span className="cursor-pointer hover:text-primary transition-colors hover:underline">Privacy</span>
+                            <span className="cursor-pointer hover:text-primary transition-colors hover:underline">Master Log</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
