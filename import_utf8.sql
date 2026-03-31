@@ -1,0 +1,23 @@
+-- ========================================================================
+-- MASTER FRAMEWORK - EMPRESA CA
+-- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+-- 
+-- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+-- Queda estrictamente prohibida la copia, modificación, distribución,
+-- ingeniería inversa o uso no autorizado de este código fuente.
+-- ========================================================================
+
+BEGIN;
+UPDATE products SET price_cobeca = 5.9344282848545635, price = 4.3, sku = '1595' WHERE product_code = '7597773000366';
+UPDATE products SET price_cobeca = 5.862713139418256, price = 4.25, sku = '1595' WHERE product_code = '7597773000359';
+UPDATE products SET price_cobeca = 4.267051153460381, price = 3.09, sku = '1595' WHERE product_code = '7597773000298';
+UPDATE products SET price_cobeca = 8.785105315947844, price_dronena = 8.45, price = 8.45, sku = '1595' WHERE product_code = '7597773000915';
+UPDATE products SET price_cobeca = 13.446589769307923, price_dronena = 11.05, price = 11.05, sku = '1595' WHERE product_code = '7597773000489';
+UPDATE products SET price_cobeca = 3.119608826479438, price_dronena = 0, price = 2.24, sku = '1595' WHERE product_code = '7597773000038';
+UPDATE products SET price_cobeca = 3.4961133400200604, price = 2.6, sku = '1595' WHERE product_code = '7597773000137';
+UPDATE products SET price_cobeca = 3.4961133400200604, price = 2.6, sku = '1595' WHERE product_code = '7597773000205';
+UPDATE products SET price_cobeca = 4.141549648946841, sku = '1595' WHERE product_code = '7597773000113';
+UPDATE products SET price_cobeca = 6.113716148445336, price = 4.77, sku = '1595' WHERE product_code = '7597773000168';
+UPDATE products SET price_cobeca = 4.141549648946841, sku = '1595' WHERE product_code = '7597773000120';
+UPDATE products SET price_cobeca = 3.460255767301906, price = 2.6, sku = '1595' WHERE product_code = '7597773000076';
+COMMIT;

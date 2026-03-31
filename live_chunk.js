@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" translate="no">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;" />
+  <title>MediVisit Pro - Gestión Profesional para Visitadores Médicos</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description"
+    content="Plataforma integral para la gestión de visitas médicas, control de inventario y análisis de desempeño. Optimiza tu labor profesional." />
+  <meta name="author" content="MediVisit Pro Team" />
+
+  <meta property="og:title" content="MediVisit Pro" />
+  <meta property="og:description" content="Gestión Profesional para Visitadores Médicos" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-image.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@medivisitpro" />
+  <meta name="twitter:image" content="/og-image.png" />
+  
+  <!-- Typography: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/index-CjfSNnA9.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C1XM85uL.css">
+<link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>
