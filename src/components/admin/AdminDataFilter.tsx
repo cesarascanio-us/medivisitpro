@@ -21,7 +21,7 @@ export interface AdminFilterState {
     region?: string;
     state?: string;
     zoneId?: string;
-    repId?: string;
+    userId?: string;
 }
 
 interface AdminDataFilterProps {
@@ -31,9 +31,9 @@ interface AdminDataFilterProps {
 
 export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: AdminDataFilterProps) {
     const { isMaster, isAdmin, isManager, isSupervisor, isRepresentative, zoneId, profile, userRegion, userState, loading: authLoading } = useAuth();
-    const [filters, setFilters] = useState<AdminFilterState>({ region: 'all', state: 'all', zoneId: 'all', repId: 'all' });
+    const [filters, setFilters] = useState<AdminFilterState>({ region: 'all', state: 'all', zoneId: 'all', userId: 'all' });
     const [zones, setZones] = useState<{ id: string; name: string; state: string | null }[]>([]);
-    const [representatives, setRepresentatives] = useState<{
+    const [members, setMembers] = useState<{
         id: string;
         name: string;
         email: string;
@@ -73,8 +73,8 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                     newFilters.zoneId = zoneId;
                     shouldUpdate = true;
                 }
-                if (profile?.id && filters.repId !== profile.id) {
-                    newFilters.repId = profile.id;
+                if (profile?.id && filters.userId !== profile.id) {
+                    newFilters.userId = profile.id;
                     shouldUpdate = true;
                 }
             }
@@ -112,7 +112,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                 .from('user_roles')
                 .select('user_id, supervisor_id, region, state');
 
-            const reps = (profilesData || [])
+            const members = (profilesData || [])
                 .filter(p => (p.user_id !== profile?.id || isMaster))
                 .map(p => {
                     const roleInfo = rolesData?.find(r => r.user_id === p.user_id);
@@ -126,7 +126,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                     };
                 });
 
-            setRepresentatives(reps);
+            setMembers(members);
         } catch (error) {
             console.error("Error loading master data:", error);
         } finally {
@@ -147,11 +147,11 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
         if (key === 'region') {
             newFilters.state = 'all';
             newFilters.zoneId = 'all';
-            newFilters.repId = 'all';
+            newFilters.userId = 'all';
         }
         if (key === 'state') {
             newFilters.zoneId = 'all';
-            newFilters.repId = 'all';
+            newFilters.userId = 'all';
         }
 
         setFilters(newFilters);
@@ -159,25 +159,25 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
     };
 
     const clearFilters = () => {
-        const resetFilters: AdminFilterState = { region: 'all', state: 'all', zoneId: 'all', repId: 'all' };
+        const resetFilters: AdminFilterState = { region: 'all', state: 'all', zoneId: 'all', userId: 'all' };
 
         if (isSupervisor && userRegion) resetFilters.region = userRegion;
         if (isRepresentative) {
             if (userRegion) resetFilters.region = userRegion;
             if (userState) resetFilters.state = userState;
             if (zoneId) resetFilters.zoneId = zoneId;
-            if (profile?.id) resetFilters.repId = profile.id;
+            if (profile?.id) resetFilters.userId = profile.id;
         }
 
         setFilters(resetFilters);
         onFilterChange(resetFilters);
     };
 
-    const hasActiveFilters = filters.region !== 'all' || filters.state !== 'all' || (filters.zoneId && filters.zoneId !== 'all') || (filters.repId && filters.repId !== 'all');
+    const hasActiveFilters = filters.region !== 'all' || filters.state !== 'all' || (filters.zoneId && filters.zoneId !== 'all') || (filters.userId && filters.userId !== 'all');
     const isRegionLocked = (isSupervisor || isRepresentative) && !!userRegion;
     const isStateLocked = isRepresentative && !!userState;
     const isZoneLocked = isRepresentative && !!zoneId;
-    const isRepLocked = isRepresentative;
+    const isUserLocked = isRepresentative;
 
     const visibleStates = (isSupervisor && userRegion)
         ? getStatesInRegion(userRegion)
@@ -189,13 +189,13 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
             ? zones.filter(z => z.state && visibleStates.includes(z.state))
             : zones);
 
-    const visibleReps = representatives.filter(rep => {
+    const visibleMembers = members.filter(m => {
         if (isSupervisor && profile?.id) {
             // Supervisors see themselves and their subordinates
-            return rep.supervisorId === profile.id || rep.id === profile.id;
+            return m.supervisorId === profile.id || m.id === profile.id;
         }
-        if (filters.state && filters.state !== 'all') return rep.state === filters.state;
-        if (filters.region && filters.region !== 'all') return rep.region === filters.region;
+        if (filters.state && filters.state !== 'all') return m.state === filters.state;
+        if (filters.region && filters.region !== 'all') return m.region === filters.region;
         return true;
     });
 
@@ -246,15 +246,16 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {/* Región */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5">
+                        <label htmlFor="region-select" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5 cursor-pointer">
                             <Globe className="w-3.5 h-3.5 text-primary/40" /> Región
                         </label>
                         <Select
+                            name="region"
                             value={filters.region || 'all'}
                             onValueChange={(val) => updateFilters('region', val)}
                             disabled={isRegionLocked}
                         >
-                            <SelectTrigger className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
+                            <SelectTrigger id="region-select" className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
                                 <SelectValue placeholder="Todas las regiones" />
                             </SelectTrigger>
                             <SelectContent className="bg-white border-slate-200 shadow-2xl rounded-xl">
@@ -274,15 +275,16 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
 
                     {/* Estado */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5">
+                        <label htmlFor="state-select" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5 cursor-pointer">
                             <MapPin className="w-3.5 h-3.5 text-primary/40" /> Estado
                         </label>
                         <Select
+                            name="state"
                             value={filters.state || 'all'}
                             onValueChange={(val) => updateFilters('state', val)}
                             disabled={isStateLocked}
                         >
-                            <SelectTrigger className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
+                            <SelectTrigger id="state-select" className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
                                 <SelectValue placeholder="Todos los estados" />
                             </SelectTrigger>
                             <SelectContent className="bg-white border-slate-200 shadow-2xl rounded-xl">
@@ -302,15 +304,16 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
 
                     {/* Zona */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5">
+                        <label htmlFor="zone-select" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5 cursor-pointer">
                             <Layers className="w-3.5 h-3.5 text-primary/40" /> Zona
                         </label>
                         <Select
+                            name="zone"
                             value={filters.zoneId || 'all'}
                             onValueChange={(val) => updateFilters('zoneId', val)}
                             disabled={isZoneLocked}
                         >
-                            <SelectTrigger className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
+                            <SelectTrigger id="zone-select" className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
                                 <SelectValue placeholder="Todas las zonas" />
                             </SelectTrigger>
                             <SelectContent className="bg-white border-slate-200 shadow-2xl rounded-xl">
@@ -328,27 +331,28 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                         )}
                     </div>
 
-                    {/* Representante */}
+                    {/* Colaborador */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5 text-primary/40" /> Representante
+                        <label htmlFor="user-select" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-1.5 cursor-pointer">
+                            <User className="w-3.5 h-3.5 text-primary/40" /> Colaborador
                         </label>
                         <Select
-                            value={filters.repId || 'all'}
-                            onValueChange={(val) => updateFilters('repId', val)}
-                            disabled={isRepLocked}
+                            name="user_id"
+                            value={filters.userId || 'all'}
+                            onValueChange={(val) => updateFilters('userId', val)}
+                            disabled={isUserLocked}
                         >
-                            <SelectTrigger className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
-                                <SelectValue placeholder="Seleccionar Representante" />
+                            <SelectTrigger id="user-select" className="h-11 bg-slate-50 border-slate-200 text-slate-700 focus:ring-primary/20 hover:border-primary/30 transition-all rounded-xl font-medium shadow-sm">
+                                <SelectValue placeholder="Seleccionar Colaborador" />
                             </SelectTrigger>
                             <SelectContent className="bg-white border-slate-200 shadow-2xl rounded-xl">
-                                <SelectItem value="all" className="font-medium text-slate-500 italic">Todos los representantes</SelectItem>
-                                {visibleReps.map(r => (
-                                    <SelectItem key={r.id} value={r.id} className="font-medium text-slate-700">{r.name}</SelectItem>
+                                <SelectItem value="all" className="font-medium text-slate-500 italic">Todos los colaboradores</SelectItem>
+                                {visibleMembers.map(m => (
+                                    <SelectItem key={m.id} value={m.id} className="font-medium text-slate-700">{m.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {isRepLocked && (
+                        {isUserLocked && (
                             <div className="flex items-center gap-1.5 px-1 py-0.5">
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_5px_rgba(59,130,246,0.5)]"></div>
                                 <span className="text-[10px] font-bold text-blue-600/80 uppercase tracking-tighter">Mis Registros</span>
@@ -376,9 +380,9 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                                 Zona: {zones.find(z => z.id === filters.zoneId)?.name}
                             </Badge>
                         )}
-                        {filters.repId && filters.repId !== 'all' && (
+                        {filters.userId && filters.userId !== 'all' && (
                             <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] px-3 py-1 font-bold rounded-full">
-                                Rep: {representatives.find(r => r.id === filters.repId)?.name}
+                                Usuario: {members.find(m => m.id === filters.userId)?.name}
                             </Badge>
                         )}
                     </div>

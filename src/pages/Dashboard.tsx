@@ -1,7 +1,7 @@
 /* ========================================================================
  MASTER FRAMEWORK - EMPRESA CA
  Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
+ 
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
@@ -9,13 +9,16 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Users, FileCheck, TrendingUp, Clock, MapPin, Package, RefreshCcw } from "lucide-react";
-import { StatsCard } from "@/components/dashboard/StatsCard";
+import { 
+  Calendar, Users, FileCheck, TrendingUp, 
+  Clock, MapPin, Package, RefreshCcw,
+  Zap, ChevronRight, Activity, Bell
+} from "lucide-react";
 import { NextVisitSuggestions } from "@/components/dashboard/NextVisitSuggestions";
 import { InventoryAlerts } from "@/components/dashboard/InventoryAlerts";
 import { ProcessAlerts } from "@/components/dashboard/ProcessAlerts";
 import { SmartAssistant } from "@/components/dashboard/SmartAssistant";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,9 +28,12 @@ import { refreshObjectivesProgress } from "@/services/objectiveService";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
-  const { user, role, isManager, isCoordinator, isAdmin, isMaster, isSystemAdmin, organizationName } = useAuth();
+  const { user, role, isManager, isAdmin, isMaster, companyId, organizationName } = useAuth();
+  const showGlobalData = isManager || isAdmin || isMaster;
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
 
@@ -56,14 +62,7 @@ export default function Dashboard() {
       setCurrentTime(new Date());
     }, 1000);
 
-    const syncTimer = setInterval(() => {
-      setLastSync(localStorage.getItem('lastSyncTime'));
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-      clearInterval(syncTimer);
-    };
+    return () => clearInterval(timer);
   }, [user]);
 
   const loadDashboardData = async () => {
@@ -95,91 +94,74 @@ export default function Dashboard() {
         .single();
       setProfile(profileData);
 
+      // INDUSTRIAL KPI CONSOLIDATION (Dual ID Protocol)
       const now = new Date();
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
       const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
-      const showGlobalData = isManager || isAdmin || isMaster;
 
-      let visitsTodayQuery = supabase
-        .from('visits')
-        .select('*, contacts(*)')
-        .gte('scheduled_date', todayStart)
-        .lte('scheduled_date', todayEnd);
+      // Optimize: Parallel fetching with company_id isolation
+      const [visitsRes, doctorsRes, reportsRes, objectivesRes] = await Promise.all([
+        // Visits Today
+        (() => {
+          let q = supabase.from('visits').select('status');
+          q = q.gte('scheduled_date', todayStart).lte('scheduled_date', todayEnd);
+          if (!isMaster && companyId) q = q.eq('company_id', companyId);
+          if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
+          return q;
+        })(),
+        // Doctors Week
+        (() => {
+          const startOfWeek = new Date(now);
+          startOfWeek.setDate(now.getDate() - now.getDay());
+          startOfWeek.setHours(0, 0, 0, 0);
+          let q = supabase.from('visits').select('id', { count: 'exact', head: true });
+          q = q.eq('status', 'completed').gte('actual_start_time', startOfWeek.toISOString());
+          if (!isMaster && companyId) q = q.eq('company_id', companyId);
+          if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
+          return q;
+        })(),
+        // Reports Month
+        (() => {
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+          let q = supabase.from('visits').select('id', { count: 'exact', head: true });
+          q = q.eq('status', 'completed').gte('actual_start_time', startOfMonth);
+          if (!isMaster && companyId) q = q.eq('company_id', companyId);
+          if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
+          return q;
+        })(),
+        // Objectives
+        (() => {
+          let q = supabase.from('objectives').select('*').eq('status', 'active');
+          if (!isMaster && companyId) q = q.eq('company_id', companyId);
+          if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
+          return q;
+        })()
+      ]);
 
-      if (!showGlobalData && user?.id) {
-        visitsTodayQuery = visitsTodayQuery.eq('user_id', user.id);
-      }
-
-      const { data: visitsTodayData } = await visitsTodayQuery.order('scheduled_date', { ascending: true });
-      const visitsTodayCount = visitsTodayData?.length || 0;
-      const visitsConfirmedCount = visitsTodayData?.filter(v => (v.status as string) === 'confirmed').length || 0;
-
-      const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay());
-      startOfWeek.setHours(0, 0, 0, 0);
-
-      let doctorsQuery = supabase
-        .from('visits')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'completed')
-        .gte('actual_start_time', startOfWeek.toISOString());
-
-      if (!showGlobalData && user?.id) {
-        doctorsQuery = doctorsQuery.eq('user_id', user.id);
-      }
-
-      const { count: doctorsContactedCount } = await doctorsQuery;
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-
-      let reportsQuery = supabase
-        .from('visits')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'completed')
-        .gte('actual_start_time', startOfMonth);
-
-      if (!showGlobalData && user?.id) {
-        reportsQuery = reportsQuery.eq('user_id', user.id);
-      }
-
-      const { count: reportsCount } = await reportsQuery;
-
-      let objectivesQuery = supabase
-        .from('objectives')
-        .select('*')
-        .eq('status', 'active');
-
-      if (!showGlobalData && user?.id) {
-        objectivesQuery = objectivesQuery.eq('user_id', user.id);
-      }
-
-      const { data: objectiveData } = await objectivesQuery;
-      const avgProgress = objectiveData && objectiveData.length > 0
-        ? objectiveData.reduce((acc, o) => acc + Math.min((o.current_value / o.target_value) * 100, 100), 0) / objectiveData.length
+      const visitsToday = visitsRes.data || [];
+      const avgProgress = objectivesRes.data && objectivesRes.data.length > 0
+        ? objectivesRes.data.reduce((acc, o) => acc + Math.min((o.current_value / o.target_value) * 100, 100), 0) / objectivesRes.data.length
         : 78;
 
       setStats({
-        visitsToday: visitsTodayCount,
-        visitsTodayConfirmed: visitsConfirmedCount,
-        doctorsContactedWeek: doctorsContactedCount || 0,
-        reportsCompletedMonth: reportsCount || 0,
+        visitsToday: visitsToday.length,
+        visitsTodayConfirmed: visitsToday.filter(v => v.status === 'confirmed').length,
+        doctorsContactedWeek: doctorsRes.count || 0,
+        reportsCompletedMonth: reportsRes.count || 0,
         monthlyGoal: Math.round(avgProgress)
       });
 
-      setUpcomingVisits(visitsTodayData?.slice(0, 3) || []);
+      // Lists
+      let upcomingQ = supabase.from('visits').select('*, contacts(*)').gte('scheduled_date', todayStart).lte('scheduled_date', todayEnd);
+      if (!isMaster && companyId) upcomingQ = upcomingQ.eq('company_id', companyId);
+      if (!showGlobalData && user?.id) upcomingQ = upcomingQ.eq('user_id', user.id);
+      const { data: upcomingData } = await upcomingQ.order('scheduled_date', { ascending: true }).limit(3);
+      setUpcomingVisits(upcomingData || []);
 
-      let recentQuery = supabase
-        .from('visits')
-        .select('*, contacts(*)')
-        .eq('status', 'completed');
-
-      if (!showGlobalData && user?.id) {
-        recentQuery = recentQuery.eq('user_id', user.id);
-      }
-
-      const { data: recentVisits } = await recentQuery
-        .order('actual_start_time', { ascending: false })
-        .limit(5);
-
+      let recentQ = supabase.from('visits').select('*, contacts(*)').eq('status', 'completed');
+      if (!isMaster && companyId) recentQ = recentQ.eq('company_id', companyId);
+      if (!showGlobalData && user?.id) recentQ = recentQ.eq('user_id', user.id);
+      const { data: recentVisits } = await recentQ.order('actual_start_time', { ascending: false }).limit(5);
       setRecentActivity(recentVisits || []);
 
     } catch (error) {
@@ -190,295 +172,162 @@ export default function Dashboard() {
   };
 
   const getUserName = () => {
-    if (profile?.first_name || profile?.last_name) {
-      return `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
-    }
-    if (user?.email) {
-      const emailName = user.email.split('@')[0];
-      return emailName
-        .split(/[._]/)
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    }
-    return 'Usuario';
-  };
-
-  const getRoleLabel = (r: string) => {
-    switch (r) {
-      case 'master': return 'System Admin';
-      case 'admin': return 'Administrador';
-      case 'manager': return 'Gerente';
-      case 'coordinator': return 'Coordinador';
-      case 'supervisor': return 'Supervisor';
-      case 'representative': return 'Representante';
-      case 'telemarketing': return 'Telemarketing';
-      case 'doctor': return 'Médico';
-      default: return 'Usuario';
-    }
+    if (profile?.full_name) return profile.full_name;
+    if (profile?.first_name) return `${profile.first_name} ${profile.last_name || ''}`;
+    return user?.email?.split('@')[0] || 'Representante';
   };
 
   return (
-    <div className="space-y-6">
-      {/* Alpha BMT Style Header - Redesigned with Mesh Gradient & Premium Glassmorphism */}
-      <header className="px-6 pt-10 pb-12 relative overflow-hidden -mx-4 -mt-10 mb-10 mesh-gradient-primary rounded-b-[3rem] shadow-2xl">
-        {/* Decorative Mesh Circles */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-secondary/20 rounded-full -mr-48 -mt-48 blur-[120px] animate-pulse pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-white/10 rounded-full -ml-32 -mb-32 blur-[100px] animate-pulse delay-700 pointer-events-none"></div>
-
-        {/* Top Row: Greeting + Status + Actions */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-10 relative z-10">
-          <div className="flex items-center gap-6">
-            <div className="relative group">
-              <div className="absolute -inset-1.5 bg-gradient-to-br from-white/60 to-secondary/60 rounded-[2rem] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2rem] flex items-center justify-center border border-white/30 shadow-2xl overflow-hidden group-hover:scale-105 transition-all duration-500">
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
-                <span className="text-4xl font-black text-white drop-shadow-md">
-                  {(user?.email || "?")[0].toUpperCase()}
-                </span>
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-2 w-2 rounded-full bg-emerald-400 animate-ping shadow-[0_0_12px_rgba(52,211,153,0.8)]"></div>
-                <p className="text-secondary-foreground/80 text-[10px] font-black uppercase tracking-[0.25em] drop-shadow-sm">SISTEMA INTELIGENTE ACTIVO</p>
-              </div>
-              <h1 className="text-4xl font-extrabold text-white tracking-tight drop-shadow-lg mb-1">
-                Hola, {getUserName()}
-              </h1>
-              <div className="flex items-center gap-2.5 mt-2 flex-wrap">
-                <Badge variant="secondary" className="bg-white/15 text-white hover:bg-white/25 border border-white/20 text-[10px] px-3 py-1 font-black backdrop-blur-md rounded-full">
-                  {getRoleLabel(role)}
-                </Badge>
-                {isSystemAdmin && (
-                  <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-[10px] px-3 py-1 uppercase font-black tracking-widest rounded-full">
-                    GOD MODE
-                  </Badge>
-                )}
-                {organizationName && !isSystemAdmin && (
-                  <Badge variant="outline" className="text-white border-white/20 bg-white/5 text-[10px] px-3 py-1 capitalize font-bold rounded-full">
-                    {organizationName}
-                  </Badge>
-                )}
-              </div>
-            </div>
+    <div className="space-y-8 pb-10">
+      {/* ELITE HEADER */}
+      <EliteHeader 
+        title={`Bienvenido, ${getUserName()}`}
+        subtitle={`${organizationName || 'MediVisitPro Premier'} | ${currentTime.toLocaleDateString()} ${currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
+        icon={<Zap className="h-8 w-8 text-amber-500 fill-amber-500/20" />}
+        rightContent={
+          <div className="flex items-center gap-3">
+             <OnlineStatusIndicator />
+             <Button variant="outline" size="icon" className="rounded-full border-white/10 hover:bg-white/5 relative">
+                <Bell className="h-5 w-5 text-slate-400" />
+                <span className="absolute top-0 right-0 h-2 w-2 bg-rose-500 rounded-full border-2 border-slate-950"></span>
+             </Button>
           </div>
+        }
+      />
 
-          <div className="flex flex-col items-end gap-2 px-6 py-4 rounded-3xl bg-black/5 backdrop-blur-md border border-white/10 shadow-inner group transition-all hover:bg-black/10">
-            <div className="text-5xl font-mono font-black tracking-tighter text-white tabular-nums drop-shadow-2xl">
-              {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              <span className="text-2xl opacity-50 ml-1 animate-pulse">
-                {currentTime.toLocaleTimeString([], { second: '2-digit' })}
-              </span>
-            </div>
-            <div className="text-[11px] text-white/50 uppercase tracking-[0.2em] font-black text-right w-full">
-              {currentTime.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-            </div>
-          </div>
-        </div>
-
-        {/* Sync Info Bar */}
-        <div className="flex flex-wrap items-center gap-6 py-4 px-6 bg-white/5 rounded-[2rem] border border-white/10 backdrop-blur-xl shadow-lg relative z-10 transition-all hover:bg-white/10">
-          <div className="flex items-center gap-3 text-xs">
-            <div className="p-2 rounded-xl bg-white/10">
-              <RefreshCcw className={`h-4 w-4 text-secondary ${isSyncing ? 'animate-spin' : ''}`} />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-white/40 text-[9px] font-black uppercase tracking-widest">Última Sinc</span>
-              <span className="text-white font-black">
-                {lastSync ? new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Sincronizando...'}
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 border-l border-white/10 pl-6 h-8">
-            <OnlineStatusIndicator />
-          </div>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="h-10 w-px bg-white/10 hidden sm:block"></div>
-            <div className="text-right">
-              <p className="text-white font-black text-sm">
-                {stats.visitsToday} <span className="text-white/40 font-bold ml-1">VISITAS HOY</span>
-              </p>
-              <p className="text-[10px] text-secondary font-black uppercase tracking-tighter">
-                {stats.visitsTodayConfirmed} CONFIRMADAS
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Process Alerts */}
-      <ProcessAlerts />
-
-      {/* AI Smart Assistant */}
-      <SmartAssistant />
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Visitas de Hoy"
-          value={stats.visitsToday}
-          subtitle={`${stats.visitsTodayConfirmed} confirmadas`}
-          icon={Calendar}
-          variant="primary"
-          trending={12}
+      {/* ELITE KPI STRIP */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <EliteKPICard 
+          title="Visitas Hoy"
+          value={stats.visitsToday.toString()}
+          icon={<Calendar className="h-5 w-5" />}
+          trend={`${stats.visitsTodayConfirmed} confirmadas`}
+          description="Agenda diaria activa"
         />
-        <StatsCard
-          title="Médicos Contactados"
-          value={stats.doctorsContactedWeek}
-          subtitle="Esta semana"
-          icon={Users}
-          variant="success"
-          trending={8}
+        <EliteKPICard 
+          title="Cobertura Semanal"
+          value={stats.doctorsContactedWeek.toString()}
+          icon={<Users className="h-5 w-5" />}
+          trend="+12%"
+          description="Médicos contactados"
         />
-        <StatsCard
-          title="Reportes Completados"
-          value={stats.reportsCompletedMonth}
-          subtitle="Este mes"
-          icon={FileCheck}
-          variant="default"
-          trending={15}
+        <EliteKPICard 
+          title="Reportes Mes"
+          value={stats.reportsCompletedMonth.toString()}
+          icon={<FileCheck className="h-5 w-5" />}
+          trend="En tiempo"
+          description="Carga operacional"
         />
-        <StatsCard
-          title="Objetivo Mensual"
+        <EliteKPICard 
+          title="Alcance Objetivo"
           value={`${stats.monthlyGoal}%`}
-          subtitle="Calculado"
-          icon={TrendingUp}
-          variant="warning"
-          trending={5}
+          icon={<TrendingUp className="h-5 w-5" />}
+          trend={stats.monthlyGoal >= 70 ? "Sobre la media" : "Bajo la media"}
+          trendPositive={stats.monthlyGoal >= 70}
+          description="Progreso de cuota"
         />
       </div>
 
-      {/* Row 1: Upcoming Visits & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-        <Card className="medical-card h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Clock className="mr-2 h-5 w-5 icon-medical" />
-              Próximas Visitas (Hoy)
-            </CardTitle>
-            <CardDescription>
-              Tus visitas programadas para el día de hoy
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {upcomingVisits.length > 0 ? (
-                upcomingVisits.map((visit) => (
-                  <div key={visit.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium text-foreground">{visit.contacts?.name || "Sin contacto"}</p>
-                        <Badge
-                          variant={visit.status === 'completed' ? 'success' : visit.status === 'confirmed' ? 'secondary' : 'outline'}
-                          className="text-[10px] font-bold"
-                        >
-                          {visit.status === 'confirmed' ? 'Confirmada' :
-                            visit.status === 'completed' ? 'Completada' : 'Pendiente'}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Column */}
+        <div className="lg:col-span-2 space-y-8">
+          <section>
+            <div className="flex items-center justify-between mb-4">
+               <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                 <Clock className="h-5 w-5 text-indigo-400" />
+                 Próximas Visitas
+               </h2>
+               <Link to="/visits" className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group">
+                 Ver agenda <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+               </Link>
+            </div>
+            
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => <div key={i} className="h-24 w-full bg-white/5 rounded-2xl animate-pulse"></div>)}
+              </div>
+            ) : upcomingVisits.length > 0 ? (
+              <div className="space-y-4">
+                {upcomingVisits.map((visit) => (
+                  <Card key={visit.id} className="bg-slate-900/40 border-white/5 hover:border-white/10 transition-all group overflow-hidden">
+                    <CardContent className="p-5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="h-12 w-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                            <MapPin className="h-6 w-6 text-indigo-400" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white group-hover:text-indigo-400 transition-colors uppercase tracking-tight">
+                              {visit.contacts?.full_name || 'Médico no especificado'}
+                            </h4>
+                            <p className="text-sm text-slate-400 flex items-center gap-2">
+                              {new Date(visit.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {visit.contacts?.category || 'General'}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge className={cn(
+                          "px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-widest",
+                          visit.status === 'confirmed' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                        )}>
+                          {visit.status === 'confirmed' ? 'Confirmado' : 'Pendiente'}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">{visit.contacts?.specialty || "General"}</p>
-                      <div className="flex items-center text-xs text-muted-foreground mt-1">
-                        <MapPin className="h-3 w-3 mr-1" />
-                        {visit.contacts?.address || "Consultorio Privado"}
-                      </div>
-                    </div>
-                    <div className="text-right ml-4">
-                      <p className="text-lg font-bold text-primary">
-                        {new Date(visit.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6 text-muted-foreground">
-                  <p>No tienes visitas programadas para hoy.</p>
-                  <Button variant="link" asChild className="mt-2 text-primary font-bold">
-                    <Link to="/agenda">Ir a la Agenda</Link>
-                  </Button>
-                </div>
-              )}
-            </div>
-            {upcomingVisits.length > 0 && (
-              <Button className="w-full mt-4 btn-medical" asChild>
-                <Link to="/visitas">Ver Todas las Visitas</Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="medical-card h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Package className="mr-2 h-5 w-5 icon-success" />
-              Actividad Reciente
-            </CardTitle>
-            <CardDescription>
-              Últimas visitas completadas
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.length > 0 ? (
-                recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg transition-all hover:bg-muted">
-                    <div className="w-2 h-2 bg-success rounded-full mt-2 ring-2 ring-success/20"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-slate-800">
-                        Visita completada - {activity.contacts?.name}
-                      </p>
-                      <p className="text-[11px] text-slate-500 font-medium">
-                        {new Date(activity.actual_start_time || activity.scheduled_date).toLocaleDateString()} - {new Date(activity.actual_start_time || activity.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6 text-muted-foreground">
-                  No hay actividad reciente registrada.
-                </div>
-              )}
-            </div>
-            <Button variant="outline" className="w-full mt-4 border-slate-200 text-slate-600 font-bold rounded-xl" asChild>
-              <Link to="/reportes">Ver Reportes</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      <InventoryAlerts compact />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-        <NextVisitSuggestions className="h-full" />
-        <Card className="medical-card h-full flex flex-col">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <TrendingUp className="mr-2 h-5 w-5 text-emerald-600" />
-              Rendimiento del Mes
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col items-center justify-between">
-            <div className="flex flex-col items-center justify-center flex-1 py-4">
-              <div className="relative w-32 h-32 flex items-center justify-center mb-4">
-                 <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                    <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-100" />
-                    <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={364.4} strokeDashoffset={364.4 - (364.4 * stats.monthlyGoal) / 100} className="text-primary transition-all duration-1000 ease-out" strokeLinecap="round" />
-                 </svg>
-                 <span className="text-3xl font-black text-slate-900">{stats.monthlyGoal}%</span>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Objetivo Mensual</p>
-            </div>
-            <Button variant="outline" className="mt-4 w-full sm:w-auto border-slate-200 text-slate-600 font-bold rounded-xl" asChild>
-              <Link to="/objectives">Ver Objetivos</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+            ) : (
+              <div className="bg-slate-900/40 border border-dashed border-white/10 rounded-2xl p-10 text-center">
+                 <Calendar className="h-10 w-10 text-slate-500 mx-auto mb-4 opacity-20" />
+                 <p className="text-slate-400">No hay visitas programadas para hoy.</p>
+              </div>
+            )}
+          </section>
 
-      {(isManager || isCoordinator) && (
-        <div className="mt-8">
-          <AutoAssignmentPanel />
+          <section>
+            <div className="flex items-center justify-between mb-4">
+               <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                 <Activity className="h-5 w-5 text-emerald-400" />
+                 Actividad Reciente
+               </h2>
+            </div>
+            <div className="bg-slate-900/40 border border-white/5 rounded-3xl p-6">
+               {recentActivity.length > 0 ? (
+                 <div className="space-y-6">
+                   {recentActivity.map((activity, idx) => (
+                     <div key={activity.id} className="flex gap-4 relative">
+                        {idx !== recentActivity.length - 1 && (
+                          <div className="absolute left-2.5 top-6 bottom-0 w-0.5 bg-white/5"></div>
+                        )}
+                        <div className="h-5 w-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center relative z-10 mt-1">
+                           <div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                        </div>
+                        <div>
+                           <p className="text-sm text-white font-medium">
+                             Reporte completado: <span className="text-emerald-400">{activity.contacts?.full_name}</span>
+                           </p>
+                           <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
+                             {new Date(activity.actual_start_time || activity.created_at).toLocaleString()}
+                           </p>
+                        </div>
+                     </div>
+                   ))}
+                 </div>
+               ) : (
+                 <p className="text-slate-500 text-sm text-center py-4">Sin actividad reciente registrada.</p>
+               )}
+            </div>
+          </section>
         </div>
-      )}
+
+        {/* Sidebar */}
+        <div className="space-y-8">
+          <SmartAssistant />
+          <InventoryAlerts />
+          <ProcessAlerts />
+          {isManager && <AutoAssignmentPanel />}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import './styles/design-tokens.css';
 
 @tailwind base;
 @tailwind components;
@@ -55,18 +56,59 @@
     --premium-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 
+  .dark {
+    /* Industrial Dark Mode - Estándar CA */
+    --background: 222 47% 4%; /* #020617 (Slate 950) */
+    --foreground: 210 40% 98%;
+    
+    --card: 222 47% 6%; /* Ligeramente más claro para elevación */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222 47% 4%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary Blue se mantiene para identidad */
+    --primary: 211 100% 45%; 
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 200 100% 40%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 85%; /* Brillo aumentado para legibilidad industrial */
+    
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 25%; /* Bordes un poco más visibles en oscuro */
+    --input: 217.2 32.6% 25%;
+    --ring: 224.3 76.3% 48%;
+
+    /* Glassmorphism Dark */
+    --glass-bg: rgba(15, 23, 42, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.15);
+  }
+
   * {
-    @apply border-border selection:bg-primary/20 selection:text-primary;
+    @apply border-border selection:bg-primary/20 selection:text-primary transition-colors duration-200;
   }
 
   body {
-    @apply text-foreground font-sans antialiased;
-    background-color: #f4f6f8;
+    @apply text-foreground font-sans antialiased bg-background;
     background-image:
-      radial-gradient(at 0% 0%, rgba(0, 86, 179, 0.03) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(0, 160, 233, 0.03) 0px, transparent 50%);
-    @apply min-h-screen;
+      radial-gradient(at 0% 0%, rgba(0, 86, 179, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 160, 233, 0.05) 0px, transparent 50%);
+    @apply min-h-screen overflow-x-hidden;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Responsive Utilities */
+  .container-responsive {
+    @apply w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+
+  .grid-responsive {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
   }
 
   h1,

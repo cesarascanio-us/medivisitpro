@@ -143,6 +143,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   const { toast } = useToast();
   const { user, profile } = useAuth();
   const { organization } = useOrganization();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic");
 
   // State
@@ -306,7 +307,30 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   const samplesList = getFilteredOptions('samples');
   const materialsList = getFilteredOptions('materials');
   const isPharmacy = formData.visit_type === 'pharmacy';
+  const isSalesChannel = ['pharmacy', 'drugstore', 'natural_store', 'institution'].includes(formData.visit_type);
   const selectedContact = contacts.find(c => c.id === formData.contact_id);
+
+  const handleSaveAndOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validate contact
+    if (!formData.contact_id) { toast({ title: "Error", description: "Selecciona un contacto", variant: "destructive" }); return; }
+    
+    // Envolvemos handleSubmit para que se ejecute primero sin e.preventDefault que se ejecuta dentro
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    await handleSubmit(fakeEvent);
+    
+    // Navegar y pasar el estado para precargar el pedido
+    navigate('/transfer-orders', {
+        state: {
+            initialContact: {
+                id: formData.contact_id,
+                name: selectedContact?.name || "",
+                address: selectedContact?.address || ""
+            },
+            orderType: formData.visit_type === 'drugstore' ? 'direct' : 'transfer' // Si es droguería es directa, si es farmacia es transferencia
+        }
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -626,9 +650,17 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
             }} variant="outline" className="flex-1 sm:flex-none h-10 md:h-12 px-4 md:px-6 border-slate-200 rounded-xl font-black text-[9px] md:text-[10px] uppercase tracking-widest text-slate-700 hover:bg-white hover:text-indigo-600">
               Siguiente <ChevronRight className="w-4 h-4 ml-1 md:ml-2" />
             </Button>
-            <Button type="submit" form="visit-detail-form" disabled={loading} className="flex-1 sm:flex-none h-10 md:h-12 px-6 md:px-10 status-active rounded-xl shadow-lg transition-all active:scale-95">
+            
+            {isSalesChannel && (
+                <Button type="button" onClick={handleSaveAndOrder} disabled={loading} className="flex-1 sm:flex-none h-10 md:h-12 px-4 md:px-6 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-lg transition-all font-black text-[9px] md:text-[10px] uppercase tracking-widest">
+                  {loading ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <ShoppingCart className="mr-2 h-4 w-4" />}
+                  Generar Pedido
+                </Button>
+            )}
+
+            <Button type="submit" form="visit-detail-form" disabled={loading} className="flex-1 sm:flex-none h-10 md:h-12 px-6 md:px-10 status-active rounded-xl shadow-lg transition-all active:scale-95 font-black text-[9px] md:text-[10px] uppercase tracking-widest">
               {loading && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
-              {visitData?.id ? 'Guardar' : 'Finalizar'}
+              {visitData?.id ? 'Guardar' : 'Finalizar Visita'}
             </Button>
           </div>
         </div>

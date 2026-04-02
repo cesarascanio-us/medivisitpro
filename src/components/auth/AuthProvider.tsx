@@ -40,6 +40,7 @@ export interface UserProfile {
     email: string;
     role: UserRole;
     organization_id: string | null;
+    company_id: string | null;
     zone_id: string | null;
     state: string | null;
     region: string | null;
@@ -100,6 +101,7 @@ interface AuthContextType {
     // Zone/Location
     organizationName: string | null;
     organizationId: string | null;
+    companyId: string | null;
     zoneId: string | null;
     userState: string | null;
     userRegion: string | null;
@@ -119,6 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [role, setRole] = useState<UserRole>('representative');
+    const [isOwner, setIsOwner] = useState(false);
     const [permissions, setPermissions] = useState<string[]>([]);
     const DEFAULT_FEATURES = {
         sales_module: true,
@@ -194,6 +197,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 email: email,
                 role: 'representative',
                 organization_id: DEMO_ORG_ID,
+                company_id: DEMO_ORG_ID, // In demo, both match
                 zone_id: null,
                 state: null,
                 region: null,
@@ -212,7 +216,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
-                .select('*')
+                .select('*, company_id')
                 .eq('user_id', userId)
                 .maybeSingle();
 
@@ -222,7 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const { data: roleData, error: roleError } = await supabase
                 .from('user_roles')
-                .select('role, organization_id, zone_id, state, region')
+                .select('role, organization_id, company_id, zone_id, state, region')
                 .eq('user_id', userId)
                 .maybeSingle();
 
@@ -232,23 +236,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             console.log('Datos de rol obtenidos:', roleData);
 
-            // [FAIL-SAFE] Explicit check for System Owner to prevent accidental lockouts
-            const isOwner = email.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
+            // [INDUSTRIAL] Secure Master Verification via Database RPC
+            const { data: isOwnerResult } = await (supabase.rpc as any)('is_system_master', { 
+                p_email: email 
+            });
+            
+            const isOwnerCheck = !!isOwnerResult;
+            setIsOwner(isOwnerCheck);
 
-            let finalRole = (roleData?.role as UserRole) || (isOwner ? 'master' : 'representative');
+            let finalRole = (roleData?.role as UserRole) || (isOwnerCheck ? 'master' : 'representative');
             let finalOrgId = roleData?.organization_id || profileData?.organization_id || null;
 
             // [STRICT] Tenant 0 Isolation for Global Master
             const isTenantZero = finalOrgId === '00000000-0000-0000-0000-000000000000';
 
-            // If it's the owner but role record is missing, force master
-            if (isOwner && finalRole !== 'master') {
+            // If it's a verified master but role record is missing, force master
+            if (isOwnerCheck && finalRole !== 'master') {
                 finalRole = 'master';
             }
 
             // [ARCHITECTURAL REFINEMENT] Auto-migrate local 'master' strings to 'organization_admin'
             // for UI/Logic consistency, even if the DB record hasn't been migrated yet.
-            if (finalRole === 'master' && !isOwner && !isTenantZero) {
+            if (finalRole === 'master' && !isOwnerCheck && !isTenantZero) {
                 console.warn('AuthProvider: Local Master detected, mapping to organization_admin');
                 finalRole = 'organization_admin';
             }
@@ -258,6 +267,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 email: email,
                 role: finalRole as UserRole,
                 organization_id: finalOrgId,
+                company_id: roleData?.company_id || profileData?.company_id || null,
                 zone_id: roleData?.zone_id || null,
                 state: roleData?.state || null,
                 region: roleData?.region || null,
@@ -344,11 +354,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // --- Derived Permissions ---
     // [STRICT] Resilience for System Owner / Tenant 0
-    const isOwner = user?.email?.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
     const isTenantZero = profile?.organization_id === '00000000-0000-0000-0000-000000000000';
 
     // isMaster is now STRICTLY for Global Administration (Tenant 0)
-    const isMaster = isOwner || (isTenantZero && (role === 'master' || originalRole === 'master'));
+    const isMaster = isOwner || (isTenantZero && (role === 'master' || (profile as any)?.originalRole === 'master'));
 
     const isOrgAdmin = role === 'organization_admin' || (role === 'master' && !isMaster); // Fallback for transition
     const isAdmin = role === 'admin' || isOrgAdmin;
@@ -420,6 +429,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canViewVisitHistory: isSaaSStaff || isSupervisor || isDoctor || isPharmacist,
         zoneId: profile?.zone_id || null,
         organizationId: profile?.organization_id || null,
+        companyId: profile?.company_id || null,
         userState: profile?.state || null,
         userRegion: profile?.region || null,
         // Feature Flags (Default logic)

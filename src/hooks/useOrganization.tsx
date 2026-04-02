@@ -36,6 +36,7 @@ const DEMO_ORG = {
     plan_tier: 'professional',
     subscription_status: 'active',
     onboarding_completed: true,
+    is_system_owner: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
 };
@@ -68,39 +69,27 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            // [STRICT FAIL-SAFE] Demo Bypass
-            const lowerEmail = user.email?.trim().toLowerCase();
-            if (lowerEmail === 'demo.medivisitpro@gmail.com') {
-                setOrganization(DEMO_ORG as any);
-                setAllOrganizations([DEMO_ORG as any]);
-                setPlanFeatures(DEMO_FEATURES);
-                setIsOrgAdmin(false);
-                setIsLoading(false);
-                return;
-            }
-
             let isMasterUser = false;
 
             // Get profile and role data
             const [{ data: profile }, { data: userRole }] = await Promise.all([
                 supabase
                     .from('profiles')
-                    .select('organization_id, is_org_admin')
-                    .eq('id', user.id)
+                    .select('company_id, organization_id, is_org_admin')
+                    .eq('user_id', user.id)
                     .maybeSingle(),
                 supabase
                     .from('user_roles')
-                    .select('organization_id, role')
+                    .select('company_id, organization_id, role')
                     .eq('user_id', user.id)
                     .maybeSingle()
             ]);
 
             const userRoleName = userRole?.role || 'representative';
-            const isOwner = lowerEmail === 'cesar.ascanio@gmail.com';
             const saasRoles = ['master', 'admin_saas', 'soporte_saas', 'desarrollo_saas'];
 
-            isMasterUser = saasRoles.includes(userRoleName) || isOwner;
-            setIsMaster(userRoleName === 'master' || isOwner); // Strict master flag
+            isMasterUser = saasRoles.includes(userRoleName);
+            setIsMaster(userRoleName === 'master'); // Strict master flag from DB role
             setIsSaaSStaff(isMasterUser); // Internal staff flag (includes master)
 
             setIsOrgAdmin(
@@ -122,7 +111,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 const orgs = (allOrgs || []).map(o => ({
                     ...o,
                     plan_tier: o.plan_tier as PlanTier,
-                    subscription_status: o.subscription_status as SubscriptionStatus
+                    subscription_status: o.subscription_status as SubscriptionStatus,
+                    is_system_owner: !!(o as any).is_system_owner
                 })) as Organization[];
 
                 currentOrgsList = orgs;
@@ -149,7 +139,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                         currentOrg = {
                             ...org,
                             plan_tier: org.plan_tier as PlanTier,
-                            subscription_status: org.subscription_status as SubscriptionStatus
+                            subscription_status: org.subscription_status as SubscriptionStatus,
+                            is_system_owner: !!(org as any).is_system_owner
                         } as Organization;
                         currentOrgsList = [currentOrg];
                     }

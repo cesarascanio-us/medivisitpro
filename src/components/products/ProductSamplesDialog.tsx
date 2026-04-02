@@ -234,7 +234,7 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
                 <div>
                   <Label htmlFor="doctor">Médico destinatario</Label>
                   <Select value={selectedContact} onValueChange={setSelectedContact} required>
-                    <SelectTrigger className="mt-2">
+                    <SelectTrigger id="doctor" className="mt-2">
                       <SelectValue placeholder="Seleccionar médico" />
                     </SelectTrigger>
                     <SelectContent>

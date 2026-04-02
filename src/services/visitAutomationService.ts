@@ -15,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
  */
 
 export interface VisitScenario {
+    id?: string;
     type: 'conquest' | 'development' | 'maturity';
     label: string;
     suggestedObjective: string;

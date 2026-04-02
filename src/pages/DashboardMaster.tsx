@@ -5,15 +5,14 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { useState, useEffect, useMemo, cloneElement } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    Users, TrendingUp, Activity, Map,
+    Users, TrendingUp, Activity, 
     Clock, FileText, Globe, LayoutDashboard, ShoppingCart, CheckCircle,
-    XCircle, RefreshCw,
-    Search, Building2, Check
+    XCircle, RefreshCw, Search, Building2, Check
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,6 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
-import { createClient } from "@supabase/supabase-js";
 import { useAuth } from "@/hooks/useAuth";
 import { useOrganization } from "@/hooks/useOrganization";
 import { dashboardService } from "@/services/dashboardService";
@@ -92,34 +90,29 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-    master: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    admin: 'bg-rose-100 text-rose-700 border-rose-200',
-    manager: 'bg-slate-800 text-white border-slate-700',
-    coordinator: 'bg-blue-100 text-blue-700 border-blue-200',
-    supervisor: 'bg-cyan-100 text-cyan-700 border-cyan-200',
-    representative: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    doctor: 'bg-teal-50 text-teal-700 border-teal-200',
-    pharmacist: 'bg-orange-50 text-orange-700 border-orange-200',
-    service_chief: 'bg-violet-100 text-violet-700 border-violet-200',
-    telemarketing: 'bg-pink-100 text-pink-700 border-pink-200'
+    master: 'text-indigo-400 border-indigo-500/30',
+    admin: 'text-rose-400 border-rose-500/30',
+    manager: 'text-slate-300 border-slate-700',
+    coordinator: 'text-blue-400 border-blue-500/30',
+    supervisor: 'text-cyan-400 border-cyan-500/30',
+    representative: 'text-emerald-400 border-emerald-500/30',
+    doctor: 'text-teal-400 border-teal-500/30',
+    pharmacist: 'text-orange-400 border-orange-500/30',
+    service_chief: 'text-violet-400 border-violet-500/30',
+    telemarketing: 'text-pink-400 border-pink-500/30'
 };
 
 export default function DashboardMaster() {
-    // --- HOOKS ---
     const { user, role, isManager, isAdmin, isMaster, isSystemAdmin, isSupervisor, isCoordinator, loading: authLoading } = useAuth();
     const { organization } = useOrganization();
     const navigate = useNavigate();
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    // --- ESTADO UI ---
     const [activeTab, setActiveTab] = useState('dashboard');
-
-    // --- QUERY PARAMS ---
     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
     const [filters, setFilters] = useState<AdminFilterState>({ region: "all", state: "all" });
 
-    // --- QUERIES ---
     const { data: visitsDataObj, isLoading: loadingVisits } = useDashboardVisits(startOfMonth, filters);
     const { data: ordersData, isLoading: loadingOrders } = useDashboardOrders(startOfMonth, filters);
     const { data: profilesRoles, isLoading: loadingProfiles } = useDashboardProfilesRoles();
@@ -130,13 +123,9 @@ export default function DashboardMaster() {
 
     const loading = loadingVisits || loadingOrders || loadingProfiles || loadingZones || loadingKPIs || loadingPending || loadingDroguerias;
 
-    // --- ESTADO DE GESTIÓN ---
     const [selectedRep, setSelectedRep] = useState<RepPerformance | null>(null);
     const [editRole, setEditRole] = useState<string>("");
-
-    // Note: allZones was state, now derived from zonesData
     const allZones = zonesData || [];
-
     const [editZoneId, setEditZoneId] = useState<string | null>(null);
     const [rejectId, setRejectId] = useState<string | null>(null);
     const [rejectReason, setRejectReason] = useState("");
@@ -146,14 +135,12 @@ export default function DashboardMaster() {
         email: '', firstName: '', lastName: '', role: 'representative', zoneId: 'none'
     });
 
-    // --- ESTADO PARA TRIANGULACIÓN COMERCIAL ---
     const [approvalModalOpen, setApprovalModalOpen] = useState(false);
     const [selectedOrderForApproval, setSelectedOrderForApproval] = useState<string | null>(null);
     const [selectedDrogueriaId, setSelectedDrogueriaId] = useState<string>('');
     const [codigoPedidoExterno, setCodigoPedidoExterno] = useState('');
     const [notasTelemarketing, setNotasTelemarketing] = useState('');
 
-    // --- DERIVED DATA (useMemo) ---
     const { stats, repData, regionStats, zoneData } = useMemo(() => {
         const initial = {
             stats: { totalVisits: 0, totalOrders: 0, totalSales: 0, activeZones: 0 },
@@ -170,84 +157,29 @@ export default function DashboardMaster() {
         const visitCount = visitsDataObj?.count || 0;
         const profilesData = profilesRoles?.profiles || [];
         const rolesData = profilesRoles?.roles || [];
-
         const zoneMap = (zonesData || []).reduce((acc: any, curr: any) => { acc[curr.id] = curr.name; return acc; }, {});
 
         const roleDataMap = (rolesData || []).reduce((acc: any, curr: any) => {
-            acc[curr.user_id] = {
-                role: curr.role,
-                is_active: curr.is_active,
-                zone_id: curr.zone_id,
-                supervisor_id: curr.supervisor_id
-            };
+            acc[curr.user_id] = { role: curr.role, is_active: curr.is_active, zone_id: curr.zone_id, supervisor_id: curr.supervisor_id };
             return acc;
         }, {});
 
-        // --- AGGREGATION LOGIC ---
         const repStatsMap: Record<string, RepPerformance> = {};
         profilesData?.forEach(p => {
             const roleInfo = roleDataMap[p.user_id];
             if (!isMaster && !roleInfo) return;
-
             repStatsMap[p.user_id] = {
-                id: p.user_id,
-                name: `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email,
-                email: p.email,
-                state: 'N/A', visits: 0, orders: 0, sales: 0, effectiveness: 0,
-                role: roleInfo?.role || 'representative',
-                is_active: roleInfo?.is_active ?? true,
-                invitation_status: (p.invitation_status as 'pending' | 'active') || 'active',
+                id: p.user_id, name: `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email, email: p.email,
+                state: 'N/A', visits: 0, orders: 0, sales: 0, effectiveness: 0, role: roleInfo?.role || 'representative',
+                is_active: roleInfo?.is_active ?? true, invitation_status: (p.invitation_status as any) || 'active',
                 region: roleInfo?.zone_id ? zoneMap[roleInfo.zone_id] : 'N/A'
             };
         });
 
-        visitsData?.forEach((v: any) => {
-            if (repStatsMap[v.user_id]) {
-                repStatsMap[v.user_id].visits++;
-                if (v.contacts?.state) {
-                    repStatsMap[v.user_id].state = v.contacts.state;
-                    repStatsMap[v.user_id].region = getRegion(v.contacts.state);
-                }
-            }
-        });
+        visitsData?.forEach((v: any) => { if (repStatsMap[v.user_id]) { repStatsMap[v.user_id].visits++; } });
+        ordersData?.forEach((o: any) => { if (repStatsMap[o.user_id]) { repStatsMap[o.user_id].orders++; repStatsMap[o.user_id].sales += (o.total || 0); } });
 
-        ordersData?.forEach((o: any) => {
-            if (repStatsMap[o.user_id]) {
-                repStatsMap[o.user_id].orders++;
-                repStatsMap[o.user_id].sales += (o.total || 0);
-                if (o.contacts?.state) {
-                    repStatsMap[o.user_id].state = o.contacts.state;
-                    repStatsMap[o.user_id].region = getRegion(o.contacts.state);
-                }
-            }
-        });
-
-        const repsArray = Object.values(repStatsMap)
-            .map(rep => ({
-                ...rep,
-                effectiveness: rep.visits > 0 ? (rep.orders / rep.visits) * 100 : 0
-            }))
-            .filter(rep => {
-                const currentEmail = user?.email?.toLowerCase();
-                const repEmail = rep.email.toLowerCase();
-
-                if (user?.id && rep.id === user.id && !isMaster) return false;
-                if (currentEmail && repEmail === currentEmail && !isMaster) return false;
-                if (!isMaster && (repEmail.includes('demo') || rep.name.toLowerCase().includes('demo'))) return false;
-
-                if (isMaster || isManager || isCoordinator) return true;
-
-                const roleInfo = roleDataMap[rep.id];
-                if (isSupervisor) {
-                    const isMySubordinate = roleInfo?.supervisor_id === user?.id;
-                    const isRepresentative = rep.role === 'representative';
-                    return isMySubordinate && isRepresentative;
-                }
-
-                return rep.role === 'representative' || rep.role === 'coordinator';
-            })
-            .sort((a, b) => b.sales - a.sales);
-
+        const repsArray = Object.values(repStatsMap).map(rep => ({ ...rep, effectiveness: rep.visits > 0 ? (rep.orders / rep.visits) * 100 : 0 }));
         const regMap: Record<string, { sales: number, visits: number }> = {};
         repsArray.forEach(rep => {
             if (rep.region === 'N/A') return;
@@ -257,245 +189,60 @@ export default function DashboardMaster() {
         });
 
         const zoneStatsMap: Record<string, ZoneKPI> = {};
-        (kpiDataRaw || []).forEach((k: any) => {
-            zoneStatsMap[k.zone_name] = {
-                estate: k.zone_name, region: k.zone_name, visit_count: 0, orders_count: k.total_orders || 0, sales_total: k.total_amount || 0
-            };
-        });
-
-        visitsData?.forEach((v: any) => {
-            const state = v.contacts?.state;
-            if (state) {
-                const regionName = getRegion(state);
-                if (!zoneStatsMap[regionName]) {
-                    zoneStatsMap[regionName] = { estate: regionName, region: regionName, visit_count: 0, orders_count: 0, sales_total: 0 };
-                }
-                zoneStatsMap[regionName].visit_count++;
-            }
-        });
+        (kpiDataRaw || []).forEach((k: any) => { zoneStatsMap[k.zone_name] = { estate: k.zone_name, region: k.zone_name, visit_count: 0, orders_count: k.total_orders || 0, sales_total: k.total_amount || 0 }; });
 
         const finalZoneData = Object.values(zoneStatsMap);
-
-        const newStats = {
-            totalVisits: visitCount || 0,
-            totalOrders: ordersData?.length || 0,
-            totalSales: ordersData?.reduce((sum: number, o: any) => sum + (o.total || 0), 0) || 0,
-            activeZones: finalZoneData.length || 0
-        };
-
-        const productCounts: Record<string, number> = {};
-        const sampleCounts: Record<string, number> = {};
-        visitsData?.forEach((v: any) => {
-            if (Array.isArray(v.products_presented)) v.products_presented.forEach((p: string) => productCounts[p.trim()] = (productCounts[p.trim()] || 0) + 1);
-            if (v.samples_delivered) {
-                const samples = Array.isArray(v.samples_delivered) ? v.samples_delivered : v.samples_delivered.split(',').map((s: string) => s.trim());
-                samples.forEach((s: string) => sampleCounts[s] = (sampleCounts[s] || 0) + 1);
-            }
-        });
-
-        const getTop5 = (r: Record<string, number>) => Object.entries(r).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 5);
-
         return {
-            stats: newStats,
-            repData: repsArray,
-            regionStats: regMap,
-            zoneData: finalZoneData,
-            topProducts: getTop5(productCounts),
-            topSamples: getTop5(sampleCounts)
+            stats: { totalVisits: visitCount || 0, totalOrders: ordersData?.length || 0, totalSales: ordersData?.reduce((sum: number, o: any) => sum + (o.total || 0), 0) || 0, activeZones: finalZoneData.length || 0 },
+            repData: repsArray, regionStats: regMap, zoneData: finalZoneData, topProducts: [], topSamples: []
         };
-
-    }, [visitsDataObj, ordersData, profilesRoles, zonesData, kpiDataRaw, filters, loading, user, isMaster, isSupervisor]);
-
+    }, [visitsDataObj, ordersData, profilesRoles, zonesData, kpiDataRaw, loading, isMaster, user]);
 
     const handleCreateUser = async () => {
         setNewUserLoading(true);
         try {
-            const { data, error } = await supabase.functions.invoke('invite-user', {
-                body: {
-                    email: newUserForm.email,
-                    firstName: newUserForm.firstName,
-                    lastName: newUserForm.lastName,
-                    role: newUserForm.role,
-                    zoneId: newUserForm.zoneId === 'none' ? null : newUserForm.zoneId,
-                    organizationId: organization?.id
-                }
-            });
-
-            if (error) throw error;
-
-            toast({ title: "Invitación Enviada", description: `Se ha enviado un correo de acceso a ${newUserForm.email}.`, className: "bg-emerald-50 border-emerald-200 text-emerald-800" });
+            await supabase.functions.invoke('invite-user', { body: { email: newUserForm.email, firstName: newUserForm.firstName, lastName: newUserForm.lastName, role: newUserForm.role, zoneId: newUserForm.zoneId === 'none' ? null : newUserForm.zoneId, organizationId: organization?.id } });
+            toast({ title: "Invitación Enviada" });
             setOpenNewUser(false);
-            setNewUserForm({ email: '', firstName: '', lastName: '', role: 'representative', zoneId: 'none' });
             queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-        } catch (err: any) {
-            console.error("Error creating user:", err);
-            toast({ title: "Error", description: err.message || "No se pudo enviar la invitación.", variant: "destructive" });
-        } finally {
-            setNewUserLoading(false);
-        }
+        } catch (err: any) { toast({ title: "Error", description: err.message, variant: "destructive" }); } finally { setNewUserLoading(false); }
     };
 
-    // --- LÓGICA: AUTH Y ACCESO ---
-    useEffect(() => {
-        const checkAccess = async () => {
-            if (authLoading) return;
-            if (!user || (!isManager && !isAdmin && !isMaster)) {
-                toast({ title: "Acceso Restringido", description: "No tienes permisos para ver el Panel del Gerente.", variant: "destructive" });
-                navigate("/");
-                return;
-            }
-        };
-        checkAccess();
-    }, [user, isManager, isAdmin, isMaster, navigate, authLoading]);
-
-    // --- ACCIONES: TRIANGULACIÓN COMERCIAL ---
-    const handleOpenApprovalModal = (orderId: string, currentDrogueriaId?: string) => {
-        setSelectedOrderForApproval(orderId);
-        setSelectedDrogueriaId(currentDrogueriaId || '');
-        setCodigoPedidoExterno('');
-        setNotasTelemarketing('');
-        setApprovalModalOpen(true);
-    };
+    useEffect(() => { if (!authLoading && (!user || (!isManager && !isAdmin && !isMaster))) { navigate("/"); } }, [user, isManager, isAdmin, isMaster, navigate, authLoading]);
 
     const handleConfirmWithDistributor = async () => {
-        if (!selectedOrderForApproval || !codigoPedidoExterno || !selectedDrogueriaId) {
-            toast({ title: "Campos Requeridos", description: "Debes seleccionar una droguería e ingresar el código de pedido.", variant: "destructive" });
-            return;
-        }
+        if (!selectedOrderForApproval || !codigoPedidoExterno || !selectedDrogueriaId) return;
         try {
-            await dashboardService.confirmOrderWithDistributor(
-                selectedOrderForApproval, selectedDrogueriaId, codigoPedidoExterno, notasTelemarketing
-            );
-            toast({ title: "✅ Pedido Confirmado", description: `Código: ${codigoPedidoExterno}`, className: "bg-emerald-50 border-emerald-200 text-emerald-800" });
-            setApprovalModalOpen(false); setSelectedOrderForApproval(null);
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-        } catch (error) {
-            console.error('Error confirming order:', error);
-            toast({ title: "Error", description: "No se pudo confirmar el pedido.", variant: "destructive" });
-        }
-    };
-
-    const handleRechazarPedido = async () => {
-        if (!rejectId || !rejectReason) return;
-        try {
-            const { error } = await supabase.from('transfer_orders').update({
-                status: 'rejected_by_distributor', notas_telemarketing: `Rechazado: ${rejectReason}`
-            }).eq('id', rejectId);
-            if (error) throw error;
-            toast({ title: "Pedido Rechazado", description: "La droguería rechazó el pedido.", className: "bg-amber-50 border-amber-200 text-amber-800" });
-            setRejectId(null); setRejectReason("");
+            await dashboardService.confirmOrderWithDistributor(selectedOrderForApproval, selectedDrogueriaId, codigoPedidoExterno, notasTelemarketing);
+            toast({ title: "✅ Pedido Confirmado" });
+            setApprovalModalOpen(false);
             queryClient.invalidateQueries({ queryKey: ['dashboard'] });
         } catch (error) { toast({ title: "Error", variant: "destructive" }); }
     };
 
-    const handleUpdateRole = async () => {
-        if (!selectedRep || !editRole) return;
-        try {
-            const { error } = await supabase.from('user_roles').upsert({
-                user_id: selectedRep.id, role: editRole, zone_id: editZoneId, updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id' });
-            if (error) throw error;
-            toast({ title: "Perfil Actualizado", description: `El rol de ${selectedRep.name} ahora es ${editRole}.` });
-            setSelectedRep(null); queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-        } catch (error) { toast({ title: "Error", variant: "destructive" }); }
-    };
-
-    if (loading && !stats.totalVisits) return (
-        <div className="flex items-center justify-center h-full min-h-[500px] bg-slate-50">
-            <div className="flex flex-col items-center gap-4">
-                <RefreshCw className="h-10 w-10 text-blue-600 animate-spin" />
-                <p className="text-slate-500 font-medium">Sincronizando Centro de Mando...</p>
-            </div>
-        </div>
-    );
-
-    // --- UI HELPERS ---
-    const getUserName = () => {
-        const myProfile = profilesRoles?.profiles?.find(p => p.user_id === user?.id);
-        if (myProfile?.first_name || myProfile?.last_name) {
-            return `${myProfile.first_name || ''} ${myProfile.last_name || ''}`.trim();
-        }
-        if (user?.email) {
-            return user.email.split('@')[0]
-                .split(/[._]/)
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-        }
-        return 'Usuario';
-    };
+    if (loading && !stats.totalVisits) return <div className="h-screen flex items-center justify-center bg-background text-primary font-black uppercase tracking-widest animate-pulse">Sincronizando Centro de Mando...</div>;
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
-
-            {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
-                {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-50 dark:bg-rose-900/10 rounded-full blur-3xl opacity-60"></div>
-
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none transform transition-transform hover:scale-105">
-                            <LayoutDashboard className="text-white h-8 w-8" />
-                        </div>
+        <div className="flex flex-col h-full bg-background space-y-6">
+            {/* Header Industrial Elite */}
+            <header className="bg-card px-8 py-10 rounded-[3rem] border border-border shadow-soft relative overflow-hidden mx-1 -mt-2">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+                    <div className="flex items-center gap-6">
+                        <LayoutDashboard className="text-primary h-14 w-14" />
                         <div>
-                            <p className="text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Panel de Control Global</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                                ¡Hola, {getUserName()}!
-                            </h1>
-                            <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
-                                    {isSystemAdmin ? 'System Admin' : (ROLE_LABELS[role] || role)}
-                                </Badge>
-                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">Sistema Activo</span>
+                            <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-1">Malla de Control Operativa</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Centro de Mando</h1>
+                            <div className="flex items-center gap-3 mt-3">
+                                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] px-3 py-1 uppercase tracking-widest italic">{ROLE_LABELS[role] || 'Acceso Maestro'}</Badge>
+                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-muted/30 border border-border">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">Core Online</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="flex flex-col items-end gap-3">
-                        <div className="flex items-center gap-3">
-                            <div className="text-right hidden sm:block">
-                                <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">
-                                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </div>
-                                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                                    {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-                                </div>
-                            </div>
-                            <Button
-                                onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })}
-                                size="icon"
-                                variant="outline"
-                                className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 group"
-                            >
-                                <RefreshCw className={cn("h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-indigo-600 transition-colors", loading && "animate-spin")} />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Performance Summary Bar */}
-                <div className="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex flex-wrap items-center gap-x-8 gap-y-3">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
-                            <Activity className="h-4 w-4 text-emerald-600" />
-                        </div>
-                        <div>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Zonas Activas</p>
-                            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{stats.activeZones} Regiones</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
-                            <TrendingUp className="h-4 w-4 text-indigo-600" />
-                        </div>
-                        <div>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Ventas Mes</p>
-                            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">${stats.totalSales.toLocaleString()}</p>
-                        </div>
+                    <div className="flex items-center gap-4">
+                        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} size="icon" variant="ghost" className="h-14 w-14 rounded-full hover:bg-primary/10 hover:text-primary transition-all"><RefreshCw className={cn("h-6 w-6", loading && "animate-spin")} /></Button>
                     </div>
                 </div>
             </header>
@@ -503,331 +250,109 @@ export default function DashboardMaster() {
             <AdminDataFilter onFilterChange={setFilters} />
 
             <Tabs defaultValue="dashboard" className="w-full space-y-6" onValueChange={setActiveTab}>
-                {/* TABS NAVIGATION */}
-                <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-1 rounded-2xl h-auto shadow-sm grid grid-cols-2 md:grid-cols-4 lg:inline-flex lg:w-auto gap-2">
-                    <TabsTrigger value="dashboard" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-indigo-200 dark:data-[state=active]:shadow-none rounded-xl transition-all font-bold text-xs uppercase tracking-wider">
-                        <LayoutDashboard size={14} strokeWidth={2.5} /> Tablero
-                    </TabsTrigger>
-                    {/* Map tab removed to avoid conflict with main map module */}
-                    <TabsTrigger value="pedidos" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-rose-200 dark:data-[state=active]:shadow-none rounded-xl transition-all font-bold text-xs uppercase tracking-wider text-rose-600 dark:text-rose-400">
-                        <ShoppingCart size={14} strokeWidth={2.5} /> Pedidos
-                        {pendingOrders.length > 0 && <span className="ml-2 bg-white text-rose-600 text-[10px] px-2 py-0.5 rounded-full font-black">{pendingOrders.length}</span>}
-                    </TabsTrigger>
-                    <TabsTrigger value="equipo" className="flex items-center gap-2 px-6 py-2.5 data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-amber-100 dark:data-[state=active]:shadow-none rounded-xl transition-all font-bold text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                        <Users size={14} strokeWidth={2.5} /> Equipo
-                    </TabsTrigger>
-                </TabsList>
-                {activeTab === 'equipo' && (
-                    <div className="flex justify-end mt-4 px-1">
-                        <Button onClick={() => setOpenNewUser(true)} className="bg-amber-500 hover:bg-amber-600">
-                            <Users className="mr-2 h-4 w-4" /> Invitar Miembro
-                        </Button>
-                    </div>
-                )}
+                {/* TABS NAVIGATION - INDUSTRIAL CAPSULE DESIGN (ULTRA LIGHT ADAPTATIVE) */}
+                <div className="flex justify-start px-2">
+                    <TabsList className="bg-muted/50 dark:bg-slate-900/60 border border-border/50 p-1.5 rounded-full h-auto flex flex-nowrap gap-2 shadow-sm backdrop-blur-md">
+                        <TabsTrigger 
+                            value="dashboard" 
+                            className="flex items-center gap-2.5 px-7 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none group"
+                        >
+                            <LayoutDashboard size={16} strokeWidth={3} className="text-indigo-600 group-data-[state=active]:text-white" /> TABLERO
+                        </TabsTrigger>
+                        
+                        <TabsTrigger 
+                            value="pedidos" 
+                            className="flex items-center gap-3 px-7 py-2.5 data-[state=active]:bg-rose-600 data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-rose-600 group"
+                        >
+                            <ShoppingCart size={16} strokeWidth={3} className="group-data-[state=active]:text-white" /> PEDIDOS
+                            {pendingOrders.length > 0 && (
+                                <span className="ml-1.5 px-2 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-black">{pendingOrders.length}</span>
+                            )}
+                        </TabsTrigger>
 
-                {/* VISTA DASHBOARD */}
-                <TabsContent value="dashboard" className="space-y-6 animate-in fade-in duration-300">
-                    {/* KPIS */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <TabsTrigger 
+                            value="equipo" 
+                            className="flex items-center gap-3 px-7 py-2.5 data-[state=active]:bg-amber-500 data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-amber-600 group"
+                        >
+                            <Users size={16} strokeWidth={3} className="group-data-[state=active]:text-white" /> EQUIPO
+                        </TabsTrigger>
+                    </TabsList>
+                </div>
+
+                <TabsContent value="dashboard" className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
+                    {/* KPI STRIP - SIN FONDOS */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         <KPICard title="Ventas Totales" value={`$${stats.totalSales.toLocaleString()}`} icon={<TrendingUp />} color="emerald" />
                         <KPICard title="Visitas Médicas" value={stats.totalVisits} icon={<Activity />} color="blue" />
                         <KPICard title="Pedidos" value={stats.totalOrders} icon={<ShoppingCart />} color="violet" />
-                        <KPICard title="Zonas Activas" value={stats.activeZones} icon={<Globe />} color="amber" />
+                        <KPICard title="Detección Zonas" value={stats.activeZones} icon={<Globe />} color="amber" />
                     </div>
-
-                    {/* Resumen Regional */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {Object.entries(regionStats).map(([region, data]) => (
-                            <Card key={region} className="bg-slate-50 border-slate-200 shadow-sm hover:shadow-md transition-all cursor-default">
-                                <CardContent className="p-4 pt-5">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{region}</p>
-                                    <div className="flex justify-between items-end">
-                                        <p className="text-lg font-bold text-slate-700">${data.sales.toLocaleString()}</p>
-                                        <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">{data.visits} vts</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-
                     <CompetitivenessMonitor />
                     <AnalyticsCharts zoneData={zoneData} />
                 </TabsContent>
 
-                {/* VISTA PEDIDOS */}
-                <TabsContent value="pedidos" className="space-y-4 animate-in fade-in duration-300">
-                    <Card className="bg-slate-50 border-slate-200 shadow-sm">
-                        <CardContent className="p-0">
-                            <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
-                                    <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="w-[120px] text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">Orden #</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Farmacia</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Representante</TableHead>
-                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Total</TableHead>
-                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Acciones</TableHead>
+                <TabsContent value="pedidos" className="space-y-4 animate-in slide-in-from-right-10 duration-500">
+                    <Card className="border-none bg-card shadow-soft rounded-[2rem] overflow-hidden">
+                        <Table>
+                            <TableHeader className="bg-muted/5">
+                                <TableRow className="border-none">
+                                    <TableHead className="py-6 pl-8 text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Orden</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Farmacia / Punto</TableHead>
+                                    <TableHead className="text-right pr-8 text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Monto Nucleo</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {pendingOrders.map(order => (
+                                    <TableRow key={order.id} className="hover:bg-muted/5 transition-all">
+                                        <TableCell className="pl-8 py-5 font-black text-foreground font-mono">{order.order_number}</TableCell>
+                                        <TableCell className="font-bold text-muted-foreground uppercase text-xs">{order.pharmacy_name}</TableCell>
+                                        <TableCell className="text-right pr-8 font-black text-foreground">${order.total?.toLocaleString()}</TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {pendingOrders.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={5} className="text-center py-20 text-slate-400 bg-slate-50/20">
-                                                <div className="flex flex-col items-center justify-center">
-                                                    <div className="bg-emerald-50 p-4 rounded-full mb-4">
-                                                        <CheckCircle className="h-10 w-10 text-emerald-400" />
-                                                    </div>
-                                                    <p className="font-bold text-lg text-slate-600">¡Bandeja limpia!</p>
-                                                    <p className="text-sm mt-1">No hay pedidos pendientes.</p>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        pendingOrders.map((order) => (
-                                            <TableRow key={order.id} className="hover:bg-blue-50/30 transition group">
-                                                <TableCell className="font-mono font-bold text-slate-700 bg-slate-100/50 rounded-sm">
-                                                    {order.order_number}
-                                                </TableCell>
-                                                <TableCell className="font-medium text-slate-800">{order.pharmacy_name}</TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-sm font-medium">{order.users?.first_name} {order.users?.last_name}</span>
-                                                        <span className="text-[10px] text-slate-400">{order.users?.email}</span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="text-right font-bold text-slate-800">
-                                                    ${order.total?.toFixed(2)}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex justify-center gap-2">
-                                                        <Button
-                                                            size="icon"
-                                                            variant="outline"
-                                                            className="h-9 w-9 border-emerald-200 text-emerald-600 hover:bg-emerald-500 hover:text-white"
-                                                            onClick={() => handleOpenApprovalModal(order.id, (order as any).drogueria_sugerida_id)}
-                                                            title="Gestionar con Droguería"
-                                                        >
-                                                            <CheckCircle className="h-5 w-5" />
-                                                        </Button>
-                                                        <Button size="icon" variant="outline" className="h-9 w-9 border-rose-200 text-rose-600 hover:bg-rose-500 hover:text-white" onClick={() => setRejectId(order.id)}>
-                                                            <XCircle className="h-5 w-5" />
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </Card>
                 </TabsContent>
 
-                {/* VISTA EQUIPO */}
-                <TabsContent value="equipo" className="space-y-4 animate-in fade-in duration-300">
-                    <Card className="bg-slate-50 border-slate-200 shadow-sm">
-                        <CardContent className="p-0">
-                            <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
-                                    <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="w-[60px] text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">#</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Usuario</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Rol / Zona</TableHead>
-                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Estado</TableHead>
-                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Ventas</TableHead>
-                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Efec.</TableHead>
-                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Editar</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {repData.filter(r => {
-                                        if (filters.region && filters.region !== 'all' && r.region !== filters.region) return false;
-                                        if (filters.state && filters.state !== 'all' && r.state !== filters.state) return false;
-                                        if (filters.repId && filters.repId !== 'all' && r.id !== filters.repId) return false;
-                                        return true;
-                                    }).map((rep, idx) => (
-                                        <TableRow key={rep.id} className="hover:bg-slate-50">
-                                            <TableCell className="text-center font-bold text-slate-300">{idx + 1}</TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <span className="font-semibold text-slate-800">{rep.name}</span>
-                                                    <span className="text-[10px] text-slate-400">{rep.email}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col gap-1">
-                                                    <Badge variant="outline" className={`w-fit text-[10px] ${ROLE_COLORS[rep.role || 'representative']}`}>
-                                                        {ROLE_LABELS[rep.role || 'representative'] || 'Representante'}
-                                                    </Badge>
-                                                    <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1"><Globe className="h-3 w-3" /> {rep.region}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-center">
-                                                {rep.invitation_status === 'pending' ? (
-                                                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 animate-pulse">
-                                                        Pendiente
-                                                    </Badge>
-                                                ) : (
-                                                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                                                        Activo
-                                                    </Badge>
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="text-right font-bold text-emerald-600">${rep.sales.toLocaleString()}</TableCell>
-                                            <TableCell className="text-right"><span className={`font-bold ${rep.effectiveness > 50 ? 'text-emerald-600' : 'text-slate-400'}`}>{rep.effectiveness.toFixed(0)}%</span></TableCell>
-                                            <TableCell className="text-center">
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-400 hover:text-blue-600" onClick={() => { setSelectedRep(rep); setEditRole(rep.role || 'representative'); setEditZoneId(allZones.find(z => z.name === rep.region)?.id || null); }}>
-                                                    <Search className="h-4 w-4" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                <TabsContent value="equipo" className="animate-in slide-in-from-left-10 duration-500">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {repData.map(rep => (
+                            <Card key={rep.id} className="border-none bg-card shadow-soft p-6 rounded-[2rem] group hover:scale-[1.02] transition-all">
+                                <div className="flex justify-between items-start mb-4">
+                                     <Users className="text-amber-500 h-10 w-10" />
+                                     <Badge className={cn("px-3 py-1 font-black text-[9px] uppercase border", ROLE_COLORS[rep.role || 'representative'])}>{ROLE_LABELS[rep.role || 'representative']}</Badge>
+                                </div>
+                                <h3 className="font-black text-foreground text-base uppercase mb-1">{rep.name}</h3>
+                                <p className="text-[10px] text-muted-foreground mb-4 font-mono tracking-tighter">{rep.email}</p>
+                                <div className="pt-4 border-t border-border flex justify-between items-center">
+                                    <p className="text-sm font-black text-emerald-500 tabular-nums">${rep.sales.toLocaleString()}</p>
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase">{rep.effectiveness.toFixed(0)}% Eficacia</p>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
                 </TabsContent>
             </Tabs>
-
-            {/* --- MODALES --- */}
-
-            <Dialog open={openNewUser} onOpenChange={setOpenNewUser}>
-                <DialogContent>
-                    <DialogHeader><DialogTitle>Invitar Miembro al Equipo</DialogTitle><DialogDescription>Se enviará un correo electrónico con un enlace de acceso.</DialogDescription></DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2"><label className="text-sm font-medium">Nombre</label><Input placeholder="Juan" value={newUserForm.firstName} onChange={e => setNewUserForm({ ...newUserForm, firstName: e.target.value })} /></div>
-                            <div className="grid gap-2"><label className="text-sm font-medium">Apellido</label><Input placeholder="Pérez" value={newUserForm.lastName} onChange={e => setNewUserForm({ ...newUserForm, lastName: e.target.value })} /></div>
-                        </div>
-                        <div className="grid gap-2"><label className="text-sm font-medium">Email</label><Input type="email" placeholder="email@alphabmt.com" value={newUserForm.email} onChange={e => setNewUserForm({ ...newUserForm, email: e.target.value })} /></div>
-                        <div className="grid gap-2"><label className="text-sm font-medium">Rol</label>
-                            <Select value={newUserForm.role} onValueChange={val => setNewUserForm({ ...newUserForm, role: val })}>
-                                <SelectTrigger><SelectValue placeholder="Seleccionar Rol" /></SelectTrigger>
-                                <SelectContent>{Object.entries(ROLE_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid gap-2"><label className="text-sm font-medium">Zona</label>
-                            <Select value={newUserForm.zoneId} onValueChange={val => setNewUserForm({ ...newUserForm, zoneId: val })}>
-                                <SelectTrigger><SelectValue placeholder="Seleccionar Zona" /></SelectTrigger>
-                                <SelectContent><SelectItem value="none">Sin Zona</SelectItem>{allZones.map(z => <SelectItem key={z.id} value={z.id}>{z.name}</SelectItem>)}</SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter><Button variant="outline" onClick={() => setOpenNewUser(false)}>Cancelar</Button><Button onClick={handleCreateUser} disabled={newUserLoading}>{newUserLoading ? 'Enviando Invitación...' : 'Enviar Invitación'}</Button></DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            <Dialog open={!!selectedRep} onOpenChange={(open) => !open && setSelectedRep(null)}>
-                <DialogContent>
-                    <DialogHeader><DialogTitle>Editar Rol de {selectedRep?.name}</DialogTitle><DialogDescription>Modifica el nivel de acceso y zona asignada.</DialogDescription></DialogHeader>
-                    {selectedRep && (
-                        <div className="grid gap-4 py-4">
-                            <div className="grid gap-2"><label className="text-sm font-medium">Rol</label>
-                                <Select value={editRole} onValueChange={setEditRole}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>{Object.entries(ROLE_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid gap-2"><label className="text-sm font-medium">Zona asignada</label>
-                                <Select value={editZoneId || "none"} onValueChange={v => setEditZoneId(v === "none" ? null : v)}>
-                                    <SelectTrigger><SelectValue placeholder="Seleccionar Zona" /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">Sin zona</SelectItem>
-                                        {allZones.map(z => <SelectItem key={z.id} value={z.id}>{z.name}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    )}
-                    <DialogFooter><Button onClick={handleUpdateRole}>Guardar Cambios</Button></DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            <Dialog open={approvalModalOpen} onOpenChange={setApprovalModalOpen}>
-                <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2"><ShoppingCart className="h-5 w-5 text-blue-600" /> Gestionar Transferencia</DialogTitle>
-                        <DialogDescription>Confirma el pedido con el distribuidor externo</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2"><label className="text-sm font-medium flex items-center gap-2"><Building2 className="h-4 w-4 text-blue-600" /> Droguería</label>
-                            <Select value={selectedDrogueriaId} onValueChange={setSelectedDrogueriaId}>
-                                <SelectTrigger><SelectValue placeholder="Seleccionar droguería" /></SelectTrigger>
-                                <SelectContent>{(droguerias || []).map((d: any) => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid gap-2"><label className="text-sm font-medium flex items-center gap-2"><FileText className="h-4 w-4 text-green-600" /> Código Pedido Externo</label><Input placeholder="Ej: ORD-998877" value={codigoPedidoExterno} onChange={e => setCodigoPedidoExterno(e.target.value)} /></div>
-                        <div className="grid gap-2"><label className="text-sm font-medium flex items-center gap-2"><Clock className="h-4 w-4 text-amber-600" /> Notas</label><Textarea placeholder="Observaciones..." value={notasTelemarketing} onChange={e => setNotasTelemarketing(e.target.value)} /></div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setApprovalModalOpen(false)}>Cancelar</Button>
-                        <Button onClick={handleConfirmWithDistributor} className="bg-emerald-600 hover:bg-emerald-700"><Check className="h-4 w-4 mr-2" /> Confirmar</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            <Dialog open={!!rejectId} onOpenChange={open => !open && setRejectId(null)}>
-                <DialogContent>
-                    <DialogHeader><DialogTitle className="text-rose-600">Rechazar Pedido</DialogTitle><DialogDescription>Indica el motivo del rechazo.</DialogDescription></DialogHeader>
-                    <div className="py-4"><Textarea placeholder="Motivo del rechazo (ej: Sin stock, cliente moroso...)" value={rejectReason} onChange={e => setRejectReason(e.target.value)} /></div>
-                    <DialogFooter><Button variant="outline" onClick={() => setRejectId(null)}>Cancelar</Button><Button variant="destructive" onClick={handleRechazarPedido}>Rechazar Pedido</Button></DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
 
 function KPICard({ title, value, icon, color }: any) {
-    const variants: any = {
-        emerald: {
-            bg: "bg-emerald-50 dark:bg-emerald-950/30",
-            icon: "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30",
-            glow: "shadow-emerald-100 dark:shadow-none"
-        },
-        blue: {
-            bg: "bg-blue-50 dark:bg-blue-950/30",
-            icon: "text-blue-600 bg-blue-100 dark:bg-blue-900/30",
-            glow: "shadow-blue-100 dark:shadow-none"
-        },
-        violet: {
-            bg: "bg-violet-50 dark:bg-violet-950/30",
-            icon: "text-violet-600 bg-violet-100 dark:bg-violet-900/30",
-            glow: "shadow-violet-100 dark:shadow-none"
-        },
-        amber: {
-            bg: "bg-amber-50 dark:bg-amber-950/30",
-            icon: "text-amber-600 bg-amber-100 dark:bg-amber-900/30",
-            glow: "shadow-amber-100 dark:shadow-none"
-        },
+    const colors: any = {
+        emerald: "text-emerald-500",
+        blue: "text-blue-500",
+        violet: "text-violet-500",
+        amber: "text-amber-500"
     };
-
-    const v = variants[color] || variants.blue;
-
     return (
-        <Card className="border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group hover:scale-[1.02] transition-all duration-300">
-            <CardContent className="p-6 relative">
-                {/* Subtle gradient background on hover */}
-                <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-5 transition-opacity duration-500", v.bg)}></div>
-
-                <div className="flex items-center justify-between relative z-10">
-                    <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.15em]">{title}</p>
-                        <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
-                            {value}
-                        </p>
-                    </div>
-                    <div className={cn("p-4 rounded-[1.25rem] transition-all duration-300 group-hover:scale-110", v.icon)}>
-                        {cloneElement(icon as React.ReactElement, { size: 24, strokeWidth: 2.5 })}
-                    </div>
+        <Card className="border-none bg-card shadow-soft rounded-[2rem] hover:shadow-xl transition-all">
+            <CardContent className="p-8 flex items-center justify-between">
+                <div>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">{title}</p>
+                    <p className="text-3xl font-black text-foreground tracking-tighter tabular-nums">{value}</p>
                 </div>
-
-                {/* Decorative dots pattern */}
-                <div className="absolute -bottom-2 -right-2 w-16 h-16 opacity-[0.03] pointer-events-none">
-                    <svg width="100%" height="100%" viewBox="0 0 100 100">
-                        <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                            <circle cx="2" cy="2" r="2" fill="currentColor" />
-                        </pattern>
-                        <rect width="100" height="100" fill="url(#dots)" />
-                    </svg>
+                <div className={cn("h-12 w-12 flex items-center justify-center pt-1", colors[color])}>
+                    {cloneElement(icon, { size: 40, strokeWidth: 2.5 })}
                 </div>
             </CardContent>
         </Card>

@@ -22,6 +22,7 @@ import { MockDataProvider } from "@/contexts/MockDataProvider";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { ThemeProvider } from "./components/theme-provider";
 
 // Eager load critical pages for faster First Contentful Paint (FCP)
 import LandingPage from "./pages/LandingPage";
@@ -65,6 +66,7 @@ const HumanResources = lazy(() => import("./pages/HumanResources"));
 const HRRecruitment = lazy(() => import("./pages/HRRecruitment"));
 const PMBOKMaster = lazy(() => import("./pages/PMBOKMaster"));
 const CRMDashboard = lazy(() => import("./pages/CRMDashboard"));
+const SalesPipeline = lazy(() => import("./pages/SalesPipeline"));
 const FinanceMonitor = lazy(() => import("./pages/FinanceMonitor"));
 const AssetBunker = lazy(() => import("./pages/AssetBunker"));
 
@@ -80,6 +82,8 @@ const BillingManager = lazy(() => import("./pages/Master/Billing/BillingManager"
 const SystemAlerts = lazy(() => import("./pages/Master/Reminders/SystemAlerts"));
 const PlanManager = lazy(() => import("./pages/Master/Memberships/PlanManager"));
 const LandingEditor = lazy(() => import("./pages/Master/LandingEditor"));
+const CompensationConfig = lazy(() => import("./pages/Master/CompensationConfig"));
+const PayoutDashboard = lazy(() => import("./pages/Commercial/PayoutDashboard"));
 const OnboardingWizard = lazy(() => import("./components/onboarding/OnboardingWizard"));
 
 const WarehouseLayout = lazy(() => import("@/components/warehouse/WarehouseLayout"));
@@ -258,9 +262,10 @@ const AppContent = () => (
         <Layout><PMBOKMaster /></Layout>
       </ProtectedRoute>
     } />
-    <Route path="admin/crm" element={
-      <ProtectedRoute allowedRoles={['master']}>
-        <Layout><CRMDashboard /></Layout>
+    <Route path="admin/crm" element={<Navigate to="/sales-pipeline" replace />} />
+    <Route path="sales-pipeline" element={
+      <ProtectedRoute>
+        <Layout><SalesPipeline /></Layout>
       </ProtectedRoute>
     } />
     <Route path="master-panel" element={
@@ -356,6 +361,16 @@ const AppContent = () => (
         <Layout><LandingEditor /></Layout>
       </ProtectedRoute>
     } />
+    <Route path="master/compensation" element={
+      <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
+        <Layout><CompensationConfig /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="commercial/payouts" element={
+      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'representative']}>
+        <Layout><PayoutDashboard /></Layout>
+      </ProtectedRoute>
+    } />
     {/* Catch-all relative to this component */}
     <Route path="*" element={<NotFound />} />
   </Routes>
@@ -364,54 +379,56 @@ const AppContent = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <AuthProvider>
-        <MockDataProvider>
-          <DemoDataSeeder />
-          <OrganizationProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter
-                future={{
-                  v7_startTransition: true,
-                  v7_relativeSplatPath: true,
-                }}
-              >
-                <Suspense fallback={<PageLoader />}>
-                  <RoutesWithRemount>
-                    <Routes>
-                      {/* Public Routes */}
-                      <Route path="/" element={<LandingPage />} />
-                      <Route path="/auth" element={<AuthPage />} />
-                      <Route path="/marketing/route-optimizer" element={<RouteOptimizer />} />
-                      <Route path="/marketing/comparison" element={<ComparisonPage />} />
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <AuthProvider>
+          <MockDataProvider>
+            <DemoDataSeeder />
+            <OrganizationProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter
+                  future={{
+                    v7_startTransition: true,
+                    v7_relativeSplatPath: true,
+                  }}
+                >
+                  <Suspense fallback={<PageLoader />}>
+                    <RoutesWithRemount>
+                      <Routes>
+                        {/* Public Routes */}
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/auth" element={<AuthPage />} />
+                        <Route path="/marketing/route-optimizer" element={<RouteOptimizer />} />
+                        <Route path="/marketing/comparison" element={<ComparisonPage />} />
 
-                      {/* Demo Landing - Initiates Demo Mode */}
-                      <Route path="/demo" element={<DemoPage />} />
+                        {/* Demo Landing - Initiates Demo Mode */}
+                        <Route path="/demo" element={<DemoPage />} />
 
-                      {/* Isolated Demo Routes Cluster */}
-                      <Route path="/demo/*" element={<AppContent />} />
+                        {/* Isolated Demo Routes Cluster */}
+                        <Route path="/demo/*" element={<AppContent />} />
 
-                      {/* Main Application Routes Cluster */}
-                      <Route path="/*" element={<AppContent />} />
+                        {/* Main Application Routes Cluster */}
+                        <Route path="/*" element={<AppContent />} />
 
-                      <Route path="/onboarding" element={
-                        <ProtectedRoute>
-                          <OnboardingWizard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/product/:id" element={<PublicProductPage />} />
+                        <Route path="/onboarding" element={
+                          <ProtectedRoute>
+                            <OnboardingWizard />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/product/:id" element={<PublicProductPage />} />
 
-                      {/* Global Catch-all */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </RoutesWithRemount>
-                </Suspense>
-              </BrowserRouter>
-            </TooltipProvider>
-          </OrganizationProvider>
-        </MockDataProvider>
-      </AuthProvider>
+                        {/* Global Catch-all */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </RoutesWithRemount>
+                  </Suspense>
+                </BrowserRouter>
+              </TooltipProvider>
+            </OrganizationProvider>
+          </MockDataProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );

@@ -569,6 +569,53 @@ function MaintenanceForm({ data, onChange, errors = [] }: { data: MaintenanceDat
     );
 }
 
+function SpinFallbackForm({ data, onChange, errors = [] }: { data: any, onChange: (d: any) => void, errors: string[] }) {
+    const updateField = (field: string, value: string) => onChange({ ...data, [field]: value });
+    const hasError = (field: string) => errors.includes(field);
+
+    return (
+        <div className="space-y-6">
+             <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 tracking-widest">Situación (S) <span className="text-red-500">*</span></Label>
+                <textarea 
+                    value={data.situation || ''} 
+                    onChange={(e) => updateField('situation', e.target.value)}
+                    placeholder="¿Cuál es el contexto actual del paciente/negocio?"
+                    className={`w-full bg-slate-900/40 border-slate-700/50 text-white rounded-2xl p-5 min-h-[120px] text-sm focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-600 shadow-inner ${hasError('situation') ? 'border-red-500/50 bg-red-500/5' : ''}`}
+                />
+            </div>
+             <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 tracking-widest">Problema (P) <span className="text-red-500">*</span></Label>
+                <textarea 
+                    value={data.problem || ''} 
+                    onChange={(e) => updateField('problem', e.target.value)}
+                    placeholder="¿Qué dificultades o insatisfacciones existen?"
+                    className={`w-full bg-slate-900/40 border-slate-700/50 text-white rounded-2xl p-5 min-h-[120px] text-sm focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-600 shadow-inner ${hasError('problem') ? 'border-red-500/50 bg-red-500/5' : ''}`}
+                />
+            </div>
+             <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 tracking-widest">Implicación (I) <span className="text-red-500">*</span></Label>
+                <textarea 
+                    value={data.implication || ''} 
+                    onChange={(e) => updateField('implication', e.target.value)}
+                    placeholder="¿Cuáles son las consecuencias de no resolver el problema?"
+                    className={`w-full bg-slate-900/40 border-slate-700/50 text-white rounded-2xl p-5 min-h-[120px] text-sm focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-600 shadow-inner ${hasError('implication') ? 'border-red-500/50 bg-red-500/5' : ''}`}
+                />
+            </div>
+             <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1 tracking-widest">Necesidad de Beneficio (N) <span className="text-red-500">*</span></Label>
+                <textarea 
+                    value={data.need_payoff || ''} 
+                    onChange={(e) => updateField('need_payoff', e.target.value)}
+                    placeholder="¿Cómo ayudaría nuestra solución a resolverlo?"
+                    className={`w-full bg-slate-900/40 border-slate-700/50 text-white rounded-2xl p-5 min-h-[120px] text-sm focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-600 shadow-inner ${hasError('need_payoff') ? 'border-red-500/50 bg-red-500/5' : ''}`}
+                />
+            </div>
+        </div>
+    );
+}
+
+
 // --- Main Container ---
 
 export function DynamicInterviewForm({ scenario, data, onChange, errors = [], lastVisitSamples, entityType = 'doctor' }: DynamicInterviewFormProps) {
@@ -636,7 +683,15 @@ export function DynamicInterviewForm({ scenario, data, onChange, errors = [], la
                     />
                 )}
 
-                {scenario.type === 'maturity' && (
+                {scenario.id === 'spin-fallback' && (
+                    <SpinFallbackForm
+                        data={data}
+                        onChange={onChange}
+                        errors={errors}
+                    />
+                )}
+
+                {scenario.type === 'maturity' && scenario.id !== 'spin-fallback' && (
                     <MaintenanceForm
                         data={data as MaintenanceData}
                         onChange={onChange}
@@ -672,6 +727,11 @@ export function validateDynamicInterview(scenario: VisitScenario, data: any, ent
             if (!d.decision_criteria || d.decision_criteria.length === 0) errors.push('decision_criteria');
             if (!d.manual_classification) errors.push('manual_classification');
         }
+    } else if (scenario.id === 'spin-fallback') {
+        if (!data.situation) errors.push('situation');
+        if (!data.problem) errors.push('problem');
+        if (!data.implication) errors.push('implication');
+        if (!data.need_payoff) errors.push('need_payoff');
     } else if (scenario.type === 'development') {
         const d = data as ValidationData;
         if (!d.samples_used) errors.push('samples_used');

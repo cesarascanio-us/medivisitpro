@@ -43,6 +43,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { HealthCenterSelect } from "./HealthCenterSelect";
 
 interface DoctorFormDialogProps {
     open: boolean;
@@ -294,6 +295,17 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Credenciales Médicas</h3>
                                     </div>
 
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Centro de Salud Principal</Label>
+                                        <HealthCenterSelect 
+                                            value={formData.health_center_id}
+                                            onValueChange={(id, name) => setFormData({ 
+                                                ...formData, 
+                                                health_center_id: id,
+                                                health_center: name 
+                                            })}
+                                        />
+                                    </div>
                                     <div className="space-y-3">
                                         <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Especialidad Principal</Label>
                                         <Select

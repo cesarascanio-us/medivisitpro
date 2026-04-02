@@ -32,14 +32,15 @@ import { useToast } from "@/hooks/use-toast";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import VisitHeatmap from "@/components/map/VisitHeatmap";
+import { useChartTheme } from "@/hooks/useChartTheme";
 
 export default function Reports() {
   const [timeRange, setTimeRange] = useState("month");
-  const { user, role: userRole, isManager: isAdminOrManager, isMaster, profile } = useAuth();
-  const organizationId = profile?.organization_id;
+  const { user, role: userRole, isManager: isAdminOrManager, isMaster, companyId, organizationId } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [heatmapType, setHeatmapType] = useState<"pharmacy" | "natural_store">("pharmacy");
+  const chartTheme = useChartTheme();
 
   // State for SQL View Data
   const [gerencialKpis, setGerencialKpis] = useState<{
@@ -104,7 +105,7 @@ export default function Reports() {
   }, [user, heatmapType]);
 
   const loadCorrelationData = async () => {
-    if (!profile?.organization_id) return;
+    if (!companyId) return;
     try {
       // Fetch some sample correlation data using a direct query for now or the new function
       // In production, this would call get_visit_impact_correlation via RPC
@@ -150,7 +151,7 @@ export default function Reports() {
     try {
       // 1. Fetch Gerencial KPIs
       let kpiQuery = supabase.from('view_gerencial_kpis' as any).select('*');
-      if (!isMaster && organizationId) kpiQuery = kpiQuery.eq('organization_id', organizationId);
+      if (!isMaster && companyId) kpiQuery = kpiQuery.eq('company_id', companyId);
       const { data: kpiData, error: kpiError } = await kpiQuery.maybeSingle();
 
       if (kpiError) throw kpiError;
@@ -158,7 +159,7 @@ export default function Reports() {
 
       // 2. Fetch Sales by Zone
       let zonaQuery = supabase.from('view_ventas_por_zona' as any).select('*');
-      if (!isMaster && organizationId) zonaQuery = zonaQuery.eq('organization_id', organizationId);
+      if (!isMaster && companyId) zonaQuery = zonaQuery.eq('company_id', companyId);
       const { data: zonaData, error: zonaError } = await zonaQuery;
 
       if (zonaError) throw zonaError;
@@ -166,7 +167,7 @@ export default function Reports() {
 
       // 3. Fetch Product Mix
       let mixQuery = supabase.from('view_product_mix' as any).select('*');
-      if (!isMaster && organizationId) mixQuery = mixQuery.eq('organization_id', organizationId);
+      if (!isMaster && companyId) mixQuery = mixQuery.eq('company_id', companyId);
       const { data: mixData, error: mixError } = await mixQuery;
 
       if (mixError) throw mixError;
@@ -193,8 +194,8 @@ export default function Reports() {
         .not('latitude', 'is', null)
         .not('longitude', 'is', null);
 
-      if (!isMaster && organizationId) {
-        query = query.eq('organization_id', organizationId);
+      if (!isMaster && companyId) {
+        query = query.eq('company_id', companyId);
       }
 
       const { data, error } = await query;

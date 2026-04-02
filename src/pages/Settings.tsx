@@ -29,6 +29,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
 import { useNavigate } from "react-router-dom";
 
 // Available territories
@@ -109,6 +110,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  const { setTheme } = useTheme();
 
   // Danger Zone States
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -352,16 +354,18 @@ export default function Settings() {
               {/* Form Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Nombre</Label>
+                  <Label htmlFor="firstName">Nombre</Label>
                   <Input
+                    id="firstName"
                     value={profile.first_name}
                     onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
                     placeholder="Tu nombre"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Apellido</Label>
+                  <Label htmlFor="lastName">Apellido</Label>
                   <Input
+                    id="lastName"
                     value={profile.last_name}
                     onChange={(e) => setProfile({ ...profile, last_name: e.target.value })}
                     placeholder="Tu apellido"
@@ -371,12 +375,13 @@ export default function Settings() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Email</Label>
-                  <Input value={profile.email} disabled className="bg-muted" />
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" value={profile.email} disabled className="bg-muted" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Teléfono</Label>
+                  <Label htmlFor="phone">Teléfono</Label>
                   <Input
+                    id="phone"
                     value={profile.phone}
                     onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                     placeholder="+1 234 567 890"
@@ -385,8 +390,9 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label>Cargo</Label>
+                <Label htmlFor="position">Cargo</Label>
                 <Input
+                  id="position"
                   value={profile.position}
                   onChange={(e) => setProfile({ ...profile, position: e.target.value })}
                   placeholder="Visitador Médico"
@@ -434,8 +440,9 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label>Biografía</Label>
+                <Label htmlFor="bio">Biografía</Label>
                 <Textarea
+                  id="bio"
                   value={profile.bio}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Cuéntanos sobre ti..."
@@ -527,12 +534,12 @@ export default function Settings() {
                 <Separator />
 
                 <div className="space-y-2">
-                  <Label>Tiempo de recordatorio</Label>
+                  <Label htmlFor="reminder-time">Tiempo de recordatorio</Label>
                   <Select
                     value={notifications.reminder_time}
                     onValueChange={(v) => setNotifications({ ...notifications, reminder_time: v })}
                   >
-                    <SelectTrigger className="w-48">
+                    <SelectTrigger id="reminder-time" className="w-48">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -593,7 +600,7 @@ export default function Settings() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label htmlFor="language" className="flex items-center gap-2">
                       <Languages className="h-4 w-4" />
                       Idioma
                     </Label>
@@ -613,7 +620,7 @@ export default function Settings() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label htmlFor="font-size" className="flex items-center gap-2">
                       <Type className="h-4 w-4" />
                       Tamaño de Fuente
                     </Label>
@@ -707,7 +714,7 @@ export default function Settings() {
                 <Separator />
 
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
+                  <Label htmlFor="sync-frequency" className="flex items-center gap-2">
                     <Wifi className="h-4 w-4" />
                     Frecuencia de Sincronización
                   </Label>

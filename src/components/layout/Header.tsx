@@ -5,15 +5,15 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Bell, Search, Calendar, Plus } from "lucide-react";
+import { Bell, Search, Calendar, Plus, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { NotificationBadge } from "@/components/layout/NotificationBadge";
 import { OrganizationSwitcher } from "@/components/organization/OrganizationSwitcher";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,14 @@ import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator
 
 export function Header() {
   const navigate = useNavigate();
-  const { user, isMaster, isSystemAdmin } = useAuth();
+  const { user, isSystemAdmin } = useAuth();
+  const { theme, setTheme } = useTheme();
+
+  const toggleDarkMode = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const isDarkMode = theme === "dark";
 
   const today = new Date();
   const todayFormatted = today.toLocaleDateString('es-ES', {
@@ -31,11 +38,11 @@ export function Header() {
   });
 
   return (
-    <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200 px-6 py-3 shadow-sm shrink-0 h-16 z-20">
+    <header className="bg-background border-b border-border px-6 py-3 shadow-none shrink-0 h-16 z-20 transition-all duration-300">
       <div className="flex items-center justify-between h-full gap-4">
         {/* Left side - Date */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-text-main capitalize">
+          <div className="flex items-center gap-2 text-sm font-semibold text-foreground capitalize">
             <Calendar className="h-4 w-4 text-primary" />
             <span className="hidden sm:inline opacity-80">{todayFormatted}</span>
           </div>
@@ -52,11 +59,11 @@ export function Header() {
         {/* Center - Search (hidden on small screens) */}
         <div className="hidden md:block flex-1 max-w-md mx-4">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-primary transition-colors" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input
               type="text"
-              placeholder="Buscar..."
-              className="pl-10 h-10 bg-gray-50 border-gray-200 text-text-main placeholder:text-gray-400 focus-visible:ring-primary focus-visible:border-primary rounded-xl"
+              placeholder="Buscar actividad..."
+              className="pl-10 h-10 bg-muted/20 border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-primary focus-visible:border-primary rounded-xl transition-all"
             />
           </div>
         </div>
@@ -64,11 +71,20 @@ export function Header() {
         {/* Right side - Actions */}
         <div className="flex items-center gap-4">
           <OnlineStatusIndicator />
-          {/* Notifications */}
+          
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleDarkMode}
+            className="h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-300"
+            title={isDarkMode ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
+          >
+            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
+
           <NotificationBadge />
         </div>
       </div>
-
     </header>
   );
 }

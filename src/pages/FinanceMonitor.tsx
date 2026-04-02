@@ -88,7 +88,8 @@ export default function FinanceMonitor() {
             // 3. Fetch Sample Drops (for investment calculation)
             // Note: In a real scenario, we'd join with products to get cost. 
             // Here we'll use a heuristic: $2.5 average cost per sample unit.
-            let samplesQuery = supabase.from('visit_samples').select('quantity');
+            let samplesQuery = supabase.from('sample_movements').select('quantity').eq('movement_type', 'treatment_start');
+            if (filters.repId && filters.repId !== 'all') samplesQuery = samplesQuery.eq('user_id', filters.repId);
             
             const [salesRes, expensesRes, samplesRes] = await Promise.all([
                 salesQuery,

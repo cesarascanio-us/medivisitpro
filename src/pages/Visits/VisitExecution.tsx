@@ -28,7 +28,7 @@ import { useVisit, useStartVisit, useCompleteVisit } from "@/hooks/queries/useVi
 import { VoiceInput } from "@/components/common/VoiceInput";
 import { useVisitScenario } from "@/hooks/useVisitScenario";
 import { MasterDataCard } from "@/components/visits/MasterDataCard";
-import { createFutureVisit, updateDirectoryMasterData } from "@/services/visitAutomationService";
+import { createFutureVisit, updateDirectoryMasterData, VisitScenario } from "@/services/visitAutomationService";
 import { useAuth } from "@/hooks/useAuth";
 import { ImageUploadInput } from "@/components/common/ImageUploadInput";
 import { SmartScheduleWidget } from "@/components/visits/SmartScheduleWidget";
@@ -63,6 +63,25 @@ import {
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// FALLBACK: Escenario SPIN para visitas sin guión dinámico predefinido
+const SPIN_FALLBACK_SCENARIO: VisitScenario = {
+    id: 'spin-fallback',
+    type: 'maturity', 
+    label: 'Fidelización (SPIN)',
+    title: 'Entrevista de Valor (SPIN)',
+    description: 'Búsqueda de necesidades y oportunidades mediante técnica SPIN.',
+    suggestedObjective: 'Seguimiento de valor y detección de necesidades',
+    showMasterDataCard: true,
+    showCloseFields: true
+};
+
+const getEmptySpinData = () => ({
+    situation: '',
+    problem: '',
+    implication: '',
+    need_payoff: ''
+});
+
 export default function VisitExecutionPage() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -84,7 +103,8 @@ export default function VisitExecutionPage() {
     // Visit Automation: Scenario Detection
     const directoryItemId = (visit as any)?.directory_item_id || null;
     const entityType = visit?.directory_items?.entity_type || 'doctor';
-    const { scenario, history, autoFields, loading: scenarioLoading } = useVisitScenario(directoryItemId, entityType);
+    const { scenario: dynamicScenario, history, autoFields, loading: scenarioLoading } = useVisitScenario(directoryItemId, entityType);
+    const scenario = dynamicScenario || SPIN_FALLBACK_SCENARIO;
 
     // Automation state
     const [masterData, setMasterData] = useState<{ email?: string; phone?: string }>({});
@@ -304,7 +324,11 @@ export default function VisitExecutionPage() {
     // Initialize Dynamic Data when scenario is loaded
     useEffect(() => {
         if (scenario && !dynamicInterviewData) {
-            setDynamicInterviewData(getEmptyInterviewData(scenario, entityType));
+            if (scenario.id === 'spin-fallback') {
+                setDynamicInterviewData(getEmptySpinData());
+            } else {
+                setDynamicInterviewData(getEmptyInterviewData(scenario, entityType));
+            }
         }
     }, [scenario, entityType]);
 

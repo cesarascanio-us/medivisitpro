@@ -657,7 +657,7 @@ export default function Users() {
                                 value={selectedRole}
                                 onValueChange={(v) => setSelectedRole(v as UserRole)}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger id="role">
                                     <SelectValue placeholder="Seleccionar rol" />
                                 </SelectTrigger>
                                 <SelectContent>

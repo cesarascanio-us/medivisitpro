@@ -32,6 +32,7 @@ interface Zone {
     region: string | null;
     created_at: string;
     user_count?: number;
+    sales_threshold?: number;
 }
 
 export default function Zones() {
@@ -47,7 +48,8 @@ export default function Zones() {
         name: "",
         description: "",
         state: "",
-        region: ""
+        region: "",
+        sales_threshold: 2000
     });
 
     useEffect(() => {
@@ -119,7 +121,8 @@ export default function Zones() {
                     .from('zones')
                     .update({
                         name: formData.name,
-                        description: formData.description || null
+                        description: formData.description || null,
+                        sales_threshold: Number(formData.sales_threshold) || 0
                     })
                     .eq('id', editingZone.id);
 
@@ -134,6 +137,7 @@ export default function Zones() {
                         description: formData.description || null,
                         state: formData.state || null,
                         region: formData.region || null,
+                        sales_threshold: Number(formData.sales_threshold) || 0,
                         organization_id: organizationId // Set current org
                     });
 
@@ -143,7 +147,7 @@ export default function Zones() {
 
             setDialogOpen(false);
             setEditingZone(null);
-            setFormData({ name: "", description: "", state: "", region: "" });
+            setFormData({ name: "", description: "", state: "", region: "", sales_threshold: 2000 });
             loadZones();
         } catch (error) {
             console.error('Error saving zone:', error);
@@ -173,14 +177,15 @@ export default function Zones() {
             name: zone.name,
             description: zone.description || "",
             state: zone.state || "",
-            region: zone.region || ""
+            region: zone.region || "",
+            sales_threshold: zone.sales_threshold ?? 2000
         });
         setDialogOpen(true);
     };
 
     const openCreateDialog = () => {
         setEditingZone(null);
-        setFormData({ name: "", description: "", state: "", region: "" });
+        setFormData({ name: "", description: "", state: "", region: "", sales_threshold: 2000 });
         setDialogOpen(true);
     };
 
@@ -280,6 +285,23 @@ export default function Zones() {
                                             </Select>
                                         </div>
                                     </div>
+                                    <div className="space-y-2 bg-indigo-50/50 dark:bg-indigo-900/10 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-500/20">
+                                        <Label className="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 ml-1">Umbral Base de Comisiones (Unids/Mes)</Label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                                <span className="text-indigo-400 font-bold">#</span>
+                                            </div>
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                value={formData.sales_threshold}
+                                                onChange={(e) => setFormData({ ...formData, sales_threshold: parseInt(e.target.value) || 0 })}
+                                                className="h-14 pl-10 rounded-xl border-white bg-white font-black text-indigo-950 text-lg focus:ring-indigo-500 shadow-sm"
+                                                placeholder="Ej: 3000"
+                                            />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-slate-400 mt-2 ml-1">Establece la meta mínima de la zona para activar el sistema variable.</p>
+                                    </div>
                                     <Button onClick={handleSubmit} className="w-full h-14 bg-slate-900 dark:bg-indigo-600 hover:bg-black dark:hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg mt-4 transition-all">
                                         {editingZone ? "Actualizar Zona" : "Validar & Crear Zona"}
                                     </Button>
@@ -363,6 +385,7 @@ export default function Zones() {
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7 pl-10">Nombre de Zona</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Cobertura / Descripción</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Usuarios</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Meta (Umbral)</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Creación</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7 text-right pr-10">Acciones</TableHead>
                                     </TableRow>
@@ -386,6 +409,13 @@ export default function Zones() {
                                                     <UsersIcon className="h-3 w-3 mr-2" />
                                                     {zone.user_count || 0} Pers.
                                                 </Badge>
+                                            </TableCell>
+                                            <TableCell className="py-8">
+                                                <div className="flex items-center">
+                                                    <Badge className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-none font-black text-sm uppercase tracking-widest px-4 py-2 rounded-[0.85rem] shadow-[0_0_15px_rgba(99,102,241,0.1)]">
+                                                        {zone.sales_threshold?.toLocaleString('es-ES') || '2.000'} Unds
+                                                    </Badge>
+                                                </div>
                                             </TableCell>
                                             <TableCell className="py-8 text-slate-400 font-bold tabular-nums text-sm">
                                                 {new Date(zone.created_at).toLocaleDateString('es-ES')}

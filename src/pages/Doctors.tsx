@@ -128,6 +128,7 @@ export default function Doctors() {
         city: "",
         state: "",
         health_center: "",
+        health_center_id: "",
 
         // Horario
         days: "",
@@ -282,6 +283,7 @@ export default function Doctors() {
                 city: formData.city || null,
                 state: formData.state || null,
                 health_center: formData.health_center || null,
+                health_center_id: formData.health_center_id || null,
                 days: formData.days || null,
                 start_time: formData.start_time || null,
                 end_time: formData.end_time || null,

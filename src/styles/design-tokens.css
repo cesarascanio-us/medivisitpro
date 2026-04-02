@@ -1,0 +1,139 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ DESIGN TOKENS - FASE 1 (CONSOLIDACIÓN)
+ ======================================================================== */
+
+@layer base {
+  :root {
+    /* 1. BRAND COLORS (Corporate Identity) */
+    --color-primary: 211 100% 35%; /* #0056b3 */
+    --color-primary-foreground: 0 0% 100%;
+    
+    --color-secondary: 200 100% 46%; /* #00a0e9 */
+    --color-secondary-foreground: 0 0% 100%;
+
+    --color-accent: 210 20% 96%;
+    --color-accent-foreground: 222.2 47.4% 11.2%;
+
+    /* 2. NEUTRAL & SURFACE COLORS */
+    --color-background: 210 20% 98%; /* #f4f6f8 */
+    --color-foreground: 220 20% 10%;
+
+    --color-card: 0 0% 100%;
+    --color-card-foreground: 220 20% 10%;
+
+    --color-popover: 0 0% 100%;
+    --color-popover-foreground: 220 20% 10%;
+
+    --color-muted: 210 20% 90%;
+    --color-muted-foreground: 215.4 16.3% 46.9%;
+
+    --color-border: 214.3 31.8% 91.4%;
+    --color-input: 214.3 31.8% 91.4%;
+    --color-ring: 221.2 83.2% 53.3%;
+
+    /* 3. SEMANTIC / STATUS COLORS */
+    --color-success: 142.1 70.6% 45.3%;      /* emerald */
+    --color-warning: 37.9 90.2% 50%;         /* amber */
+    --color-destructive: 0 84.2% 60.2%;      /* rose/red */
+    --color-destructive-foreground: 210 40% 98%;
+    --color-info: 211 100% 45%;              /* blue */
+
+    /* 4. EXTRACTED HARDCODED PALETTES (To be mapped via semantic classnames) */
+    /* Blue/Indigo */
+    --color-blue-50: #eff6ff;
+    --color-blue-100: #dbeafe;
+    --color-blue-500: #3b82f6;
+    --color-blue-600: #2563eb;
+    
+    --color-indigo-50: #eef2ff;
+    --color-indigo-100: #e0e7ff;
+    --color-indigo-500: #6366f1;
+    --color-indigo-600: #4f46e5;
+    
+    /* Emerald */
+    --color-emerald-50: #ecfdf5;
+    --color-emerald-100: #d1fae5;
+    --color-emerald-500: #10b981;
+    --color-emerald-600: #059669;
+
+    /* Amber */
+    --color-amber-50: #fffbeb;
+    --color-amber-100: #fef3c7;
+    --color-amber-500: #f59e0b;
+    --color-amber-600: #d97706;
+
+    /* Rose/Red */
+    --color-rose-50: #fff1f2;
+    --color-rose-100: #ffe4e6;
+    --color-rose-500: #f43f5e;
+    --color-rose-600: #e11d48;
+
+    /* Slate (Grays) */
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-500: #64748b;
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
+    --color-slate-950: #020617;
+
+    /* 5. TYPOGRAPHY */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Outfit', sans-serif;
+
+    /* 6. SPACING (Extracted from codebase: p-4, p-8, gap-4, etc.) */
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;       /* 16px - Base gap/padding */
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-8: 2rem;       /* 32px - Common section padding */
+    --spacing-10: 2.5rem;    /* 40px - Large pads */
+    --spacing-12: 3rem;
+    --spacing-16: 4rem;      /* 64px - Used in headers */
+    --spacing-20: 5rem;
+    --spacing-24: 6rem;
+    --spacing-32: 8rem;
+
+    /* 7. RADIUS / BORDER */
+    --radius-sm: calc(0.75rem - 4px);
+    --radius-md: calc(0.75rem - 2px);
+    --radius-base: 0.75rem;
+    --radius-lg: 1rem;       /* rounded-2xl */
+    --radius-xl: 1.5rem;     /* rounded-3xl */
+    --radius-pill: 9999px;   /* rounded-full */
+
+    /* 8. SHADOWS */
+    --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-card: 0 10px 20px rgba(0, 0, 0, 0.08);
+    --shadow-premium-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-premium-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  .dark {
+    /* Industrial Dark Mode Overrides */
+    --color-background: 222 47% 4%; /* Slate 950 */
+    --color-foreground: 210 40% 98%;
+    
+    --color-card: 222 47% 6%;
+    --color-card-foreground: 210 40% 98%;
+    
+    --color-popover: 222 47% 4%;
+    --color-popover-foreground: 210 40% 98%;
+    
+    /* Primary / Secondary (Keep consistent) */
+    --color-primary: 211 100% 45%; 
+    --color-secondary: 200 100% 40%;
+    
+    --color-muted: 217.2 32.6% 17.5%;
+    --color-muted-foreground: 215 20.2% 85%;
+    
+    --color-accent: 217.2 32.6% 17.5%;
+    --color-border: 217.2 32.6% 25%;
+    --color-input: 217.2 32.6% 25%;
+  }
+}

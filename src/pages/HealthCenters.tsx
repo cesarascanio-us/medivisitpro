@@ -240,7 +240,7 @@ export default function HealthCenters() {
       const { data, error } = await supabase
         .from('doctors')
         .select('*')
-        .eq('health_center', center.name)
+        .eq('health_center_id', center.id)
         .order('specialty', { ascending: true });
 
       if (error) throw error;

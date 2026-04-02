@@ -30,6 +30,7 @@ interface ExpiringItem {
     quantity: number;
     expiryDate: string;
     daysUntilExpiry: number;
+    notificationId?: string;
 }
 
 interface InventoryAlertsProps {
@@ -60,13 +61,36 @@ export function InventoryAlerts({
 
         setLoading(true);
         try {
-            const [lowStock, expiring] = await Promise.all([
-                getLowStockAlerts(user.id, lowStockThreshold),
-                getExpiringSamples(user.id, expiryDaysAhead)
+            // [INDUSTRIAL] Use backend pre-calculated notifications if available
+            const { data: notifications } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('type', 'fefo_alert')
+                .eq('is_read', false)
+                .order('created_at', { ascending: false });
+
+            const [lowStock] = await Promise.all([
+                getLowStockAlerts(user.id, lowStockThreshold)
             ]);
 
             setLowStockItems(lowStock);
-            setExpiringItems(expiring);
+
+            if (notifications && notifications.length > 0) {
+                // Map from notification table (Punto 3d del plan)
+                const mappedAlerts: ExpiringItem[] = notifications.map(n => ({
+                    productId: n.metadata?.product_id || 'unknown',
+                    productName: n.title.replace('Alerta FEFO: ', ''),
+                    quantity: n.metadata?.quantity || 0,
+                    expiryDate: new Date(Date.now() + (n.metadata?.days_left || 0) * 86400000).toISOString(),
+                    daysUntilExpiry: n.metadata?.days_left || 0,
+                    notificationId: n.id
+                }));
+                setExpiringItems(mappedAlerts);
+            } else {
+                // Fallback to real-time calculation if no batch job has run yet
+                const expiring = await getExpiringSamples(user.id, expiryDaysAhead);
+                setExpiringItems(expiring);
+            }
         } catch (error) {
             console.error('Error loading inventory alerts:', error);
         } finally {
@@ -74,44 +98,17 @@ export function InventoryAlerts({
         }
     };
 
-    const dismissAlert = (id: string) => {
+    const dismissAlert = async (id: string, notificationId?: string) => {
         setDismissed(prev => new Set(prev).add(id));
-    };
-
-    const createNotification = async (type: 'low_stock' | 'expiring', productName: string, details: string) => {
-        if (!user) return;
-
-        try {
-            await supabase.from('notifications').insert({
-                user_id: user.id,
-                title: type === 'low_stock' ? 'Stock Bajo' : 'Muestra por Vencer',
-                message: `${productName}: ${details}`,
-                type: 'alert',
-                is_read: false
-            });
-        } catch (error) {
-            console.error('Error creating notification:', error);
+        
+        // Mark as read in backend if it came from notifications table
+        if (notificationId) {
+            await supabase
+                .from('notifications')
+                .update({ is_read: true })
+                .eq('id', notificationId);
         }
     };
-
-    // Create notifications for critical alerts (less than 5 days or 0 stock)
-    useEffect(() => {
-        if (!user) return;
-
-        // Critical low stock (0 items)
-        lowStockItems
-            .filter(item => item.quantity === 0)
-            .forEach(item => {
-                createNotification('low_stock', item.productName, 'Sin stock disponible');
-            });
-
-        // Critical expiring (less than 7 days)
-        expiringItems
-            .filter(item => item.daysUntilExpiry <= 7)
-            .forEach(item => {
-                createNotification('expiring', item.productName, `Vence en ${item.daysUntilExpiry} días`);
-            });
-    }, [lowStockItems, expiringItems]);
 
     const visibleLowStock = lowStockItems.filter(item => !dismissed.has(`low_${item.productId}`));
     const visibleExpiring = expiringItems.filter(item => !dismissed.has(`exp_${item.productId}`));
@@ -174,7 +171,7 @@ export function InventoryAlerts({
                             )}
                         </CardTitle>
                         <CardDescription>
-                            Stock bajo y muestras próximas a vencer
+                            Stock bajo y muestras próximas a vencer (FEFO Backend Sync)
                         </CardDescription>
                     </div>
                     <Button variant="ghost" size="sm" onClick={loadAlerts}>
@@ -242,17 +239,27 @@ export function InventoryAlerts({
                                     <div>
                                         <p className="font-medium text-sm">{item.productName}</p>
                                         <p className="text-xs text-muted-foreground">
-                                            {item.quantity} unidades por vencer
+                                            {item.quantity > 0 ? `${item.quantity} unidades por vencer` : 'Lote por vencer (Revisar stock local)'}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {getExpiryBadge(item.daysUntilExpiry)}
+                                    {item.daysUntilExpiry <= 30 && (
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="h-7 text-[9px] font-black border-red-500/30 hover:bg-red-500/10"
+                                            onClick={() => alert(`FEFO SUGGESTION: Producto ${item.productName} vence en ${item.daysUntilExpiry} días. Transferir a farmacias de alto movimiento.`)}
+                                        >
+                                            FEFO ACTION
+                                        </Button>
+                                    )}
                                     <Button
                                         variant="ghost"
                                         size="icon"
                                         className="h-6 w-6"
-                                        onClick={() => dismissAlert(`exp_${item.productId}`)}
+                                        onClick={() => dismissAlert(`exp_${item.productId}`, item.notificationId)}
                                     >
                                         <X className="h-3 w-3" />
                                     </Button>
