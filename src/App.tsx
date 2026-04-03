@@ -70,8 +70,6 @@ const SalesPipeline = lazy(() => import("./pages/SalesPipeline"));
 const FinanceMonitor = lazy(() => import("./pages/FinanceMonitor"));
 const AssetBunker = lazy(() => import("./pages/AssetBunker"));
 
-const RouteOptimizer = lazy(() => import("./pages/Public/RouteOptimizer"));
-const ComparisonPage = lazy(() => import("./pages/Public/Comparison"));
 const PublicProductPage = lazy(() => import("./pages/Public/ProductPage"));
 const Documentation = lazy(() => import("./pages/Documentation"));
 
@@ -399,8 +397,6 @@ const App = () => (
                         {/* Public Routes */}
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/auth" element={<AuthPage />} />
-                        <Route path="/marketing/route-optimizer" element={<RouteOptimizer />} />
-                        <Route path="/marketing/comparison" element={<ComparisonPage />} />
 
                         {/* Demo Landing - Initiates Demo Mode */}
                         <Route path="/demo" element={<DemoPage />} />

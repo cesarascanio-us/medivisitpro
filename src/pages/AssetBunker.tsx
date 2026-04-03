@@ -29,7 +29,8 @@ import {
     UserCheck,
     Briefcase,
     FileImage,
-    FileArchive
+    FileArchive,
+    DollarSign
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -83,9 +84,9 @@ export default function AssetBunker() {
     if (!isMaster && !isAdmin && !isManager) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-                <ShieldAlert className="h-20 w-20 text-red-500 animate-pulse" />
-                <h1 className="text-2xl font-black text-slate-800">ACCESO RESTRINGIDO</h1>
-                <p className="text-slate-500">Requiere nivel de seguridad "Bunker Protocol" (Manager+)</p>
+                <ShieldAlert className="h-20 w-20 text-destructive animate-pulse" />
+                <h1 className="text-2xl font-black text-foreground">ACCESO RESTRINGIDO</h1>
+                <p className="text-muted-foreground">Requiere nivel de seguridad "Bunker Protocol" (Manager+)</p>
             </div>
         );
     }
@@ -122,7 +123,7 @@ export default function AssetBunker() {
 
             {/* Controls Section */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="flex bg-slate-100 p-1 rounded-2xl w-full md:w-auto">
+                <div className="flex bg-muted p-1 rounded-2xl w-full md:w-auto">
                     <TabButton active={activeTab === 'all'} onClick={() => setActiveTab('all')} label="Todos" />
                     <TabButton active={activeTab === 'legal'} onClick={() => setActiveTab('legal')} label="Legal" icon={<ShieldCheck className="h-4 w-4" />} />
                     <TabButton active={activeTab === 'marketing'} onClick={() => setActiveTab('marketing')} label="Marketing" icon={<Briefcase className="h-4 w-4" />} />
@@ -130,10 +131,10 @@ export default function AssetBunker() {
                 </div>
 
                 <div className="relative w-full md:w-80 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4 group-focus-within:text-indigo-500 transition-colors" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4 group-focus-within:text-primary transition-colors" />
                     <Input 
                         placeholder="Buscar artefactos..." 
-                        className="pl-12 rounded-2xl border-slate-200 bg-white/50 backdrop-blur-sm focus:bg-white transition-all shadow-sm h-12"
+                        className="pl-12 rounded-2xl border-border bg-background/50 backdrop-blur-sm focus:bg-background transition-all shadow-sm h-12"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -143,12 +144,12 @@ export default function AssetBunker() {
             {/* Assets Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {/* Upload Placeholder */}
-                <Card className="border-2 border-dashed border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-400 transition-all cursor-pointer group rounded-3xl flex flex-col items-center justify-center p-8 min-h-[220px]">
-                    <div className="p-4 bg-indigo-50 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
-                        <Plus className="h-8 w-8 text-indigo-500" />
+                <Card className="border-2 border-dashed border-border bg-muted/20 hover:bg-card hover:border-primary transition-all cursor-pointer group rounded-3xl flex flex-col items-center justify-center p-8 min-h-[220px]">
+                    <div className="p-4 bg-primary/10 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <Plus className="h-8 w-8 text-primary" />
                     </div>
-                    <p className="font-bold text-slate-700">Subir Activo</p>
-                    <p className="text-xs text-slate-400">Drag & Drop o Click</p>
+                    <p className="font-bold text-foreground">Subir Activo</p>
+                    <p className="text-xs text-muted-foreground">Drag & Drop o Click</p>
                 </Card>
 
                 {filteredAssets.map(asset => (
@@ -157,14 +158,14 @@ export default function AssetBunker() {
             </div>
 
             {/* Recent Activity / Digital Signatures */}
-            <Card className="border-slate-100 shadow-xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-6 px-8">
+            <Card className="border-border shadow-card rounded-[2rem] overflow-hidden">
+                <CardHeader className="bg-muted/30 border-b border-border p-6 px-8">
                     <div className="flex justify-between items-center">
-                        <CardTitle className="text-xl font-black text-slate-800 flex items-center gap-3">
-                            <History className="h-5 w-5 text-indigo-600" />
+                        <CardTitle className="text-xl font-black text-foreground flex items-center gap-3">
+                            <History className="h-5 w-5 text-primary" />
                             Registro de Firmas Digitales (Vault)
                         </CardTitle>
-                        <Button variant="ghost" className="text-indigo-600 font-bold hover:bg-indigo-50 rounded-xl">
+                        <Button variant="ghost" className="text-primary font-bold hover:bg-primary/10 rounded-xl">
                             Ver Historial Completo
                         </Button>
                     </div>
@@ -199,11 +200,11 @@ export default function AssetBunker() {
 function SecurityStat({ icon, label, value }: any) {
     return (
         <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-            <div className="p-2 bg-white/10 rounded-xl text-indigo-400">
+            <div className="p-2 bg-white/10 rounded-xl text-primary">
                 {icon}
             </div>
             <div>
-                <p className="text-[10px] font-black tracking-widest text-slate-500 uppercase">{label}</p>
+                <p className="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{label}</p>
                 <p className="text-xl font-bold">{value}</p>
             </div>
         </div>
@@ -215,7 +216,7 @@ function TabButton({ active, onClick, label, icon }: any) {
         <button 
             onClick={onClick}
             className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all ${
-                active ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                active ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
         >
             {icon}
@@ -239,14 +240,14 @@ function AssetCard({ asset }: { asset: Asset }) {
     };
 
     return (
-        <Card className="border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-[2rem] overflow-hidden bg-white shadow-lg shadow-slate-100 group">
+        <Card className="border-border hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300 rounded-[2rem] overflow-hidden bg-card shadow-card group">
             <CardContent className="p-6 space-y-4">
                 <div className="flex justify-between items-start">
-                    <div className="p-4 bg-slate-50 rounded-2xl group-hover:bg-indigo-50 transition-colors">
+                    <div className="p-4 bg-muted/50 rounded-2xl group-hover:bg-primary/10 transition-colors">
                         {getIcon()}
                     </div>
                     {asset.encrypted && (
-                        <Badge variant="outline" className="border-indigo-200 text-indigo-600 font-black rounded-full text-[9px] uppercase tracking-tighter bg-indigo-50/30">
+                        <Badge variant="outline" className="border-primary/20 text-primary font-black rounded-full text-[9px] uppercase tracking-tighter bg-primary/5">
                             <Key className="h-3 w-3 mr-1" /> Encrypted
                         </Badge>
                     )}
@@ -255,18 +256,18 @@ function AssetCard({ asset }: { asset: Asset }) {
                     <Badge className={`mb-2 font-bold uppercase text-[9px] tracking-widest ${categoryColors[asset.category] || 'bg-slate-50'}`}>
                         {asset.category}
                     </Badge>
-                    <h3 className="font-bold text-slate-800 truncate mb-1" title={asset.name}>{asset.name}</h3>
-                    <p className="text-xs text-slate-400 flex items-center gap-2">
+                    <h3 className="font-bold text-foreground truncate mb-1" title={asset.name}>{asset.name}</h3>
+                    <p className="text-xs text-muted-foreground flex items-center gap-2">
                         <span>{asset.size}</span>
-                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <span className="w-1 h-1 rounded-full bg-border"></span>
                         <span>{asset.updatedAt}</span>
                     </p>
                 </div>
                 <div className="flex gap-2 pt-2">
-                    <Button variant="outline" className="flex-1 rounded-xl h-9 text-xs font-bold border-slate-200 hover:bg-slate-50">
+                    <Button variant="outline" className="flex-1 rounded-xl h-9 text-xs font-bold border-border hover:bg-muted/30">
                         <History className="h-3 w-3 mr-2" /> Historial
                     </Button>
-                    <Button className="flex-1 rounded-xl h-9 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100">
+                    <Button className="flex-1 rounded-xl h-9 text-xs font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10">
                         <Download className="h-3 w-3 mr-2" /> Abrir
                     </Button>
                 </div>
@@ -277,21 +278,21 @@ function AssetCard({ asset }: { asset: Asset }) {
 
 function SignatureEntry({ name, entity, date, status }: any) {
     return (
-        <div className="px-8 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+        <div className="px-8 py-4 flex items-center justify-between hover:bg-muted/20 transition-colors">
             <div className="flex items-center gap-4">
-                <div className={`p-2 rounded-xl ${status === 'verified' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-200 text-slate-500'}`}>
+                <div className={`p-2 rounded-xl ${status === 'verified' ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground'}`}>
                     <FileSignature className="h-5 w-5" />
                 </div>
                 <div>
-                    <p className="font-bold text-slate-800">{name}</p>
-                    <p className="text-xs text-slate-500">Firmante: <span className="font-medium text-slate-700">{entity}</span></p>
+                    <p className="font-bold text-foreground">{name}</p>
+                    <p className="text-xs text-muted-foreground">Firmante: <span className="font-medium text-foreground/80">{entity}</span></p>
                 </div>
             </div>
             <div className="text-right">
-                <p className="text-xs font-medium text-slate-400 mb-1">{date}</p>
+                <p className="text-xs font-medium text-muted-foreground mb-1">{date}</p>
                 <div className="flex items-center gap-1 justify-end">
-                    <div className={`w-2 h-2 rounded-full ${status === 'verified' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></div>
-                    <span className="text-[10px] font-black uppercase text-slate-500">{status === 'verified' ? 'Verificada' : 'Archivada'}</span>
+                    <div className={`w-2 h-2 rounded-full ${status === 'verified' ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`}></div>
+                    <span className="text-[10px] font-black uppercase text-muted-foreground">{status === 'verified' ? 'Verificada' : 'Archivada'}</span>
                 </div>
             </div>
         </div>

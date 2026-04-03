@@ -143,24 +143,24 @@ export default function FinanceMonitor() {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                        <Scale className="h-8 w-8 text-indigo-600" />
-                        Finance Monitor <span className="text-indigo-600">A0</span>
+                    <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-2">
+                        <Scale className="h-8 w-8 text-primary" />
+                        Finance Monitor <span className="text-primary">A0</span>
                     </h1>
-                    <p className="text-slate-500 font-medium">Análisis de ROI y Eficiencia de Inversión Operativa</p>
+                    <p className="text-muted-foreground font-medium">Análisis de ROI y Eficiencia de Inversión Operativa</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" className="rounded-xl border-slate-200" onClick={loadFinanceData}>
+                    <Button variant="outline" className="rounded-xl border-border" onClick={loadFinanceData}>
                         <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} /> Actualizar
                     </Button>
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 rounded-xl">
+                    <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10 rounded-xl">
                         <Download className="h-4 w-4 mr-2" /> Exportar Reporte
                     </Button>
                 </div>
             </div>
 
             {/* Admin Filter */}
-            <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm">
+            <Card className="border-border shadow-sm rounded-2xl overflow-hidden bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-4">
                     <AdminDataFilter onFilterChange={setFilters} />
                 </CardContent>
@@ -204,21 +204,21 @@ export default function FinanceMonitor() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Sales vs Expenses Chart */}
-                <Card className="lg:col-span-2 border-slate-200 shadow-xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-white">
-                    <CardHeader className="border-b border-slate-50 pb-6 pt-8 px-8">
+                <Card className="lg:col-span-2 border-border shadow-card rounded-3xl overflow-hidden bg-card">
+                    <CardHeader className="border-b border-border/50 pb-6 pt-8 px-8">
                         <div className="flex justify-between items-center">
-                            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <BarChart3 className="h-5 w-5 text-indigo-500" />
+                            <CardTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+                                <BarChart3 className="h-5 w-5 text-primary" />
                                 Histórico Ventas vs. Gastos
                             </CardTitle>
                             <div className="flex gap-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
-                                    <span className="text-xs font-bold text-slate-500">Ventas</span>
+                                    <div className="w-3 h-3 rounded-full bg-primary"></div>
+                                    <span className="text-xs font-bold text-muted-foreground">Ventas</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-rose-400"></div>
-                                    <span className="text-xs font-bold text-slate-500">Gastos</span>
+                                    <div className="w-3 h-3 rounded-full bg-destructive"></div>
+                                    <span className="text-xs font-bold text-muted-foreground">Gastos</span>
                                 </div>
                             </div>
                         </div>
@@ -242,23 +242,24 @@ export default function FinanceMonitor() {
                                         dataKey="name" 
                                         axisLine={false} 
                                         tickLine={false} 
-                                        tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}}
+                                        tick={{fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 600}}
                                         dy={10}
                                     />
                                     <YAxis 
                                         axisLine={false} 
                                         tickLine={false} 
-                                        tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}}
+                                        tick={{fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 600}}
                                         tickFormatter={(value) => `$${value}`}
                                     />
                                     <Tooltip 
-                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-                                        cursor={{ stroke: '#e2e8f0', strokeWidth: 2 }}
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '16px', border: '1px solid hsl(var(--border))', boxShadow: 'var(--shadow-card)' }}
+                                        itemStyle={{ fontWeight: 700 }}
+                                        cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
                                     />
                                     <Area 
                                         type="monotone" 
                                         dataKey="ventas" 
-                                        stroke="#6366f1" 
+                                        stroke="hsl(var(--primary))" 
                                         strokeWidth={4}
                                         fillOpacity={1} 
                                         fill="url(#colorSales)" 
@@ -266,7 +267,7 @@ export default function FinanceMonitor() {
                                     <Area 
                                         type="monotone" 
                                         dataKey="gastos" 
-                                        stroke="#f43f5e" 
+                                        stroke="hsl(var(--destructive))" 
                                         strokeWidth={4}
                                         fillOpacity={1} 
                                         fill="url(#colorExpenses)" 
@@ -278,7 +279,7 @@ export default function FinanceMonitor() {
                 </Card>
 
                 {/* Investment Efficiency Card */}
-                <Card className="border-slate-200 shadow-xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-600 to-indigo-800 text-white border-none">
+                <Card className="border-border shadow-card rounded-3xl overflow-hidden bg-gradient-to-br from-primary to-primary-dark text-white border-none">
                     <CardHeader className="pb-2 pt-8 px-8">
                         <CardTitle className="text-xl font-bold flex items-center gap-2">
                             <PieChart className="h-5 w-5" /> Eficiencia Neta
@@ -318,26 +319,26 @@ export default function FinanceMonitor() {
 
 function FinanceCard({ title, value, subvalue, icon, trend, color }: any) {
     const colors: any = {
-        emerald: "text-emerald-600 bg-emerald-50",
-        rose: "text-rose-600 bg-rose-50",
-        amber: "text-amber-600 bg-amber-50",
-        indigo: "text-indigo-600 bg-indigo-50"
+        emerald: "text-success bg-success/10",
+        rose: "text-destructive bg-destructive/10",
+        amber: "text-warning bg-warning/10",
+        indigo: "text-primary bg-primary/10"
     };
 
     return (
-        <Card className="border-slate-200 shadow-sm hover:shadow-md transition-all rounded-3xl overflow-hidden bg-white group">
+        <Card className="border-border shadow-sm hover:shadow-card-hover transition-all rounded-3xl overflow-hidden bg-card group">
             <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                    <div className={`p-3 rounded-2xl ${colors[color] || 'bg-slate-50'}`}>
+                    <div className={`p-3 rounded-2xl ${colors[color] || 'bg-muted/20'}`}>
                         {icon}
                     </div>
-                    {trend === 'up' && <ArrowUpRight className="text-emerald-500 h-5 w-5" />}
-                    {trend === 'down' && <ArrowDownRight className="text-rose-500 h-5 w-5" />}
+                    {trend === 'up' && <ArrowUpRight className="text-success h-5 w-5" />}
+                    {trend === 'down' && <ArrowDownRight className="text-destructive h-5 w-5" />}
                 </div>
                 <div className="space-y-1">
-                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{title}</p>
-                    <h3 className="text-2xl font-black text-slate-800 tracking-tight transition-transform group-hover:scale-105 origin-left">{value}</h3>
-                    <p className="text-xs text-slate-500 font-medium">{subvalue}</p>
+                    <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{title}</p>
+                    <h3 className="text-2xl font-black text-foreground tracking-tight transition-transform group-hover:scale-105 origin-left">{value}</h3>
+                    <p className="text-xs text-muted-foreground font-medium">{subvalue}</p>
                 </div>
             </CardContent>
         </Card>
