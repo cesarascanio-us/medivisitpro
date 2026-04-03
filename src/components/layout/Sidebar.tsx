@@ -165,7 +165,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                         isActive ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
                       )}
                     >
-                      <item.icon className={cn("h-5 w-5 flex-shrink-0", isActive ? "text-primary-foreground" : "text-slate-400 group-hover:text-primary")} />
+                      <item.icon className={cn("h-5 w-5 flex-shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
                       {isExpanded && <span className="ml-3 font-medium transition-all">{item.name}</span>}
                     </NavLink>
                   );

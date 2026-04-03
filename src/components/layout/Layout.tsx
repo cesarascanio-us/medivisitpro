@@ -95,11 +95,11 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col relative overflow-hidden">
-      {/* Premium Corporate Background Orbs - Light Theme */}
-      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-blue-400/10 rounded-full blur-[160px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-cyan-400/10 rounded-full blur-[160px] pointer-events-none animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-300/5 rounded-full blur-[180px] pointer-events-none"></div>
+    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
+      {/* Premium Corporate Background Orbs — Dark-Aware */}
+      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-primary/5 dark:bg-primary/10 rounded-full blur-[160px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-secondary/5 dark:bg-secondary/10 rounded-full blur-[160px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-primary/3 dark:bg-primary/5 rounded-full blur-[180px] pointer-events-none"></div>
 
       {/* Compact Demo Mode Banner - Only shown on explicit demo routes */}
       {location.pathname.startsWith('/demo/') && (
@@ -147,7 +147,7 @@ export const Layout = ({ children }: LayoutProps) => {
         {/* Content area - z-0 to ensure it's below sidebar */}
         <div className="flex-1 flex flex-col overflow-hidden relative z-0">
           {/* Mobile/Tablet Header with hamburger menu */}
-          <div className="lg:hidden p-3 border-b border-sidebar-border flex items-center justify-between bg-white backdrop-blur-md sticky top-0 z-40">
+          <div className="lg:hidden p-3 border-b border-border flex items-center justify-between bg-card/95 backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <MobileNav />
