@@ -5,7 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 
 import { useState, useEffect } from 'react';
@@ -19,7 +19,7 @@ export const useLandingContent = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await (supabase as any)
                     .from('site_settings')
                     .select('value')
                     .eq('key', 'landing_content')

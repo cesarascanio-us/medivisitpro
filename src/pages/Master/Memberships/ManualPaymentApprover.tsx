@@ -219,7 +219,7 @@ export default function ManualPaymentApprover() {
                             </TableRow>
                         ) : reports.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={9} className="text-center py-20 text-slate-500 italic">
+                                <TableCell colSpan={9} className="text-center py-20 text-slate-500 ">
                                     No hay reportes de pago registrados.
                                 </TableCell>
                             </TableRow>

@@ -197,7 +197,7 @@ export function CommercialCalculator({
                                         <p className="text-xs text-slate-400 mt-1">Precio sugerido cadena</p>
                                     </>
                                 ) : (
-                                    <div className="text-sm text-slate-400 italic mt-2">Sin referencia</div>
+                                    <div className="text-sm text-slate-400  mt-2">Sin referencia</div>
                                 )}
                             </div>
                         </div>

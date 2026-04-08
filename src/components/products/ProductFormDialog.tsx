@@ -5,8 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
-
+ ======================================================================== */
 
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -43,7 +42,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/badge";
 import { Separator } from "@/components/ui/separator";
 
 // -- High Contrast Wrappers --
@@ -324,7 +323,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
     const categories = [
         "Cardiovascular", "Neurológico", "Oncológico", "Endocrinología",
         "Gastroenterología", "Respiratorio", "Dermatología", "Pediatría",
-        "Ginecología", "Urología", "Inmunología", "Oftalmología", "Otros"
+        "Ginecología", "Urología", "Inmunología", "Oftalmología"
     ];
 
     return (
@@ -591,3 +590,4 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
         </Dialog>
     );
 }
+

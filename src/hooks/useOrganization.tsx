@@ -152,17 +152,22 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
             // FETCH FEATURES DYNAMICALLY
             if (currentOrg) {
-                const { data: planData } = await (supabase as any)
-                    .from('subscription_plans')
-                    .select('features')
-                    .ilike('name', `%${currentOrg.plan_tier}%`)
-                    .eq('active', true)
-                    .maybeSingle();
+                try {
+                    const { data: planData } = await (supabase as any)
+                        .from('subscription_plans')
+                        .select('features')
+                        .ilike('name', `%${currentOrg.plan_tier}%`)
+                        .eq('active', true)
+                        .maybeSingle();
 
-                if (planData) {
-                    setPlanFeatures((planData.features as unknown as string[]) || []);
-                } else {
-                    // Fallback to basic features if plan not found
+                    if (planData) {
+                        setPlanFeatures((planData.features as unknown as string[]) || []);
+                    } else {
+                        // Fallback to basic features if plan not found
+                        setPlanFeatures(['basic_visits', 'basic_reports']);
+                    }
+                } catch (featureErr) {
+                    console.warn('Non-critical: Could not fetch plan features', featureErr);
                     setPlanFeatures(['basic_visits', 'basic_reports']);
                 }
             } else {
@@ -172,8 +177,11 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         } catch (err) {
             console.error('Error fetching organization:', err);
             setError(err instanceof Error ? err : new Error('Failed to fetch organization'));
+            // Safety fallback to allow access
+            setPlanFeatures(['basic_visits', 'basic_reports']);
         } finally {
             setIsLoading(false);
+            console.log('Organization flow completed. Loading set to false.');
         }
     };
 

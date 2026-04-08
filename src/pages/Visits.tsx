@@ -32,12 +32,15 @@ import { useNavigate } from "react-router-dom";
 import { getStatesInRegion } from "@/constants/regions";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
+import { cn } from "@/lib/utils";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { ArrowRight } from "lucide-react";
 
 interface AdminFilterState {
   region?: string;
   state?: string;
   zoneId?: string;
-  repId?: string;
+  userId?: string;
 }
 
 export default function Visits() {
@@ -80,33 +83,44 @@ export default function Visits() {
     }
 
     try {
-      // Query with contacts join
+      // 0. Preparar IDs territoriales para triangulación
+      let zoneIds: string[] = [];
+
+      if (adminFilters.state && adminFilters.state !== 'all') {
+          const { data: zoneData } = await supabase.from('zones').select('id').eq('state', adminFilters.state);
+          zoneIds = zoneData?.map(z => z.id) || [];
+      } else if (adminFilters.region && adminFilters.region !== 'all') {
+          const { data: zoneData } = await supabase.from('zones').select('id').eq('region', adminFilters.region);
+          zoneIds = zoneData?.map(z => z.id) || [];
+      }
+
+      // 1. Continous Query Configuration
       let query: any = supabase
         .from('visits')
         .select(`
           *,
-          contacts(name, specialty, address, email, phone, priority)
+          unified_contacts(name, specialty, address, email, phone, priority, potential)
         `)
         .eq('organization_id', organizationId);
 
       if (isSupervisor && zoneId) {
-        // Supervisor: Base scope is their zone, but AdminFilter can refine it
-        if (adminFilters.repId && adminFilters.repId !== 'all') {
-          query = query.eq('user_id', adminFilters.repId);
+        if (adminFilters.userId && adminFilters.userId !== 'all') {
+          query = query.eq('user_id', adminFilters.userId);
         } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
           query = query.eq('zone_id', adminFilters.zoneId);
         } else {
           query = query.eq('zone_id', zoneId);
         }
       } else if (!canViewAllData) {
-        // Representative: Restricted to their own data
         query = query.eq('user_id', user.id);
       } else {
         // Master/Manager: Full access narrowed by admin filters
-        if (adminFilters.repId && adminFilters.repId !== 'all') {
-          query = query.eq('user_id', adminFilters.repId);
+        if (adminFilters.userId && adminFilters.userId !== 'all') {
+          query = query.eq('user_id', adminFilters.userId);
         } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
           query = query.eq('zone_id', adminFilters.zoneId);
+        } else if (zoneIds.length > 0) {
+          query = query.in('zone_id', zoneIds);
         }
       }
 
@@ -152,8 +166,8 @@ export default function Visits() {
 
     if (searchTerm) {
       filtered = filtered.filter(visit =>
-        visit.contacts?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        visit.contacts?.specialty?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        visit.unified_contacts?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        visit.unified_contacts?.specialty?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         visit.objective?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -389,138 +403,115 @@ export default function Visits() {
   const [showHelp, setShowHelp] = useState(false);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestión de Visitas</h1>
-          <p className="text-muted-foreground">Administra y realiza seguimiento de todas tus visitas médicas</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} title="Ver Ayuda">
-            <span className="sr-only">Ayuda</span>
-            <Lightbulb className="h-5 w-5 text-yellow-500" />
-          </Button>
-          {/* ... buttons ... */}
-        </div>
-      </div>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <EliteHeader 
+        title="Gestión de Visitas"
+        subtitle="Centro de Orquestación y Reporte de Campo"
+        icon={Calendar}
+        badgeText="V6.0 INDUSTRIAL"
+        statusText="Control de Actividad Activo"
+        statusColor="bg-emerald-500"
+        rightContent={
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className={cn("h-14 w-14 rounded-2xl transition-all", showHelp ? "bg-amber-50 text-amber-500 shadow-inner" : "hover:bg-slate-50 text-slate-400")}>
+              <Lightbulb className="h-6 w-6" />
+            </Button>
+            <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3" onClick={() => setWizardOpen(true)}>
+              <Plus className="h-6 w-6" />
+              Nueva Visita
+            </Button>
+          </div>
+        }
+      />
 
       {showHelp && (
         <InstructionCard
-          title="Planificación y Reporte de Visitas"
-          description="Organiza tu agenda diaria. Recuerda planificar tus visitas con antelación."
+          title="Manual de Operaciones: Visitas"
+          description="Estandarización de la agenda operativa y reporte de resultados."
           items={[
-            "Usa 'Nueva Visita' para agendar una cita individual.",
-            "Al finalizar una visita, márcala como 'Completada' para reportar el resultado.",
-            "Usa la vista de Calendario para ver tu distribución mensual."
+            "Mapeo Masivo: Use la herramienta de importación para cargar ciclos completos.",
+            "Ejecución: Inicie la misión desde el panel para registrar geolocalización.",
+            "Reporte: El análisis debe completarse inmediatamente tras el cierre de visita."
           ]}
         />
       )}
 
-      <Button variant="outline" onClick={handlePrint}>
-        <Printer className="mr-2 h-4 w-4" />
-        Imprimir
-      </Button>
-      <Button variant="outline" size="icon" onClick={() => setHelpDialogOpen(true)} title="Ayuda Importación">
-        <HelpCircle className="h-4 w-4" />
-      </Button>
-      <Button variant="outline" onClick={triggerImport} disabled={importing}>
-        {importing ? <FileSpreadsheet className="mr-2 h-4 w-4 animate-pulse" /> : <Upload className="mr-2 h-4 w-4" />}
-        Importar
-      </Button>
-      <input
-        id="import-visits-input"
-        type="file"
-        accept=".xlsx, .xls, .csv"
-        className="hidden"
-        onChange={handleImport}
-      />
-      <Button variant="outline" onClick={() => exportToCSV(filteredVisits, 'visitas')}>
-        <Download className="mr-2 h-4 w-4" />
-        Exportar
-      </Button>
-      {/* Nueva Visita Button via State */}
-      <Button className="btn-medical" onClick={() => setWizardOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" />
-        Nueva Visita
-      </Button>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="medical-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Visitas</p>
-                <p className="text-2xl font-bold text-foreground">{visitsByStatus.total}</p>
-              </div>
-              <FileText className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="medical-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Completadas</p>
-                <p className="text-2xl font-bold text-success">{visitsByStatus.completed}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-success" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="medical-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Programadas</p>
-                <p className="text-2xl font-bold text-warning">{visitsByStatus.scheduled}</p>
-              </div>
-              <AlertCircle className="h-8 w-8 text-warning" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="medical-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Canceladas</p>
-                <p className="text-2xl font-bold text-destructive">{visitsByStatus.cancelled}</p>
-              </div>
-              <XCircle className="h-8 w-8 text-destructive" />
-            </div>
-          </CardContent>
-        </Card>
-      </div >
-
       {/* Admin Filters (only for Master/Manager) */}
-      {
-        (canViewAllData || isSupervisor) && (
-          <AdminDataFilter
-            onFilterChange={setAdminFilters}
-          />
-        )
-      }
+      {(canViewAllData || isSupervisor) && <AdminDataFilter onFilterChange={setAdminFilters} moduleType="visits" />}
 
-      {/* Filters */}
-      <Card className="medical-card">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
+      {/* Industrial Tools Area */}
+      <div className="flex flex-wrap items-center gap-4 bg-card/50 backdrop-blur-sm p-6 rounded-[2rem] border border-border/40 shadow-soft">
+        <Button variant="outline" onClick={handlePrint} className="h-12 px-8 border-border/40 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-card hover:shadow-premium-sm transition-all group">
+          <Printer className="mr-3 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+          Imprimir Registro
+        </Button>
+        <div className="flex items-center h-12 shadow-premium-sm rounded-xl overflow-hidden border border-border/40">
+          <Button variant="ghost" className="h-full bg-card border-r border-border/40 px-8 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all group" onClick={triggerImport} disabled={importing}>
+            {importing ? <FileSpreadsheet className="mr-3 h-5 w-5 animate-pulse text-primary" /> : <Upload className="mr-3 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />}
+            Importar Ciclo
+          </Button>
+          <Button variant="ghost" size="icon" onClick={() => setHelpDialogOpen(true)} className="h-full w-12 bg-card hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
+            <HelpCircle className="h-5 w-5" />
+          </Button>
+        </div>
+        <Button variant="outline" onClick={() => exportToCSV(filteredVisits, 'visitas')} className="h-12 px-8 border-border/40 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-card hover:shadow-premium-sm transition-all group">
+          <Download className="mr-3 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+          Exportar Inteligencia
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <EliteKPICard 
+              title="Total Visitas" 
+              value={visitsByStatus.total.toString()} 
+              subtitle="Carga operativa total"
+              icon={FileText}
+              color="indigo"
+          />
+          <EliteKPICard 
+              title="Completadas" 
+              value={visitsByStatus.completed.toString()} 
+              subtitle="Misiones cerradas con éxito"
+              icon={CheckCircle}
+              trend={visitsByStatus.total > 0 ? (visitsByStatus.completed / visitsByStatus.total) * 100 : 0}
+              color="emerald"
+          />
+          <EliteKPICard 
+              title="Programadas" 
+              value={visitsByStatus.scheduled.toString()} 
+              subtitle="Despliegues en radar"
+              icon={Calendar}
+              color="amber"
+          />
+          <EliteKPICard 
+              title="Canceladas" 
+              value={visitsByStatus.cancelled.toString()} 
+              subtitle="Objetivos no alcanzados"
+              icon={XCircle}
+              color="rose"
+          />
+      </div>
+
+
+
+      {/* Filters - PRECISION TOOLS */}
+      <Card className="border-border/40 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden">
+        <CardContent className="p-10">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex-1 relative">
               <Input
-                placeholder="Buscar por médico, especialidad o objetivo..."
+                placeholder="Buscar por médico, especialidad u objetivo operativo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
+                className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-300"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Filtrar por estado" />
+              <SelectTrigger className="h-14 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                <SelectValue placeholder="Estado de Misión" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los estados</SelectItem>
+              <SelectContent className="rounded-xl border-border/40 font-black uppercase text-[10px] tracking-widest">
+                <SelectItem value="all">Soberanía Total</SelectItem>
                 <SelectItem value="scheduled">Programadas</SelectItem>
                 <SelectItem value="completed">Completadas</SelectItem>
                 <SelectItem value="cancelled">Canceladas</SelectItem>
@@ -530,139 +521,126 @@ export default function Visits() {
         </CardContent>
       </Card>
 
-      {/* Visits List */}
-      <Tabs defaultValue="list" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="list">Vista Lista</TabsTrigger>
-          <TabsTrigger value="calendar">Vista Calendario</TabsTrigger>
+      {/* Visits List - OPERATIONAL VIEWPORT */}
+      <Tabs defaultValue="list" className="w-full space-y-8">
+        <TabsList className="flex w-full md:w-96 p-1 bg-slate-50 rounded-2xl border border-border/40 shadow-inner">
+          <TabsTrigger value="list" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Vista Operativa</TabsTrigger>
+          <TabsTrigger value="calendar" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Vista Calendario</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="list" className="space-y-4">
+        <TabsContent value="list" className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
           {filteredVisits.map((visit) => (
-            <Card key={visit.id} className="medical-card-hover">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex gap-2 items-center">
-                        <h3 className="text-lg font-semibold text-foreground">
-                          {visit.contacts?.name || "Contacto no disponible"}
-                        </h3>
-                        {visit.contacts?.potential === 'Alto' && (
-                          <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-[10px] h-5 px-1.5 font-bold animate-pulse">
-                            PARETO A
-                          </Badge>
-                        )}
-
-                        {/* Edit and Delete Actions */}
-                        <div className="flex gap-1">
-                          {/* TODO: Add edit functionality */}
-                          {/*
-                          <Button variant="ghost" size="icon" className="h-6 w-6">
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          */}
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive">
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>¿Eliminar visita?</AlertDialogTitle>
-                                <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(visit.id)}>Eliminar</AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+            <Card key={visit.id} className="border-border/40 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
+              <CardContent className="p-8">
+                <div className="flex flex-col lg:flex-row gap-8">
+                  {/* Left Side: Contact Info */}
+                  <div className="flex-1 space-y-6">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center border border-border/40 group-hover:bg-primary/5 group-hover:border-primary/10 transition-colors">
+                          <User className="h-6 w-6 text-slate-400 group-hover:text-primary transition-colors" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display group-hover:text-primary transition-colors">
+                            {visit.unified_contacts?.name || "Contacto no disponible"}
+                          </h3>
+                          <div className="flex items-center gap-3 mt-1">
+                            <Badge className="bg-slate-100 text-slate-500 border-none font-black text-[9px] h-5 px-2 uppercase tracking-widest">
+                              {visit.unified_contacts?.specialty || "General"}
+                            </Badge>
+                            {visit.unified_contacts?.potential === 'Alto' && (
+                              <Badge className="bg-amber-100 text-amber-700 border-none text-[9px] h-5 px-2 font-black uppercase tracking-widest animate-pulse">
+                                PARETO ELITE
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <Badge className={getStatusColor(visit.status)}>
+                      
+                      <Badge className={cn("px-4 py-1.5 rounded-full font-black text-[10px] uppercase tracking-widest border-none shadow-soft flex items-center gap-2", getStatusColor(visit.status))}>
                         {getStatusIcon(visit.status)}
-                        <span className="ml-1">{getStatusText(visit.status)}</span>
+                        {getStatusText(visit.status)}
                       </Badge>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <User className="h-4 w-4 mr-2" />
-                          {visit.contacts?.specialty || "Especialidad no especificada"}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 p-6 rounded-3xl border border-border/40">
+                      <div className="space-y-3">
+                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-tight">
+                          <MapPin className="h-4 w-4 mr-3 text-primary" />
+                          <span className="truncate">{visit.unified_contacts?.address || "Ubicación Geográfica Protegida"}</span>
                         </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          {visit.contacts?.address || "Dirección no disponible"}
+                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-tight">
+                          <Clock className="h-4 w-4 mr-3 text-primary" />
+                          {new Date(visit.scheduled_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} Horas
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          {new Date(visit.scheduled_date).toLocaleDateString('es-ES', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
+                      <div className="space-y-3">
+                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-tight">
+                          <Calendar className="h-4 w-4 mr-3 text-primary" />
+                          {new Date(visit.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long' })}
                         </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4 mr-2" />
-                          {new Date(visit.scheduled_date).toLocaleTimeString('es-ES', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
+                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-tight">
+                          <FileText className="h-4 w-4 mr-3 text-primary" />
+                          ID: {visit.id.substring(0, 8).toUpperCase()}
                         </div>
                       </div>
                     </div>
 
                     {visit.objective && (
-                      <p className="text-sm text-foreground mb-4 p-3 bg-muted/50 rounded-lg">
-                        <strong>Objetivo:</strong> {visit.objective}
-                      </p>
+                      <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Misión Operativa</p>
+                        <p className="text-xs text-slate-600 font-bold leading-relaxed">{visit.objective}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Side: Actions */}
+                  <div className="flex lg:flex-col justify-end gap-3 min-w-[200px]">
+                    {visit.status === 'completed' && (
+                      <VisitReportDialog
+                        trigger={
+                          <Button variant="outline" className="w-full h-12 border-slate-200 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-all">
+                            Analizar Reporte
+                          </Button>
+                        }
+                        visitData={visit}
+                      />
                     )}
 
-                    <div className="flex items-center space-x-2">
-                      {/* TODO: Add view details dialog */}
-                      {/*
-                      <Button variant="outline" size="sm">
-                        Ver Detalles
+                    {visit.status === 'scheduled' && (
+                      <Button
+                        className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95"
+                        onClick={() => navigate(`/visits/execution/${visit.id}`)}
+                      >
+                        Iniciar Misión
                       </Button>
-                      */}
+                    )}
 
-                      {visit.status === 'completed' && (
-                        <VisitReportDialog
-                          trigger={
-                            <Button variant="outline" size="sm" className="btn-success">
-                              Ver Reporte
-                            </Button>
-                          }
-                          visitData={visit}
-                        />
-                      )}
-
-                      {visit.status === 'scheduled' && (
-                        <Button
-                          size="sm"
-                          className="btn-medical"
-                          onClick={() => navigate(`/visits/execution/${visit.id}`)}
-                        >
-                          Iniciar Visita
-                        </Button>
-                      )}
-
-                      {visit.status === 'in_progress' && (
-                        <Button
-                          size="sm"
-                          className="btn-medical bg-amber-500 hover:bg-amber-600"
-                          onClick={() => navigate(`/visits/execution/${visit.id}`)}
-                        >
-                          <Clock className="w-4 h-4 mr-2" />
-                          Retomar Visita
-                        </Button>
-                      )}
+                    <div className="flex gap-2">
+                       <Button variant="ghost" className="flex-1 h-12 rounded-xl text-slate-400 hover:text-primary hover:bg-slate-50">
+                         <Edit className="h-4 w-4 mr-2" />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Editar</span>
+                       </Button>
+                       <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" className="h-12 w-12 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="rounded-[2rem] border-none shadow-premium-2xl font-display">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter">¿Abortar Registro?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">
+                              Esta acción eliminará permanentemente el registro de visita del sistema.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter className="mt-8">
+                            <AlertDialogCancel className="h-12 rounded-xl font-black uppercase text-[10px] tracking-widest border-border/40">Ignorar</AlertDialogCancel>
+                            <AlertDialogAction className="h-12 rounded-xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600" onClick={() => handleDelete(visit.id)}>Confirmar Eliminación</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 </div>
@@ -686,67 +664,75 @@ export default function Visits() {
           )}
         </TabsContent>
 
-        <TabsContent value="calendar" className="space-y-4">
-          <Card className="medical-card">
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row gap-8">
-                {/* Calendar Component */}
-                <div className="flex-1 flex justify-center">
-                  {/* We can use the simple shadcn/ui Calendar if installed, or build a simple grid. 
-                             Assuming shadcn Calendar component is available @/components/ui/calendar 
-                             If not, we'll assume a standard DayPicker implementation or similar.
-                             For now, I'll use a widely compatible approach or assume standard Shadcn Calendar import.
-                         */}
-                  <div className="w-full max-w-md">
-                    <div className="bg-muted/10 p-4 rounded-lg border">
-                      <h3 className="text-lg font-semibold text-center mb-4 text-primary">Calendario de Visitas</h3>
-                      <div className="grid grid-cols-7 gap-1 text-center font-medium text-sm text-muted-foreground mb-2">
-                        <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
-                      </div>
-                      {/* Simple Logic to render current month's calendar */}
-                      <SimpleCalendarPreview visits={visits} />
+        <TabsContent value="calendar" className="animate-in slide-in-from-bottom-4 duration-500">
+          <Card className="border-border/40 shadow-premium-lg bg-card rounded-[2.5rem] overflow-hidden">
+            <CardContent className="p-10">
+              <div className="flex flex-col xl:flex-row gap-12">
+                {/* Calendar Component - MASTER VIEW */}
+                <div className="flex-1">
+                  <div className="bg-slate-50 p-8 rounded-[2rem] border border-border/40 shadow-inner">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter font-display">Radar de Tiempos</h3>
+                      <Badge className="bg-primary text-white border-none font-black text-[9px] px-3 py-1 uppercase tracking-widest shadow-premium-sm">Visión Mensual</Badge>
                     </div>
+                    <div className="grid grid-cols-7 gap-2 text-center font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-6">
+                      <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+                    </div>
+                    <SimpleCalendarPreview visits={visits} />
                   </div>
                 </div>
 
-                {/* Side Panel: Visits for Selected Month/Day */}
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-4">Resumen del Mes</h3>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 bg-green-50 rounded-lg border border-green-100 dark:bg-green-900/20 dark:border-green-900/50">
-                        <div className="text-2xl font-bold text-green-700 dark:text-green-400">
-                          {visitsByStatus.completed}
+                {/* Side Panel: Summary - COMMAND SUMMARY */}
+                <div className="w-full xl:w-96 space-y-8">
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter font-display mb-6">Consolidado del Ciclo</h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="p-6 bg-emerald-50/50 rounded-2xl border border-emerald-100 shadow-soft flex items-center justify-between">
+                        <div>
+                          <p className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-1">Misiones Exitosas</p>
+                          <p className="text-3xl font-black text-emerald-700 font-display">{visitsByStatus.completed}</p>
                         </div>
-                        <div className="text-sm text-green-600 dark:text-green-500">Completadas</div>
+                        <CheckCircle className="h-10 w-10 text-emerald-200" />
                       </div>
-                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 dark:bg-blue-900/20 dark:border-blue-900/50">
-                        <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">
-                          {visitsByStatus.scheduled}
+                      <div className="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 shadow-soft flex items-center justify-between">
+                        <div>
+                          <p className="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">Misiones en Radar</p>
+                          <p className="text-3xl font-black text-blue-700 font-display">{visitsByStatus.scheduled}</p>
                         </div>
-                        <div className="text-sm text-blue-600 dark:text-blue-500">Programadas</div>
+                        <Calendar className="h-10 w-10 text-blue-200" />
                       </div>
                     </div>
+                  </div>
 
-                    <div className="pt-4 border-t">
-                      <h4 className="font-medium mb-2 text-sm text-muted-foreground">Próximas Visitas</h4>
-                      <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                        {visits
-                          .filter(v => new Date(v.scheduled_date) >= new Date() && v.status === 'scheduled')
-                          .slice(0, 5)
-                          .map(v => (
-                            <div key={v.id} className="flex items-center justify-between p-3 bg-muted/50 rounded text-sm">
-                              <div>
-                                <p className="font-medium">{v.contacts?.name}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {new Date(v.scheduled_date).toLocaleDateString()}
-                                </p>
-                              </div>
-                              <Badge variant="outline">Programada</Badge>
+                  <div className="pt-8 border-t border-border/40">
+                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Próximos Despliegues</h4>
+                    <div className="space-y-3">
+                      {visits
+                        .filter(v => new Date(v.scheduled_date) >= new Date() && v.status === 'scheduled')
+                        .sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime())
+                        .slice(0, 5)
+                        .map(v => (
+                          <div key={v.id} className="flex items-center justify-between p-4 bg-slate-50 hover:bg-card hover:shadow-premium-sm border border-transparent hover:border-border/40 rounded-2xl transition-all group">
+                            <div className="flex items-center gap-4">
+                               <div className="w-2 h-2 rounded-full bg-primary" />
+                               <div>
+                                 <p className="text-[11px] font-black text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors">{v.unified_contacts?.name || v.contacts?.name}</p>
+                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                   {new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} • {new Date(v.scheduled_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                                 </p>
+                               </div>
                             </div>
-                          ))
-                        }
-                      </div>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg group-hover:bg-primary group-hover:text-white transition-all" onClick={() => navigate(`/visits/execution/${v.id}`)}>
+                               <ArrowRight className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))
+                      }
+                      {visits.filter(v => new Date(v.scheduled_date) >= new Date() && v.status === 'scheduled').length === 0 && (
+                        <div className="text-center py-6">
+                           <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sin despliegues pendientes</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -756,45 +742,59 @@ export default function Visits() {
         </TabsContent>
       </Tabs>
       <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Ayuda - Importación de Visitas</DialogTitle>
-            <DialogDescription>
-              Asegúrese de que los contactos ya existan en su agenda antes de importar las visitas.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm">El archivo debe contener las siguientes columnas:</p>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Columna</TableHead>
-                  <TableHead>Descripción</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-mono">Contacto</TableCell>
-                  <TableCell>Nombre exacto del contacto (Médico/Farmacia) *Requerido</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-mono">Fecha</TableCell>
-                  <TableCell>Fecha de la visita (YYYY-MM-DD)</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-mono">Hora</TableCell>
-                  <TableCell>Hora programada (HH:MM)</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-mono">Tipo</TableCell>
-                  <TableCell>'Medico' o 'Farmacia'</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-mono">Objetivo</TableCell>
-                  <TableCell>Objetivo de la visita</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+        <DialogContent className="max-w-[700px] bg-card rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+          <div className="bg-slate-50 p-8 border-b border-border/40">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
+                 <FileSpreadsheet className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-black text-slate-900 uppercase tracking-tighter">Protocolo de Importación</DialogTitle>
+                <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Sincronización masiva de inteligencia operativa</DialogDescription>
+              </div>
+            </div>
+          </div>
+          <div className="p-10 space-y-8">
+            <div className="bg-primary/5 p-6 rounded-3xl border border-primary/10 flex gap-5">
+              <AlertCircle className="h-6 w-6 text-primary shrink-0" />
+              <p className="text-xs font-bold text-slate-600 leading-relaxed uppercase tracking-tight">
+                IMPORTANTE: Los contactos individuales (Médicos o Farmacias) deben existir previamente en su centro de mandos para garantizar la trazabilidad íntegra de la misión.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Estructura del Manifiesto (Excel/CSV)</h4>
+              <div className="rounded-[1.5rem] border border-border/40 overflow-hidden shadow-soft">
+                <Table>
+                  <TableHeader className="bg-slate-50">
+                    <TableRow className="border-border/40">
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Columna Maestra</TableHead>
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Propósito Operativo</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[
+                      { col: 'Contacto', desc: 'Nombre exacto registrado en MediVisitPro' },
+                      { col: 'Fecha', desc: 'Formato ISO Estándar (YYYY-MM-DD)' },
+                      { col: 'Hora', desc: 'Sincronización horaria (HH:MM)' },
+                      { col: 'Tipo', desc: '"Medico" o "Farmacia" (Discriminador)' },
+                      { col: 'Objetivo', desc: 'Descripción táctica de la visita' },
+                    ].map((row, i) => (
+                      <TableRow key={i} className="border-slate-50 hover:bg-muted/30 transition-colors">
+                        <TableCell className="font-mono text-[11px] font-black text-primary py-4 px-6 uppercase">{row.col}</TableCell>
+                        <TableCell className="text-[10px] font-bold text-slate-500 uppercase tracking-tight py-4 px-6">{row.desc}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+               <Button onClick={() => setHelpDialogOpen(false)} className="h-12 bg-slate-900 text-white rounded-xl px-10 font-black uppercase text-[10px] tracking-widest shadow-premium-md transition-all active:scale-95">
+                 Entendido, Capitán
+               </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

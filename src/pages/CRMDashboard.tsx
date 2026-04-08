@@ -34,6 +34,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 
 // Mock CRM Data (Leads)
 const CRM_LEADS = [
@@ -125,54 +126,56 @@ export default function CRMDashboard() {
 
     return (
         <div className="min-h-screen bg-[#f4f6f8] p-4 md:p-8 space-y-8 font-sans overflow-x-hidden">
-            {/* Header Master CRM */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-                        <div className="bg-[#0056b3] p-2 rounded-lg shadow-lg">
-                            <Target className="h-8 w-8 text-white" />
-                        </div>
-                        Gestión de Leads & CRM
-                    </h1>
-                    <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
-                        <ShieldAlert className="h-4 w-4 text-[#00a0e9]" />
-                        Entorno de Gestión Comercial Certificado ISO 27001 (Tenant 0)
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-12 border-slate-200 bg-white shadow-sm hover:shadow-md transition-all rounded-lg text-slate-700">
-                        <ArrowUpRight className="h-4 w-4 mr-2" />
-                        Reporte de Conversión
-                    </Button>
-                    <Button className="h-12 bg-[#0056b3] hover:bg-[#004494] text-white shadow-[0_4px_14px_rgba(0,86,179,0.39)] transition-all rounded-lg px-6 font-bold">
-                        <Zap className="h-4 w-4 mr-2" />
-                        Nuevo Lead Manual
-                    </Button>
-                </div>
-            </div>
+            <EliteHeader 
+                title="Centro de Mandos CRM"
+                subtitle="Gestión de Inteligencia Comercial y Pipeline"
+                icon={Target}
+                badgeText="TENANT 0 • ISO 27001"
+                statusText="Sincronización de n8n Activa"
+                statusColor="bg-emerald-500"
+                rightContent={
+                    <div className="flex items-center gap-4">
+                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                            <ArrowUpRight className="h-5 w-5 mr-3 text-primary" /> Reporte de Conversión
+                        </Button>
+                        <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
+                            <Zap className="h-6 w-6" /> Nuevo Lead Manual
+                        </Button>
+                    </div>
+                }
+            />
 
             {/* EVM Driven Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {[
-                    { label: "Leads Totales", value: "48", icon: Users, color: "text-[#0056b3]" },
-                    { label: "Valor del Pipeline", value: "$184k", icon: TrendingUp, color: "text-emerald-500" },
-                    { label: "Tasa de Cierre", value: "24%", icon: Target, color: "text-[#00a0e9]" },
-                    { label: "SPI Comercial", value: "1.05", icon: Clock, color: "text-amber-500" },
-                ].map((stat, i) => (
-                    <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="bg-white p-6 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-white/50"
-                    >
-                        <div className="flex items-center justify-between">
-                            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">{stat.label}</p>
-                            <stat.icon className={cn("h-6 w-6", stat.color)} />
-                        </div>
-                        <p className="text-3xl font-black text-slate-800 mt-2">{stat.value}</p>
-                    </motion.div>
-                ))}
+                <EliteKPICard 
+                    title="Leads Totales" 
+                    value="48" 
+                    subtitle="Prospectos en radar"
+                    icon={Users}
+                    color="indigo"
+                />
+                <EliteKPICard 
+                    title="Valor Pipeline" 
+                    value="$184k" 
+                    subtitle="Valor potencial acumulado"
+                    icon={TrendingUp}
+                    trend={12.5}
+                    color="emerald"
+                />
+                <EliteKPICard 
+                    title="Tasa de Cierre" 
+                    value="24%" 
+                    subtitle="Eficiencia de conversión"
+                    icon={Target}
+                    color="amber"
+                />
+                <EliteKPICard 
+                    title="SPI Comercial" 
+                    value="1.05" 
+                    subtitle="Schedule Performance Index"
+                    icon={Clock}
+                    color="indigo"
+                />
             </div>
 
             {/* Control Bar */}

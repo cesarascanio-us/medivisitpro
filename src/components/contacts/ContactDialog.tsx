@@ -140,14 +140,31 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
 
       const contactPayload = {
         ...formData,
-        user_id: user.data.user?.id
+        user_id: user.data.user?.id,
+        organization_id: organizationId
       };
 
+      // TACTICAL TABLE RESOLVER
+      const getTargetTable = (type: string) => {
+        switch(type) {
+          case 'doctor': return 'doctors';
+          case 'pharmacy': return 'pharmacies';
+          case 'health_center': case 'hospital': case 'clinic': return 'health_centers';
+          case 'drugstore': return 'drugstores';
+          case 'commerce': return 'commerces';
+          case 'natural_store': return 'natural_stores';
+          default: return 'contacts';
+        }
+      };
+
+      const targetTable = getTargetTable(formData.contact_type);
       let contactId: string;
 
       if (contactData) {
+        // If we are editing, we use the source table provided by the hook
+        const sourceTable = contactData.source || targetTable;
         const result = await supabase
-          .from('contacts')
+          .from(sourceTable)
           .update(contactPayload)
           .eq('id', contactData.id)
           .select()
@@ -157,7 +174,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
         contactId = contactData.id;
       } else {
         const result = await supabase
-          .from('contacts')
+          .from(targetTable)
           .insert([contactPayload])
           .select()
           .single();

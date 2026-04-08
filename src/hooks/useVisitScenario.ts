@@ -68,7 +68,7 @@ export function useVisitScenario(
                         .select('potential, sales_drop_percent')
                         .eq('id', directoryItemId)
                         .maybeSingle()
-                        .then(({ data }) => ({
+                        .then(({ data }: { data: any }) => ({
                             priority: data?.potential || 'medium',
                             sales_drop_percent: data?.sales_drop_percent || 0
                         }))

@@ -432,7 +432,7 @@ export default function WeeklyScheduler() {
                                             </div>
                                         ))}
                                         {planDetails?.filter(d => d.day_of_week === day.key && d.turn === turn).length === 0 && (
-                                            <div className="text-center py-4 opacity-30 text-xs italic">
+                                            <div className="text-center py-4 opacity-30 text-xs ">
                                                 Sin visitas
                                             </div>
                                         )}

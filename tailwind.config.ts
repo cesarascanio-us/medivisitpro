@@ -10,7 +10,6 @@ import type { Config } from "tailwindcss";
 import tailwindAnimate from "tailwindcss-animate";
 
 export default {
-	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
@@ -104,8 +103,8 @@ export default {
 			   TYPOGRAPHY
 			   ───────────────────────────────────────────── */
 			fontFamily: {
-				sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-				display: ['Outfit', 'sans-serif'],
+				sans: ['Inter', 'sans-serif'],
+				display: ['Plus Jakarta Sans', 'sans-serif'],
 			},
 			fontSize: {
 				'2xs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px

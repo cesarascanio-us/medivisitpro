@@ -49,10 +49,11 @@ const Notifications = lazy(() => import("./pages/Notifications"));
 const Help = lazy(() => import("./pages/Help"));
 const Planner = lazy(() => import("./pages/Planner"));
 const Doctors = lazy(() => import("./pages/Doctors"));
-const Pharmacies = lazy(() => import("./pages/Pharmacies"));
+const Pharmacies = lazy(() => import("./pages/Pharmacies_Elite"));
 const NaturalStores = lazy(() => import("./pages/NaturalStores"));
+const Commerces = lazy(() => import("./pages/Commerces"));
 const Specialties = lazy(() => import("./pages/Specialties"));
-const Drugstores = lazy(() => import("./pages/Drugstores"));
+const Drugstores = lazy(() => import("./pages/Drugstores_Elite"));
 const DemoPage = lazy(() => import("./pages/DemoPage"));
 
 const Users = lazy(() => import("./pages/Users"));
@@ -106,7 +107,7 @@ const RoutesWithRemount = ({ children }: { children: React.ReactNode }) => {
     }
   }, [location.pathname]);
 
-  return <div key={location.pathname} style={{ display: 'contents' }}>{children}</div>;
+  return <div style={{ display: 'contents' }}>{children}</div>;
 };
 
 const queryClient = new QueryClient({
@@ -161,6 +162,11 @@ const AppContent = () => (
     <Route path="natural-stores" element={
       <ProtectedRoute>
         <Layout><NaturalStores /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="commerces" element={
+      <ProtectedRoute>
+        <Layout><Commerces /></Layout>
       </ProtectedRoute>
     } />
     <Route path="specialties" element={
@@ -377,7 +383,7 @@ const AppContent = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
         <AuthProvider>
           <MockDataProvider>
             <DemoDataSeeder />

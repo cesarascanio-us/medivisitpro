@@ -493,7 +493,7 @@ export default function FulfillmentManager() {
                                                         {bIdx === 0 && (
                                                             <div className="flex flex-col">
                                                                 <span className="font-bold text-slate-800">{item.product_name}</span>
-                                                                <span className="text-[10px] text-slate-400 font-mono italic">{item.sku}</span>
+                                                                <span className="text-[10px] text-slate-400 font-mono ">{item.sku}</span>
                                                             </div>
                                                         )}
                                                     </TableCell>
@@ -513,7 +513,7 @@ export default function FulfillmentManager() {
                                             ))
                                         ) : (
                                             <TableRow key={idx} className="bg-red-50 border-l-4 border-red-500">
-                                                <TableCell className="font-bold text-red-600 italic">{item.product_name}</TableCell>
+                                                <TableCell className="font-bold text-red-600 ">{item.product_name}</TableCell>
                                                 <TableCell className="text-center font-black text-red-600">{item.requested}</TableCell>
                                                 <TableCell colSpan={3} className="text-red-600 font-black text-center text-xs">
                                                     ERROR: STOCK INSUFICIENTE EN ALMACÉN CENTRAL

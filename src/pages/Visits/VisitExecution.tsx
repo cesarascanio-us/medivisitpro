@@ -502,7 +502,7 @@ export default function VisitExecutionPage() {
         let interviewValidationErrors: string[] = [];
         let interviewDataToSave: any = {};
 
-        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore';
+        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'commerce' || entityType === 'natural_store';
 
         if (isCommerce) {
             // Priority: Alta Comercial (Profiling) if Visit 1

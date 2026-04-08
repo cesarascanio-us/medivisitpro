@@ -5,16 +5,15 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import {
     Target, Phone, FileText, TrendingUp, Trophy, XCircle,
     Plus, Search, Filter, DollarSign, Clock, Zap, BarChart3,
-    Lightbulb, ArrowUpRight, Loader2
+    Lightbulb, ArrowUpRight, Loader2, RefreshCw, ShieldCheck, Activity, Star
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,22 +21,24 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { InstructionCard } from "@/components/ui/InstructionCard";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { DealDetailDialog } from "@/components/sales/DealDetailDialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { cloneElement } from "react";
 
 // ── Pipeline Configuration ──────────────────────────────────────
 const PIPELINE_STAGES = [
-    { value: "prospecting", label: "Prospección", icon: Target, color: "bg-primary", bgLight: "bg-primary/10", textColor: "text-primary", probability: 10 },
-    { value: "contacted", label: "Contactado", icon: Phone, color: "bg-amber-500", bgLight: "bg-amber-500/10", textColor: "text-amber-600", probability: 25 },
-    { value: "proposal", label: "Propuesta", icon: FileText, color: "bg-indigo-500", bgLight: "bg-indigo-500/10", textColor: "text-indigo-600", probability: 50 },
-    { value: "negotiation", label: "Negociación", icon: TrendingUp, color: "bg-purple-500", bgLight: "bg-purple-500/10", textColor: "text-purple-600", probability: 75 },
-    { value: "won", label: "Ganado", icon: Trophy, color: "bg-emerald-500", bgLight: "bg-emerald-500/10", textColor: "text-emerald-600", probability: 100 },
-    { value: "lost", label: "Perdido", icon: XCircle, color: "bg-rose-500", bgLight: "bg-rose-500/10", textColor: "text-rose-600", probability: 0 },
+    { value: "prospecting", label: "Prospección", icon: Target, color: "bg-indigo-600", textColor: "text-indigo-500", probability: 10 },
+    { value: "contacted", label: "Contactado", icon: Phone, color: "bg-amber-500", textColor: "text-amber-500", probability: 25 },
+    { value: "proposal", label: "Propuesta", icon: FileText, color: "bg-blue-600", textColor: "text-blue-500", probability: 50 },
+    { value: "negotiation", label: "Negociación", icon: TrendingUp, color: "bg-purple-600", textColor: "text-purple-500", probability: 75 },
+    { value: "won", label: "Ganado", icon: Trophy, color: "bg-emerald-600", textColor: "text-emerald-500", probability: 100 },
+    { value: "lost", label: "Perdido", icon: XCircle, color: "bg-rose-600", textColor: "text-rose-500", probability: 0 },
 ];
 
 const SOURCE_OPTIONS = [
@@ -56,7 +57,6 @@ interface AdminFilterState {
     userId?: string;
 }
 
-// ── Main Component ──────────────────────────────────────────────
 export default function SalesPipeline() {
     const { user, canViewAllData, isSupervisor, zoneId, organizationId } = useAuth();
     const { toast } = useToast();
@@ -66,8 +66,7 @@ export default function SalesPipeline() {
     const [searchTerm, setSearchTerm] = useState("");
     const [stageFilter, setStageFilter] = useState("all");
     const [adminFilters, setAdminFilters] = useState<AdminFilterState>({});
-    const [showHelp, setShowHelp] = useState(false);
-
+    
     // Modal states
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [selectedDeal, setSelectedDeal] = useState<any>(null);
@@ -83,7 +82,6 @@ export default function SalesPipeline() {
         stage: "prospecting",
     });
 
-    // ── Data Loading ──────────────────────────────────────────
     const loadDeals = useCallback(async () => {
         if (!user || !organizationId) {
             setLoading(false);
@@ -99,8 +97,6 @@ export default function SalesPipeline() {
             if (isSupervisor && zoneId) {
                 if (adminFilters.userId && adminFilters.userId !== "all") {
                     query = query.eq("user_id", adminFilters.userId);
-                } else if (adminFilters.zoneId && adminFilters.zoneId !== "all") {
-                    query = query.eq("zone_id", adminFilters.zoneId);
                 } else {
                     query = query.eq("zone_id", zoneId);
                 }
@@ -111,6 +107,18 @@ export default function SalesPipeline() {
                     query = query.eq("user_id", adminFilters.userId);
                 } else if (adminFilters.zoneId && adminFilters.zoneId !== "all") {
                     query = query.eq("zone_id", adminFilters.zoneId);
+                } else if (adminFilters.state && adminFilters.state !== "all") {
+                    // Triangulación por Estado
+                    const { data: zoneData } = await supabase.from('zones').select('id').eq('state', adminFilters.state);
+                    const zoneIds = zoneData?.map(z => z.id) || [];
+                    if (zoneIds.length > 0) query = query.in('zone_id', zoneIds);
+                    else query = query.eq('id', '00000000-0000-0000-0000-000000000000');
+                } else if (adminFilters.region && adminFilters.region !== "all") {
+                    // Triangulación por Región
+                    const { data: zoneData } = await supabase.from('zones').select('id').eq('region', adminFilters.region);
+                    const zoneIds = zoneData?.map(z => z.id) || [];
+                    if (zoneIds.length > 0) query = query.in('zone_id', zoneIds);
+                    else query = query.eq('id', '00000000-0000-0000-0000-000000000000');
                 }
             }
 
@@ -129,7 +137,6 @@ export default function SalesPipeline() {
         loadDeals();
     }, [loadDeals]);
 
-    // ── Create Deal ──────────────────────────────────────────
     const handleCreateDeal = async () => {
         if (!newDeal.title.trim()) {
             toast({ title: "Error", description: "El título es obligatorio.", variant: "destructive" });
@@ -160,7 +167,6 @@ export default function SalesPipeline() {
         }
     };
 
-    // ── Quick Stage Move ──────────────────────────────────────
     const handleQuickMove = async (dealId: string, newStage: string) => {
         try {
             const stageConfig = PIPELINE_STAGES.find((s) => s.value === newStage);
@@ -185,7 +191,6 @@ export default function SalesPipeline() {
         }
     };
 
-    // ── Computed Data ──────────────────────────────────────────
     const filteredDeals = useMemo(() => {
         return deals.filter((d) => {
             const matchesSearch =
@@ -236,115 +241,92 @@ export default function SalesPipeline() {
         return groups;
     }, [filteredDeals]);
 
-    // ── Render ──────────────────────────────────────────────
     return (
-        <div className="space-y-10">
-            {/* ── Header ────────────────────────────────── */}
+        <div className="space-y-8 pb-10 px-4">
+            {/* HEADER INDUSTRIAL ELITE - SALES ENGINE */}
             <EliteHeader 
                 title="Pipeline de Ventas"
-                subtitle="Sales Engine"
+                subtitle="Motor de Conversión Pro & Gestión de Leads"
                 icon={TrendingUp}
-                statusText="Motor de Ventas Activo"
+                badgeText="V6.0 ELITE"
+                statusText="Engine V6-CA Active"
+                statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setShowHelp(!showHelp)}
-                            className="w-14 h-14 rounded-2xl hover:bg-muted"
-                        >
-                            <Lightbulb className="h-6 w-6 text-muted-foreground" />
+                        <Button variant="outline" onClick={loadDeals} className="h-14 px-8 rounded-2xl bg-white border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                            <BarChart3 className="h-5 w-5 mr-3 text-primary" /> Resumen
                         </Button>
                         <Button
                             onClick={() => setCreateDialogOpen(true)}
-                            className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg gap-2"
+                            className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-[0.2em] text-[10px] h-16 px-10 rounded-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
                         >
-                            <Plus className="h-5 w-5" />
-                            Nueva Oportunidad
+                            <Plus className="h-6 w-6" /> Nueva Oportunidad
                         </Button>
                     </div>
                 }
             />
 
-            {/* ── KPIs ────────────────────────────────── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <EliteKPICard 
-                    title="Leads Abiertos" 
-                    value={kpis.totalOpen} 
-                    icon={<Target className="h-8 w-8" />} 
-                    color="indigo" 
-                />
-                <EliteKPICard 
-                    title="Valor Pipeline" 
-                    value={`$${kpis.pipelineValue.toLocaleString()}`} 
-                    icon={<DollarSign className="h-8 w-8" />} 
-                    color="emerald" 
-                />
-                <EliteKPICard 
-                    title="Tasa de Cierre" 
-                    value={`${kpis.conversionRate.toFixed(0)}%`} 
-                    icon={<Zap className="h-8 w-8" />} 
-                    color="amber" 
-                />
-                <EliteKPICard 
-                    title="Ticket Promedio" 
-                    value={`$${kpis.avgDealValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} 
-                    icon={<BarChart3 className="h-8 w-8" />} 
-                    color="blue" 
-                />
-                <EliteKPICard 
-                    title="Ciclo Promedio" 
-                    value={`${kpis.avgCycle}d`} 
-                    icon={<Clock className="h-8 w-8" />} 
-                    color="rose" 
-                />
+            {/* KPI GRID - INDUSTRIAL STYLE */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <EliteKPICard title="Abiertos" value={kpis.totalOpen} icon={Target} color="blue" subtitle="Leads en gestión" />
+                <EliteKPICard title="Valor Pipeline" value={`$${kpis.pipelineValue.toLocaleString()}`} icon={DollarSign} color="emerald" subtitle="Inversión Proyectada" />
+                <EliteKPICard title="Conversión" value={`${kpis.conversionRate.toFixed(0)}%`} icon={Zap} color="amber" subtitle="Eficiencia de Cierre" />
+                <EliteKPICard title="Ticket Promedio" value={`$${kpis.avgDealValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} icon={Activity} color="indigo" subtitle="Venta Media" />
+                <EliteKPICard title="Ciclo Promedio" value={`${kpis.avgCycle}d`} icon={Clock} color="rose" subtitle="Días para el Cierre" />
             </div>
 
-            {/* ── Filters ────────────────────────────────── */}
-            <Card className="rounded-[2rem] border-none shadow-soft bg-white/60 backdrop-blur-sm overflow-hidden p-6">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                    <div className="flex-1 relative w-full group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+            {/* SEARCH & SYSTEM FILTERS */}
+            <div className="flex flex-col gap-8">
+                <Card className="bg-white border border-slate-100 rounded-3xl shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
                         <Input
-                            placeholder="Buscar oportunidades..."
+                            placeholder="Busca por título o contexto comercial..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-12 h-12 bg-white/50 border-slate-100 rounded-xl text-sm font-semibold"
+                            className="pl-16 h-16 bg-slate-50 border-none focus-visible:ring-primary/20 font-bold rounded-2xl text-slate-900 transition-all font-sans shadow-inner"
                         />
                     </div>
-                    <Select value={stageFilter} onValueChange={setStageFilter}>
-                        <SelectTrigger className="h-12 w-full md:w-52 rounded-xl border-slate-100 font-bold bg-white/50">
-                            <div className="flex items-center gap-2">
-                                <Filter className="h-4 w-4 text-primary" />
-                                <SelectValue placeholder="Etapa" />
-                            </div>
-                        </SelectTrigger>
-                        <SelectContent className="rounded-xl">
-                            <SelectItem value="all" className="font-bold">Todas las etapas</SelectItem>
-                            {PIPELINE_STAGES.map((s) => (
-                                <SelectItem key={s.value} value={s.value} className="font-bold">
-                                    {s.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+                    <div className="flex items-center gap-4">
+                         <Select value={stageFilter} onValueChange={setStageFilter}>
+                            <SelectTrigger className="h-16 w-full md:w-64 rounded-2xl border-slate-100 bg-slate-50 font-black uppercase text-[10px] tracking-widest text-slate-500 shadow-inner px-8">
+                                <SelectValue placeholder="ETAPA DEL EMBUDO" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-2xl border-slate-100 bg-white">
+                                <SelectItem value="all" className="font-black text-[10px] uppercase tracking-widest">TODAS LAS ETAPAS</SelectItem>
+                                {PIPELINE_STAGES.map((s) => (
+                                    <SelectItem key={s.value} value={s.value} className="font-black text-[10px] uppercase tracking-widest">
+                                        {s.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={loadDeals}
+                            className="w-16 h-16 rounded-2xl bg-slate-50 shadow-inner hover:bg-white hover:shadow-premium-sm transition-all"
+                        >
+                            <RefreshCw className={cn("w-6 h-6", loading ? "animate-spin text-primary" : "text-slate-300")} />
+                        </Button>
+                    </div>
+                </Card>
                 {(canViewAllData || isSupervisor) && (
-                    <div className="mt-4 pt-4 border-t border-slate-100">
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                         <AdminDataFilter onFilterChange={setAdminFilters} />
                     </div>
                 )}
-            </Card>
+            </div>
 
-            {/* ── Kanban Board ────────────────────────────── */}
-            <div className="overflow-x-auto pb-4 -mx-4 px-4 relative">
-                {loading && (
-                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm rounded-3xl min-h-[300px]">
-                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                        <p className="text-slate-600 font-bold animate-pulse text-sm mt-4 tracking-widest uppercase">Sincronizando...</p>
+            {/* KANBAN AREA */}
+            <div className="flex-1 min-h-0 overflow-x-auto pb-10 -mx-8 px-8 relative">
+                {loading && deals.length === 0 && (
+                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/60 backdrop-blur-[1px] rounded-[3rem]">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                        <p className="text-[10px] font-black mt-6 tracking-[0.4em] text-primary uppercase animate-pulse">Sincronizando Leads...</p>
                     </div>
                 )}
-                <div className="flex gap-6 min-w-[1200px]">
+                <div className="flex gap-8 min-w-[1400px] h-full">
                     {PIPELINE_STAGES.map((stage) => {
                         const stageDeals = groupedByStage[stage.value] || [];
                         const stageValue = stageDeals.reduce((s, d) => s + (Number(d.value) || 0), 0);
@@ -352,133 +334,134 @@ export default function SalesPipeline() {
                         const nextStage = nextStageIdx < PIPELINE_STAGES.length ? PIPELINE_STAGES[nextStageIdx] : null;
 
                         return (
-                            <div key={stage.value} className="flex-1 min-w-[280px]">
+                            <div key={stage.value} className="flex-1 min-w-[320px] flex flex-col gap-6">
                                 {/* Column Header */}
-                                <div className="bg-muted/30 p-4 rounded-[2rem] mb-6 border border-border shadow-inner">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center shadow-sm", stage.bgLight, stage.textColor)}>
-                                                <stage.icon className="h-4 w-4" />
-                                            </div>
-                                            <span className="text-xs font-black uppercase tracking-widest text-foreground">
+                                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex items-center justify-between group shadow-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-premium-sm transition-transform group-hover:scale-105", stage.color, "text-white")}>
+                                            <stage.icon className="h-6 w-6" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 font-display">
                                                 {stage.label}
                                             </span>
+                                            <span className="text-xs font-black text-primary font-display tracking-tight">
+                                                ${stageValue.toLocaleString()}
+                                            </span>
                                         </div>
-                                        <Badge variant="outline" className="text-[10px] font-black border-border px-3 py-1 bg-background">
-                                            {stageDeals.length}
-                                        </Badge>
                                     </div>
-                                    {stageValue > 0 && (
-                                        <p className="text-[11px] font-black mt-3 text-primary tracking-tight">
-                                            ${stageValue.toLocaleString()}
-                                        </p>
-                                    )}
+                                    <Badge variant="outline" className="h-8 min-w-8 p-0 flex items-center justify-center rounded-xl border-slate-200 bg-white shadow-inner text-[10px] font-black text-slate-400">
+                                        {stageDeals.length}
+                                    </Badge>
                                 </div>
 
-                                {/* Cards */}
-                                <div className="space-y-2.5 min-h-[100px]">
-                                    {stageDeals.map((deal) => {
-                                        const daysSince = Math.floor(
-                                            (Date.now() - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24)
-                                        );
-                                        return (
-                                            <div
-                                                key={deal.id}
-                                                onClick={() => {
-                                                    setSelectedDeal(deal);
-                                                    setDetailOpen(true);
-                                                }}
-                                                className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-lg hover:border-slate-200 transition-all duration-300 cursor-pointer group"
-                                            >
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <h4 className="text-sm font-bold text-slate-800 group-hover:text-primary transition-colors leading-snug pr-2">
-                                                        {deal.title}
-                                                    </h4>
-                                                    {nextStage && !["won", "lost"].includes(stage.value) && (
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleQuickMove(deal.id, nextStage.value);
-                                                            }}
-                                                            className="w-6 h-6 rounded-lg bg-slate-50 hover:bg-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
-                                                            title={`Mover a ${nextStage.label}`}
-                                                        >
-                                                            <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 hover:text-primary" />
-                                                        </button>
-                                                    )}
-                                                </div>
+                                {/* Deals List */}
+                                <ScrollArea className="flex-1 pr-1 font-outfit">
+                                    <div className="flex flex-col gap-4 pb-4 font-outfit">
+                                        {stageDeals.map((deal) => {
+                                            const daysSince = Math.floor(
+                                                (Date.now() - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24)
+                                            );
+                                            return (
+                                                <div
+                                                    key={deal.id}
+                                                    onClick={() => {
+                                                        setSelectedDeal(deal);
+                                                        setDetailOpen(true);
+                                                    }}
+                                                    className="bg-white rounded-3xl p-6 border border-slate-100 shadow-premium-sm hover:shadow-premium-md hover:translate-y-[-6px] transition-all duration-300 cursor-pointer group relative overflow-hidden"
+                                                >
+                                                    <div className="relative z-10">
+                                                        <div className="flex items-start justify-between mb-4 gap-4">
+                                                            <h4 className="text-sm font-black text-slate-900 group-hover:text-primary transition-colors tracking-tight uppercase font-display leading-[1.3]">
+                                                                {deal.title}
+                                                            </h4>
+                                                            {nextStage && !["won", "lost"].includes(stage.value) && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleQuickMove(deal.id, nextStage.value);
+                                                                    }}
+                                                                    className="w-10 h-10 rounded-2xl bg-slate-50 hover:bg-primary text-slate-300 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 shadow-inner"
+                                                                >
+                                                                    <ArrowUpRight className="h-5 w-5" />
+                                                                </button>
+                                                            )}
+                                                        </div>
 
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-lg font-black text-slate-900">
-                                                        ${Number(deal.value || 0).toLocaleString()}
-                                                    </span>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="text-[10px] font-bold text-slate-400">
-                                                            {deal.probability}%
-                                                        </span>
-                                                        <div className="w-8 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                                                            <div
-                                                                className={cn("h-full rounded-full bg-gradient-to-r", stage.color)}
-                                                                style={{ width: `${deal.probability}%` }}
-                                                            />
+                                                        <div className="flex items-center justify-between mb-6">
+                                                            <div className="text-2xl font-black text-slate-900 tracking-tighter font-display">
+                                                                ${Number(deal.value || 0).toLocaleString()}
+                                                            </div>
+                                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-100">
+                                                                <Clock className="h-3.5 w-3.5 text-slate-400" />
+                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest tabular-nums">
+                                                                    {daysSince}D
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex flex-col gap-3 pt-5 border-t border-slate-50">
+                                                            <div className="flex justify-between items-center">
+                                                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest font-display">Probabilidad de Cierre</span>
+                                                                <span className="text-[10px] font-black text-primary font-display">{deal.probability}%</span>
+                                                            </div>
+                                                            <div className="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden shadow-inner">
+                                                                <div
+                                                                    className={cn("h-full rounded-full transition-all duration-1000 ease-out", stage.color)}
+                                                                    style={{ width: `${deal.probability}%` }}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div className="absolute top-0 right-0 p-6 opacity-[0.02] group-hover:opacity-[0.08] transition-opacity">
+                                                        <Activity className="h-20 w-20" />
+                                                    </div>
                                                 </div>
-
-                                                <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-slate-50">
-                                                    <Badge variant="secondary" className="text-[9px] font-bold bg-slate-50 text-slate-500 border-none px-1.5 py-0.5">
-                                                        {SOURCE_OPTIONS.find((s) => s.value === deal.source)?.label || deal.source}
-                                                    </Badge>
-                                                    <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                                                        <Clock className="h-3 w-3" />
-                                                        {daysSince}d
-                                                    </span>
-                                                </div>
+                                            );
+                                        })}
+                                        {stageDeals.length === 0 && (
+                                            <div className="text-center py-24 opacity-20 border-2 border-dashed border-slate-200 rounded-3xl font-outfit">
+                                                <Target className="h-10 w-10 mx-auto mb-4 text-slate-400" />
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] font-outfit text-slate-400">Sin Oportunidades</p>
                                             </div>
-                                        );
-                                    })}
-
-                                    {stageDeals.length === 0 && (
-                                        <div className="text-center py-8">
-                                            <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-                                                Sin oportunidades
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                                        )}
+                                    </div>
+                                </ScrollArea>
                             </div>
                         );
                     })}
                 </div>
             </div>
 
-            {/* ── Create Dialog ────────────────────────────── */}
+            {/* CREATE DIALOG - INDUSTRIAL STYLE */}
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-                <DialogContent className="rounded-[2rem] border-none shadow-2xl max-w-lg">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-800 tracking-tight">
+                <DialogContent className="rounded-[3.5rem] border border-slate-100 shadow-premium-2xl bg-white p-0 overflow-hidden font-sans max-w-lg">
+                    <div className="bg-primary p-12 text-white relative">
+                         <div className="absolute top-0 right-0 p-12 opacity-10">
+                            <Zap className="w-40 h-40" />
+                        </div>
+                        <DialogTitle className="text-3xl font-black uppercase tracking-tighter relative z-10 leading-none font-display">
                             Nueva Oportunidad
                         </DialogTitle>
-                        <DialogDescription>
-                            Registra una nueva oportunidad de venta en tu pipeline.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 pt-2">
-                        <div>
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">
-                                Título *
+                        <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mt-4 relative z-10 font-display">Inyección al Pipeline Elite</p>
+                    </div>
+                    <div className="p-8 space-y-6 bg-muted/5">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
+                                Título Estratégico *
                             </Label>
                             <Input
                                 value={newDeal.title}
                                 onChange={(e) => setNewDeal((p) => ({ ...p, title: e.target.value }))}
-                                placeholder="Ej: Propuesta Farmacia San Rafael"
-                                className="h-12 rounded-xl border-slate-200 font-semibold"
+                                placeholder="EJ: PROPUESTA FARMACIA SAN RAFAEL"
+                                className="h-12 rounded-xl border-slate-100 bg-background font-bold text-foreground focus:ring-primary/20"
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
                                     Valor Estimado ($)
                                 </Label>
                                 <Input
@@ -486,90 +469,42 @@ export default function SalesPipeline() {
                                     value={newDeal.value}
                                     onChange={(e) => setNewDeal((p) => ({ ...p, value: e.target.value }))}
                                     placeholder="0.00"
-                                    className="h-12 rounded-xl border-slate-200 font-bold"
+                                    className="h-12 rounded-xl border-slate-100 bg-background font-black text-lg text-foreground"
                                 />
                             </div>
-                            <div>
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
                                     Origen
                                 </Label>
                                 <Select
                                     value={newDeal.source}
                                     onValueChange={(v) => setNewDeal((p) => ({ ...p, source: v }))}
                                 >
-                                    <SelectTrigger className="h-12 rounded-xl border-slate-200 font-bold">
+                                    <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-background font-bold text-xs uppercase ">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="rounded-xl">
+                                    <SelectContent className="rounded-xl border-border bg-card">
                                         {SOURCE_OPTIONS.map((s) => (
-                                            <SelectItem key={s.value} value={s.value} className="font-bold">
+                                            <SelectItem key={s.value} value={s.value} className="font-black text-[10px] uppercase tracking-widest">
                                                 {s.label}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">
-                                    Etapa Inicial
-                                </Label>
-                                <Select
-                                    value={newDeal.stage}
-                                    onValueChange={(v) => setNewDeal((p) => ({ ...p, stage: v }))}
-                                >
-                                    <SelectTrigger className="h-12 rounded-xl border-slate-200 font-bold">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-xl">
-                                        {PIPELINE_STAGES.filter((s) => !["won", "lost"].includes(s.value)).map((s) => (
-                                            <SelectItem key={s.value} value={s.value} className="font-bold">
-                                                {s.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div>
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">
-                                    Cierre Estimado
-                                </Label>
-                                <Input
-                                    type="date"
-                                    value={newDeal.expected_close_date}
-                                    onChange={(e) => setNewDeal((p) => ({ ...p, expected_close_date: e.target.value }))}
-                                    className="h-12 rounded-xl border-slate-200 font-bold"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">
-                                Notas (Opcional)
-                            </Label>
-                            <Textarea
-                                value={newDeal.notes}
-                                onChange={(e) => setNewDeal((p) => ({ ...p, notes: e.target.value }))}
-                                placeholder="Contexto adicional..."
-                                className="rounded-xl border-slate-200 min-h-[60px]"
-                            />
                         </div>
 
                         <Button
                             onClick={handleCreateDeal}
                             disabled={!newDeal.title.trim()}
-                            className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-black text-[11px] uppercase tracking-widest rounded-2xl shadow-2xl transition-all hover:scale-[1.02] active:scale-95 gap-2"
+                            className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg transition-all"
                         >
-                            <Zap className="h-5 w-5" />
-                            Crear Oportunidad
+                            Crear Oportunidad Elite
                         </Button>
                     </div>
                 </DialogContent>
             </Dialog>
 
-            {/* ── Deal Detail Dialog ────────────────────── */}
             <DealDetailDialog
                 deal={selectedDeal}
                 open={detailOpen}
@@ -588,6 +523,17 @@ export default function SalesPipeline() {
                     }
                 }}
             />
+
+            {/* Footer Industrial Elite */}
+            <div className="mt-10 flex items-center justify-between text-slate-300 px-2 shrink-0">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 font-display">
+                   <ShieldCheck className="h-4 w-4 text-primary" /> Directiva de Inteligencia Comercial César Ascanio CA
+                </p>
+                <div className="flex gap-6">
+                    <span className="text-[9px] font-black tracking-widest">V 6.0.0</span>
+                    <span className="text-[9px] font-black tracking-widest text-emerald-500">CORE SYNC OK</span>
+                </div>
+            </div>
         </div>
     );
 }

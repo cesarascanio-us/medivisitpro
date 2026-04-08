@@ -462,7 +462,7 @@ export default function Hospitals() {
                                     </div>
                                 )}
                                 {hospital.email && (
-                                    <div className="flex items-center text-sm text-muted-foreground break-all italic">
+                                    <div className="flex items-center text-sm text-muted-foreground break-all ">
                                         <Mail className="mr-3 h-4 w-4 text-primary shrink-0" />
                                         <span>{hospital.email}</span>
                                     </div>

@@ -26,13 +26,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useOrganization } from "@/hooks/useOrganization";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useStrategicCompensation, CompensationPolicy } from "@/hooks/useStrategicCompensation";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 export default function PayoutDashboard() {
-    const { organization, user } = useOrganization();
+    const { organization } = useOrganization();
+    const { user } = useAuth();
     const { normalizeUnits, calculateCommission, calculateFuelIndemnity, getActivePolicy } = useStrategicCompensation(organization?.id || "");
     
     const [loading, setLoading] = useState(true);
@@ -72,8 +74,7 @@ export default function PayoutDashboard() {
                 .eq('user_id', user?.id)
                 .gte('order_date', startOfMonth.toISOString());
 
-            // 2. Fetch Expense Reports
-            const { data: expenses } = await supabase
+            const { data: expenses }: { data: any[] | null } = await supabase
                 .from('expense_reports' as any)
                 .select('*')
                 .eq('user_id', user?.id)

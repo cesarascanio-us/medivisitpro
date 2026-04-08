@@ -46,7 +46,7 @@ export const CommissionCalculator = () => {
                         Simulador de Rentabilidad Maestro
                     </div>
                     <h2 className="text-4xl sm:text-6xl font-black text-slate-900 mb-6 tracking-tight">
-                        Tu tiempo es <span className="text-primary italic">Capital.</span>
+                        Tu tiempo es <span className="text-primary ">Capital.</span>
                     </h2>
                     <p className="text-slate-500 text-lg max-w-2xl mx-auto font-medium">
                         Calcula el impacto financiero REAL de optimizar tu ruta y seguimiento con el estándar Sentinel.
@@ -63,7 +63,7 @@ export const CommissionCalculator = () => {
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
                                         <Label className="text-slate-900 font-black text-xs uppercase tracking-widest">Actividad Diaria</Label>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase italic">Promedio de visitas médicas efectivas</p>
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase ">Promedio de visitas médicas efectivas</p>
                                     </div>
                                     <span className="text-4xl font-black text-primary">{visitsPerDay} <span className="text-xs text-slate-400">Visitas</span></span>
                                 </div>
@@ -82,7 +82,7 @@ export const CommissionCalculator = () => {
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
                                         <Label className="text-slate-900 font-black text-xs uppercase tracking-widest">Tasa de Conversión</Label>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase italic">% de visitas que se traducen en venta/receta</p>
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase ">% de visitas que se traducen en venta/receta</p>
                                     </div>
                                     <span className="text-4xl font-black text-primary">{conversionRate}%</span>
                                 </div>
@@ -101,7 +101,7 @@ export const CommissionCalculator = () => {
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
                                         <Label className="text-slate-900 font-black text-xs uppercase tracking-widest">Comisión por Venta</Label>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase italic">Incentivo promedio por unidad/vial colocado</p>
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase ">Incentivo promedio por unidad/vial colocado</p>
                                     </div>
                                     <span className="text-4xl font-black text-primary">${commissionPerSale} <span className="text-xs text-slate-400">USD</span></span>
                                 </div>
@@ -148,7 +148,7 @@ export const CommissionCalculator = () => {
                                     <div className="text-7xl sm:text-8xl font-black text-white tracking-tighter leading-none mb-4">
                                         +${extraEarnings}
                                     </div>
-                                    <p className="text-primary font-black text-sm uppercase tracking-widest italic">Capital recuperado por ciclo</p>
+                                    <p className="text-primary font-black text-sm uppercase tracking-widest ">Capital recuperado por ciclo</p>
                                 </div>
 
                                 <div className="space-y-5 mb-12">

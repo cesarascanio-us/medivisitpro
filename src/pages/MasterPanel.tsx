@@ -74,11 +74,11 @@ const ROLE_LABELS: Record<UserRole, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-    master: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+    master: 'bg-primary/10 text-primary border-primary/20',
     admin_saas: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
     admin: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
     manager: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-    representative: 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+    representative: 'bg-slate-100 text-slate-500 border-slate-200'
 };
 
 export default function MasterPanel() {
@@ -185,9 +185,11 @@ export default function MasterPanel() {
     };
 
     if (loading) return (
-        <div className="h-screen flex flex-col items-center justify-center bg-slate-950 space-y-6">
-            <Zap className="h-16 w-16 text-indigo-500 animate-pulse fill-indigo-500/20" />
-            <div className="text-indigo-400 font-black uppercase italic tracking-[0.5em] animate-pulse">Sincronizando Matriz Master...</div>
+        <div className="h-screen flex flex-col items-center justify-center bg-white space-y-8">
+            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
+                <Zap className="h-12 w-12 text-primary animate-pulse" />
+            </div>
+            <div className="text-slate-900 font-black uppercase tracking-[0.5em] animate-pulse font-display">Sincronizando Matriz Master</div>
         </div>
     );
 
@@ -197,8 +199,8 @@ export default function MasterPanel() {
             key: "email",
             render: (u) => (
                 <div className="flex flex-col">
-                    <span className="font-black text-white text-base tracking-tight italic uppercase">{u.email}</span>
-                    <span className="text-[10px] text-slate-500 font-mono">UID: {u.user_id.slice(0, 16)}...</span>
+                    <span className="font-black text-slate-900 text-base tracking-tight uppercase font-display">{u.email}</span>
+                    <span className="text-[10px] text-slate-400 font-bold tracking-widest">UID: {u.user_id.slice(0, 16)}...</span>
                 </div>
             )
         },
@@ -206,7 +208,7 @@ export default function MasterPanel() {
             header: "Nivel de Rango", 
             key: "role",
             render: (u) => (
-                <Badge variant="outline" className={cn("text-[10px] font-black uppercase px-4 py-1.5 rounded-full border tracking-widest italic bg-transparent", ROLE_COLORS[u.role] || "border-white/10 text-slate-400")}>
+                <Badge variant="outline" className={cn("text-[10px] font-black uppercase px-4 py-1.5 rounded-full border tracking-widest  bg-transparent", ROLE_COLORS[u.role] || "border-white/10 text-slate-400")}>
                     {ROLE_LABELS[u.role]}
                 </Badge>
             )
@@ -217,9 +219,9 @@ export default function MasterPanel() {
             render: (u) => {
                 const org = organizations.find(o => o.id === u.organization_id);
                 return (
-                    <div className="flex items-center gap-2">
-                         <div className={cn("h-1.5 w-1.5 rounded-full", u.organization_id ? "bg-indigo-500" : "bg-slate-600")} />
-                         <span className="text-xs font-bold text-slate-300">{org?.name || 'Sistémico / Global'}</span>
+                    <div className="flex items-center gap-3">
+                         <div className={cn("h-2 w-2 rounded-full", u.organization_id ? "bg-primary" : "bg-slate-200")} />
+                         <span className="text-xs font-black text-slate-600 uppercase tracking-tight">{org?.name || 'Sistémico / Global'}</span>
                     </div>
                 );
             }
@@ -228,7 +230,7 @@ export default function MasterPanel() {
             header: "Aislamiento Operativo", 
             key: "company_id",
             render: (u) => (
-                <span className="text-[10px] font-mono text-slate-500">{u.company_id || 'N/A'}</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{u.company_id || 'Global Core'}</span>
             ),
             className: "text-right"
         },
@@ -240,10 +242,10 @@ export default function MasterPanel() {
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-12 w-12 rounded-2xl text-slate-400 hover:bg-indigo-500/10 hover:text-indigo-400 transition-all"
+                        className="h-10 w-10 rounded-xl text-slate-400 hover:bg-primary/5 hover:text-primary transition-all"
                         onClick={() => { setEditingUser(u.user_id); setNewRole(u.role); setNewUserOrgIdEdit(u.organization_id || 'none'); }}
                     >
-                        <Edit size={20} />
+                        <Edit size={18} />
                     </Button>
                 </div>
             ),
@@ -257,12 +259,12 @@ export default function MasterPanel() {
             key: "name",
             render: (o) => (
                 <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                        <Building2 className="h-6 w-6 text-indigo-400" />
+                    <div className="h-12 w-12 rounded-2xl bg-primary/5 flex items-center justify-center border border-primary/10 transition-transform group-hover:scale-110">
+                        <Building2 className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-black text-white text-base uppercase italic">{o.name}</span>
-                        <span className="text-xs text-slate-500">ID: {o.slug}</span>
+                        <span className="font-black text-slate-900 text-base uppercase font-display tracking-tight">{o.name}</span>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">TENANT: {o.slug}</span>
                     </div>
                 </div>
             )
@@ -291,7 +293,7 @@ export default function MasterPanel() {
             key: "actions",
             render: (o) => (
                 <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="gap-2 text-[10px] font-black uppercase border border-white/5 rounded-xl hover:bg-white/5">
+                    <Button variant="ghost" size="sm" className="gap-2 text-[9px] font-black uppercase tracking-widest border border-slate-100 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
                         <ExternalLink size={14} /> Inspeccionar
                     </Button>
                 </div>
@@ -309,22 +311,22 @@ export default function MasterPanel() {
                 icon={Shield}
                 badgeText="CÉSAR ASCANIO CORE"
                 statusText="PROTOCOL: DUAL-ID ACTIVE"
-                statusColor="bg-indigo-500"
+                statusColor="bg-primary"
                 rightContent={
                     <div className="flex items-center gap-4">
                         <Button 
                             onClick={loadData} 
                             variant="ghost" 
                             size="icon" 
-                            className="h-14 w-14 rounded-2xl hover:bg-white/5 border border-white/5 transition-all"
+                            className="h-14 w-14 rounded-2xl hover:bg-slate-50 border border-slate-100 transition-all text-slate-400 hover:text-primary"
                         >
-                            <RefreshCw size={24} className={cn(loading && "animate-spin text-indigo-400")} />
+                            <RefreshCw size={24} className={cn(loading && "animate-spin text-primary")} />
                         </Button>
                         <Button 
                             onClick={() => setUserDialogOpen(true)} 
-                            className="bg-indigo-600 hover:bg-indigo-500 text-white h-16 shadow-2xl rounded-[1.5rem] px-8 font-black text-xs uppercase tracking-widest italic transition-all active:scale-95 border-b-4 border-indigo-900"
+                            className="bg-primary hover:bg-primary/90 text-white h-16 shadow-premium-md rounded-2xl px-8 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
                         >
-                            <Plus size={20} className="mr-3" /> Nuevo Enlace Maestro
+                            <Plus size={20} /> Nuevo Enlace Maestro
                         </Button>
                     </div>
                 }
@@ -335,25 +337,25 @@ export default function MasterPanel() {
                 <EliteKPICard 
                     title="Usuarios Totales"
                     value={stats.totalUsers}
-                    icon={<Users className="w-10 h-10" />}
+                    icon={Users}
                     color="indigo"
                 />
                 <EliteKPICard 
                     title="SaaS Tenants"
                     value={stats.totalOrganizations}
-                    icon={<Building2 className="w-10 h-10" />}
+                    icon={Building2}
                     color="blue"
                 />
                 <EliteKPICard 
                     title="Salud del Núcleo"
                     value="100%"
-                    icon={<ShieldCheck className="w-10 h-10" />}
+                    icon={ShieldCheck}
                     color="emerald"
                 />
                 <EliteKPICard 
                     title="Alertas Globales"
                     value="0"
-                    icon={<ShieldAlert className="w-10 h-10" />}
+                    icon={ShieldAlert}
                     color="rose"
                 />
             </div>
@@ -396,42 +398,53 @@ export default function MasterPanel() {
                 </TabsContent>
 
                 <TabsContent value="system" className="mt-6">
-                    <div className="bg-slate-900/40 border border-dashed border-white/10 rounded-[3rem] p-20 text-center">
-                        <Database className="h-16 w-16 text-slate-700 mx-auto mb-6" />
-                        <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter mb-2">Auditoría del Núcleo</h3>
-                        <p className="text-slate-500 max-w-sm mx-auto">Esta sección está actualmente encriptada. Solo disponible en auditorías de nivel Sentinel Alpha.</p>
+                    <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[3rem] p-24 text-center">
+                        <div className="w-20 h-20 rounded-[2rem] bg-white shadow-soft border border-slate-100 flex items-center justify-center mx-auto mb-8">
+                             <Database className="h-10 w-10 text-slate-300" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-3 font-display">Auditoría del Núcleo</h3>
+                        <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest max-w-sm mx-auto leading-relaxed">
+                            Esta sección está actualmente encriptada. Solo disponible en auditorías de nivel Sentinel Alpha con protocolos de seguridad Biométricos.
+                        </p>
                     </div>
                 </TabsContent>
             </Tabs>
 
             {/* EDIT USER DIALOG */}
             <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
-                <DialogContent className="bg-slate-950 border border-white/5 rounded-[3rem] p-10 max-w-lg shadow-2xl">
-                    <DialogHeader className="mb-6 text-center space-y-2">
-                        <DialogTitle className="text-3xl font-black text-white italic uppercase tracking-tighter">Refactorizar Acceso</DialogTitle>
-                        <DialogDescription className="text-slate-500 uppercase text-[10px] font-bold tracking-widest">Modificando parámetros de seguridad de rango</DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-8">
-                        <div className="space-y-3">
-                            <Label className="text-xs font-black uppercase text-slate-400 tracking-widest italic ml-4">Nivel de Rango Sentinel</Label>
+                <DialogContent className="max-w-lg bg-white rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+                    <div className="bg-slate-50 p-10 border-b border-slate-100">
+                         <div className="flex items-center gap-4">
+                             <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-soft border border-slate-200">
+                                 <RefreshCw className="h-6 w-6 text-primary" />
+                             </div>
+                             <div>
+                                 <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Refactorizar Acceso</DialogTitle>
+                                 <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Modificando parámetros de seguridad de rango</DialogDescription>
+                             </div>
+                         </div>
+                    </div>
+                    <div className="p-12 space-y-8">
+                        <div className="space-y-4">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nivel de Rango Sentinel</Label>
                             <Select value={newRole} onValueChange={(v) => setNewRole(v as UserRole)}>
-                                <SelectTrigger className="bg-slate-900/50 h-16 border-white/10 rounded-2xl text-white font-bold">
+                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10 text-white">
+                                <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
                                     {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                                        <SelectItem key={val} value={val} className="hover:bg-indigo-500/20">{label}</SelectItem>
+                                        <SelectItem key={val} value={val} className="hover:bg-primary/5">{label}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-3">
-                            <Label className="text-xs font-black uppercase text-slate-400 tracking-widest italic ml-4">Enlace SaaS Tenant</Label>
+                        <div className="space-y-4">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Enlace SaaS Tenant</Label>
                             <Select value={newUserOrgIdEdit} onValueChange={setNewUserOrgIdEdit}>
-                                <SelectTrigger className="bg-slate-900/50 h-16 border-white/10 rounded-2xl text-white font-bold">
+                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10 text-white">
+                                <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
                                     <SelectItem value="none">Sistémico / Global</SelectItem>
                                     {organizations.map(org => (
                                         <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
@@ -439,72 +452,82 @@ export default function MasterPanel() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        <div className="flex justify-end gap-3 pt-6">
+                            <Button variant="ghost" onClick={() => setEditingUser(null)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-slate-400 hover:bg-slate-50">Abortar</Button>
+                            <Button onClick={handleUpdateUser} className="h-14 px-10 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95">Actualizar Matriz</Button>
+                        </div>
                     </div>
-                    <DialogFooter className="mt-10 sm:justify-center gap-4">
-                        <Button variant="ghost" onClick={() => setEditingUser(null)} className="h-16 px-10 rounded-2xl font-bold uppercase tracking-widest text-xs border border-white/5 hover:bg-white/5">Abortar</Button>
-                        <Button onClick={handleUpdateUser} className="h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl">Actualizar Matriz</Button>
-                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             {/* NEW USER DIALOG */}
             <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
-                <DialogContent className="bg-slate-950 border border-white/5 rounded-[3rem] p-10 max-w-xl shadow-2xl overflow-y-auto max-h-[90vh]">
-                    <DialogHeader className="mb-6 text-center space-y-2">
-                        <DialogTitle className="text-3xl font-black text-white italic uppercase tracking-tighter">Nuevo Enlace Maestro</DialogTitle>
-                        <DialogDescription className="text-slate-500 uppercase text-[10px] font-bold tracking-widest">Generando credenciales de acceso Sentinel</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4">Nombre</Label>
-                            <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="bg-slate-900/50 h-14 border-white/10 rounded-2xl text-white font-bold" />
+                <DialogContent className="max-w-xl bg-white rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+                    <div className="bg-slate-50 p-10 border-b border-slate-100">
+                         <div className="flex items-center gap-4">
+                             <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-soft border border-slate-200">
+                                 <Plus className="h-6 w-6 text-primary" />
+                             </div>
+                             <div>
+                                 <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Nuevo Enlace Maestro</DialogTitle>
+                                 <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Generando credenciales de acceso Sentinel Alpha</DialogDescription>
+                             </div>
+                         </div>
+                    </div>
+                    <div className="p-12 space-y-8">
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nombre</Label>
+                                <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner" />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Apellido</Label>
+                                <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner" />
+                            </div>
+                            <div className="col-span-2 space-y-3">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Terminal Email Corporativo</Label>
+                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner" />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rango Sentinel</Label>
+                                <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
+                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                                        {Object.entries(ROLE_LABELS).map(([val, label]) => (
+                                            <SelectItem key={val} value={val}>{label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tenant SaaS</Label>
+                                <Select value={newUserOrgId} onValueChange={setNewUserOrgId}>
+                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                                        <SelectItem value="none">Sistémico / Global</SelectItem>
+                                        {organizations.map(org => (
+                                            <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4">Apellido</Label>
-                            <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="bg-slate-900/50 h-14 border-white/10 rounded-2xl text-white font-bold" />
-                        </div>
-                        <div className="col-span-2 space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4">Terminal Email</Label>
-                            <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="bg-slate-900/50 h-14 border-white/10 rounded-2xl text-white font-bold" />
-                        </div>
-                        <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4">Nivel de Rango</Label>
-                            <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
-                                <SelectTrigger className="bg-slate-900/50 h-14 border-white/10 rounded-2xl text-white font-bold">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                    {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                                        <SelectItem key={val} value={val}>{label}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4">Asignación Tenant</Label>
-                            <Select value={newUserOrgId} onValueChange={setNewUserOrgId}>
-                                <SelectTrigger className="bg-slate-900/50 h-14 border-white/10 rounded-2xl text-white font-bold">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                    <SelectItem value="none">Sistémico / Global</SelectItem>
-                                    {organizations.map(org => (
-                                        <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                        <div className="flex justify-end gap-3 pt-6 border-t border-slate-100">
+                            <Button variant="ghost" onClick={() => setUserDialogOpen(false)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-slate-400 hover:bg-slate-50">Cancelar</Button>
+                            <Button 
+                                onClick={handleInviteUser} 
+                                disabled={isCreatingUser} 
+                                className="h-14 px-12 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95 flex items-center gap-3 min-w-[220px]"
+                            >
+                                {isCreatingUser ? <RefreshCw className="animate-spin h-4 w-4" /> : <Zap className="h-4 w-4" />}
+                                Desplegar Invitación
+                            </Button>
                         </div>
                     </div>
-                    <DialogFooter className="mt-10 sm:justify-center gap-4">
-                        <Button variant="ghost" onClick={() => setUserDialogOpen(false)} className="h-16 px-10 rounded-2xl font-bold uppercase text-xs border border-white/5 hover:bg-white/5">Cancelar</Button>
-                        <Button 
-                            onClick={handleInviteUser} 
-                            disabled={isCreatingUser} 
-                            className="h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl min-w-[200px]"
-                        >
-                            {isCreatingUser ? <RefreshCw className="animate-spin mr-2" /> : 'Desplegar Invitación'}
-                        </Button>
-                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

@@ -245,7 +245,7 @@ export function WarehouseReception({ onReceive }: { onReceive: () => void }) {
                                                 {item.batch_number ? (
                                                     <Badge variant="secondary" className="font-mono">{item.batch_number}</Badge>
                                                 ) : (
-                                                    <span className="text-muted-foreground text-xs italic">N/A</span>
+                                                    <span className="text-muted-foreground text-xs ">N/A</span>
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-right font-bold text-primary">+{item.quantity}</TableCell>

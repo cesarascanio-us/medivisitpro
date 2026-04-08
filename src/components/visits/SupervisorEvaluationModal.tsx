@@ -51,7 +51,7 @@ export const SupervisorEvaluationModal = ({
     if (!isOpen) return null;
 
     const handleStarClick = (field: string, value: number) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         setFormData((prev: any) => ({ ...prev, [field]: value }));
     };
 

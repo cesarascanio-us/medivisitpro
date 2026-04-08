@@ -120,7 +120,7 @@ export function BillingPortal({ subscription, transactions, onManageSubscription
                             <TableBody>
                                 {transactions.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center py-8 text-slate-500 italic">
+                                        <TableCell colSpan={5} className="text-center py-8 text-slate-500 ">
                                             No se encontraron transacciones registradas.
                                         </TableCell>
                                     </TableRow>

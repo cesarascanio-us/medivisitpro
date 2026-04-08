@@ -39,7 +39,7 @@ export default function Reports() {
   const { user, role: userRole, isManager: isAdminOrManager, isMaster, companyId, organizationId } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [heatmapType, setHeatmapType] = useState<"pharmacy" | "natural_store">("pharmacy");
+  const [heatmapType, setHeatmapType] = useState<"doctor" | "pharmacy" | "health_center" | "natural_store" | "drugstore" | "commerce">("pharmacy");
   const chartTheme = useChartTheme();
 
   // State for SQL View Data
@@ -188,14 +188,14 @@ export default function Reports() {
   const loadHeatmapData = async () => {
     try {
       let query = supabase
-        .from('contacts')
+        .from('unified_contacts')
         .select('latitude, longitude, contact_type')
         .eq('contact_type', heatmapType)
         .not('latitude', 'is', null)
         .not('longitude', 'is', null);
 
-      if (!isMaster && companyId) {
-        query = query.eq('company_id', companyId);
+      if (organizationId) {
+        query = query.eq('organization_id', organizationId);
       }
 
       const { data, error } = await query;
@@ -233,8 +233,8 @@ export default function Reports() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Next-Gen Reporting Suite</h1>
-          <p className="text-muted-foreground">Gerencial Dashboard | Business Intelligence en Tiempo Real</p>
+          <h1 className="text-3xl font-black tracking-tighter text-slate-900 font-display uppercase leading-none">Next-Gen Reporting Suite</h1>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Gerencial Dashboard | Business Intelligence en Tiempo Real</p>
         </div>
         <div className="flex items-center space-x-2">
           <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1">
@@ -279,7 +279,7 @@ export default function Reports() {
                   <TrendingUp className="h-5 w-5 text-emerald-600" />
                 </div>
               </div>
-              <p className="text-[10px] mt-4 text-muted-foreground italic">Volumen estimado basado en compromisos</p>
+              <p className="text-[10px] mt-4 text-muted-foreground ">Volumen estimado basado en compromisos</p>
             </CardContent>
           </Card>
 
@@ -404,26 +404,30 @@ export default function Reports() {
           </Card>
         </div>
         {/* Heatmap Section */}
-        <Card className="mt-6 shadow-sm overflow-hidden border-border bg-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-slate-950/20">
+        <Card className="mt-6 shadow-premium-md overflow-hidden border-slate-100 bg-white">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 bg-slate-50/50 border-b border-slate-100">
             <div>
-              <CardTitle className="text-lg font-bold flex items-center">
+              <CardTitle className="text-xl font-black flex items-center text-slate-900 uppercase tracking-tight font-display">
                 <MapIcon className="mr-2 h-5 w-5 text-primary" />
                 Heatmap Táctico de Cobertura
               </CardTitle>
-              <CardDescription>Visualización geospacial de impacto comercial por categoría</CardDescription>
+              <CardDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
             <Select value={heatmapType} onValueChange={(v: any) => setHeatmapType(v)}>
-              <SelectTrigger className="w-[180px] bg-background">
+              <SelectTrigger className="w-[200px] bg-white border-slate-200 text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-xl">
                 <SelectValue placeholder="Tipo de Punto" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pharmacy">Farmacias</SelectItem>
-                <SelectItem value="natural_store">Tiendas Naturistas</SelectItem>
+              <SelectContent className="bg-white border-slate-100 text-slate-900 shadow-xl rounded-xl">
+                <SelectItem value="doctor" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Stethoscope className="h-3.5 w-3.5" /> Médicos</div></SelectItem>
+                <SelectItem value="pharmacy" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Store className="h-3.5 w-3.5" /> Farmacias</div></SelectItem>
+                <SelectItem value="health_center" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5" /> Centros Salud</div></SelectItem>
+                <SelectItem value="natural_store" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Sprout className="h-3.5 w-3.5" /> Naturistas</div></SelectItem>
+                <SelectItem value="drugstore" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><FlaskConical className="h-3.5 w-3.5" /> Droguerías</div></SelectItem>
+                <SelectItem value="commerce" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><ShoppingCart className="h-3.5 w-3.5" /> Comercios</div></SelectItem>
               </SelectContent>
             </Select>
           </CardHeader>
-          <CardContent className="p-0 relative h-[500px]">
+          <CardContent className="p-0 relative h-[550px]">
             {!useFeatureAccess('geolocalization') && (
               <SubscriptionLock
                 featureName="Heatmap Táctico"
@@ -440,7 +444,7 @@ export default function Reports() {
                 className="h-full w-full z-0"
               >
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 />
                 <VisitHeatmap
@@ -453,17 +457,17 @@ export default function Reports() {
         </Card>
 
         {/* NIVEL 4: Trazabilidad 360 (Correlation) */}
-        <Card className="mt-6 border-emerald-200 bg-emerald-50/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-emerald-800">
-              <ShoppingCart className="h-5 w-5" />
+        <Card className="mt-6 border-slate-100 bg-emerald-50/5 shadow-premium-md rounded-[2.5rem] overflow-hidden">
+          <CardHeader className="p-10 border-b border-emerald-100/30">
+            <CardTitle className="flex items-center gap-3 text-emerald-900 font-black uppercase tracking-tight font-display text-xl">
+              <ShoppingCart className="h-6 w-6 text-emerald-600" />
               Trazabilidad 360: Impacto Médico en PDV
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
               Correlación entre entrega de muestras en consultorios y riesgos de stock en farmacias aledañas (Radio {orgSettings.geo_radius_attribution}km)
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-10">
             <div className="space-y-4">
               {correlationData.map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 bg-white rounded-xl border border-emerald-100 shadow-sm">

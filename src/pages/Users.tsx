@@ -81,22 +81,22 @@ const ROLE_LABELS: Record<UserRole, string> = {
 
 
 const ROLE_COLORS: Record<UserRole, string> = {
-    master: 'bg-purple-900/20 text-purple-900 border-purple-200',
-    organization_admin: 'bg-indigo-100 text-indigo-800',
-    admin: 'bg-red-100 text-red-800',
-    manager: 'bg-blue-100 text-blue-800',
-    coordinator: 'bg-indigo-100 text-indigo-800',
-    supervisor: 'bg-green-100 text-green-800',
-    representative: 'bg-gray-100 text-gray-800',
-    chief: 'bg-orange-100 text-orange-800',
-    store_manager: 'bg-indigo-100 text-indigo-800',
-    doctor: 'bg-teal-100 text-teal-800',
-    pharmacist: 'bg-amber-100 text-amber-800',
-    service_chief: 'bg-cyan-100 text-cyan-800',
-    telemarketing: 'bg-pink-100 text-pink-800',
+    master: 'bg-primary/10 text-primary border-primary/20',
+    organization_admin: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+    admin: 'bg-red-500/10 text-red-500 border-red-500/20',
+    manager: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+    coordinator: 'bg-violet-500/10 text-violet-500 border-violet-500/20',
+    supervisor: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+    representative: 'bg-slate-50 text-slate-500 border-border/40',
+    chief: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+    store_manager: 'bg-sky-500/10 text-sky-500 border-sky-500/20',
+    doctor: 'bg-teal-500/10 text-teal-500 border-teal-500/20',
+    pharmacist: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+    service_chief: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
+    telemarketing: 'bg-pink-500/10 text-pink-500 border-pink-500/20',
     admin_saas: 'bg-slate-900 text-white',
-    soporte_saas: 'bg-slate-700 text-white',
-    desarrollo_saas: 'bg-slate-800 text-white'
+    soporte_saas: 'bg-slate-500 text-white',
+    desarrollo_saas: 'bg-primary text-white'
 };
 
 
@@ -433,30 +433,30 @@ export default function Users() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
-            {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+        <div className="flex flex-col h-full bg-slate-50 space-y-6 font-display animate-in fade-in duration-700">
+            {/* Premium Header Container */}
+            <header className="bg-card px-8 py-10 rounded-[2rem] shadow-premium-md border border-border/40 relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-none transform transition-transform hover:scale-105">
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 transform transition-transform hover:scale-105 active:scale-95 duration-500">
                             <UsersIcon className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Sistema de Administración</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-2">Soberanía de Identidad</p>
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">
                                 Gestión de Usuarios
                             </h1>
-                            <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
+                            <div className="flex items-center gap-3 mt-3">
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border border-primary/20 font-black text-[10px] px-3 py-1 uppercase tracking-widest rounded-lg">
                                     {isMaster ? 'Modo Master Global' : (ROLE_LABELS[profile?.role as UserRole] || 'Admin')}
                                 </Badge>
-                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{users.length} Colaboradores</span>
+                                <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-50 border border-border/40 shadow-inner">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-glow"></div>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{users.length} Colaboradores en línea</span>
                                 </div>
                             </div>
                         </div>
@@ -466,28 +466,28 @@ export default function Users() {
                         <Button
                             onClick={loadUsers}
                             variant="outline"
-                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl h-12 px-6 font-bold shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                            className="bg-card border-border/40 rounded-xl h-12 px-8 font-black uppercase tracking-widest text-[10px] shadow-soft hover:shadow-md transition-all active:scale-95 group"
                         >
-                            <RefreshCw className={cn("h-4 w-4 mr-2 text-slate-500 group-hover:text-purple-600 transition-colors", loading && "animate-spin")} />
-                            Actualizar Listado
+                            <RefreshCw className={cn("h-4 w-4 mr-3 text-primary group-hover:rotate-180 transition-transform duration-700", loading && "animate-spin")} />
+                            Sincronizar Listado
                         </Button>
                     </div>
                 </div>
             </header>
 
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight">
-                            Personal del Sistema
+            <Card className="border border-border/40 shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
+                <CardHeader className="border-b border-slate-50 pb-8 p-8">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <CardTitle className="text-xl font-black text-slate-800 tracking-tighter uppercase">
+                            Personal Operativo
                         </CardTitle>
-                        <div className="relative w-full md:w-80">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <div className="relative w-full md:w-96">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input
-                                placeholder="Buscar colaborador..."
+                                placeholder="BUSCAR COLABORADOR POR NOMBRE O EMAIL..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 h-11 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus-visible:ring-purple-500 font-medium"
+                                className="pl-12 h-12 bg-slate-50 border-none rounded-xl focus-visible:ring-primary font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-slate-300"
                             />
                         </div>
                     </div>
@@ -500,14 +500,14 @@ export default function Users() {
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
+                                <TableHeader className="bg-muted/30">
                                     <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">Usuario</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Rol</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Ubicación</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Zonas Asignadas</TableHead>
-                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Estado</TableHead>
-                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Acciones</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-6 pl-8">Colaborador</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-6">Rol Corporativo</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-6">Asignación Geográfica</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-6">Cobertura Logística</TableHead>
+                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 py-6">Status</TableHead>
+                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-widest text-slate-400 py-6 pr-8">Control</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -519,13 +519,13 @@ export default function Users() {
                                         </TableRow>
                                     ) : (
                                         filteredUsers.map((user) => (
-                                            <TableRow key={user.id}>
-                                                <TableCell>
-                                                    <div className="flex flex-col">
-                                                        <span className="font-medium">
+                                            <TableRow key={user.id} className="hover:bg-slate-50 transition-colors border-slate-50">
+                                                <TableCell className="pl-8 py-6">
+                                                    <div className="flex flex-col gap-1">
+                                                        <span className="font-black text-slate-900 uppercase tracking-tight">
                                                             {user.first_name} {user.last_name}
                                                         </span>
-                                                        <span className="text-xs text-muted-foreground">
+                                                        <span className="text-[10px] text-slate-400 font-bold tracking-widest">
                                                             {user.email}
                                                         </span>
                                                     </div>
@@ -538,55 +538,60 @@ export default function Users() {
                                                         {ROLE_LABELS[user.role]}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-col gap-1 text-sm">
+                                                <TableCell className="py-6">
+                                                    <div className="flex flex-col gap-2">
                                                         {user.region && (
-                                                            <div className="flex items-center gap-1 text-muted-foreground">
-                                                                <Globe className="h-3 w-3" />
-                                                                <span>{user.region}</span>
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <Globe className="h-3 w-3 text-primary" />
+                                                                <span className="text-[10px] font-black uppercase tracking-widest">{user.region}</span>
                                                             </div>
                                                         )}
                                                         {user.state && (
-                                                            <div className="flex items-center gap-1 text-muted-foreground">
-                                                                <MapPin className="h-3 w-3" />
-                                                                <span>{user.state}</span>
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <MapPin className="h-3 w-3 text-primary" />
+                                                                <span className="text-[10px] font-black uppercase tracking-widest">{user.state}</span>
                                                             </div>
                                                         )}
                                                         {!user.region && !user.state && (
-                                                            <span className="text-muted-foreground italic">Sin ubicación</span>
+                                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest ">Sin Asignación</span>
                                                         )}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-wrap gap-1">
+                                                <TableCell className="py-6">
+                                                    <div className="flex flex-wrap gap-2">
                                                         {user.assigned_zones && user.assigned_zones.length > 0 ? (
                                                             user.assigned_zones.slice(0, 3).map(z => (
-                                                                <Badge key={z.id} variant="secondary" className="text-xs">
+                                                                <Badge key={z.id} className="bg-slate-50 text-slate-500 border border-border/40 font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-lg shadow-sm">
                                                                     {z.name}
                                                                 </Badge>
                                                             ))
                                                         ) : (
-                                                            <span className="text-xs text-muted-foreground">Ninguna</span>
+                                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Ninguna</span>
                                                         )}
                                                         {user.assigned_zones && user.assigned_zones.length > 3 && (
-                                                            <Badge variant="secondary" className="text-xs">
+                                                            <Badge className="bg-primary/5 text-primary border border-primary/20 font-black text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-lg">
                                                                 +{user.assigned_zones.length - 3}
                                                             </Badge>
                                                         )}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <Badge variant={user.is_active ? "default" : "secondary"}>
-                                                        {user.is_active ? "Activo" : "Inactivo"}
+                                                <TableCell className="text-center py-6">
+                                                    <Badge className={cn(
+                                                        "font-black text-[10px] uppercase tracking-widest px-3 py-1 rounded-full shadow-sm border",
+                                                        user.is_active 
+                                                            ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                                                            : "bg-slate-50 text-slate-400 border-border/40"
+                                                    )}>
+                                                        {user.is_active ? "Operativo" : "Inactivo"}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right">
-                                                    <div className="flex justify-end gap-2">
+                                                <TableCell className="text-right pr-8 py-6">
+                                                    <div className="flex justify-end gap-3">
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
                                                             onClick={() => handleEditClick(user)}
-                                                            className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                            className="h-10 w-10 text-primary hover:text-primary hover:bg-primary/5 rounded-xl transition-all shadow-none hover:shadow-soft"
                                                         >
                                                             <Edit className="h-4 w-4" />
                                                         </Button>
@@ -596,10 +601,10 @@ export default function Users() {
                                                                 size="icon"
                                                                 onClick={() => handleToggleActive(user.user_id, user.is_active)}
                                                                 className={cn(
-                                                                    "h-8 w-8",
+                                                                    "h-10 w-10 rounded-xl transition-all shadow-none hover:shadow-soft",
                                                                     user.is_active
-                                                                        ? "text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                                        : "text-green-600 hover:text-green-700 hover:bg-green-50"
+                                                                        ? "text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                                        : "text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50"
                                                                 )}
                                                             >
                                                                 {user.is_active ? (
@@ -623,10 +628,10 @@ export default function Users() {
 
             {/* Edit User Dialog */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent className="sm:max-w-[600px] rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden">
-                    <DialogHeader className="bg-slate-50 dark:bg-slate-900 p-8 pb-6 border-b border-slate-100 dark:border-slate-800">
-                        <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Editar Usuario</DialogTitle>
-                        <DialogDescription className="text-slate-500 font-medium">
+                <DialogContent className="sm:max-w-[600px] rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden bg-card">
+                    <DialogHeader className="bg-muted/30 p-8 pb-6 border-b border-border/50">
+                        <DialogTitle className="text-2xl font-black text-foreground tracking-tight">Editar Usuario</DialogTitle>
+                        <DialogDescription className="text-muted-foreground font-medium">
                             Modifique los permisos y asignaciones del colaborador en el sistema.
                         </DialogDescription>
                     </DialogHeader>
@@ -808,7 +813,7 @@ export default function Users() {
                                             ) : null;
                                         })}
                                         {selectedZones.length === 0 && (
-                                            <span className="text-xs text-muted-foreground italic">
+                                            <span className="text-xs text-muted-foreground ">
                                                 Ninguna zona seleccionada
                                             </span>
                                         )}
@@ -823,11 +828,11 @@ export default function Users() {
                         </div>
                     </div>
 
-                    <DialogFooter className="bg-slate-50 dark:bg-slate-900 p-6 px-8 border-t border-slate-100 dark:border-slate-800">
+                    <DialogFooter className="bg-muted/30 p-6 px-8 border-t border-border/50">
                         <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold">
                             Cancelar
                         </Button>
-                        <Button onClick={handleSaveUser} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-8 font-black shadow-lg shadow-purple-200 dark:shadow-none transition-all active:scale-95">
+                        <Button onClick={handleSaveUser} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 font-black shadow-lg shadow-primary/10 transition-all active:scale-95">
                             {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Guardar Cambios
                         </Button>

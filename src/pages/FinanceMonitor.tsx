@@ -14,6 +14,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
+import { cn } from "@/lib/utils";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import { 
     TrendingUp, 
     TrendingDown, 
@@ -76,20 +78,50 @@ export default function FinanceMonitor() {
         try {
             setLoading(true);
             
+            // 0. Preparar IDs territoriales para triangulación
+            let zoneIds: string[] = [];
+            let userIds: string[] = [];
+
+            if (filters.state && filters.state !== 'all') {
+                const { data: zoneData } = await supabase.from('zones').select('id').eq('state', filters.state);
+                zoneIds = zoneData?.map(z => z.id) || [];
+            } else if (filters.region && filters.region !== 'all') {
+                const { data: zoneData } = await supabase.from('zones').select('id').eq('region', filters.region);
+                zoneIds = zoneData?.map(z => z.id) || [];
+            }
+
+            if (zoneIds.length > 0) {
+                const { data: userData } = await supabase.from('profiles').select('id').in('zone_id', zoneIds);
+                userIds = userData?.map(u => u.id) || [];
+            }
+
             // 1. Fetch Sales (transfer_orders)
             let salesQuery = supabase.from('transfer_orders').select('total, created_at, status');
-            if (filters.repId && filters.repId !== 'all') salesQuery = salesQuery.eq('user_id', filters.repId);
-            if (filters.zoneId && filters.zoneId !== 'all') salesQuery = salesQuery.eq('zone_id', filters.zoneId);
+            if (filters.userId && filters.userId !== 'all') {
+                salesQuery = salesQuery.eq('user_id', filters.userId);
+            } else if (filters.zoneId && filters.zoneId !== 'all') {
+                salesQuery = salesQuery.eq('zone_id', filters.zoneId);
+            } else if (zoneIds.length > 0) {
+                salesQuery = salesQuery.in('zone_id', zoneIds);
+            }
             
             // 2. Fetch Expenses
             let expensesQuery = supabase.from('expenses').select('amount, status, category');
-            if (filters.repId && filters.repId !== 'all') expensesQuery = expensesQuery.eq('user_id', filters.repId);
+            if (filters.userId && filters.userId !== 'all') {
+                expensesQuery = expensesQuery.eq('user_id', filters.userId);
+            } else if (filters.zoneId && filters.zoneId !== 'all') {
+                expensesQuery = expensesQuery.eq('zone_id', filters.zoneId);
+            } else if (zoneIds.length > 0) {
+                expensesQuery = expensesQuery.in('zone_id', zoneIds);
+            }
             
             // 3. Fetch Sample Drops (for investment calculation)
-            // Note: In a real scenario, we'd join with products to get cost. 
-            // Here we'll use a heuristic: $2.5 average cost per sample unit.
             let samplesQuery = supabase.from('sample_movements').select('quantity').eq('movement_type', 'treatment_start');
-            if (filters.repId && filters.repId !== 'all') samplesQuery = samplesQuery.eq('user_id', filters.repId);
+            if (filters.userId && filters.userId !== 'all') {
+                samplesQuery = samplesQuery.eq('user_id', filters.userId);
+            } else if (userIds.length > 0) {
+                samplesQuery = samplesQuery.in('user_id', userIds);
+            }
             
             const [salesRes, expensesRes, samplesRes] = await Promise.all([
                 salesQuery,
@@ -140,64 +172,58 @@ export default function FinanceMonitor() {
 
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-2">
-                        <Scale className="h-8 w-8 text-primary" />
-                        Finance Monitor <span className="text-primary">A0</span>
-                    </h1>
-                    <p className="text-muted-foreground font-medium">Análisis de ROI y Eficiencia de Inversión Operativa</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" className="rounded-xl border-border" onClick={loadFinanceData}>
-                        <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} /> Actualizar
-                    </Button>
-                    <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10 rounded-xl">
-                        <Download className="h-4 w-4 mr-2" /> Exportar Reporte
-                    </Button>
-                </div>
-            </div>
+            <EliteHeader 
+                title="Finance Monitor"
+                subtitle="Análisis de ROI y Eficiencia Operativa"
+                icon={Scale}
+                badgeText="A0 V6.0"
+                statusText="Auditoría Financiera Activa"
+                statusColor="bg-primary"
+                rightContent={
+                    <div className="flex items-center gap-4">
+                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-card border-border/40 text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all" onClick={loadFinanceData}>
+                            <RefreshCw className={`h-5 w-5 mr-3 text-primary ${loading ? 'animate-spin' : ''}`} /> Actualizar
+                        </Button>
+                        <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
+                            <Download className="h-6 w-6" /> Exportar Reporte
+                        </Button>
+                    </div>
+                }
+            />
 
             {/* Admin Filter */}
-            <Card className="border-border shadow-sm rounded-2xl overflow-hidden bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-4">
-                    <AdminDataFilter onFilterChange={setFilters} />
-                </CardContent>
-            </Card>
+            <AdminDataFilter onFilterChange={setFilters} moduleType="finance" />
 
             {/* KPI Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <FinanceCard 
+                <EliteKPICard 
                     title="Ventas Brutas" 
                     value={`$${stats.totalSales.toLocaleString()}`} 
-                    subvalue={`+${stats.salesGrowth}% vs mes anterior`}
-                    icon={<TrendingUp className="text-emerald-500" />}
-                    trend="up"
+                    subtitle={`+${stats.salesGrowth}% vs mes anterior`}
+                    icon={TrendingUp}
+                    trend={stats.salesGrowth}
                     color="emerald"
                 />
-                <FinanceCard 
+                <EliteKPICard 
                     title="Gastos Operativos" 
                     value={`$${stats.totalExpenses.toLocaleString()}`} 
-                    subvalue={`${((stats.totalExpenses / stats.totalSales) * 100 || 0).toFixed(1)}% del ingreso`}
-                    icon={<Wallet className="text-rose-500" />}
-                    trend="none"
+                    subtitle={`${((stats.totalExpenses / stats.totalSales) * 100 || 0).toFixed(1)}% del ingreso`}
+                    icon={Wallet}
                     color="rose"
                 />
-                <FinanceCard 
+                <EliteKPICard 
                     title="Inversión Muestras" 
                     value={`$${stats.sampleInvestment.toLocaleString()}`} 
-                    subvalue="Costo estimado de promoción"
-                    icon={<Package className="text-amber-500" />}
-                    trend="none"
+                    subtitle="Costo estimado de promoción"
+                    icon={Package}
                     color="amber"
                 />
-                <FinanceCard 
+                <EliteKPICard 
                     title="Índice ROI" 
                     value={`${stats.roi.toFixed(2)}x`} 
-                    subvalue="Retorno por cada $1 invertido"
-                    icon={<DollarSign className="text-indigo-500" />}
-                    trend={stats.roi > 3 ? "up" : "down"}
+                    subtitle="Retorno por cada $1 invertido"
+                    icon={DollarSign}
+                    trend={stats.roi > 3 ? 15 : -5}
                     color="indigo"
                 />
             </div>
@@ -302,11 +328,11 @@ export default function FinanceMonitor() {
                                 </div>
                             </div>
                             
-                            <p className="text-sm text-indigo-100 leading-relaxed italic opacity-80">
+                            <p className="text-sm text-indigo-100 leading-relaxed  opacity-80">
                                 "La eficiencia por debajo del 15% indica un uso altamente optimizado de los recursos para la generación de ventas."
                             </p>
 
-                            <Button className="w-full bg-white text-indigo-700 hover:bg-indigo-50 font-bold rounded-xl mt-4">
+                            <Button className="w-full bg-background text-indigo-700 hover:bg-muted font-bold rounded-xl mt-4">
                                 Ver Detalle por Zona
                             </Button>
                         </div>
@@ -317,30 +343,4 @@ export default function FinanceMonitor() {
     );
 }
 
-function FinanceCard({ title, value, subvalue, icon, trend, color }: any) {
-    const colors: any = {
-        emerald: "text-success bg-success/10",
-        rose: "text-destructive bg-destructive/10",
-        amber: "text-warning bg-warning/10",
-        indigo: "text-primary bg-primary/10"
-    };
 
-    return (
-        <Card className="border-border shadow-sm hover:shadow-card-hover transition-all rounded-3xl overflow-hidden bg-card group">
-            <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                    <div className={`p-3 rounded-2xl ${colors[color] || 'bg-muted/20'}`}>
-                        {icon}
-                    </div>
-                    {trend === 'up' && <ArrowUpRight className="text-success h-5 w-5" />}
-                    {trend === 'down' && <ArrowDownRight className="text-destructive h-5 w-5" />}
-                </div>
-                <div className="space-y-1">
-                    <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{title}</p>
-                    <h3 className="text-2xl font-black text-foreground tracking-tight transition-transform group-hover:scale-105 origin-left">{value}</h3>
-                    <p className="text-xs text-muted-foreground font-medium">{subvalue}</p>
-                </div>
-            </CardContent>
-        </Card>
-    );
-}

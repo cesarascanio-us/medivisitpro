@@ -21,7 +21,7 @@ export function MobileNav() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="lg:hidden text-white hover:bg-slate-800"
+                    className="lg:hidden text-foreground hover:bg-muted"
                 >
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle menu</span>

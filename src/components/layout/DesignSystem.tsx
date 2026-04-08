@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
 
 interface EliteHeaderProps {
     title: string;
@@ -24,27 +24,27 @@ interface EliteHeaderProps {
 
 export function EliteHeader({ title, subtitle, icon: Icon, badgeText, statusText, statusColor = "bg-emerald-500", rightContent }: EliteHeaderProps) {
     return (
-        <header className="bg-card px-10 py-12 rounded-[3.5rem] border border-border shadow-soft relative overflow-hidden mx-1">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
-                <div className="flex items-center gap-8">
-                    <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center shadow-inner border border-primary/20">
-                        <Icon className="text-primary h-12 w-12" />
+        <header className="bg-card px-8 py-8 rounded-3xl border border-border shadow-soft relative overflow-hidden mx-1">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+                <div className="flex items-center gap-6">
+                    <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center shadow-inner border border-primary/20 group hover:rotate-6 transition-transform duration-500">
+                        <Icon className="text-primary h-8 w-8 premium-icon" />
                     </div>
                     <div>
-                        <p className="text-primary text-[11px] font-black uppercase tracking-[0.4em] mb-2">{subtitle}</p>
-                        <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter uppercase italic leading-none">{title}</h1>
-                        <div className="flex items-center gap-4 mt-4">
-                            {badgeText && <Badge className="bg-indigo-500/10 text-indigo-500 border-none font-black text-[10px] px-4 py-1.5 uppercase tracking-widest italic rounded-full">{badgeText}</Badge>}
+                        <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-1">{subtitle}</p>
+                        <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter uppercase leading-none">{title}</h1>
+                        <div className="flex items-center gap-3 mt-3">
+                            {badgeText && <Badge className="bg-primary/10 text-primary border-none font-black text-[9px] px-3 py-1 uppercase tracking-widest rounded-full">{badgeText}</Badge>}
                             {statusText && (
-                                <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-muted/40 border border-border">
-                                    <div className={cn("w-2 h-2 rounded-full animate-pulse", statusColor)}></div>
-                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">{statusText}</span>
+                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-muted/40 border border-border">
+                                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", statusColor)}></div>
+                                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{statusText}</span>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     {rightContent}
                 </div>
             </div>
@@ -55,38 +55,83 @@ export function EliteHeader({ title, subtitle, icon: Icon, badgeText, statusText
 interface EliteKPICardProps {
     title: string;
     value: string | number;
-    icon: React.ReactNode;
-    color: 'indigo' | 'rose' | 'emerald' | 'amber' | 'blue';
+    subtitle?: string;
+    icon: LucideIcon;
+    trend?: number;
+    color?: 'primary' | 'secondary' | 'accent' | 'emerald' | 'rose' | 'amber' | 'blue' | 'indigo';
+    variant?: 'glass' | 'solid';
+    delay?: number;
 }
 
-export function EliteKPICard({ title, value, icon, color }: EliteKPICardProps) {
-    const colorMap = {
-        indigo: "text-indigo-500",
-        rose: "text-rose-500",
-        emerald: "text-emerald-500",
-        amber: "text-amber-500",
-        blue: "text-blue-500"
+export function EliteKPICard({ 
+    title, 
+    value, 
+    subtitle, 
+    icon: Icon, 
+    trend, 
+    color = 'primary', 
+    variant = 'glass',
+    delay = 0 
+}: EliteKPICardProps) {
+    
+    const colorConfigs = {
+        primary: "text-primary bg-primary/5 border-primary/10",
+        secondary: "text-blue-600 bg-blue-600/5 border-blue-600/10",
+        accent: "text-indigo-600 bg-indigo-600/5 border-indigo-600/10",
+        emerald: "text-emerald-600 bg-emerald-600/5 border-emerald-600/10",
+        rose: "text-rose-600 bg-rose-600/5 border-rose-600/10",
+        amber: "text-amber-600 bg-amber-600/5 border-amber-600/10",
+        blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
+        indigo: "text-indigo-700 bg-indigo-700/5 border-indigo-700/10"
     };
 
+    const activeColor = colorConfigs[color as keyof typeof colorConfigs] || colorConfigs.primary;
+
     return (
-        <Card className="border-none bg-muted/30 dark:bg-slate-900/40 rounded-[2.5rem] shadow-sm hover:shadow-md transition-all group overflow-hidden">
-            <CardContent className="p-10 flex items-center justify-between">
-                <div className="space-y-2">
-                    <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em]">{title}</p>
-                    <p className="text-5xl font-black text-foreground tabular-nums tracking-tighter italic">{value}</p>
+        <Card 
+            className={cn(
+                "border border-border/50 shadow-soft rounded-3xl overflow-hidden group transition-all duration-500 hover:shadow-card hover:-translate-y-1 animate-in fade-in slide-in-from-bottom duration-700",
+                variant === 'glass' ? "bg-card/80 backdrop-blur-xl" : "bg-card"
+            )}
+            style={{ animationDelay: `${delay}ms` }}
+        >
+            <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                    <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:rotate-6 duration-500", activeColor.split(' ')[1])}>
+                        <Icon className={cn("h-6 w-6 premium-icon", activeColor.split(' ')[0])} />
+                    </div>
+                    {trend !== undefined && (
+                        <Badge className={cn(
+                            "border-none font-black text-[9px] px-2 py-0.5 rounded-full uppercase flex items-center gap-1",
+                            trend >= 0 ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
+                        )}>
+                            {trend >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                            {Math.abs(trend)}%
+                        </Badge>
+                    )}
                 </div>
-                <div className={cn("transition-transform group-hover:scale-110 duration-500 opacity-90", colorMap[color])}>
-                    {icon}
+                
+                <div className="space-y-1">
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">{title}</p>
+                    <div className="flex items-baseline gap-2">
+                        <p className="text-2xl font-black text-foreground tabular-nums tracking-tighter leading-none">{value}</p>
+                    </div>
+                    {subtitle && (
+                        <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-2 flex items-center gap-1.5">
+                            <span className={cn("w-1 h-1 rounded-full", activeColor.split(' ')[0].replace('text', 'bg'))} />
+                            {subtitle}
+                        </p>
+                    )}
                 </div>
             </CardContent>
         </Card>
     );
 }
 
-export function EliteTabsList({ children }: { children: React.ReactNode }) {
+export function EliteTabsList({ children, className }: { children: React.ReactNode, className?: string }) {
     return (
-        <div className="flex justify-start px-2">
-            <TabsList className="bg-muted/50 dark:bg-slate-900/60 border border-border/50 p-2 rounded-full h-auto flex flex-nowrap gap-3 backdrop-blur-md shadow-inner">
+        <div className={cn("flex justify-start px-1", className)}>
+            <TabsList className="bg-muted/30 border border-border/40 p-1.5 rounded-2xl h-auto flex flex-nowrap gap-2 backdrop-blur-md shadow-inner">
                 {children}
             </TabsList>
         </div>
@@ -105,11 +150,11 @@ export function EliteTabsTrigger({ value, label, icon: Icon, activeColor = "data
         <TabsTrigger 
             value={value} 
             className={cn(
-                "flex items-center gap-3 px-10 py-4 data-[state=active]:text-primary-foreground rounded-full transition-all font-black text-[12px] uppercase tracking-widest border-none italic group",
+                "flex items-center gap-2 px-6 py-3 data-[state=active]:text-primary-foreground rounded-[1rem] transition-all font-black text-[10px] uppercase tracking-widest border-none group",
                 activeColor
             )}
         >
-            <Icon size={18} strokeWidth={3} className="text-muted-foreground group-data-[state=active]:text-inherit" /> {label}
+            <Icon size={14} strokeWidth={3} className="text-muted-foreground group-data-[state=active]:text-inherit" /> {label}
         </TabsTrigger>
     );
 }

@@ -40,12 +40,12 @@ export default function ComparisonPage() {
                         <Badge variant="outline" className="mb-6 border-emerald-500/50 text-emerald-400 bg-emerald-500/5 px-4 py-1.5 uppercase tracking-[0.2em] text-[10px] font-black">
                             Análisis de Eficiencia Industrial
                         </Badge>
-                        <h1 className="text-5xl md:text-8xl font-black tracking-tightest text-white mb-6 uppercase italic leading-none">
+                        <h1 className="text-5xl md:text-8xl font-black tracking-tightest text-white mb-6 uppercase  leading-none">
                             <span className="text-transparent bg-clip-text bg-gradient-to-b from-slate-100 to-slate-500">Deja de Perseguir</span><br/>
                             <span className="text-blue-500">Médicos con Excel</span>
                         </h1>
                         <p className="max-w-3xl mx-auto text-slate-500 text-lg md:text-xl font-light mb-10">
-                            La diferencia entre una fuerza de ventas convencional y una <span className="text-white font-bold italic">Operación de Élite</span> radica en el control soberano de los datos.
+                            La diferencia entre una fuerza de ventas convencional y una <span className="text-white font-bold ">Operación de Élite</span> radica en el control soberano de los datos.
                         </p>
                         
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -85,7 +85,7 @@ export default function ComparisonPage() {
                                 <div className="p-2 bg-red-500/10 rounded-lg text-red-500">
                                     <X className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-2xl font-black uppercase italic text-slate-400 tracking-tighter">Métodos del Pasado</h3>
+                                <h3 className="text-2xl font-black uppercase  text-slate-400 tracking-tighter">Métodos del Pasado</h3>
                             </div>
                             <div className="space-y-8">
                                 {features.map((f, i) => (
@@ -103,7 +103,7 @@ export default function ComparisonPage() {
                                 <div className="p-2 bg-blue-600/10 rounded-lg text-blue-500">
                                     <Activity className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-2xl font-black uppercase italic text-white tracking-tighter">MediVisit Pro <span className="text-[10px] text-blue-500 align-top ml-2">INDUSTRIAL v2.0</span></h3>
+                                <h3 className="text-2xl font-black uppercase  text-white tracking-tighter">MediVisit Pro <span className="text-[10px] text-blue-500 align-top ml-2">INDUSTRIAL v2.0</span></h3>
                             </div>
                             <div className="space-y-8">
                                 {features.map((f, i) => (
@@ -115,7 +115,7 @@ export default function ComparisonPage() {
                                         <p className="text-white font-bold flex items-center gap-2">
                                             <Check className="w-4 h-4 text-emerald-500" /> {f.mvp}
                                         </p>
-                                        <p className="text-[10px] text-slate-500 italic mt-1 font-light group-hover:text-slate-300 transition-colors">Impacto: {f.impact}</p>
+                                        <p className="text-[10px] text-slate-500  mt-1 font-light group-hover:text-slate-300 transition-colors">Impacto: {f.impact}</p>
                                     </div>
                                 ))}
                             </div>
@@ -127,21 +127,21 @@ export default function ComparisonPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <Card className="bg-[#0c0c0c] border-slate-800 p-8 hover:border-blue-500/30 transition-all group">
                         <Database className="w-8 h-8 text-blue-600 mb-6 group-hover:scale-110 transition-transform" />
-                        <h4 className="text-lg font-black uppercase italic text-white mb-4">Arquitectura CA</h4>
+                        <h4 className="text-lg font-black uppercase  text-white mb-4">Arquitectura CA</h4>
                         <p className="text-sm text-slate-500 font-light leading-relaxed">
                             Construido sobre el **CA_CORE**, garantizando una sincronización perfecta con Supabase y aislamiento de datos vía Row Level Security (RLS).
                         </p>
                     </Card>
                     <Card className="bg-[#0c0c0c] border-slate-800 p-8 hover:border-blue-500/30 transition-all group">
                         <Shield className="w-8 h-8 text-emerald-600 mb-6 group-hover:scale-110 transition-transform" />
-                        <h4 className="text-lg font-black uppercase italic text-white mb-4">Control Soberano</h4>
+                        <h4 className="text-lg font-black uppercase  text-white mb-4">Control Soberano</h4>
                         <p className="text-sm text-slate-500 font-light leading-relaxed">
                             Somos dueños de nuestro stack. Nada de dependencias de terceros que rastrean sus rutas o contactos médicos. Privacidad absoluta.
                         </p>
                     </Card>
                     <Card className="bg-[#0c0c0c] border-slate-800 p-8 hover:border-blue-500/30 transition-all group shadow-[0_10px_40px_-15px_rgba(37,99,235,0.2)]">
                         <TrendingUp className="w-8 h-8 text-indigo-600 mb-6 group-hover:scale-110 transition-transform" />
-                        <h4 className="text-lg font-black uppercase italic text-white mb-4">Crecimiento Basado en Datos</h4>
+                        <h4 className="text-lg font-black uppercase  text-white mb-4">Crecimiento Basado en Datos</h4>
                         <p className="text-sm text-slate-500 font-light leading-relaxed">
                             No solo gestiona visitas, genera BI (Business Intelligence) para que su empresa de distribución sepa exactamente dónde invertir.
                         </p>
@@ -150,7 +150,7 @@ export default function ComparisonPage() {
 
                 {/* Final CTA */}
                 <div className="mt-32 text-center p-16 rounded-[40px] bg-gradient-to-b from-blue-600/10 to-transparent border border-blue-500/10">
-                    <h2 className="text-3xl md:text-5xl font-black italic uppercase text-white mb-8 tracking-tighter">¿Listo para la <span className="text-blue-500 underline decoration-indigo-500 decoration-4 underline-offset-8">Soberanía Digital</span>?</h2>
+                    <h2 className="text-3xl md:text-5xl font-black  uppercase text-white mb-8 tracking-tighter">¿Listo para la <span className="text-blue-500 underline decoration-indigo-500 decoration-4 underline-offset-8">Soberanía Digital</span>?</h2>
                     <Button 
                         onClick={() => navigate('/auth')}
                         className="bg-white text-black hover:bg-slate-200 font-black px-12 py-8 rounded-none uppercase tracking-widest shadow-2xl hover:scale-105 transition-all"

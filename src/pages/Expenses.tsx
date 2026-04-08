@@ -301,7 +301,7 @@ export default function Expenses() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-black tracking-tighter text-slate-900">Gastos y Presupuestos</h1>
-                    <p className="text-slate-500 font-medium italic">Gestión inteligente de recursos operativos de Biofarco</p>
+                    <p className="text-slate-500 font-medium ">Gestión inteligente de recursos operativos de Biofarco</p>
                 </div>
             </div>
 
@@ -325,7 +325,7 @@ export default function Expenses() {
                     <DialogContent className="max-w-md border-none shadow-2xl">
                         <DialogHeader>
                             <DialogTitle className="text-2xl font-black tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Registrar Gasto</DialogTitle>
-                            <DialogDescription className="text-slate-500 pl-4 italic">
+                            <DialogDescription className="text-slate-500 pl-4 ">
                                 Ingrese los detalles del comprobante para su validación administrativa.
                             </DialogDescription>
                         </DialogHeader>
@@ -564,7 +564,7 @@ export default function Expenses() {
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="max-w-xs">
-                                                <div className="truncate text-slate-600">{expense.description || <span className="text-slate-300 italic">Sin descripción</span>}</div>
+                                                <div className="truncate text-slate-600">{expense.description || <span className="text-slate-300 ">Sin descripción</span>}</div>
                                             </TableCell>
                                             <TableCell className="text-slate-600 font-medium">{expense.vendor || '-'}</TableCell>
                                             <TableCell className="text-right font-black text-slate-950 text-lg tracking-tight">${Number(expense.amount).toFixed(2)}</TableCell>

@@ -46,26 +46,29 @@ interface PharmacyFormDialogProps {
     onSubmit: () => void;
     isEditing?: boolean;
     trigger?: React.ReactNode;
+    showTrigger?: boolean;
 }
 
-export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, onSubmit, isEditing = false, trigger }: PharmacyFormDialogProps) {
+export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, onSubmit, isEditing = false, trigger, showTrigger = true }: PharmacyFormDialogProps) {
     const [activeTab, setActiveTab] = useState("basico");
     const { toast } = useToast();
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            {trigger ? (
-                <DialogTrigger asChild>{trigger}</DialogTrigger>
-            ) : (
-                <DialogTrigger asChild>
-                    <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 font-bold px-6 rounded-xl transition-all">
-                        <Plus className="mr-2 h-4 w-4" /> Nueva Farmacia
-                    </Button>
-                </DialogTrigger>
+            {showTrigger && (
+                trigger ? (
+                    <DialogTrigger asChild>{trigger}</DialogTrigger>
+                ) : (
+                    <DialogTrigger asChild>
+                        <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 font-bold px-6 rounded-xl transition-all">
+                            <Plus className="mr-2 h-4 w-4" /> Nueva Farmacia
+                        </Button>
+                    </DialogTrigger>
+                )
             )}
             <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
                 {/* Header Section */}
-                <div className="bg-gradient-to-r from-blue-700 to-indigo-800 px-8 py-10 text-white relative overflow-hidden">
+                <div className="bg-primary px-8 py-10 text-white relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <Building2 className="w-32 h-32" />
                     </div>
@@ -87,7 +90,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                 <div className="flex flex-col md:flex-row h-[600px]">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
                         {/* Sidebar Navigation */}
-                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
+                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-card border-r border-border/40 p-4 h-auto md:w-64 space-y-1">
                             <TabsTrigger
                                 value="basico"
                                 className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
@@ -197,7 +200,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                     </div>
 
                                     {/* Geocoding Section Card */}
-                                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
+                                    <div className="bg-card rounded-2xl p-6 border border-border/40 shadow-sm space-y-4">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -418,7 +421,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                                     onClick={() => setFormData({ ...formData, priority: p })}
                                                     className={`flex-1 py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest transition-all ${formData.priority === p
                                                         ? 'bg-blue-600 border-blue-600 text-white shadow-lg'
-                                                        : 'bg-white border-slate-100 text-slate-400 hover:border-blue-100'
+                                                        : 'bg-card border-border/40 text-slate-400 hover:border-blue-100'
                                                         }`}
                                                 >
                                                     {p === 'high' ? 'Crítica' : p === 'medium' ? 'Regular' : 'Baja'}
@@ -476,7 +479,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                     </Tabs>
                 </div>
 
-                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                <div className="bg-muted/10 border-t border-border/40 px-8 py-6 flex items-center justify-between gap-4">
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}

@@ -71,18 +71,18 @@ export function EliteTable<T>({
                             setSearchTerm(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="pl-14 h-16 bg-slate-900/40 border-white/5 rounded-2xl text-sm font-bold placeholder:text-muted-foreground/50 focus-visible:ring-primary/40 focus-visible:border-primary/20 transition-all"
+                        className="pl-14 h-16 bg-muted/30 border-border rounded-2xl text-sm font-bold placeholder:text-muted-foreground/50 focus-visible:ring-primary/40 focus-visible:border-primary/20 transition-all text-foreground"
                     />
                 </div>
             )}
 
             {/* Table Container */}
-            <div className="bg-slate-950/40 border border-white/5 rounded-[2.5rem] overflow-hidden backdrop-blur-xl">
+            <div className="bg-card/50 border border-border rounded-[2.5rem] overflow-hidden backdrop-blur-xl">
                 <Table>
-                    <TableHeader className="bg-slate-900/40">
-                        <TableRow className="border-white/5 hover:bg-transparent">
+                    <TableHeader className="bg-muted/30">
+                        <TableRow className="border-border hover:bg-transparent">
                             {columns.map((col, idx) => (
-                                <TableHead key={idx} className={cn("py-8 px-8 text-[11px] font-black uppercase text-slate-500 tracking-[0.3em]", col.className)}>
+                                <TableHead key={idx} className={cn("py-8 px-8 text-[11px] font-black uppercase text-muted-foreground tracking-[0.3em]", col.className)}>
                                     {col.header}
                                 </TableHead>
                             ))}
@@ -94,7 +94,7 @@ export function EliteTable<T>({
                                 <TableRow 
                                     key={rowIdx} 
                                     onClick={() => onRowClick?.(item)}
-                                    className="border-white/5 hover:bg-slate-900/40 transition-all group cursor-pointer"
+                                    className="border-border hover:bg-muted/20 transition-all group cursor-pointer"
                                 >
                                     {columns.map((col, colIdx) => (
                                         <TableCell key={colIdx} className={cn("py-6 px-8", col.className)}>
@@ -110,7 +110,7 @@ export function EliteTable<T>({
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-64 text-center">
-                                    <div className="flex flex-col items-center justify-center space-y-4 opacity-20">
+                                    <div className="flex flex-col items-center justify-center space-y-4 opacity-20 text-muted-foreground">
                                         <Inbox className="h-12 w-12" />
                                         <p className="text-sm font-bold uppercase tracking-widest">Sin registros encontrados</p>
                                     </div>
@@ -122,8 +122,8 @@ export function EliteTable<T>({
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="p-8 border-t border-white/5 flex items-center justify-between bg-slate-900/20">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                    <div className="p-8 border-t border-border flex items-center justify-between bg-muted/10">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                             Mostrando {startIndex + 1}-{Math.min(startIndex + pageSize, filteredData.length)} de {filteredData.length}
                         </p>
                         <div className="flex items-center gap-2">
@@ -132,11 +132,11 @@ export function EliteTable<T>({
                                 size="icon" 
                                 disabled={currentPage === 1}
                                 onClick={() => setCurrentPage(p => p - 1)}
-                                className="h-10 w-10 rounded-xl hover:bg-white/5"
+                                className="h-10 w-10 rounded-xl hover:bg-accent"
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </Button>
-                            <span className="text-xs font-black text-white px-2">
+                            <span className="text-xs font-black text-foreground px-2">
                                 {currentPage} / {totalPages}
                             </span>
                             <Button 
@@ -144,7 +144,7 @@ export function EliteTable<T>({
                                 size="icon" 
                                 disabled={currentPage === totalPages}
                                 onClick={() => setCurrentPage(p => p + 1)}
-                                className="h-10 w-10 rounded-xl hover:bg-white/5"
+                                className="h-10 w-10 rounded-xl hover:bg-accent"
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </Button>

@@ -5,46 +5,30 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { useAuth } from "@/hooks/useAuth";
-import DashboardSupervisor from "./DashboardSupervisor";
 import Dashboard from "./Dashboard";
 import MasterPanel from "./MasterPanel";
-import DashboardRep from "@/components/dashboard/DashboardRep";
-import DashboardTelemarketing from "@/components/dashboard/DashboardTelemarketing";
 
 /**
- * Smart Dashboard Router
- * Renders the appropriate dashboard based on user role
+ * Smart Dashboard Router - NATURISTA ELITE
+ * Renders the appropriate tactical console based on user role.
  * 
- * NOTE: Managers and Admins see the same standard Dashboard as reps,
- * but with global data. For advanced analytics, they use Centro de Mando (/dashboard-master)
+ * Hierarchy:
+ * 1. Master: Full System Console (/master-panel)
+ * 2. Everyone Else: Unified Tactical Dashboard personalized by role (Dashboard.tsx)
  */
 export default function DashboardRouter() {
-    const { isMaster, isManager, isSupervisor, isTelemarketing, isAdmin, role } = useAuth();
+    const { isMaster } = useAuth();
 
-    // Master (System Admin) sees the Master Panel
+    // Master (System Admin) sees the Master Panel elite console
     if (isMaster) {
         return <MasterPanel />;
     }
 
-    // IMPORTANT: Check manager BEFORE supervisor
-    // Some managers might also have supervisor flag, check manager first
-    if (isManager || isAdmin) {
-        return <Dashboard />;
-    }
-
-    // Supervisors see team analytics dashboard
-    if (isSupervisor) {
-        return <DashboardSupervisor />;
-    }
-
-    // Telemarketing operators
-    if (isTelemarketing) {
-        return <DashboardTelemarketing />;
-    }
-
-    // Representatives (default)
-    return <DashboardRep />;
+    // All other operational roles (Manager, Coordinator, Supervisor, TM, Representative)
+    // use the unified tactical Dashboard which handles personalization dynamically
+    // under the Naturista Elite standard (Sovereign Digital Architecture)
+    return <Dashboard />;
 }

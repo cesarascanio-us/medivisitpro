@@ -108,23 +108,23 @@ export default function AuthPage() {
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
+            <div className="min-h-screen flex items-center justify-center bg-white">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-background flex flex-col lg:flex-row overflow-hidden font-sans">
+        <div className="min-h-screen bg-white flex flex-col lg:flex-row font-display overflow-y-auto">
             {/* Seccion Izquierda: Hero & Features - Elite Titanium Edition */}
-            <div className="hidden lg:flex flex-[1.4] relative flex-col justify-center p-16 xl:p-28 overflow-hidden bg-[#001a33]">
+            <div className="hidden lg:flex flex-[1.4] relative flex-col justify-center p-16 xl:p-28 overflow-hidden bg-primary">
                 {/* Hero Background with Deep Glassmorphism Overlay */}
                 <div 
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-110" 
                     style={{ backgroundImage: "url('/img/hero-auth.png')" }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#001a33] via-[#001a33]/90 to-transparent" />
-                <div className="absolute inset-0 bg-primary-dark/20 backdrop-blur-[1px]" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-transparent" />
+                <div className="absolute inset-0 bg-primary/20 backdrop-blur-[1px]" />
                 
                 {/* Elite Effects */}
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay" />
@@ -181,28 +181,28 @@ export default function AuthPage() {
             </div>
 
             {/* Seccion Derecha: El Panel de Control Elite */}
-                    <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-background relative min-h-screen">
+                    <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-white relative min-h-screen">
                 <div className="w-full max-w-[460px] animate-in fade-in slide-in-from-right-12 duration-1000">
                     {/* Brand Mobile */}
                     <div className="lg:hidden text-center mb-12">
                         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary shadow-xl shadow-primary/40 mb-6">
                             <Stethoscope className="h-8 w-8 text-white" />
                         </div>
-                        <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase mb-1">MediVisitPro</h1>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-1">MediVisitPro</h1>
                         <p className="text-primary font-black tracking-[0.4em] text-[9px] uppercase opacity-60">Elite Medical Management</p>
                     </div>
 
                     <div className="mb-8 lg:mb-12 hidden lg:block text-center relative">
-                        <div className="inline-flex items-center justify-center w-16 h-16 lg:w-24 lg:h-24 rounded-2xl lg:rounded-[2rem] bg-card shadow-card mb-6 lg:mb-10 group transition-all duration-1000 hover:shadow-card-hover relative border border-border/50">
-                            <Stethoscope className="h-8 w-8 lg:h-12 lg:w-12 text-primary group-hover:scale-110 transition-transform duration-700" />
+                        <div className="inline-flex items-center justify-center w-16 h-16 lg:w-24 lg:h-24 rounded-2xl lg:rounded-[2rem] bg-slate-50 shadow-premium-md mb-6 lg:mb-10 group transition-all duration-1000 hover:shadow-premium-lg relative border border-slate-100">
+                            <Stethoscope className="h-8 w-8 lg:h-12 lg:w-12 text-primary group-hover:rotate-12 transition-transform duration-700" />
                         </div>
-                        <h2 className="text-4xl lg:text-6xl font-black text-foreground mb-3 tracking-tighter uppercase select-none">Bienvenido</h2>
+                        <h2 className="text-4xl lg:text-6xl font-black text-slate-900 mb-3 tracking-tighter uppercase select-none font-display">Bienvenido</h2>
                         <div className="flex justify-center gap-1.5 mb-5">
                             <div className="h-1.5 w-10 bg-primary rounded-full" />
                             <div className="h-1.5 w-3 bg-secondary rounded-full" />
-                            <div className="h-1.5 w-1.5 bg-muted rounded-full" />
+                            <div className="h-1.5 w-1.5 bg-slate-200 rounded-full" />
                         </div>
-                        <p className="text-muted-foreground text-sm lg:text-base font-black opacity-25 uppercase tracking-[0.4em]">Portal de Gestión Profesional</p>
+                        <p className="text-slate-400 text-sm lg:text-base font-black opacity-40 uppercase tracking-[0.4em]">Portal de Gestión Profesional</p>
                     </div>
 
                     {/* Boton de Demo Elite */}
@@ -223,28 +223,28 @@ export default function AuthPage() {
 
                     <div className="relative mb-12">
                         <div className="absolute inset-0 flex items-center px-4">
-                            <div className="w-full border-t border-border/60" />
+                            <div className="w-full border-t border-slate-100" />
                         </div>
                         <div className="relative flex justify-center px-6">
-                            <span className="bg-background px-6 text-muted-foreground font-black tracking-[0.4em] text-[9px] uppercase opacity-30">Identificación de Usuario</span>
+                            <span className="bg-white px-6 text-slate-400 font-black tracking-[0.4em] text-[9px] uppercase opacity-40">Identificación de Usuario</span>
                         </div>
                     </div>
 
-                    <Card className="border-none bg-card shadow-card rounded-[4rem] overflow-hidden p-3 border-4 border-border/10">
+                    <Card className="border-none bg-white shadow-premium-lg rounded-[4rem] overflow-hidden p-3 border-4 border-slate-50">
                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 bg-muted/70 p-1.5 rounded-xl lg:rounded-2xl mb-5">
-                                <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Login</TabsTrigger>
-                                <TabsTrigger value="signup" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Registro</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-2 bg-slate-50 p-1.5 rounded-xl lg:rounded-2xl mb-5">
+                                <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-soft rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Login</TabsTrigger>
+                                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-soft rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Registro</TabsTrigger>
                             </TabsList>
 
                             <CardContent className="pt-6 pb-12 px-8">
                                 <TabsContent value="login" className="mt-0 space-y-12 animate-in fade-in slide-in-from-top-4 duration-700">
                                     <form onSubmit={handleLogin} className="space-y-10">
                                         <div className="space-y-5">
-                                            <Label htmlFor="login-email" className="text-foreground text-[10px] font-black uppercase tracking-[0.4em] opacity-30 ml-3">Credencial Corporativa</Label>
+                                            <Label htmlFor="login-email" className="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em] opacity-30 ml-3">Credencial Corporativa</Label>
                                             <div className="relative group">
                                                 <div className="absolute inset-y-0 left-0 w-16 flex items-center justify-center pointer-events-none pr-2">
-                                                    <Mail className="h-7 w-7 text-muted-foreground group-focus-within:text-primary transition-all duration-500 group-focus-within:scale-125" />
+                                                    <Mail className="h-7 w-7 text-slate-400 group-focus-within:text-primary transition-all duration-500 group-focus-within:scale-125" />
                                                 </div>
                                                 <Input
                                                     id="login-email"
@@ -252,17 +252,17 @@ export default function AuthPage() {
                                                     placeholder="EMAIL@SISTEMA.COM"
                                                     value={loginEmail}
                                                     onChange={(e) => setLoginEmail(e.target.value)}
-                                                    className="pl-14 h-14 lg:h-20 bg-muted/10 border-border/50 text-foreground placeholder:text-muted-foreground/30 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase tracking-tight shadow-sm hover:bg-card"
+                                                    className="pl-14 h-14 lg:h-20 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase tracking-tight shadow-sm hover:bg-white"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
                                         <div className="space-y-5">
-                                            <Label htmlFor="login-password" className="text-foreground text-[10px] font-black uppercase tracking-[0.4em] opacity-30 ml-3">Código Secreto</Label>
+                                            <Label htmlFor="login-password" className="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em] opacity-30 ml-3">Código Secreto</Label>
                                             <div className="relative group">
                                                 <div className="absolute inset-y-0 left-0 w-16 flex items-center justify-center pointer-events-none pr-2">
-                                                    <Lock className="h-7 w-7 text-muted-foreground group-focus-within:text-primary transition-all duration-500 group-focus-within:scale-125" />
+                                                    <Lock className="h-7 w-7 text-slate-400 group-focus-within:text-primary transition-all duration-500 group-focus-within:scale-125" />
                                                 </div>
                                                 <Input
                                                     id="login-password"
@@ -270,7 +270,7 @@ export default function AuthPage() {
                                                     placeholder="••••••••"
                                                     value={loginPassword}
                                                     onChange={(e) => setLoginPassword(e.target.value)}
-                                                    className="pl-14 h-14 lg:h-20 bg-muted/10 border-border/50 text-foreground placeholder:text-muted-foreground/30 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase shadow-sm hover:bg-card"
+                                                    className="pl-14 h-14 lg:h-20 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase shadow-sm hover:bg-white"
                                                     required
                                                 />
                                             </div>
@@ -350,7 +350,7 @@ export default function AuthPage() {
                             MediVisit Pro System v4.0 titanium <br />
                             © 2026 Reservados todos los derechos
                         </p>
-                        <div className="flex justify-center gap-10 text-[10px] font-black text-primary opacity-30 uppercase tracking-[0.5em] italic">
+                        <div className="flex justify-center gap-10 text-[10px] font-black text-primary opacity-30 uppercase tracking-[0.5em] ">
                             <span className="cursor-pointer hover:text-primary transition-colors hover:underline">Compliance</span>
                             <span className="cursor-pointer hover:text-primary transition-colors hover:underline">Privacy</span>
                             <span className="cursor-pointer hover:text-primary transition-colors hover:underline">Master Log</span>

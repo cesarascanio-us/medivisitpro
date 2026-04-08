@@ -203,7 +203,7 @@ export default function FractioningTool() {
                                             {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
                                         </SelectContent>
                                     </Select>
-                                    <p className="text-[10px] text-purple-400 italic flex items-center gap-1">
+                                    <p className="text-[10px] text-purple-400  flex items-center gap-1">
                                         <Info className="h-3 w-3" /> Puede ser el mismo producto o una entrada de catálogo detallada.
                                     </p>
                                 </div>

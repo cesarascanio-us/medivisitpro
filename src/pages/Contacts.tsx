@@ -33,7 +33,8 @@ import { cn } from "@/lib/utils";
 
 export default function Contacts() {
   const [importing, setImporting] = useState(false);
-  const { user, organizationId, planTier } = useAuth();
+  const { user, organizationId } = useAuth();
+  const { planTier } = useSubscriptionStatus();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [adminFilters, setAdminFilters] = useState<any>({});
@@ -88,10 +89,14 @@ export default function Contacts() {
 
           const doctorsToInsert: any[] = [];
           const pharmaciesToInsert: any[] = [];
+          const hcToInsert: any[] = [];
+          const drugstoresToInsert: any[] = [];
+          const commercesToInsert: any[] = [];
+          const naturalStoresToInsert: any[] = [];
           const genericContactsToInsert: any[] = [];
 
           jsonData.forEach((row: any) => {
-            const type = row['Tipo'] || row['tipo'] || 'doctor';
+            const type = (row['Tipo'] || row['tipo'] || 'doctor').toLowerCase();
             const baseData = {
               user_id: user?.id,
               organization_id: organizationId,
@@ -108,21 +113,33 @@ export default function Contacts() {
               doctorsToInsert.push({ ...baseData, specialty: row['Especialidad'] || row['especialidad'] || null, potential: 'Medio' });
             } else if (type === 'pharmacy') {
               pharmaciesToInsert.push({ ...baseData, potential: 'Medio' });
+            } else if (type === 'health_center' || type === 'hospital' || type === 'clinica') {
+              hcToInsert.push({ ...baseData, potential: 'Medio' });
+            } else if (type === 'drugstore' || type === 'drogueria') {
+              drugstoresToInsert.push({ ...baseData, potential: 'Medio' });
+            } else if (type === 'commerce' || type === 'comercio') {
+              commercesToInsert.push({ ...baseData, potential: 'Medio' });
+            } else if (type === 'natural_store' || type === 'tienda_naturista') {
+              naturalStoresToInsert.push({ ...baseData, potential: 'Medio' });
             } else {
               genericContactsToInsert.push({ ...baseData, contact_type: type });
             }
           });
 
-          const total = doctorsToInsert.length + pharmaciesToInsert.length + genericContactsToInsert.length;
+          const total = doctorsToInsert.length + pharmaciesToInsert.length + hcToInsert.length + drugstoresToInsert.length + commercesToInsert.length + naturalStoresToInsert.length + genericContactsToInsert.length;
           if (total === 0) throw new Error("No se encontraron contactos válidos.");
 
           const promises = [];
           if (doctorsToInsert.length > 0) promises.push(supabase.from('doctors').insert(doctorsToInsert));
           if (pharmaciesToInsert.length > 0) promises.push(supabase.from('pharmacies').insert(pharmaciesToInsert));
+          if (hcToInsert.length > 0) promises.push(supabase.from('health_centers').insert(hcToInsert));
+          if (drugstoresToInsert.length > 0) promises.push(supabase.from('drugstores').insert(drugstoresToInsert));
+          if (commercesToInsert.length > 0) promises.push(supabase.from('commerces').insert(commercesToInsert));
+          if (naturalStoresToInsert.length > 0) promises.push(supabase.from('natural_stores').insert(naturalStoresToInsert));
           if (genericContactsToInsert.length > 0) promises.push(supabase.from('contacts').insert(genericContactsToInsert));
 
           await Promise.all(promises);
-          toast({ title: "Importación exitosa", description: `Se han importado ${total} contactos correctamente.` });
+          toast({ title: "Importación exitosa", description: `Se han importado ${total} contactos correctamente en sus canales respectivos.` });
           refresh();
         } catch (error: any) {
           toast({ title: "Error de Importación", description: error.message, variant: "destructive" });
@@ -166,7 +183,7 @@ export default function Contacts() {
                 <div className="flex flex-col justify-center">
                   <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mb-1 drop-shadow-sm leading-none">NETWORK MASTER</p>
                   <h1 className="text-4xl font-black tracking-tight drop-shadow-lg leading-none">Directorio Médico</h1>
-                  <p className="text-white/40 text-[9px] font-black mt-1.5 uppercase tracking-[0.2em] italic opacity-60 leading-none">Red Médica & Comercial Pro</p>
+                  <p className="text-white/40 text-[9px] font-black mt-1.5 uppercase tracking-[0.2em]  opacity-60 leading-none">Red Médica & Comercial Pro</p>
                 </div>
               </div>
 

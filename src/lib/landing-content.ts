@@ -5,7 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 
 import { supabase } from "@/integrations/supabase/client";
@@ -117,7 +117,7 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
 
 export const fetchLandingContent = async (): Promise<LandingContent> => {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
             .from('site_settings')
             .select('*')
             .eq('key', 'landing_content')
@@ -141,7 +141,7 @@ export const fetchLandingContent = async (): Promise<LandingContent> => {
 };
 
 export const saveLandingContent = async (content: LandingContent) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
         .from('site_settings')
         .upsert({
             key: 'landing_content',

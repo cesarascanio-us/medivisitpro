@@ -24,8 +24,10 @@ import {
     Download,
     Trophy,
     Target,
-    Info
+    Info,
+    CheckCircle2
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Expense, EXPENSE_CATEGORIES } from "@/types/resources";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -405,7 +407,7 @@ export default function ExpenseReport() {
                                 </div>
                                 <div className="text-right">
                                     <div className="font-black text-2xl text-slate-900">${expense.amount.toFixed(2)}</div>
-                                    <Badge variant={expense.status === 'approved' ? 'success' : 'warning'} className="mt-1 font-black uppercase text-[10px] tracking-tighter">
+                                    <Badge variant={(expense.status === 'approved' ? 'success' : 'warning') as any} className="mt-1 font-black uppercase text-[10px] tracking-tighter">
                                         {expense.status}
                                     </Badge>
                                 </div>

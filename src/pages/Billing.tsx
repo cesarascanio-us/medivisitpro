@@ -110,44 +110,44 @@ export default function Billing() {
     };
 
     return (
-        <div className="space-y-8 p-6 max-w-7xl mx-auto mb-20">
+        <div className="space-y-8 p-6 max-w-7xl mx-auto mb-20 font-sans animate-in fade-in duration-700">
             {/* Header / Active Subscription */}
-            <div className="relative overflow-hidden p-8 rounded-[2rem] bg-slate-900 border border-slate-800 shadow-2xl">
-                <div className="absolute top-0 right-0 p-8 opacity-10">
-                    <Shield className="w-32 h-32 text-emerald-500" />
+            <div className="relative overflow-hidden p-8 rounded-[2rem] bg-white border border-slate-100 shadow-premium-lg">
+                <div className="absolute top-0 right-0 p-8 opacity-5">
+                    <Shield className="w-32 h-32 text-primary" />
                 </div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/20">
                             <Building2 className="w-10 h-10 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-white mb-1">{organization.name}</h1>
+                            <h1 className="text-3xl font-black text-slate-900 mb-1 font-display tracking-tighter uppercase">{organization.name}</h1>
                             <div className="flex items-center gap-3">
-                                <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/5">
+                                <Badge variant="outline" className="border-primary/30 text-primary bg-primary/5 font-black text-[10px] tracking-widest uppercase ">
                                     Plan {planTier?.toUpperCase()}
                                 </Badge>
-                                <span className="text-slate-500 text-sm">•</span>
-                                <span className={`text-sm ${status === 'active' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                <span className="text-slate-300 text-sm">•</span>
+                                <span className={`text-xs font-black uppercase tracking-widest ${status === 'active' ? 'text-emerald-600' : 'text-amber-600'}`}>
                                     Suscripción {status === 'active' ? 'Activa' : 'Trial'}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+                    <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner">
                         <div className="text-right">
-                            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Próximo Pago</p>
-                            <p className="font-bold text-white">
+                            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Próximo Pago</p>
+                            <p className="font-black text-slate-900 tabular-nums ">
                                 {subscription?.current_period_end
                                     ? new Date(subscription.current_period_end).toLocaleDateString()
                                     : trialEndsAt ? new Date(trialEndsAt).toLocaleDateString() : 'N/A'
                                 }
                             </p>
                         </div>
-                        <Separator orientation="vertical" className="h-10 bg-slate-700" />
-                        <Button variant="ghost" className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10">
+                        <Separator orientation="vertical" className="h-10 bg-slate-200" />
+                        <Button variant="ghost" className="text-primary font-black uppercase text-[10px] tracking-widest hover:text-primary/70 hover:bg-primary/5">
                             Gestionar <ExternalLink className="ml-2 w-4 h-4" />
                         </Button>
                     </div>
@@ -156,17 +156,17 @@ export default function Billing() {
 
             {/* Navigation Tabs */}
             <div className="flex justify-center mb-4">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="p-1 bg-slate-900 border border-slate-800 rounded-full shadow-lg">
-                    <TabsList className="bg-transparent border-0 h-10">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="p-1 bg-slate-50 border border-slate-100 rounded-full shadow-soft">
+                    <TabsList className="bg-transparent border-0 h-11">
                         <TabsTrigger
                             value="plans"
-                            className="rounded-full px-8 data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all font-bold"
+                            className="rounded-full px-8 data-[state=active]:bg-primary data-[state=active]:text-white transition-all font-black uppercase text-[10px] tracking-widest "
                         >
                             Planes y Precios
                         </TabsTrigger>
                         <TabsTrigger
                             value="portal"
-                            className="rounded-full px-8 data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all font-bold"
+                            className="rounded-full px-8 data-[state=active]:bg-primary data-[state=active]:text-white transition-all font-black uppercase text-[10px] tracking-widest "
                         >
                             Mi Facturación
                         </TabsTrigger>
@@ -177,10 +177,10 @@ export default function Billing() {
             <Tabs value={activeTab} className="w-full">
                 <TabsContent value="plans" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Pricing Section Title */}
-                    <div className="text-center space-y-4 py-6">
-                        <h2 className="text-4xl font-bold text-white">Planes Flexibles para tu Equipo</h2>
-                        <p className="text-slate-400 max-w-2xl mx-auto">
-                            Escoge el plan que mejor se adapte a tu escala. Todos los planes incluyen 14 días de prueba gratuita.
+                    <div className="text-center space-y-4 py-10">
+                        <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Planes Flexibles para tu Equipo</h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto font-medium text-sm ">
+                            Escoge el plan que mejor se adapte a tu escala corporativa. Todos los planes incluyen 14 días de prueba gratuita "Full-Access".
                         </p>
                     </div>
 
@@ -190,43 +190,43 @@ export default function Billing() {
                             const isCurrent = planTier === plan.tier;
 
                             return (
-                                <Card key={plan.id} className={`relative flex flex-col border-slate-800 bg-slate-900/50 hover:bg-slate-900 transition-all duration-300 ${isCurrent ? 'ring-2 ring-emerald-500/50 shadow-2xl shadow-emerald-500/10' : ''}`}>
+                                <Card key={plan.id} className={`relative flex flex-col border-slate-100 bg-white hover:bg-slate-50 transition-all duration-500 shadow-premium-md hover:shadow-premium-lg rounded-[2.5rem] overflow-hidden group ${isCurrent ? 'ring-2 ring-primary/20 bg-slate-50/50' : ''}`}>
                                     {plan.tier === 'professional' && (
-                                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full overflow-hidden">
-                                            <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-0 py-1.5 px-4 rounded-full shadow-lg">
-                                                MÁS POPULAR
-                                            </Badge>
+                                        <div className="absolute top-0 right-0 p-0 overflow-hidden">
+                                            <div className="bg-primary text-white text-[8px] font-black uppercase tracking-widest py-1.5 px-10 rotate-45 translate-x-10 translate-y-2 shadow-lg">
+                                                ELITE CHOICE
+                                            </div>
                                         </div>
                                     )}
 
-                                    <CardHeader>
-                                        <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                                        <CardDescription className="text-slate-400">{plan.description}</CardDescription>
-                                        <div className="mt-4 flex items-baseline gap-1">
-                                            <span className="text-4xl font-bold text-white">${price?.amount || 0}</span>
-                                            <span className="text-slate-500">/mes</span>
+                                    <CardHeader className="p-10 pb-6">
+                                        <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display group-hover:text-primary transition-colors">{plan.name}</CardTitle>
+                                        <CardDescription className="text-slate-400 font-medium text-xs leading-relaxed">{plan.description}</CardDescription>
+                                        <div className="mt-8 flex items-baseline gap-2">
+                                            <span className="text-5xl font-black text-slate-900 tracking-tighter tabular-nums ">${price?.amount || 0}</span>
+                                            <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">/mes</span>
                                         </div>
                                     </CardHeader>
 
-                                    <CardContent className="flex-1">
-                                        <Separator className="mb-6 bg-slate-800" />
+                                    <CardContent className="px-10 py-6 flex-1">
+                                        <Separator className="mb-8 bg-slate-100" />
                                         <ul className="space-y-4">
                                             {plan.features.map((feature, i) => (
-                                                <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                                <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+                                                    <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                                                     {feature}
                                                 </li>
                                             ))}
                                         </ul>
                                     </CardContent>
 
-                                    <CardFooter>
+                                    <CardFooter className="p-10 pt-6">
                                         <Button
-                                            className={`w-full h-12 text-base font-bold transition-all ${isCurrent ? 'bg-slate-800 text-emerald-400 hover:bg-slate-700' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
+                                            className={`w-full h-14 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 shadow-lg ${isCurrent ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90 hover:shadow-primary/20'}`}
                                             onClick={() => handleSubscribe(price?.id || '')}
                                             disabled={isCurrent}
                                         >
-                                            {isCurrent ? 'Plan Actual' : 'Elegir Plan'}
+                                            {isCurrent ? 'Plan Activo' : 'Seleccionar Plan'}
                                         </Button>
                                     </CardFooter>
                                 </Card>
@@ -246,13 +246,16 @@ export default function Billing() {
 
             {/* Payment Modal */}
             <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
-                <DialogContent className="sm:max-w-[500px] bg-slate-900 border-slate-800">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-white">Selecciona tu Método de Pago</DialogTitle>
-                        <DialogDescription className="text-slate-400">
-                            Ofrecemos múltiples opciones seguras para tu comodidad.
-                        </DialogDescription>
-                    </DialogHeader>
+                <DialogContent className="sm:max-w-[500px] bg-white border border-slate-100 rounded-[2.5rem] shadow-premium-2xl overflow-hidden p-0">
+                    <div className="bg-slate-50 p-10 border-b border-slate-100">
+                        <DialogHeader>
+                            <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Método de Pago Seguro</DialogTitle>
+                            <DialogDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">
+                                Procesamiento Encriptado de Grado Bancario
+                            </DialogDescription>
+                        </DialogHeader>
+                    </div>
+                    <div className="p-10">
 
                     {binanceOrderData ? (
                         <BinancePayGateway
@@ -264,69 +267,70 @@ export default function Billing() {
                             onCancel={() => setBinanceOrderData(null)}
                         />
                     ) : (
-                        <div className="grid gap-4 py-4">
+                        <div className="grid gap-4 py-2">
                             <Button
                                 variant="outline"
-                                className="h-16 justify-start gap-4 border-slate-700 hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-slate-300 group"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-primary hover:bg-primary/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('stripe')}
                             >
-                                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20">
-                                    <CreditCard className="w-6 h-6 text-blue-500" />
+                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                                    <CreditCard className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-bold text-white">Tarjeta / Google Pay</p>
-                                    <p className="text-xs text-slate-500">Procesado de forma segura por Stripe</p>
+                                    <p className="font-black text-slate-900 uppercase tracking-tighter">Tarjeta / Google Pay</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Powered by Stripe Security</p>
                                 </div>
                             </Button>
 
                             <Button
                                 variant="outline"
-                                className="h-16 justify-start gap-4 border-slate-700 hover:border-indigo-500 hover:bg-indigo-500/5 transition-all text-slate-300 group"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-indigo-500 hover:bg-indigo-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('paypal')}
                             >
-                                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center group-hover:bg-indigo-500/20">
-                                    <Globe className="w-6 h-6 text-indigo-500" />
+                                <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
+                                    <Globe className="w-6 h-6 text-indigo-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-bold text-white">PayPal</p>
-                                    <p className="text-xs text-slate-500">Usa tu balance de PayPal o cuenta bancaria</p>
+                                    <p className="font-black text-slate-900 uppercase tracking-tighter">PayPal Global</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Balance o Cuentas Externas</p>
                                 </div>
                             </Button>
 
                             <Button
                                 variant="outline"
-                                className="h-16 justify-start gap-4 border-slate-700 hover:border-yellow-500 hover:bg-yellow-500/5 transition-all text-slate-300 group"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-yellow-500 hover:bg-yellow-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('binance')}
                             >
-                                <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center group-hover:bg-yellow-500/20">
-                                    <Wallet className="w-6 h-6 text-yellow-500" />
+                                <div className="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center group-hover:bg-yellow-100 transition-colors">
+                                    <Wallet className="w-6 h-6 text-yellow-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-bold text-white">Binance Pay (Crypto)</p>
-                                    <p className="text-xs text-slate-500">Paga con USDT, BTC y más sin comisiones</p>
+                                    <p className="font-black text-slate-900 uppercase tracking-tighter">Binance Pay (Crypto)</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">USDT, BTC & Zero Fees</p>
                                 </div>
                             </Button>
 
-                            <Separator className="bg-slate-800 my-2" />
+                            <Separator className="bg-slate-100 my-4" />
 
                             <Button
                                 variant="outline"
-                                className="h-16 justify-start gap-4 border-slate-700 hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-slate-300 group"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => {
                                     setShowPaymentModal(false);
                                     setShowManualPaymentDialog(true);
                                 }}
                             >
-                                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20">
-                                    <Smartphone className="w-6 h-6 text-emerald-500" />
+                                <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                                    <Smartphone className="w-6 h-6 text-emerald-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-bold text-white">Pago Móvil / Transferencia</p>
-                                    <p className="text-xs text-slate-500">Reporta tu pago local en Bolívares</p>
+                                    <p className="font-black text-slate-900 uppercase tracking-tighter">Pago Móvil / Transferencia</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Gestión Local en Bolívares</p>
                                 </div>
                             </Button>
                         </div>
                     )}
+                    </div>
                 </DialogContent>
             </Dialog>
 
@@ -341,34 +345,42 @@ export default function Billing() {
             )}
 
             {/* Premium Trust Badges */}
-            <div className="pt-20 pb-10 border-t border-slate-800/50">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40 hover:opacity-100 transition-opacity">
-                    <div className="flex flex-col items-center gap-3">
-                        <ShieldCheck className="w-8 h-8 text-emerald-500" />
+            <div className="pt-20 pb-10 border-t border-slate-100">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60 hover:opacity-100 transition-opacity">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                            <ShieldCheck className="w-8 h-8 text-emerald-600" />
+                        </div>
                         <div className="text-center">
-                            <p className="text-white font-bold text-xs uppercase tracking-tight">PAGO SEGURO</p>
-                            <p className="text-[10px] text-slate-500">256-bit SSL Encryption</p>
+                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">PAGO SEGURO</p>
+                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">256-BIT SSL ENCRYPTION</p>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center gap-3">
-                        <Zap className="w-8 h-8 text-amber-500" />
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center">
+                            <Zap className="w-8 h-8 text-primary" />
+                        </div>
                         <div className="text-center">
-                            <p className="text-white font-bold text-xs uppercase tracking-tight">ENTREGA INSTANTÁNEA</p>
-                            <p className="text-[10px] text-slate-500">Activación automática</p>
+                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">ENTREGA INSTANTÁNEA</p>
+                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">ACTIVACIÓN AUTOMÁTICA</p>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center gap-3">
-                        <Globe className="w-8 h-8 text-blue-500" />
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center">
+                            <Globe className="w-8 h-8 text-indigo-600" />
+                        </div>
                         <div className="text-center">
-                            <p className="text-white font-bold text-xs uppercase tracking-tight">MULTI-MONEDA</p>
-                            <p className="text-[10px] text-slate-500">USD, EUR, USDT & más</p>
+                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">MULTI-MONEDA</p>
+                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">USD, EUR, USDT & MÁS</p>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center gap-3">
-                        <MessageCircle className="w-8 h-8 text-teal-500" />
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center">
+                            <MessageCircle className="w-8 h-8 text-cyan-600" />
+                        </div>
                         <div className="text-center">
-                            <p className="text-white font-bold text-xs uppercase tracking-tight">SOPORTE 24/7</p>
-                            <p className="text-[10px] text-slate-500">Asistencia prioritaria</p>
+                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">SOPORTE 24/7</p>
+                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">ASISTENCIA PRIORITARIA</p>
                         </div>
                     </div>
                 </div>

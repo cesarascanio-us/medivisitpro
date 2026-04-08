@@ -270,27 +270,31 @@ export default function Products() {
         className="hidden"
       />
 
-      {/* Header */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -mr-32 -mt-32 transition-colors group-hover:bg-indigo-100/50" />
-        <div className="relative z-10">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-xl shadow-indigo-200">
-              <Package className="h-7 w-7 text-white" />
-            </div>
-            Catálogo Maestro
-          </h1>
-          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-3 ml-18">Portafolio Farmacéutico & Recursos Científicos</p>
+      {/* Header - SCIENTIFIC VAULT */}
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-8 bg-white p-10 rounded-[3rem] border border-slate-100 shadow-premium-sm relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-1000 group-hover:bg-primary/10" />
+        <div className="relative z-10 flex items-center gap-8">
+          <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-lg group-hover:scale-105 transition-transform duration-500">
+            <Package className="h-10 w-10 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none">Catálogo Maestro</h1>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              Arsenal de Soluciones & Inteligencia Científica
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-3 relative z-10">
-          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-11 h-11 rounded-xl hover:bg-slate-50">
-            <Lightbulb className="h-5 w-5 text-amber-500" />
+        <div className="flex items-center gap-4 relative z-10">
+          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-14 h-14 rounded-2xl hover:bg-yellow-50 text-yellow-500 transition-all">
+            <Lightbulb className="h-7 w-7" />
           </Button>
+          <div className="h-10 w-[1px] bg-slate-100 mx-2 hidden xl:block" />
           <ProductFormDialog
             onSuccess={loadProducts}
             trigger={
-              <Button className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02] flex items-center gap-2">
-                <Plus className="h-4 w-4" />
+              <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white shadow-premium-md rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
+                <Plus className="h-5 w-5" />
                 Alta de Producto
               </Button>
             }
@@ -311,310 +315,236 @@ export default function Products() {
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total SKU</p>
-              <p className="text-3xl font-black text-slate-900 tracking-tighter">{productStats.total}</p>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center">
-              <Package className="h-6 w-6 text-indigo-600" />
-            </div>
-          </div>
-        </Card>
-
-        {Object.entries(productStats.byCategory).slice(0, 3).map(([category, count]) => (
-          <Card key={category} className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
+      {/* Stats Cards - INVENTORY INTELLIGENCE */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden group hover:shadow-premium-md transition-all duration-500">
+          <CardContent className="p-8">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 truncate max-w-[120px]">{category}</p>
-                <p className="text-3xl font-black text-slate-900 tracking-tighter">{count as number}</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total SKU Global</p>
+                <p className="text-3xl font-black text-slate-900 font-display tracking-tighter">{productStats.total}</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-indigo-400" />
+              <div className="p-4 rounded-2xl bg-primary/5 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                <Package className="h-6 w-6 text-primary" />
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {Object.entries(productStats.byCategory).slice(0, 3).map(([category, count], i) => (
+          <Card key={category} className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden group hover:shadow-premium-md transition-all duration-500">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 truncate max-w-[150px]">{category}</p>
+                  <p className="text-3xl font-black text-slate-900 font-display tracking-tighter">{count as number}</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-slate-50 shadow-inner group-hover:rotate-12 transition-all duration-500">
+                   <div className={cn("w-3 h-3 rounded-full shadow-sm", i % 2 === 0 ? "bg-blue-400" : "bg-emerald-400")} />
+                </div>
+              </div>
+            </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Action Bar */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar productos, principios activos, categorías..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+      {/* Action Bar - PRECISION TOOLS */}
+      <Card className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden">
+        <CardContent className="p-10">
+          <div className="flex flex-col xl:flex-row gap-6">
+            <div className="flex-1 relative">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
+              <Input
+                placeholder="Buscar por nombre, principio activo o indicación operativa..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="h-16 pl-14 bg-slate-50 border-none focus-visible:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-300"
+              />
+            </div>
 
-        <div className="flex items-center gap-2">
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Categoría" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas las categorías</SelectItem>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <div className="flex flex-wrap items-center gap-3">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="h-16 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner">
+                  <SelectValue placeholder="Categoría Maestría" />
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                  <SelectItem value="all">Todo el Portafolio</SelectItem>
+                  {categories.map(category => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-          <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" title="Ayuda de Importación">
-                <HelpCircle className="h-5 w-5 text-muted-foreground" />
+              <div className="h-10 w-[1px] bg-slate-100 mx-2 hidden xl:block" />
+
+              <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-16 px-8 border-slate-200 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all flex items-center gap-3">
+                {importing ? <FileSpreadsheet className="h-5 w-5 animate-pulse" /> : <Upload className="h-5 w-5 text-primary" />}
+                Importar
               </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Estructura de Archivo para Importación</DialogTitle>
-                <DialogDescription>Para importar productos, utiliza un archivo Excel o CSV con estas columnas:</DialogDescription>
-              </DialogHeader>
-              <div className="border rounded-md overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Columna</TableHead>
-                      <TableHead>Descripción</TableHead>
-                      <TableHead>Ejemplo</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-mono">Nombre</TableCell>
-                      <TableCell>Nombre del producto (Obligatorio)</TableCell>
-                      <TableCell>CardioMax Pro</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-mono">Categoria</TableCell>
-                      <TableCell>Categoría (General por defecto)</TableCell>
-                      <TableCell>Cardiovascular</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-mono">Principios Activos</TableCell>
-                      <TableCell>Ingredientes activos</TableCell>
-                      <TableCell>Losartán 50mg</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-mono">Precio</TableCell>
-                      <TableCell>Precio unitario</TableCell>
-                      <TableCell>45.99</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </DialogContent>
-          </Dialog>
 
-          <Button variant="outline" onClick={triggerImport} disabled={importing} title="Importar desde Excel">
-            {importing ? <FileSpreadsheet className="h-4 w-4 animate-pulse md:mr-2" /> : <Upload className="h-4 w-4 md:mr-2" />}
-            <span className="hidden md:inline">Importar</span>
-          </Button>
-
-          <Button variant="outline" onClick={handleExport} title="Exportar a CSV">
-            <Download className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Exportar</span>
-          </Button>
-
-          <ProductFormDialog
-            onSuccess={loadProducts}
-            trigger={
-              <Button className="btn-medical">
-                <Plus className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">Nuevo Producto</span>
+              <Button variant="outline" onClick={handleExport} className="h-16 px-8 border-slate-200 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all flex items-center gap-3">
+                <Download className="h-5 w-5 text-primary" />
+                Exportar
               </Button>
-            }
-          />
-        </div>
-      </div>
 
-      {/* Products Grid */}
-      <Tabs defaultValue="grid" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="grid">Vista Rejilla</TabsTrigger>
-          <TabsTrigger value="list">Vista Lista</TabsTrigger>
-          <TabsTrigger value="favorites">Favoritos</TabsTrigger>
+              <Button variant="ghost" size="icon" onClick={() => setHelpDialogOpen(true)} className="h-16 w-16 border border-slate-100 rounded-2xl hover:bg-blue-50 text-blue-500">
+                <HelpCircle className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
+        <DialogContent className="max-w-2xl bg-white rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+          <div className="bg-slate-50 p-8 border-b border-slate-100">
+            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Estructura de Manifiesto</h3>
+            <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Sincronización de Inventario Científico</p>
+          </div>
+          <div className="p-10">
+            <div className="rounded-2xl border border-slate-100 overflow-hidden shadow-soft">
+              <Table>
+                <TableHeader className="bg-slate-50">
+                  <TableRow>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Columna</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Descripción</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[
+                    { col: 'Nombre', desc: 'Denominación comercial del producto *Requerido' },
+                    { col: 'Categoria', desc: 'Línea terapéutica o clasificación' },
+                    { col: 'Principios Activos', desc: 'Composición química principal' },
+                    { col: 'Precio', desc: 'Valor unitario de mercado' },
+                  ].map((row, i) => (
+                    <TableRow key={i} className="border-slate-50">
+                      <TableCell className="font-black text-[11px] text-primary uppercase py-4 px-6">{row.col}</TableCell>
+                      <TableCell className="text-[10px] font-bold text-slate-500 uppercase tracking-tight py-4 px-6">{row.desc}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="mt-8 flex justify-end">
+              <Button onClick={() => setHelpDialogOpen(false)} className="h-12 bg-slate-900 text-white rounded-xl px-10 font-black uppercase text-[10px] tracking-widest shadow-premium-md">Entendido</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Products Display - MASTER VIEWSET */}
+      <Tabs defaultValue="grid" className="w-full space-y-8">
+        <TabsList className="flex w-full md:w-[450px] p-1 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+          <TabsTrigger value="grid" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Galería Maestro</TabsTrigger>
+          <TabsTrigger value="list" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Lista Operativa</TabsTrigger>
+          <TabsTrigger value="favorites" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm transition-all h-10">Favoritos</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="grid" className="mt-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <TabsContent value="grid" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="bg-white border border-slate-200 hover:shadow-lg hover:border-emerald-300 transition-all duration-200 group">
-                <CardContent className="p-4">
-                  {/* Product Image or Placeholder */}
-                  <div className="relative mb-4">
+              <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
+                <CardContent className="p-6">
+                  {/* Product Image */}
+                  <div className="relative mb-6 rounded-[1.5rem] overflow-hidden bg-slate-50 border border-slate-100 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                     {product.image_url ? (
-                      <div className="aspect-square w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100">
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                          }}
-                        />
-                        <div className="hidden w-full h-full bg-gradient-to-br from-indigo-50/50 to-slate-50 flex items-center justify-center">
-                          <Package className="h-10 w-10 text-indigo-200" />
-                        </div>
-                      </div>
+                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="aspect-square w-full rounded-2xl bg-gradient-to-br from-indigo-50/50 to-slate-50 flex items-center justify-center border border-indigo-50/50">
-                        <Package className="h-10 w-10 text-indigo-200" />
-                      </div>
+                      <Package className="h-12 w-12 text-slate-200" />
                     )}
-                  </div>
-
-                  {/* Header with actions */}
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className={`h-7 w-7 ${isFavorite(product.id) ? 'text-red-500' : 'text-slate-400'} hover:text-red-500`}
-                        onClick={(e) => handleToggleFavorite(e, product.id)}
-                      >
-                        <Heart className={`h-4 w-4 ${isFavorite(product.id) ? 'fill-current' : ''}`} />
-                      </Button>
-                      <ProductFormDialog
-                        productToEdit={product}
-                        onSuccess={loadProducts}
-                        trigger={
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-emerald-600">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        }
-                      />
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-500" onClick={() => handleDelete(product.id, product.name)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                       <Button variant="white" size="icon" className="h-8 w-8 rounded-lg shadow-premium-sm text-slate-400 hover:text-rose-500" onClick={(e) => handleToggleFavorite(e, product.id)}>
+                         <Heart className={cn("h-4 w-4", isFavorite(product.id) && "fill-rose-500 text-rose-500")} />
+                       </Button>
+                       <ProductFormDialog
+                          productToEdit={product}
+                          onSuccess={loadProducts}
+                          trigger={
+                            <Button variant="white" size="icon" className="h-8 w-8 rounded-lg shadow-premium-sm text-slate-400 hover:text-primary">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          }
+                        />
                     </div>
                   </div>
 
-                  {/* Product Name */}
-                  <h3 className="font-semibold text-slate-800 text-sm mb-1 line-clamp-2 min-h-[40px]">
-                    {product.name}
-                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[8px] h-4 px-2 uppercase tracking-widest mb-2">
+                        {product.category || 'General'}
+                      </Badge>
+                      <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase font-display line-clamp-2 min-h-[40px] leading-tight group-hover:text-primary transition-colors">
+                        {product.name}
+                      </h3>
+                    </div>
 
-                  {/* Category & Price */}
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 text-[9px] px-2.5 py-1 font-black uppercase tracking-widest border-none">
-                      {product.category || 'General'}
-                    </Badge>
-                    {product.price && (
-                      <span className="text-sm font-black text-slate-900">
-                        ${product.price}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 h-9 text-[10px] font-black uppercase tracking-widest border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl"
-                          onClick={() => setSelectedProductId(product.id)}
-                        >
-                          <Eye className="mr-1.5 h-3.5 w-3.5" />
-                          View
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[2rem]">
-                        <ProductDetailView
-                          productId={product.id}
-                          onBack={() => setSelectedProductId(null)}
-                        />
-                      </DialogContent>
-                    </Dialog>
-
-                    <ProductSamplesDialog
-                      trigger={
-                        <Button size="sm" className="flex-1 h-9 text-[10px] font-black uppercase tracking-widest bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-200 transition-all">
-                          Muestras
-                        </Button>
-                      }
-                      productData={product}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-            {filteredProducts.length === 0 && !loading && (
-              <div className="col-span-full">
-                <PremiumEmptyState
-                  icon={Package}
-                  title="No se encontraron productos"
-                  description="Intenta ajustar tu búsqueda o añade nuevos productos a tu catálogo para ampliar tu portafolio médico."
-                  actionLabel="Nuevo Producto"
-                  onAction={() => { }} /* The dialog trigger is already in the header */
-                />
-              </div>
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="list" className="mt-6">
-          <div className="space-y-4">
-            {filteredProducts.map((product) => (
-              <Card key={product.id} className="medical-card-hover">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-foreground">{product.name}</h3>
-                        <div className="flex items-center space-x-2">
-                          <ProductFormDialog
-                            productToEdit={product}
-                            onSuccess={loadProducts}
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                       <p className="text-lg font-black text-slate-900 font-display tracking-tighter">${product.price || '0.00'}</p>
+                       <div className="flex gap-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-300 hover:text-primary hover:bg-slate-50">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]">
+                              <ProductDetailView productId={product.id} onBack={() => {}} />
+                            </DialogContent>
+                          </Dialog>
+                          <ProductSamplesDialog
                             trigger={
-                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                                <Edit className="h-4 w-4 mr-1" /> Editar
+                              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-300 hover:text-primary hover:bg-slate-50">
+                                <Package className="h-4 w-4" />
                               </Button>
                             }
+                            productData={product}
                           />
-                          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive" onClick={() => handleDelete(product.id, product.name)}>
-                            <Trash2 className="h-4 w-4 mr-1" /> Eliminar
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-2 mb-3">
-                        <Badge variant="secondary" className="bg-primary/10 text-primary">
-                          {product.category}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">•</span>
-                        <span className="text-sm font-medium text-success">€{product.price || '0.00'}</span>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground mb-3">{product.description}</p>
-
-                      <div className="flex items-center space-x-2 mt-4">
-                        <ProductDetailDialog
-                          trigger={
-                            <Button variant="outline" size="sm">
-                              <Eye className="mr-2 h-3 w-3" />
-                              Ver Detalles
-                            </Button>
-                          }
-                          productData={product}
-                        />
-                        <ProductSamplesDialog
-                          trigger={
-                            <Button size="sm" className="btn-success">
-                              Gestionar Muestras
-                            </Button>
-                          }
-                          productData={product}
-                        />
-                      </div>
+                       </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="list" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-4">
+            {filteredProducts.map((product) => (
+              <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-white rounded-[2rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
+                <CardContent className="p-8">
+                  <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center">
+                    <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+                      {product.image_url ? (
+                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover rounded-2xl" />
+                      ) : (
+                        <Package className="h-8 w-8 text-slate-200" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                       <div className="flex items-center gap-3">
+                         <h3 className="text-lg font-black text-slate-900 tracking-tighter uppercase font-display group-hover:text-primary transition-colors">{product.name}</h3>
+                         <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[8px] h-4 px-2 uppercase tracking-widest">{product.category || 'General'}</Badge>
+                       </div>
+                       <p className="text-xs text-slate-500 font-bold uppercase tracking-tight line-clamp-1">{product.description || "Sin descripción científica disponible"}</p>
+                    </div>
+                    <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-50">
+                       <p className="text-xl font-black text-slate-900 font-display tracking-tighter">${product.price || '0.00'}</p>
+                       <div className="flex gap-2">
+                          <ProductSamplesDialog
+                            trigger={
+                              <Button variant="outline" className="h-10 px-6 border-slate-200 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-slate-50 transition-all">Muestras</Button>
+                            }
+                            productData={product}
+                          />
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button className="h-10 w-10 bg-slate-900 text-white rounded-xl shadow-premium-md flex items-center justify-center hover:bg-slate-800 transition-all"><Eye className="h-4 w-4" /></Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]">
+                              <ProductDetailView productId={product.id} onBack={() => {}} />
+                            </DialogContent>
+                          </Dialog>
+                       </div>
                     </div>
                   </div>
                 </CardContent>
@@ -623,76 +553,43 @@ export default function Products() {
           </div>
         </TabsContent>
 
-        <TabsContent value="favorites" className="mt-6">
-          {favoritesLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : getFavoriteProductIds().length === 0 ? (
+        <TabsContent value="favorites" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {getFavoriteProductIds().length === 0 ? (
             <PremiumEmptyState
               icon={Heart}
-              title="No tienes favoritos aún"
-              description="Marca tus productos más utilizados con el icono del corazón para acceder a ellos rápidamente desde esta sección."
+              title="Sin Activos Favoritos"
+              description="Marque los productos críticos con el radar de favoritos para un acceso táctico inmediato."
             />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {products
                 .filter(product => isFavorite(product.id))
                 .map((product) => (
-                  <Card key={product.id} className="bg-white border border-slate-200 hover:shadow-lg hover:border-red-300 transition-all duration-200 group">
-                    <CardContent className="p-4">
-                      {/* Header with icon and actions */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-red-50 to-pink-50 rounded-lg flex items-center justify-center border border-red-100">
-                          <Package className="h-6 w-6 text-red-400" />
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-red-500 hover:text-red-600"
-                          onClick={(e) => handleToggleFavorite(e, product.id)}
-                        >
+                  <Card key={product.id} className="border-red-50 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-red-200 transition-all duration-500 group">
+                    <CardContent className="p-6">
+                      <div className="relative mb-6 rounded-[1.5rem] overflow-hidden bg-red-50/30 border border-red-50 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+                        {product.image_url ? (
+                          <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Package className="h-12 w-12 text-red-100" />
+                        )}
+                        <Button variant="white" size="icon" className="absolute top-3 right-3 h-8 w-8 rounded-lg shadow-premium-sm text-red-500 hover:text-red-600" onClick={(e) => handleToggleFavorite(e, product.id)}>
                           <Heart className="h-4 w-4 fill-current" />
                         </Button>
                       </div>
-
-                      {/* Product Name */}
-                      <h3 className="font-semibold text-slate-800 text-sm mb-1 line-clamp-2 min-h-[40px]">
-                        {product.name}
-                      </h3>
-
-                      {/* Category & Price */}
-                      <div className="flex items-center justify-between mb-3">
-                        <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 font-medium">
-                          {product.category || 'General'}
-                        </Badge>
-                        {product.price && (
-                          <span className="text-sm font-bold text-emerald-600">
-                            ${product.price}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-2">
-                        <ProductDetailDialog
-                          trigger={
-                            <Button variant="outline" size="sm" className="flex-1 h-8 text-xs border-slate-200 text-slate-600 hover:bg-slate-50">
-                              <Eye className="mr-1.5 h-3 w-3" />
-                              Detalles
-                            </Button>
-                          }
-                          productData={product}
-                        />
-
-                        <ProductSamplesDialog
-                          trigger={
-                            <Button size="sm" className="flex-1 h-8 text-xs bg-emerald-500 hover:bg-emerald-600 text-white">
-                              Muestras
-                            </Button>
-                          }
-                          productData={product}
-                        />
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase font-display line-clamp-2 min-h-[40px] leading-tight">{product.name}</h3>
+                        <div className="flex items-center justify-between pt-4 border-t border-red-50">
+                           <p className="text-lg font-black text-slate-900 font-display tracking-tighter">${product.price || '0.00'}</p>
+                           <ProductSamplesDialog
+                              trigger={
+                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50">
+                                  <Package className="h-4 w-4" />
+                                </Button>
+                              }
+                              productData={product}
+                            />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -701,6 +598,6 @@ export default function Products() {
           )}
         </TabsContent>
       </Tabs>
-    </div >
+    </div>
   );
 }

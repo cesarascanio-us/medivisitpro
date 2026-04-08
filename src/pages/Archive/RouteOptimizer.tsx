@@ -92,7 +92,7 @@ export default function RouteOptimizer() {
             <Badge variant="outline" className="mb-4 border-blue-500/50 text-blue-400 bg-blue-500/5 px-3 py-1 uppercase tracking-widest text-[10px] font-bold">
               MediVisitPro Elite Tool
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-4 italic uppercase">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-4  uppercase">
               Optimizador de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Ruta Inteligente</span>
             </h1>
             <p className="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl font-light">
@@ -195,11 +195,11 @@ export default function RouteOptimizer() {
                       <div className="flex gap-8">
                         <div>
                           <p className="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Distancia Total</p>
-                          <p className="text-2xl font-black text-white italic tracking-tighter tabular-nums">{formatDistance(routeData.totalDistance)}</p>
+                          <p className="text-2xl font-black text-white  tracking-tighter tabular-nums">{formatDistance(routeData.totalDistance)}</p>
                         </div>
                         <div>
                           <p className="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Tiempo Estimado</p>
-                          <p className="text-2xl font-black text-white italic tracking-tighter tabular-nums">{formatDuration(routeData.totalDuration)}</p>
+                          <p className="text-2xl font-black text-white  tracking-tighter tabular-nums">{formatDuration(routeData.totalDuration)}</p>
                         </div>
                       </div>
                       
@@ -208,7 +208,7 @@ export default function RouteOptimizer() {
                           <p className="text-[10px] uppercase font-bold text-emerald-400 tracking-widest flex items-center justify-end gap-1">
                             <CheckCircle2 className="w-3 h-3" /> Ruta Optimizada
                           </p>
-                          <p className="text-[10px] text-slate-500 font-light italic">Algoritmo TSP v2.0</p>
+                          <p className="text-[10px] text-slate-500 font-light ">Algoritmo TSP v2.0</p>
                         </div>
                         <Button 
                           onClick={() => navigate('/auth')}

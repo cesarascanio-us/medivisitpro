@@ -29,58 +29,6 @@ export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const { toast } = useToast();
 
-  // FIX: Force resync if browser URL doesn't match React Router location
-  // This fixes the map freeze issue where navigation clicks change URL but not component
-  const lastReloadRef = React.useRef<number>(0);
-
-  useEffect(() => {
-    const checkUrlSync = () => {
-      const browserPath = window.location.pathname;
-      const now = Date.now();
-
-      // Only proceed if URLs don't match
-      if (browserPath !== location.pathname) {
-        // Anti-loop protection: don't reload if we just reloaded within last 2 seconds
-        if (now - lastReloadRef.current < 2000) {
-          console.log('[Layout] Skipping reload - too recent');
-          return;
-        }
-
-        console.warn('[Layout] URL mismatch detected:', browserPath, 'vs', location.pathname);
-        lastReloadRef.current = now;
-
-        // Store in sessionStorage to track across reloads
-        const reloadCount = parseInt(sessionStorage.getItem('mapFixReloadCount') || '0');
-        if (reloadCount >= 3) {
-          console.error('[Layout] Too many reloads, stopping to prevent infinite loop');
-          sessionStorage.removeItem('mapFixReloadCount');
-          return;
-        }
-
-        sessionStorage.setItem('mapFixReloadCount', String(reloadCount + 1));
-
-        // FIX: Redirect to the browser's URL instead of reloading
-        // reload() would reload the corrupted React Router state
-        // replace() forces navigation to the actual URL the user clicked
-        window.location.replace(browserPath + window.location.search);
-      } else {
-        // URLs match, clear the reload counter
-        sessionStorage.removeItem('mapFixReloadCount');
-      }
-    };
-
-    // Check after a longer delay to allow React Router to sync naturally first
-    const timeoutId = setTimeout(checkUrlSync, 500);
-
-    // Also listen for popstate events
-    window.addEventListener('popstate', checkUrlSync);
-
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('popstate', checkUrlSync);
-    };
-  }, [location.pathname]);
-
   const handleExitDemo = async () => {
     await supabase.auth.signOut();
     toast({
@@ -95,7 +43,7 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-y-auto font-outfit transition-colors duration-500">
       {/* Premium Corporate Background Orbs — Dark-Aware */}
       <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-primary/5 dark:bg-primary/10 rounded-full blur-[160px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-secondary/5 dark:bg-secondary/10 rounded-full blur-[160px] pointer-events-none"></div>
@@ -137,7 +85,7 @@ export const Layout = ({ children }: LayoutProps) => {
       )}
 
       {/* Main container with sidebar and content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-visible">
         {/* Sidebar - Hidden on mobile/tablet, visible on laptop+ (lg breakpoint) */}
         {/* CRITICAL: relative z-50 ensures sidebar is above any map elements */}
         <div className="hidden lg:block flex-shrink-0 relative z-50 sidebar-wrapper">
@@ -145,7 +93,7 @@ export const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Content area - z-0 to ensure it's below sidebar */}
-        <div className="flex-1 flex flex-col overflow-hidden relative z-0">
+        <div className="flex-1 flex flex-col min-h-0 overflow-visible relative z-0">
           {/* Mobile/Tablet Header with hamburger menu */}
           <div className="lg:hidden p-3 border-b border-border flex items-center justify-between bg-card/95 backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-3">
@@ -165,7 +113,7 @@ export const Layout = ({ children }: LayoutProps) => {
           </div>
 
           {/* Main Content - Responsive padding */}
-          <main key={location.pathname} className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-5 lg:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <main className="flex-1 overflow-hidden p-4 md:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {children}
           </main>
         </div>

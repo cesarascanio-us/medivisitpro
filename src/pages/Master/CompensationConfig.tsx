@@ -118,7 +118,7 @@ export default function CompensationConfig() {
                         Configuración de Compensación
                     </h1>
                     <p className="text-slate-500 mt-2">
-                        Control Maestro de <span className="font-bold text-primary italic underline">Biofarco C.A.</span>
+                        Control Maestro de <span className="font-bold text-primary  underline">Biofarco C.A.</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -260,7 +260,7 @@ export default function CompensationConfig() {
                                     </div>
                                     <div>
                                         <p className="text-xs font-bold text-slate-800">Motor Activo</p>
-                                        <p className="text-[10px] text-slate-500 italic">Venta Neta (Pre-Impuestos)</p>
+                                        <p className="text-[10px] text-slate-500 ">Venta Neta (Pre-Impuestos)</p>
                                     </div>
                                 </div>
                             </div>
@@ -330,7 +330,7 @@ export default function CompensationConfig() {
                                         />
                                         <div className="bg-slate-100 p-3 rounded-lg flex-1 border border-slate-200">
                                             <p className="text-[10px] uppercase font-bold text-slate-400">Ejemplo de Cálculo</p>
-                                            <p className="text-xs text-slate-600 mt-1 italic">600km / {policy.fuel_autonomy_factor} = {Math.round(600 / (policy.fuel_autonomy_factor || 1))} Litros</p>
+                                            <p className="text-xs text-slate-600 mt-1 ">600km / {policy.fuel_autonomy_factor} = {Math.round(600 / (policy.fuel_autonomy_factor || 1))} Litros</p>
                                         </div>
                                     </div>
                                 </div>

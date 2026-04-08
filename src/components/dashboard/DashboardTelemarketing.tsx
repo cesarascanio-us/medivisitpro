@@ -77,7 +77,7 @@ export default function DashboardTelemarketing() {
                 </div>
 
                 <div className="flex items-center gap-4 py-3 px-5 bg-black/10 rounded-2xl border border-white/10 backdrop-blur-md">
-                    <p className="text-white/80 text-xs font-bold italic">
+                    <p className="text-white/80 text-xs font-bold ">
                         Procesamiento rápido de pedidos y atención al cliente.
                     </p>
                 </div>

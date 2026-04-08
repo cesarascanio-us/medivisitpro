@@ -423,7 +423,7 @@ export default function PlanManager() {
                                     <span className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter">${plan.price}</span>
                                     <span className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
                                 </div>
-                                <CardDescription className="text-slate-500 dark:text-slate-400 mt-6 font-medium leading-relaxed italic text-sm">
+                                <CardDescription className="text-slate-500 dark:text-slate-400 mt-6 font-medium leading-relaxed  text-sm">
                                     {plan.description || "Solución avanzada para la industria farmacéutica."}
                                 </CardDescription>
                             </CardHeader>

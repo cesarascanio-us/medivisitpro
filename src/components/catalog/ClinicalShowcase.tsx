@@ -113,7 +113,7 @@ export function ClinicalShowcase({
                     {keyMessage && (
                         <div className={`flex items-start gap-2 p-3 rounded-lg max-w-xl ${isFullscreen ? 'bg-white/10' : 'bg-amber-50 border border-amber-200'}`}>
                             <Sparkles className={`h-5 w-5 flex-shrink-0 mt-0.5 ${isFullscreen ? 'text-amber-400' : 'text-amber-500'}`} />
-                            <p className={`text-sm italic ${isFullscreen ? 'text-white' : 'text-amber-800'}`}>"{keyMessage}"</p>
+                            <p className={`text-sm  ${isFullscreen ? 'text-white' : 'text-amber-800'}`}>"{keyMessage}"</p>
                         </div>
                     )}
 

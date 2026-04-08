@@ -5,7 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -23,6 +23,7 @@ interface MockDataContextType {
     doctors: typeof MOCK_DATA.doctors;
     contacts: typeof MOCK_DATA.contacts;
     drugstores: typeof MOCK_DATA.drugstores;
+    commerces: typeof MOCK_DATA.commerces;
     drugstoreInventory: typeof MOCK_DATA.drugstoreInventory;
     healthCenters: typeof MOCK_DATA.healthCenters;
     products: typeof MOCK_DATA.products;
@@ -58,6 +59,7 @@ export const MockDataProvider: React.FC<MockDataProviderProps> = ({ children }) 
         doctors: MOCK_DATA.doctors,
         contacts: MOCK_DATA.contacts,
         drugstores: MOCK_DATA.drugstores,
+        commerces: MOCK_DATA.commerces,
         drugstoreInventory: MOCK_DATA.drugstoreInventory,
         healthCenters: MOCK_DATA.healthCenters,
         products: MOCK_DATA.products,

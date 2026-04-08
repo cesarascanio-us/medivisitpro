@@ -51,9 +51,10 @@ interface DoctorFormDialogProps {
     formData: any;
     setFormData: (data: any) => void;
     onSubmit: () => void;
+    showTrigger?: boolean;
 }
 
-export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, onSubmit }: DoctorFormDialogProps) {
+export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, onSubmit, showTrigger = true }: DoctorFormDialogProps) {
     const [activeTab, setActiveTab] = useState("personal");
     const [schedules, setSchedules] = useState<any[]>([]);
     const [specialties, setSpecialties] = useState<any[]>([]);
@@ -135,11 +136,13 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogTrigger asChild>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 rounded-xl shadow-lg shadow-blue-500/20 transition-all">
-                    <Plus className="mr-2 h-4 w-4" /> Nuevo Médico
-                </Button>
-            </DialogTrigger>
+            {showTrigger && (
+                <DialogTrigger asChild>
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 rounded-xl shadow-lg shadow-blue-500/20 transition-all">
+                        <Plus className="mr-2 h-4 w-4" /> Nuevo Médico
+                    </Button>
+                </DialogTrigger>
+            )}
             <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
                 {/* Medical Header */}
                 <div className="bg-gradient-to-br from-blue-600 to-blue-800 px-8 py-10 text-white relative overflow-hidden">
@@ -319,7 +322,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                                             </SelectTrigger>
                                             <SelectContent className="rounded-2xl border-none shadow-2xl">
                                                 {specialties.length === 0 ? (
-                                                    <div className="py-2 px-4 text-sm text-muted-foreground italic">
+                                                    <div className="py-2 px-4 text-sm text-muted-foreground ">
                                                         Cargando especialidades...
                                                     </div>
                                                 ) : (

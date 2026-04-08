@@ -27,10 +27,11 @@ import { OptimizedRouteView } from "@/components/map/OptimizedRouteView";
 import { Activity } from "lucide-react";
 import { VisitHeatmap } from "@/components/map/VisitHeatmap";
 import { PlacesSearch } from "@/components/map/PlacesSearch";
-import { OverpassPlace } from "@/services/overpassService";
+import { OverpassPlace, formatPlaceInfo } from "@/services/overpassService";
 import { PharmacyProximityAnalysis } from "@/components/map/PharmacyProximityAnalysis";
 import { getStateCenter } from "@/utils/stateCoordinates";
 import type { ProximityResult, Location } from "@/utils/proximityCalculations";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 
 // Local interface compatible with OptimizedRouteView's callback
 interface OptimizedRoute {
@@ -47,12 +48,12 @@ interface OptimizedRoute {
 }
 
 const MARKER_COLORS: Record<string, string> = {
-    doctor: '#3B82F6',    // Blue
-    pharmacy: '#10B981',  // Green
-    natural_store: '#10B981', // Green (Leafy)
-    drugstore: '#8B5CF6', // Purple
-    hospital: '#EF4444',  // Red
-    clinic: '#F59E0B',    // Amber
+    doctor: '#2563EB',    // Royal Blue Premium
+    pharmacy: '#059669',  // Emerald Green Premium
+    natural_store: '#10B981', // Emerald
+    drugstore: '#7C3AED', // Indigo/Purple Premium
+    hospital: '#DC2626',  // Deep Red Premium
+    clinic: '#D97706',    // Amber Premium
 };
 
 const getTypeIcon = (type: string) => {
@@ -93,7 +94,7 @@ interface MapContact {
 }
 
 export default function CoverageMap() {
-    const { user, role, userState, zoneId, canViewAllData } = useAuth();
+    const { user, role, userState, zoneId, organizationId, canViewAllData } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
@@ -105,7 +106,7 @@ export default function CoverageMap() {
     const [optimizedRoute, setOptimizedRoute] = useState<OptimizedRoute | null>(null);
     const [showOptimizedRoute, setShowOptimizedRoute] = useState(false);
     const [currentUserLocation, setCurrentUserLocation] = useState<{ lat: number; lng: number } | undefined>(undefined);
-    const [mapType, setMapType] = useState<'roadmap' | 'satellite' | 'terrain' | 'hybrid' | 'dark'>('dark');
+    const [mapType, setMapType] = useState<'roadmap' | 'satellite' | 'terrain' | 'hybrid' | 'light'>('roadmap');
     const [showInfluenceCircles, setShowInfluenceCircles] = useState(false);
     const [showHeatmap, setShowHeatmap] = useState(false);
     const [visitHistory, setVisitHistory] = useState<Array<{ latitude: number; longitude: number; intensity: number }>>([]);
@@ -319,14 +320,14 @@ export default function CoverageMap() {
             }
 
             // Load zones for filter
-            const { data: zonesData } = await (supabase
-                .from('zones' as any)
+            const { data: zonesData } = await supabase
+                .from('zones')
                 .select('id, name')
-                .order('name') as any);
-            setZones((zonesData as { id: string; name: string }[]) || []);
+                .order('name');
+            setZones(zonesData || []);
 
             // Determine role-based filters (Territory Hierarchy)
-            let query = supabase.from('view_geo_map' as any).select('*');
+            let query = supabase.from('view_geo_map').select('*');
 
             // 1. Implementation of God Mode & Hierarchy
             if (role === 'master' || role === 'admin' || role === 'manager') {
@@ -368,7 +369,7 @@ export default function CoverageMap() {
                     }
                 }
 
-                const { data: contactsData, error: contactsError } = await fallbackQuery;
+                const { data: contactsData, error: contactsError } = await (fallbackQuery as any);
 
                 if (contactsError) throw contactsError;
 
@@ -409,10 +410,10 @@ export default function CoverageMap() {
                             if (isNaN(lat) || isNaN(lng)) return null;
 
                             return {
-                                id: item.id,
-                                name: item.name,
-                                type: item.type as MapContact['type'],
-                                specialty: item.detail || undefined,
+                                id: item.id || '',
+                                name: item.name || '',
+                                type: (item.contact_type || 'doctor') as MapContact['type'],
+                                specialty: item.specialty || undefined,
                                 address: item.address || undefined,
                                 city: item.city || undefined,
                                 latitude: lat,
@@ -459,9 +460,6 @@ export default function CoverageMap() {
 
         return true;
     }), [contacts, showDoctors, showPharmacies, showHospitals, showClinics, searchTerm]);
-
-
-
 
     const focusOnContact = (contact: MapContact) => {
         setMapCenter([contact.latitude, contact.longitude]);
@@ -568,78 +566,75 @@ export default function CoverageMap() {
     })), [filteredContacts]);
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground">Mapa de Cobertura</h1>
-                    <p className="text-muted-foreground">Visualiza la ubicación geográfica de tus contactos</p>
-                </div>
-                <Button onClick={loadData} variant="outline" disabled={loading}>
-                    <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-                    Actualizar
-                </Button>
-            </div>
+        <div className="space-y-8 pb-10">
+            {/* Elite Header */}
+            <EliteHeader
+                title="Mapa de Cobertura"
+                subtitle="Geolocalización Estratégica"
+                icon={MapPin}
+                badgeText="Inteligencia Territorial"
+                statusText={loading ? "Actualizando Red..." : "Mapa en Línea"}
+                statusColor={loading ? "bg-amber-500" : "bg-emerald-500"}
+                rightContent={
+                    <Button 
+                        onClick={loadData} 
+                        variant="outline" 
+                        disabled={loading}
+                        className="bg-card border-border/50 hover:bg-muted/50 rounded-xl h-12 px-6 font-black text-[10px] uppercase tracking-widest transition-all shadow-sm active:scale-95"
+                    >
+                        <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                        Sincronizar Datos
+                    </Button>
+                }
+            />
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="medical-card">
-                    <CardContent className="p-4 flex items-center space-x-3">
-                        <div className="p-2 rounded-full bg-blue-100">
-                            <UsersIcon className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold">{stats.doctors}</p>
-                            <p className="text-xs text-muted-foreground">Médicos</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="p-4 flex items-center space-x-3">
-                        <div className="p-2 rounded-full bg-green-100">
-                            <Building2 className="h-5 w-5 text-green-600" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold">{stats.pharmacies}</p>
-                            <p className="text-xs text-muted-foreground">Farmacias</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="p-4 flex items-center space-x-3">
-                        <div className="p-2 rounded-full bg-red-100">
-                            <Hospital className="h-5 w-5 text-red-600" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold">{stats.hospitals}</p>
-                            <p className="text-xs text-muted-foreground">Hospitales</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="p-4 flex items-center space-x-3">
-                        <div className="p-2 rounded-full bg-amber-100">
-                            <Building className="h-5 w-5 text-amber-600" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold">{stats.clinics}</p>
-                            <p className="text-xs text-muted-foreground">Clínicas</p>
-                        </div>
-                    </CardContent>
-                </Card>
+            {/* Elite Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-1">
+                <EliteKPICard
+                    title="Coadyuvantes Médicos"
+                    value={stats.doctors}
+                    subtitle="Especialistas Activos"
+                    icon={UsersIcon}
+                    color="blue"
+                    delay={100}
+                />
+                <EliteKPICard
+                    title="Puntos de Venta"
+                    value={stats.pharmacies}
+                    subtitle="Sedes Farmacéuticas"
+                    icon={Building2}
+                    color="emerald"
+                    delay={200}
+                />
+                <EliteKPICard
+                    title="Red Hospitalaria"
+                    value={stats.hospitals}
+                    subtitle="Centros de Salud"
+                    icon={Hospital}
+                    color="rose"
+                    delay={300}
+                />
+                <EliteKPICard
+                    title="Clínicas Aliadas"
+                    value={stats.clinics}
+                    subtitle="Centros Privados"
+                    icon={Building}
+                    color="amber"
+                    delay={400}
+                />
             </div>
 
             {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
-                {/* Sidebar */}
-                <Card className="medical-card lg:col-span-1 shadow-2xl relative z-20">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center text-lg">
-                            <Filter className="mr-2 h-5 w-5" />
-                            Filtros
+                {/* Elite Sidebar - Consola de Control */}
+                <Card className="border border-border/50 shadow-soft rounded-3xl lg:col-span-1 bg-card/80 backdrop-blur-xl transition-all duration-500 hover:shadow-card relative z-20 overflow-hidden">
+                    <CardHeader className="pb-4 bg-muted/20 border-b border-border/10">
+                        <CardTitle className="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                            <Filter className="mr-3 h-4 w-4 premium-icon" />
+                            Consola de Filtros
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-6 pt-6">
                         {/* Search */}
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -667,20 +662,19 @@ export default function CoverageMap() {
                             </Select>
                         </div>
 
-                        {/* Map Type Filter */}
+                        {/* Map Configuration */}
                         {googleMapsApiKey && (
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Tipo de Mapa</label>
+                                <label className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">Configuración de Visualización</label>
                                 <Select value={mapType} onValueChange={(v: any) => setMapType(v)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Oscuro (Default)" />
+                                    <SelectTrigger className="rounded-xl border-border/50 h-11 text-xs font-bold uppercase tracking-tight">
+                                        <SelectValue placeholder="Modo Premium" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="dark">Mapa Oscuro</SelectItem>
-                                        <SelectItem value="roadmap">Google Roadmap</SelectItem>
-                                        <SelectItem value="satellite">Google SatÃ©lite</SelectItem>
-                                        <SelectItem value="hybrid">Google HÃ­brido</SelectItem>
-                                        <SelectItem value="terrain">Google Terreno</SelectItem>
+                                    <SelectContent className="rounded-xl border-border shadow-2xl">
+                                        <SelectItem value="roadmap" className="text-xs font-bold uppercase">Mapa Industrial (Elite)</SelectItem>
+                                        <SelectItem value="satellite" className="text-xs font-bold uppercase">Vista Satelital (HQ)</SelectItem>
+                                        <SelectItem value="hybrid" className="text-xs font-bold uppercase">Híbrido Corporativo</SelectItem>
+                                        <SelectItem value="terrain" className="text-xs font-bold uppercase">Relieve Físico</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -694,7 +688,7 @@ export default function CoverageMap() {
                                     <Checkbox id="doctors" checked={showDoctors} onCheckedChange={(c) => setShowDoctors(!!c)} />
                                     <label htmlFor="doctors" className="flex items-center text-sm cursor-pointer">
                                         <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                                        MÃ©dicos ({stats.doctors})
+                                        Médicos ({stats.doctors})
                                     </label>
                                 </div>
                                 <div className="flex items-center space-x-2">
@@ -739,17 +733,18 @@ export default function CoverageMap() {
                                     }}
                                 />
                             </div>
-                            <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                            <div className="flex items-center justify-between p-3 rounded-2xl bg-muted/30 border border-border/10">
                                 <div className="space-y-0.5">
-                                    <label htmlFor="heatmap" className="text-xs font-medium cursor-pointer">
-                                        Mapa de Calor de Visitas
+                                    <label htmlFor="heatmap" className="text-[10px] font-black uppercase tracking-tight cursor-pointer">
+                                        Visualización de Calor
                                     </label>
-                                    <p className="text-[10px] text-muted-foreground">Visualizar densidad de actividad</p>
+                                    <p className="text-[9px] font-medium text-muted-foreground uppercase opacity-70">Densidad de Actividad</p>
                                 </div>
                                 <Checkbox
                                     id="heatmap"
                                     checked={showHeatmap}
                                     onCheckedChange={(c) => setShowHeatmap(!!c)}
+                                    className="rounded-md w-5 h-5"
                                 />
                             </div>
                         </div>
@@ -763,23 +758,23 @@ export default function CoverageMap() {
                                         <div
                                             key={contact.id}
                                             onClick={() => focusOnContact(contact)}
-                                            className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedContact?.id === contact.id
-                                                ? 'bg-primary/10 border border-primary'
-                                                : 'bg-muted/50 hover:bg-muted'
+                                            className={`p-3 rounded-2xl cursor-pointer transition-all duration-300 ${selectedContact?.id === contact.id
+                                                ? 'bg-primary/10 border border-primary/20 shadow-inner'
+                                                : 'bg-muted/30 hover:bg-muted/50 border border-transparent hover:border-border/50'
                                                 }`}
                                         >
-                                            <div className="flex items-start space-x-2">
+                                            <div className="flex items-start space-x-3">
                                                 <div
-                                                    className="mt-1 w-2 h-2 rounded-full flex-shrink-0"
+                                                    className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 shadow-sm"
                                                     style={{ backgroundColor: MARKER_COLORS[contact.type] }}
                                                 />
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-medium text-sm truncate">{contact.name}</p>
-                                                    <p className="text-xs text-muted-foreground truncate">
+                                                    <p className="font-black text-[11px] uppercase tracking-tight truncate text-foreground">{contact.name}</p>
+                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase opacity-80 truncate">
                                                         {contact.specialty || getTypeLabel(contact.type)}
                                                     </p>
                                                     {contact.city && (
-                                                        <p className="text-xs text-muted-foreground truncate">{contact.city}</p>
+                                                        <p className="text-[9px] font-medium text-muted-foreground uppercase opacity-60 truncate mt-0.5">{contact.city}</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -812,9 +807,9 @@ export default function CoverageMap() {
                     </CardContent>
                 </Card>
 
-                {/* Map */}
-                <Card className="bg-card/50 border border-border lg:col-span-3 overflow-hidden shadow-xl relative z-10">
-                    <CardContent className="p-0 h-[600px] rounded-lg overflow-hidden">
+                {/* Map Implementation */}
+                <Card className="bg-card border border-border/40 lg:col-span-3 overflow-hidden shadow-soft rounded-3xl relative z-10 transition-all duration-500 hover:shadow-card">
+                    <CardContent className="p-0 h-[700px] overflow-hidden">
                         <LeafletMap
                             center={mapCenter}
                             zoom={mapZoom}
@@ -837,25 +832,73 @@ export default function CoverageMap() {
 
             {/* Places Search */}
             {currentUserLocation && (
-                <div className="mt-6">
-                    <PlacesSearch
-                        center={currentUserLocation}
-                        onPlaceSelected={(place) => {
-                            // Center map on selected place
-                            setMapCenter([place.lat, place.lon]);
-                            setMapZoom(16);
-                            toast({
-                                title: "Lugar seleccionado",
-                                description: place.tags.name || "UbicaciÃ³n en el mapa"
-                            });
-                        }}
-                        onAddAsContact={(place) => {
-                            toast({
-                                title: "PrÃ³ximamente",
-                                description: "FunciÃ³n de agregar como contacto en desarrollo",
-                            });
-                        }}
-                    />
+                <div className="mt-8">
+                    <Card className="border border-border/40 shadow-soft rounded-3xl overflow-hidden bg-card/50">
+                        <CardContent className="p-0">
+                            <PlacesSearch
+                                center={currentUserLocation}
+                                onPlaceSelected={(place) => {
+                                    // Center map on selected place
+                                    setMapCenter([place.lat, place.lon]);
+                                    setMapZoom(16);
+                                    toast({
+                                        title: "Lugar seleccionado",
+                                        description: place.tags.name || "Ubicación en el mapa"
+                                    });
+                                }}
+                                onAddAsContact={async (place) => {
+                                    if (!user || !organizationId) return;
+
+                                    try {
+                                        const info = formatPlaceInfo(place);
+                                        
+                                        // Map OSM amenity to our contact_type
+                                        const typeMap: Record<string, string> = {
+                                            'pharmacy': 'pharmacy',
+                                            'hospital': 'hospital',
+                                            'clinic': 'clinic',
+                                            'doctors': 'doctor'
+                                        };
+                                        
+                                        const amenity = place.tags.amenity || 'pharmacy';
+                                        const contactType = typeMap[amenity] || 'pharmacy';
+
+                                        const { error } = await supabase
+                                            .from('contacts')
+                                            .insert({
+                                                name: info.name,
+                                                contact_type: contactType as any,
+                                                address: info.address,
+                                                city: place.tags['addr:city'] || null,
+                                                latitude: place.lat,
+                                                longitude: place.lon,
+                                                user_id: user.id,
+                                                organization_id: organizationId,
+                                                zone_id: zoneId || null,
+                                                priority: 'medium' as any,
+                                                status: 'active'
+                                            } as any);
+
+                                        if (error) throw error;
+
+                                        toast({
+                                            title: "Contacto Guardado",
+                                            description: `${info.name} ha sido agregado exitosamente.`,
+                                        });
+
+                                        loadData(); // Refresh map
+                                    } catch (error: any) {
+                                        console.error("Error adding contact:", error);
+                                        toast({
+                                            title: "Error al guardar",
+                                            description: error.message || "No se pudo agregar el contacto.",
+                                            variant: "destructive"
+                                        });
+                                    }
+                                }}
+                            />
+                        </CardContent>
+                    </Card>
                 </div>
             )}
 

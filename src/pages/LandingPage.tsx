@@ -76,7 +76,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-sans text-text-main selection:bg-primary selection:text-white">
+    <div className="min-h-screen bg-[#ffffff] font-display text-slate-900 selection:bg-primary selection:text-white overflow-x-hidden">
       <SEO
         title="MediVisit Pro - El Sistema Inteligentepara Visitadores Médicos"
         description="Transforma tu gestión de visita médica con IA, calidad alineados a los estándares ISO 9000 y analíticas de alto impacto. La plataforma #1 en LATAM."
@@ -92,20 +92,20 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <Stethoscope className="h-5 w-5 text-white" />
+            <div className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/')}>
+              <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 transform transition-transform group-hover:scale-110 duration-500">
+                <Stethoscope className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-slate-900 tracking-tighter">MediVisit<span className="text-primary">Pro</span></span>
+              <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase">MediVisit<span className="text-primary">Pro</span></span>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-10">
               {['Características', 'Testimonios', 'FAQ'].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-sm font-semibold text-slate-500 hover:text-primary transition-colors"
+                  className="text-[10px] font-black text-slate-400 hover:text-primary transition-all uppercase tracking-[0.2em]"
                 >
                   {item}
                 </a>
@@ -113,17 +113,17 @@ export default function LandingPage() {
             </nav>
 
             {/* CTA Buttons */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-6">
               <Button
                 variant="ghost"
                 onClick={handleAuthNavigation}
-                className="text-slate-700 hover:text-primary font-bold"
+                className="text-slate-900 hover:text-primary font-black uppercase text-[10px] tracking-widest"
               >
                 {user ? 'Ir al Dashboard' : 'Acceso'}
               </Button>
               <a
                 href="https://cesarascanio.vercel.app/?demo=medivisit-pro"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl hover:shadow-emerald-500/30 transition-all transform hover:-translate-y-0.5 rounded-full px-8 py-2.5 font-bold text-sm"
+                className="bg-primary hover:bg-primary/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all transform hover:-translate-y-1 rounded-2xl px-10 py-3.5 font-black text-[10px] uppercase tracking-[0.2em]"
               >
                 Prueba de 72 Horas
               </a>
@@ -178,11 +178,11 @@ export default function LandingPage() {
 
               <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.95] tracking-tight">
                 Orquestación de <br />
-                <span className="text-primary italic">Visita Médica</span>
+                <span className="text-primary ">Visita Médica</span>
               </h1>
 
               <p className="text-xl text-slate-500 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                La orquestación definitiva para visitadores de alto desempeño. Calidad <span className="text-primary font-bold italic">ISO 9000</span> integrada, analíticas en tiempo real y gestión Offline-First.
+                La orquestación definitiva para visitadores de alto desempeño. Calidad <span className="text-primary font-bold ">ISO 9000</span> integrada, analíticas en tiempo real y gestión Offline-First.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 pt-6">
@@ -274,23 +274,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Security Banner */}
-      <section className="py-12 bg-slate-900 text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-primary/10 blur-[100px]"></div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-6">
-            <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md">
-              <ShieldCheck className="w-8 h-8 text-primary" />
+      {/* Security Banner - PREMIUM LIGHT MODE */}
+      <section className="py-20 bg-slate-50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(0,86,179,0.03),transparent_50%)]"></div>
+        <div className="max-w-7xl mx-auto px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="flex items-center gap-8">
+            <div className="w-20 h-20 rounded-[2rem] bg-white flex items-center justify-center shadow-premium-md border border-slate-100">
+              <ShieldCheck className="w-10 h-10 text-primary" />
             </div>
             <div>
-              <h3 className="text-xl font-bold">Resiliencia Sentinel</h3>
-              <p className="text-slate-400 text-sm">Cifrado de grado elite y servidores redundantes globales.</p>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Resiliencia Sentinel</h3>
+              <p className="text-slate-400 font-bold text-[10px] mt-1 uppercase tracking-widest">Cifrado de grado elite y redundancia global biométrica</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 py-1 px-4">ISO 9000 QUALITY</Badge>
-            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 py-1 px-4">ISO 27001 READY</Badge>
-            <Badge className="bg-primary/20 text-primary border-primary/30 py-1 px-4">GDPR COMPLIANT</Badge>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Badge className="bg-white text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 9001 QUALITY</Badge>
+            <Badge className="bg-white text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 27001 READY</Badge>
+            <Badge className="bg-white text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">GDPR COMPLIANT</Badge>
           </div>
         </div>
       </section>
@@ -318,7 +318,7 @@ export default function LandingPage() {
 
             <div className="md:col-span-2 space-y-6">
               <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Plataforma</h4>
-              <ul className="space-y-4 font-medium italic">
+              <ul className="space-y-4 font-medium ">
                 <li><a href="#" className="hover:text-primary transition-colors">Sentinel AI</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Offline PWA</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">API Docs</a></li>
@@ -327,7 +327,7 @@ export default function LandingPage() {
 
             <div className="md:col-span-2 space-y-6">
               <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Compañía</h4>
-              <ul className="space-y-4 font-medium italic">
+              <ul className="space-y-4 font-medium ">
                 <li><a href="#" className="hover:text-primary transition-colors">Sobre CA Labs</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Carreras</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Legal</a></li>
@@ -335,11 +335,11 @@ export default function LandingPage() {
             </div>
 
             <div className="md:col-span-3 space-y-6">
-              <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Soporte Mission Control</h4>
-              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                <p className="text-sm font-bold text-slate-800 mb-2">¿Necesitas ayuda técnica?</p>
-                <p className="text-xs mb-4">Nuestro equipo orquestador está disponible 24/7 para ti.</p>
-                <Button className="w-full bg-slate-900 text-white rounded-xl">Inicia Ticket</Button>
+              <h4 className="font-black text-slate-900 uppercase text-[10px] tracking-[0.3em]">Soporte Mission Control</h4>
+              <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-inner">
+                <p className="text-[11px] font-black text-slate-900 mb-3 uppercase tracking-widest">¿Necesitas ayuda técnica?</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mb-6 leading-relaxed">Nuestro equipo orquestador está disponible 24/7 para garantizar tu éxito operativo.</p>
+                <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black uppercase text-[10px] tracking-widest shadow-premium-md">Inicia Ticket</Button>
               </div>
             </div>
           </div>

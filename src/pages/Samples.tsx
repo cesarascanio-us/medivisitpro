@@ -12,7 +12,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { 
     Pill, LayoutDashboard, Building2, 
     Calendar, Activity, Inbox, Package,
-    ShieldAlert, Search
+    ShieldAlert, Search, Users
 } from "lucide-react";
 import { InventoryDashboard } from "@/components/samples/InventoryDashboard";
 import { BankManager } from "@/components/samples/BankManager";
@@ -64,7 +64,14 @@ export default function Samples() {
 
         if (demoData) {
             console.log("Samples: Loading demo events");
-            const activeEvents = (demoData.events || []).filter(e => e.status === 'in_progress');
+            const activeEvents = (demoData.events || [])
+                .filter(e => e.status === 'in_progress')
+                .map((e: any): Event => ({
+                    id: e.id,
+                    title: e.title,
+                    location: e.location,
+                    date: e.scheduled_date
+                }));
             setEvents(activeEvents);
             if (activeEvents.length === 1) {
                 setActiveEventId(activeEvents[0].id);
@@ -86,8 +93,13 @@ export default function Samples() {
         const { data } = await query.order('scheduled_date', { ascending: false });
 
         if (data) {
-            // @ts-ignore
-            setEvents(data);
+            const mappedEvents = data.map((e: any): Event => ({
+                id: e.id,
+                title: e.title,
+                location: e.location,
+                date: e.scheduled_date
+            }));
+            setEvents(mappedEvents);
             if (data.length === 1) {
                 // Auto-select if only one active event
                 setActiveEventId((data[0] as any).id);
@@ -103,74 +115,57 @@ export default function Samples() {
             <EliteHeader 
                 title="Gestión de Muestras" 
                 subtitle="Logística Integral: Maletín, Bancos y Eventos"
-                icon={<Pill className="h-8 w-8 text-indigo-500" />}
+                icon={Pill}
             />
 
             {/* Elite Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <EliteKPICard 
                     title="Eventos Activos" 
-                    value={events.length.toString()} 
-                    icon={<Calendar className="h-5 w-5" />}
-                    trend="+1"
-                    description="Jornadas en curso"
+                    value={events.length} 
+                    icon={Calendar}
+                    trend={1}
+                    subtitle="Jornadas en curso"
                 />
                 <EliteKPICard 
                     title="Estado Maletín" 
                     value="Óptimo" 
-                    icon={<Package className="h-5 w-5" />}
-                    trend="100%"
-                    description="Capacidad de carga"
+                    icon={Package}
+                    trend={100}
+                    subtitle="Capacidad de carga"
                 />
                 <EliteKPICard 
                     title="Alertas Stock" 
-                    value="2" 
-                    icon={<ShieldAlert className="h-5 w-5" />}
-                    description="Proximidad a vencer"
-                    trend="-20%"
-                    trendPositive={false}
+                    value={2} 
+                    icon={ShieldAlert}
+                    subtitle="Proximidad a vencer"
+                    trend={-20}
+                    color="rose"
                 />
                 <EliteKPICard 
                     title="Bancos Asignados" 
-                    value="5" 
-                    icon={<Building2 className="h-5 w-5" />}
-                    description="Stock descentralizado"
+                    value={5} 
+                    icon={Building2}
+                    subtitle="Stock descentralizado"
+                    color="indigo"
                 />
             </div>
 
             <Tabs defaultValue="dashboard" className="w-full">
                 <EliteTabsList className="mb-6">
-                    <EliteTabsTrigger value="dashboard">
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Mi Maletín
-                    </EliteTabsTrigger>
-                    <EliteTabsTrigger value="banks">
-                        <Building2 className="mr-2 h-4 w-4" />
-                        Bancos
-                    </EliteTabsTrigger>
-                    <EliteTabsTrigger value="events">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        Jornadas
-                    </EliteTabsTrigger>
+                    <EliteTabsTrigger value="dashboard" label="Mi Maletín" icon={LayoutDashboard} />
+                    <EliteTabsTrigger value="banks" label="Bancos" icon={Building2} />
+                    <EliteTabsTrigger value="events" label="Jornadas" icon={Calendar} />
                     {canAccessSupervisor && (
-                        <EliteTabsTrigger value="supervisor">
-                            <Activity className="mr-2 h-4 w-4" />
-                            Supervisión
-                        </EliteTabsTrigger>
+                        <EliteTabsTrigger value="supervisor" label="Supervisión" icon={Activity} />
                     )}
                 </EliteTabsList>
 
                 <TabsContent value="dashboard" className="space-y-6 mt-6">
                     <Tabs defaultValue="stock" className="w-full">
                         <EliteTabsList className="mb-4">
-                            <EliteTabsTrigger value="stock">
-                                <LayoutDashboard className="mr-2 h-4 w-4" />
-                                Mi Stock
-                            </EliteTabsTrigger>
-                            <EliteTabsTrigger value="pending">
-                                <Inbox className="mr-2 h-4 w-4" />
-                                Solicitudes
-                            </EliteTabsTrigger>
+                            <EliteTabsTrigger value="stock" label="Mi Stock" icon={LayoutDashboard} />
+                            <EliteTabsTrigger value="pending" label="Solicitudes" icon={Inbox} />
                         </EliteTabsList>
 
                         <TabsContent value="stock" className="space-y-6 mt-4">
@@ -201,10 +196,10 @@ export default function Samples() {
                 <TabsContent value="events" className="mt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-4">
-                            <div className="medical-card p-6 border border-white/5 bg-slate-900/50 backdrop-blur-xl rounded-2xl">
-                                <h3 className="text-lg font-bold text-white mb-2">Modo Jornada Médica</h3>
-                                <p className="text-sm text-slate-400 mb-6">
-                                    Selecciona un evento <strong className="text-emerald-400">En Progreso</strong> para habilitar registros rápidos.
+                            <div className="p-8 border border-border/40 shadow-sm rounded-xl bg-card">
+                                <h3 className="text-lg font-bold text-foreground mb-2">Modo Jornada Médica</h3>
+                                <p className="text-sm text-muted-foreground mb-6">
+                                    Selecciona un evento <strong className="text-emerald-500">En Progreso</strong> para habilitar registros rápidos.
                                 </p>
 
                                 {loadingEvents ? (
@@ -215,10 +210,10 @@ export default function Samples() {
                                     </div>
                                 ) : (
                                     <Select value={activeEventId} onValueChange={setActiveEventId}>
-                                        <SelectTrigger className="w-full bg-slate-950/50 border-white/10">
+                                        <SelectTrigger className="w-full bg-background border-border/60">
                                             <SelectValue placeholder="Seleccionar Jornada Activa..." />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-slate-900 border-white/10">
+                                        <SelectContent className="bg-card border-border">
                                             {events.map(e => (
                                                 <SelectItem key={e.id} value={e.id}>
                                                     {e.title} ({new Date(e.date).toLocaleDateString()})
@@ -235,7 +230,7 @@ export default function Samples() {
                                         <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                                         <p className="text-emerald-400 font-bold uppercase text-[10px] tracking-widest">Conexión Activa</p>
                                     </div>
-                                    <p className="text-sm text-white font-medium ml-4">{activeEventTitle}</p>
+                                    <p className="text-sm text-foreground font-medium ml-4">{activeEventTitle}</p>
                                 </div>
                             )}
 
@@ -246,7 +241,7 @@ export default function Samples() {
                                     "Validación automática contra inventario de maletín.",
                                     "Los registros erróneos pueden revertirse para reintegrar stock."
                                 ]}
-                                className="mb-0 border-white/5 bg-slate-900/40"
+                                className="mb-0"
                             />
                         </div>
 
@@ -258,7 +253,7 @@ export default function Samples() {
                             {activeEventId ? (
                                 <EventTreatmentForm eventId={activeEventId} />
                             ) : (
-                                <div className="flex flex-col items-center justify-center h-[240px] border border-dashed border-white/10 rounded-2xl text-slate-500 bg-white/5 backdrop-blur-sm">
+                                <div className="flex flex-col items-center justify-center h-[240px] border border-dashed border-border rounded-2xl text-muted-foreground bg-muted/20 backdrop-blur-sm">
                                     <Calendar className="h-8 w-8 mb-3 opacity-20" />
                                     <p className="text-sm">Selecciona una jornada para iniciar</p>
                                 </div>
@@ -271,10 +266,10 @@ export default function Samples() {
                     <TabsContent value="supervisor" className="mt-6 space-y-6">
                         <Tabs defaultValue="banks" className="w-full">
                             <EliteTabsList>
-                                <EliteTabsTrigger value="banks">Bancos</EliteTabsTrigger>
-                                <EliteTabsTrigger value="reps">Visita Médica</EliteTabsTrigger>
-                                <EliteTabsTrigger value="assignment">Distribución</EliteTabsTrigger>
-                                <EliteTabsTrigger value="history">Auditoría</EliteTabsTrigger>
+                                <EliteTabsTrigger value="banks" label="Bancos" icon={Building2} />
+                                <EliteTabsTrigger value="reps" label="Visita Médica" icon={Users} />
+                                <EliteTabsTrigger value="assignment" label="Distribución" icon={Package} />
+                                <EliteTabsTrigger value="history" label="Auditoría" icon={Activity} />
                             </EliteTabsList>
                             <TabsContent value="banks" className="mt-6">
                                 <BankSupervisorDashboard />

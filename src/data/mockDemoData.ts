@@ -5,7 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 /**
  * Mock Demo Data - Isolated from Supabase
@@ -193,6 +193,28 @@ export const MOCK_CONTACTS = [
     }
 ];
 
+// ==================== COMMERCES ====================
+export const MOCK_COMMERCES = [
+    {
+        id: 'comm-001',
+        name: 'Bodegón Las Delicias',
+        rif: 'J-44332211-0',
+        address: 'Av. Principal de Las Mercedes',
+        city: 'Caracas',
+        potential: 'Alto',
+        phone: '0212-9912233'
+    },
+    {
+        id: 'comm-002',
+        name: 'Automercados Plaza',
+        rif: 'J-00998877-1',
+        address: 'Centro Comercial Los Samanes',
+        city: 'Caracas',
+        potential: 'Muy Alto',
+        phone: '0212-9445566'
+    }
+];
+
 // ==================== DRUGSTORES ====================
 export const MOCK_DRUGSTORES = [
     {
@@ -283,7 +305,46 @@ export const MOCK_PLAN_DETAILS = [
         id: 'pd-01',
         weekly_plan_id: 'wp-01',
         day_of_week: 'Lunes',
-        scheduled_date: formatDate(0)
+        scheduled_date: formatDate(0),
+        date: formatDate(0),
+        status: 'scheduled',
+        directory_item: {
+            id: 'doc-001',
+            name: 'Dr. Alejandro Pérez',
+            address: 'Clínica Metropolitana',
+            city: 'Caracas',
+            entity_type: 'doctor'
+        }
+    },
+    {
+        id: 'pd-02',
+        weekly_plan_id: 'wp-01',
+        day_of_week: 'Martes',
+        scheduled_date: formatDate(1),
+        date: formatDate(1),
+        status: 'scheduled',
+        directory_item: {
+            id: 'pharm-001',
+            name: 'Farmatodo Principal',
+            address: 'Av. Las Mercedes, Caracas',
+            city: 'Caracas',
+            entity_type: 'pharmacy'
+        }
+    },
+    {
+        id: 'pd-03',
+        weekly_plan_id: 'wp-01',
+        day_of_week: 'Miércoles',
+        scheduled_date: formatDate(2),
+        date: formatDate(2),
+        status: 'scheduled',
+        directory_item: {
+            id: 'comm-001',
+            name: 'Bodegón Las Delicias',
+            address: 'Av. Principal de Las Mercedes',
+            city: 'Caracas',
+            entity_type: 'commerce'
+        }
     }
 ];
 
@@ -305,6 +366,7 @@ export const MOCK_SAMPLE_BANKS = [
     }
 ];
 
+// ==================== BANK INVENTORY ====================
 export const MOCK_BANK_INVENTORY = [
     {
         bank_id: 'bank-01',
@@ -313,6 +375,7 @@ export const MOCK_BANK_INVENTORY = [
     }
 ];
 
+// ==================== SAMPLE MOVEMENTS ====================
 export const MOCK_SAMPLE_MOVEMENTS = [
     {
         id: 'mov-01',
@@ -322,6 +385,7 @@ export const MOCK_SAMPLE_MOVEMENTS = [
     }
 ];
 
+// ==================== INVENTORY ====================
 export const MOCK_INVENTORY = [
     {
         id: 'inv-01',
@@ -330,11 +394,19 @@ export const MOCK_INVENTORY = [
     }
 ];
 
+// ==================== EVENTS ====================
 export const MOCK_EVENTS = [
     {
         id: 'ev-01',
         title: 'Congreso de Cardiología',
-        start_time: formatDate(5)
+        scheduled_date: formatDate(5),
+        description: 'Evento de cardiología regional con enfoque en nuevos tratamientos.',
+        event_type: 'conference',
+        location: 'Hotel Eurobuilding Caracas',
+        status: 'scheduled',
+        attendees_count: 150,
+        notes: 'Protocolo de alta visibilidad académica.',
+        end_date: null
     }
 ];
 
@@ -394,6 +466,7 @@ export const MOCK_DATA = {
     pharmacies: MOCK_PHARMACIES,
     doctors: MOCK_DOCTORS,
     contacts: MOCK_CONTACTS,
+    commerces: MOCK_COMMERCES,
     drugstores: MOCK_DRUGSTORES,
     drugstoreInventory: MOCK_DRUGSTORE_INVENTORY,
     healthCenters: MOCK_HEALTH_CENTERS,

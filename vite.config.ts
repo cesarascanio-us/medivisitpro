@@ -48,7 +48,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit for large bundles
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/.*supabase\.co\/.*$/,
@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'supabase-api-cache',
                 expiration: {
                   maxEntries: 500,
-                  maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
+                  maxAgeSeconds: 60 * 60 * 24 * 7
                 },
                 cacheableResponse: {
                   statuses: [0, 200]

@@ -433,7 +433,7 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
                             {/* Timeline */}
                             <div className="space-y-3">
                                 {activities.length === 0 && !loadingActivities && (
-                                    <p className="text-sm text-slate-400 text-center py-8 italic">
+                                    <p className="text-sm text-slate-400 text-center py-8 ">
                                         Sin actividades registradas. ¡Agrega la primera!
                                     </p>
                                 )}

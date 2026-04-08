@@ -38,6 +38,7 @@ import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
 import { AdminDataFilter, AdminFilterState } from "@/components/admin/AdminDataFilter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 
 // --- TIPOS DE DATOS ---
 interface KPIStats {
@@ -90,16 +91,16 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-    master: 'text-indigo-400 border-indigo-500/30',
-    admin: 'text-rose-400 border-rose-500/30',
-    manager: 'text-slate-300 border-slate-700',
-    coordinator: 'text-blue-400 border-blue-500/30',
-    supervisor: 'text-cyan-400 border-cyan-500/30',
-    representative: 'text-emerald-400 border-emerald-500/30',
-    doctor: 'text-teal-400 border-teal-500/30',
-    pharmacist: 'text-orange-400 border-orange-500/30',
-    service_chief: 'text-violet-400 border-violet-500/30',
-    telemarketing: 'text-pink-400 border-pink-500/30'
+    master: 'text-primary border-primary/20 bg-primary/5',
+    admin: 'text-rose-600 border-rose-200 bg-rose-50',
+    manager: 'text-slate-600 border-slate-200 bg-slate-50',
+    coordinator: 'text-blue-600 border-blue-200 bg-blue-50',
+    supervisor: 'text-cyan-600 border-cyan-200 bg-cyan-50',
+    representative: 'text-emerald-600 border-emerald-200 bg-emerald-50',
+    doctor: 'text-teal-600 border-teal-200 bg-teal-50',
+    pharmacist: 'text-orange-600 border-orange-200 bg-orange-50',
+    service_chief: 'text-violet-600 border-violet-200 bg-violet-50',
+    telemarketing: 'text-pink-600 border-pink-200 bg-pink-50'
 };
 
 export default function DashboardMaster() {
@@ -220,93 +221,120 @@ export default function DashboardMaster() {
         } catch (error) { toast({ title: "Error", variant: "destructive" }); }
     };
 
-    if (loading && !stats.totalVisits) return <div className="h-screen flex items-center justify-center bg-background text-primary font-black uppercase tracking-widest animate-pulse">Sincronizando Centro de Mando...</div>;
+    if (loading && !stats.totalVisits) return (
+        <div className="h-screen flex flex-col items-center justify-center bg-white space-y-8">
+            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
+                <RefreshCw className="h-10 w-10 text-primary animate-spin" />
+            </div>
+            <div className="text-slate-900 font-black uppercase tracking-[0.4em] animate-pulse font-display">Sincronizando Centro de Mando</div>
+        </div>
+    );
 
     return (
         <div className="flex flex-col h-full bg-background space-y-6">
-            {/* Header Industrial Elite */}
-            <header className="bg-card px-8 py-10 rounded-[3rem] border border-border shadow-soft relative overflow-hidden mx-1 -mt-2">
-                <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
-                    <div className="flex items-center gap-6">
-                        <LayoutDashboard className="text-primary h-14 w-14" />
-                        <div>
-                            <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-1">Malla de Control Operativa</p>
-                            <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Centro de Mando</h1>
-                            <div className="flex items-center gap-3 mt-3">
-                                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] px-3 py-1 uppercase tracking-widest italic">{ROLE_LABELS[role] || 'Acceso Maestro'}</Badge>
-                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-muted/30 border border-border">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">Core Online</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <EliteHeader 
+                title="Centro de Mando Alpha"
+                subtitle="Soberanía Digital y Orquestación SaaS de MediVisitPro"
+                icon={LayoutDashboard}
+                badgeText="SYSTEM ACCESS ALPHA"
+                statusText="Core Online & Sincronizado"
+                statusColor="bg-emerald-500"
+                rightContent={
                     <div className="flex items-center gap-4">
-                        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} size="icon" variant="ghost" className="h-14 w-14 rounded-full hover:bg-primary/10 hover:text-primary transition-all"><RefreshCw className={cn("h-6 w-6", loading && "animate-spin")} /></Button>
+                        <Button 
+                            onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} 
+                            variant="ghost" 
+                            className="h-14 w-14 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-primary hover:shadow-premium-sm transition-all"
+                        >
+                            <RefreshCw className={cn("h-6 w-6", loading && "animate-spin")} />
+                        </Button>
                     </div>
-                </div>
-            </header>
+                }
+            />
 
             <AdminDataFilter onFilterChange={setFilters} />
 
             <Tabs defaultValue="dashboard" className="w-full space-y-6" onValueChange={setActiveTab}>
-                {/* TABS NAVIGATION - INDUSTRIAL CAPSULE DESIGN (ULTRA LIGHT ADAPTATIVE) */}
                 <div className="flex justify-start px-2">
-                    <TabsList className="bg-muted/50 dark:bg-slate-900/60 border border-border/50 p-1.5 rounded-full h-auto flex flex-nowrap gap-2 shadow-sm backdrop-blur-md">
+                    <TabsList className="bg-slate-50 border border-slate-100 p-1.5 rounded-2xl h-auto flex flex-nowrap gap-2 shadow-inner">
                         <TabsTrigger 
                             value="dashboard" 
-                            className="flex items-center gap-2.5 px-7 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none group"
+                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none group"
                         >
-                            <LayoutDashboard size={16} strokeWidth={3} className="text-indigo-600 group-data-[state=active]:text-white" /> TABLERO
+                            <LayoutDashboard size={16} strokeWidth={3} className="text-slate-300 group-data-[state=active]:text-primary" /> TABLERO
                         </TabsTrigger>
                         
                         <TabsTrigger 
                             value="pedidos" 
-                            className="flex items-center gap-3 px-7 py-2.5 data-[state=active]:bg-rose-600 data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-rose-600 group"
+                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none text-slate-400 group"
                         >
-                            <ShoppingCart size={16} strokeWidth={3} className="group-data-[state=active]:text-white" /> PEDIDOS
+                            <ShoppingCart size={16} strokeWidth={3} className="group-data-[state=active]:text-rose-500" /> PEDIDOS
                             {pendingOrders.length > 0 && (
                                 <span className="ml-1.5 px-2 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-black">{pendingOrders.length}</span>
                             )}
                         </TabsTrigger>
-
+ 
                         <TabsTrigger 
                             value="equipo" 
-                            className="flex items-center gap-3 px-7 py-2.5 data-[state=active]:bg-amber-500 data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-amber-600 group"
+                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none text-slate-400 group"
                         >
-                            <Users size={16} strokeWidth={3} className="group-data-[state=active]:text-white" /> EQUIPO
+                            <Users size={16} strokeWidth={3} className="group-data-[state=active]:text-amber-600" /> EQUIPO
                         </TabsTrigger>
                     </TabsList>
                 </div>
 
                 <TabsContent value="dashboard" className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
                     {/* KPI STRIP - SIN FONDOS */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <KPICard title="Ventas Totales" value={`$${stats.totalSales.toLocaleString()}`} icon={<TrendingUp />} color="emerald" />
-                        <KPICard title="Visitas Médicas" value={stats.totalVisits} icon={<Activity />} color="blue" />
-                        <KPICard title="Pedidos" value={stats.totalOrders} icon={<ShoppingCart />} color="violet" />
-                        <KPICard title="Detección Zonas" value={stats.activeZones} icon={<Globe />} color="amber" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <EliteKPICard 
+                            title="Ventas Totales" 
+                            value={`$${stats.totalSales.toLocaleString()}`} 
+                            subtitle="Facturación acumulada"
+                            icon={TrendingUp}
+                            color="emerald"
+                        />
+                        <EliteKPICard 
+                            title="Visitas Médicas" 
+                            value={stats.totalVisits.toString()} 
+                            subtitle="Actividad de campo"
+                            icon={Activity}
+                            color="indigo"
+                        />
+                        <EliteKPICard 
+                            title="Pedidos" 
+                            value={stats.totalOrders.toString()} 
+                            subtitle="Órdenes procesadas"
+                            icon={ShoppingCart}
+                            color="indigo"
+                        />
+                        <EliteKPICard 
+                            title="Detección Zonas" 
+                            value={stats.activeZones.toString()} 
+                            subtitle="Zonas activas en radar"
+                            icon={Globe}
+                            color="amber"
+                        />
                     </div>
                     <CompetitivenessMonitor />
                     <AnalyticsCharts zoneData={zoneData} />
                 </TabsContent>
 
                 <TabsContent value="pedidos" className="space-y-4 animate-in slide-in-from-right-10 duration-500">
-                    <Card className="border-none bg-card shadow-soft rounded-[2rem] overflow-hidden">
+                    <Card className="border border-slate-100 bg-white shadow-premium-sm rounded-[2.5rem] overflow-hidden">
                         <Table>
-                            <TableHeader className="bg-muted/5">
-                                <TableRow className="border-none">
-                                    <TableHead className="py-6 pl-8 text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Orden</TableHead>
-                                    <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Farmacia / Punto</TableHead>
-                                    <TableHead className="text-right pr-8 text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Monto Nucleo</TableHead>
+                            <TableHeader className="bg-slate-50">
+                                <TableRow className="border-slate-100">
+                                    <TableHead className="py-6 pl-10 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Orden de Manifiesto</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Entrada / Punto de Venta</TableHead>
+                                    <TableHead className="text-right pr-10 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Monto Proyectado</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {pendingOrders.map(order => (
-                                    <TableRow key={order.id} className="hover:bg-muted/5 transition-all">
-                                        <TableCell className="pl-8 py-5 font-black text-foreground font-mono">{order.order_number}</TableCell>
-                                        <TableCell className="font-bold text-muted-foreground uppercase text-xs">{order.pharmacy_name}</TableCell>
-                                        <TableCell className="text-right pr-8 font-black text-foreground">${order.total?.toLocaleString()}</TableCell>
+                                    <TableRow key={order.id} className="hover:bg-slate-50 transition-all border-slate-50">
+                                        <TableCell className="pl-10 py-6 font-black text-slate-900 font-display text-base tracking-tight uppercase">{order.order_number}</TableCell>
+                                        <TableCell className="font-bold text-slate-500 uppercase text-[10px] tracking-tight">{order.pharmacy_name}</TableCell>
+                                        <TableCell className="text-right pr-10 font-black text-slate-900 font-display text-lg">${order.total?.toLocaleString()}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -315,18 +343,26 @@ export default function DashboardMaster() {
                 </TabsContent>
 
                 <TabsContent value="equipo" className="animate-in slide-in-from-left-10 duration-500">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {repData.map(rep => (
-                            <Card key={rep.id} className="border-none bg-card shadow-soft p-6 rounded-[2rem] group hover:scale-[1.02] transition-all">
-                                <div className="flex justify-between items-start mb-4">
-                                     <Users className="text-amber-500 h-10 w-10" />
-                                     <Badge className={cn("px-3 py-1 font-black text-[9px] uppercase border", ROLE_COLORS[rep.role || 'representative'])}>{ROLE_LABELS[rep.role || 'representative']}</Badge>
+                            <Card key={rep.id} className="border border-slate-100 bg-white shadow-premium-sm p-8 rounded-[2.5rem] group hover:shadow-premium-md transition-all duration-300">
+                                <div className="flex justify-between items-start mb-6">
+                                     <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100 transition-transform group-hover:scale-110">
+                                         <Users className="text-amber-500 h-8 w-8" />
+                                     </div>
+                                     <Badge className={cn("px-4 py-1.5 font-black text-[9px] uppercase border tracking-widest rounded-full", ROLE_COLORS[rep.role || 'representative'])}>{ROLE_LABELS[rep.role || 'representative']}</Badge>
                                 </div>
-                                <h3 className="font-black text-foreground text-base uppercase mb-1">{rep.name}</h3>
-                                <p className="text-[10px] text-muted-foreground mb-4 font-mono tracking-tighter">{rep.email}</p>
-                                <div className="pt-4 border-t border-border flex justify-between items-center">
-                                    <p className="text-sm font-black text-emerald-500 tabular-nums">${rep.sales.toLocaleString()}</p>
-                                    <p className="text-[10px] font-black text-muted-foreground uppercase">{rep.effectiveness.toFixed(0)}% Eficacia</p>
+                                <h3 className="font-black text-slate-900 text-lg uppercase mb-1 font-display tracking-tight group-hover:text-primary transition-colors">{rep.name}</h3>
+                                <p className="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">{rep.email}</p>
+                                <div className="pt-6 border-t border-slate-50 flex justify-between items-center">
+                                    <div className="flex flex-col">
+                                         <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1">Ventas Período</span>
+                                         <p className="text-xl font-black text-emerald-500 font-display tracking-tighter">${rep.sales.toLocaleString()}</p>
+                                    </div>
+                                    <div className="text-right">
+                                         <p className="text-lg font-black text-slate-900 font-display tracking-tighter">{rep.effectiveness.toFixed(0)}%</p>
+                                         <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Eficacia</p>
+                                    </div>
                                 </div>
                             </Card>
                         ))}
@@ -345,14 +381,17 @@ function KPICard({ title, value, icon, color }: any) {
         amber: "text-amber-500"
     };
     return (
-        <Card className="border-none bg-card shadow-soft rounded-[2rem] hover:shadow-xl transition-all">
-            <CardContent className="p-8 flex items-center justify-between">
-                <div>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">{title}</p>
-                    <p className="text-3xl font-black text-foreground tracking-tighter tabular-nums">{value}</p>
+        <Card className="border border-slate-100 bg-white shadow-premium-sm rounded-[2.5rem] hover:shadow-premium-md transition-all group overflow-hidden">
+            <CardContent className="p-10 flex items-center justify-between relative">
+                <div className={cn("absolute -right-4 -bottom-4 opacity-[0.03] transition-transform group-hover:scale-110", colors[color])}>
+                     {cloneElement(icon, { size: 120, strokeWidth: 1 })}
                 </div>
-                <div className={cn("h-12 w-12 flex items-center justify-center pt-1", colors[color])}>
-                    {cloneElement(icon, { size: 40, strokeWidth: 2.5 })}
+                <div className="relative z-10">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 font-display">{title}</p>
+                    <p className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums font-display leading-none">{value}</p>
+                </div>
+                <div className={cn("h-14 w-14 flex items-center justify-center shrink-0 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner group-hover:bg-white transition-all relative z-10", colors[color])}>
+                    {cloneElement(icon, { size: 28, strokeWidth: 2.5 })}
                 </div>
             </CardContent>
         </Card>

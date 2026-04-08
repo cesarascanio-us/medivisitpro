@@ -8,7 +8,7 @@
  ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Calendar, Users, FileCheck, TrendingUp, 
   Clock, MapPin, Package, RefreshCcw,
@@ -32,10 +32,33 @@ import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
-  const { user, role, isManager, isAdmin, isMaster, companyId, organizationName } = useAuth();
+  const { user, role, isManager, isAdmin, isMaster, isCoordinator, isSupervisor, isTelemarketing, companyId, organizationName, organizationId } = useAuth();
+  const navigate = useNavigate();
   const showGlobalData = isManager || isAdmin || isMaster;
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+
+  const getDashboardTitle = () => {
+    if (isMaster || isAdmin) return "Consola de Mando Global";
+    if (isManager) return "Centro de Mando Gerencial";
+    if (isCoordinator || isSupervisor) return "Panel de Mando Estratégico";
+    if (isTelemarketing) return "Central de Operaciones TM";
+    return "Panel de Mando Táctico";
+  };
+
+  const getDashboardBadge = () => {
+    if (isMaster) return "Sovereign Master";
+    if (isAdmin) return "Admin Elite";
+    if (isManager) return "Gerencial CA";
+    if (isCoordinator) return "Coordinador";
+    if (isSupervisor) return "Supervisor";
+    if (isTelemarketing) return "Telemarketing";
+    return "Representante";
+  };
+
+  const getWelcomeName = () => {
+    return user?.email?.split('@')[0] || 'Representante';
+  };
 
   const [stats, setStats] = useState({
     visitsToday: 0,
@@ -48,9 +71,8 @@ export default function Dashboard() {
   const [upcomingVisits, setUpcomingVisits] = useState<any[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [lastSync, setLastSync] = useState<string | null>(localStorage.getItem('lastSyncTime'));
-
-  const { isOnline, pendingCount, isSyncing, forceSync } = useOfflineSync();
+  
+  const { isOnline } = useOfflineSync();
   const demoData = useDemoData();
 
   useEffect(() => {
@@ -94,14 +116,11 @@ export default function Dashboard() {
         .single();
       setProfile(profileData);
 
-      // INDUSTRIAL KPI CONSOLIDATION (Dual ID Protocol)
       const now = new Date();
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
       const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
 
-      // Optimize: Parallel fetching with company_id isolation
       const [visitsRes, doctorsRes, reportsRes, objectivesRes] = await Promise.all([
-        // Visits Today
         (() => {
           let q = supabase.from('visits').select('status');
           q = q.gte('scheduled_date', todayStart).lte('scheduled_date', todayEnd);
@@ -109,7 +128,6 @@ export default function Dashboard() {
           if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
           return q;
         })(),
-        // Doctors Week
         (() => {
           const startOfWeek = new Date(now);
           startOfWeek.setDate(now.getDate() - now.getDay());
@@ -120,7 +138,6 @@ export default function Dashboard() {
           if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
           return q;
         })(),
-        // Reports Month
         (() => {
           const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
           let q = supabase.from('visits').select('id', { count: 'exact', head: true });
@@ -129,7 +146,6 @@ export default function Dashboard() {
           if (!showGlobalData && user?.id) q = q.eq('user_id', user.id);
           return q;
         })(),
-        // Objectives
         (() => {
           let q = supabase.from('objectives').select('*').eq('status', 'active');
           if (!isMaster && companyId) q = q.eq('company_id', companyId);
@@ -151,18 +167,39 @@ export default function Dashboard() {
         monthlyGoal: Math.round(avgProgress)
       });
 
-      // Lists
-      let upcomingQ = supabase.from('visits').select('*, contacts(*)').gte('scheduled_date', todayStart).lte('scheduled_date', todayEnd);
+      // Resolve Upcoming Visits Omnichannel
+      let upcomingQ = supabase.from('visits').select('*').gte('scheduled_date', todayStart).lte('scheduled_date', todayEnd);
       if (!isMaster && companyId) upcomingQ = upcomingQ.eq('company_id', companyId);
       if (!showGlobalData && user?.id) upcomingQ = upcomingQ.eq('user_id', user.id);
       const { data: upcomingData } = await upcomingQ.order('scheduled_date', { ascending: true }).limit(3);
-      setUpcomingVisits(upcomingData || []);
+      
+      const vIds = Array.from(new Set(upcomingData?.map(v => v.contact_id) || []));
 
-      let recentQ = supabase.from('visits').select('*, contacts(*)').eq('status', 'completed');
+      // Resolve Recent activity Omnichannel
+      let recentQ = supabase.from('visits').select('*').eq('status', 'completed');
       if (!isMaster && companyId) recentQ = recentQ.eq('company_id', companyId);
       if (!showGlobalData && user?.id) recentQ = recentQ.eq('user_id', user.id);
       const { data: recentVisits } = await recentQ.order('actual_start_time', { ascending: false }).limit(5);
-      setRecentActivity(recentVisits || []);
+
+      const rIds = Array.from(new Set(recentVisits?.map(v => v.contact_id) || []));
+      const allContactIds = Array.from(new Set([...vIds, ...rIds]));
+
+      if (allContactIds.length > 0) {
+        const { data: contactsData } = await supabase.from('unified_contacts').select('*').in('id', allContactIds);
+        
+        setUpcomingVisits(upcomingData?.map(v => ({
+          ...v,
+          contacts: contactsData?.find(c => c.id === v.contact_id)
+        })) || []);
+
+        setRecentActivity(recentVisits?.map(v => ({
+          ...v,
+          contacts: contactsData?.find(c => c.id === v.contact_id)
+        })) || []);
+      } else {
+        setUpcomingVisits(upcomingData || []);
+        setRecentActivity(recentVisits || []);
+      }
 
     } catch (error) {
       console.error("Error loading dashboard:", error);
@@ -171,161 +208,202 @@ export default function Dashboard() {
     }
   };
 
-  const getUserName = () => {
-    if (profile?.full_name) return profile.full_name;
-    if (profile?.first_name) return `${profile.first_name} ${profile.last_name || ''}`;
-    return user?.email?.split('@')[0] || 'Representante';
-  };
-
-  return (
-    <div className="space-y-8 pb-10">
-      {/* ELITE HEADER */}
+    return (
+    <div className="space-y-10 pb-10 font-display animate-in fade-in duration-700">
+      
+      {/* HEADER ELITE - CENTRO DE MANDO ESTRATÉGICO */}
       <EliteHeader 
-        title={`Bienvenido, ${getUserName()}`}
-        subtitle={`${organizationName || 'MediVisitPro Premier'} | ${currentTime.toLocaleDateString()} ${currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
-        icon={<Zap className="h-8 w-8 text-amber-500 fill-amber-500/20" />}
+        title={getDashboardTitle()}
+        subtitle={`Operatividad: ${organizationName || 'MediVisitPro Global'}`}
+        icon={Zap}
+        badgeText={getDashboardBadge()}
+        statusText={isOnline ? "Sincronización Cloud Activa" : "Modo Offline: Almacén Local"}
+        statusColor={isOnline ? "bg-emerald-500" : "bg-amber-500"}
         rightContent={
-          <div className="flex items-center gap-3">
-             <OnlineStatusIndicator />
-             <Button variant="outline" size="icon" className="rounded-full border-white/10 hover:bg-white/5 relative">
-                <Bell className="h-5 w-5 text-slate-400" />
-                <span className="absolute top-0 right-0 h-2 w-2 bg-rose-500 rounded-full border-2 border-slate-950"></span>
-             </Button>
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex flex-col items-end">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status Operativo</span>
+              <span className="text-sm font-black text-slate-900 tracking-tight uppercase  mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+            <div className="h-12 w-[1px] bg-slate-100 mx-2" />
+            <div className="flex items-center gap-4 bg-white p-2 pr-6 rounded-2xl shadow-premium-sm border border-slate-100 group hover:shadow-premium-md transition-all">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 overflow-hidden group-hover:rotate-6 transition-transform">
+                <span className="text-lg font-black text-primary uppercase">
+                  {getWelcomeName().charAt(0)}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Comandante</span>
+                <span className="text-xs font-black text-slate-900 tracking-tight uppercase mt-1">{getWelcomeName()}</span>
+              </div>
+            </div>
           </div>
         }
       />
 
-      {/* ELITE KPI STRIP */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <EliteKPICard 
-          title="Visitas Hoy"
-          value={stats.visitsToday.toString()}
-          icon={<Calendar className="h-5 w-5" />}
-          trend={`${stats.visitsTodayConfirmed} confirmadas`}
-          description="Agenda diaria activa"
+      {/* KPI GRID ELITE INDUSTRIAL */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <EliteKPICard
+          title={isTelemarketing ? "Citas de Hoy" : "Visitas Hoy"}
+          value={stats.visitsToday}
+          subtitle={`${stats.visitsTodayConfirmed} Confirmadas`}
+          icon={isTelemarketing ? RefreshCcw : Calendar}
+          trend={12}
+          color="blue"
         />
-        <EliteKPICard 
-          title="Cobertura Semanal"
-          value={stats.doctorsContactedWeek.toString()}
-          icon={<Users className="h-5 w-5" />}
-          trend="+12%"
-          description="Médicos contactados"
+        <EliteKPICard
+          title={isManager || isCoordinator ? "Cobertura Equipo" : "Contactos Mes"}
+          value={stats.doctorsContactedWeek}
+          subtitle="Objetivo Trimestral"
+          icon={Users}
+          trend={8}
+          color="indigo"
         />
-        <EliteKPICard 
-          title="Reportes Mes"
-          value={stats.reportsCompletedMonth.toString()}
-          icon={<FileCheck className="h-5 w-5" />}
-          trend="En tiempo"
-          description="Carga operacional"
+        <EliteKPICard
+          title={isTelemarketing ? "Conversión TM" : "Reportes OK"}
+          value={stats.reportsCompletedMonth}
+          subtitle="Sincronización Cloud"
+          icon={isTelemarketing ? Zap : FileCheck}
+          trend={-2}
+          color="purple"
         />
-        <EliteKPICard 
-          title="Alcance Objetivo"
-          value={`${stats.monthlyGoal}%`}
-          icon={<TrendingUp className="h-5 w-5" />}
-          trend={stats.monthlyGoal >= 70 ? "Sobre la media" : "Bajo la media"}
-          trendPositive={stats.monthlyGoal >= 70}
-          description="Progreso de cuota"
+        <EliteKPICard
+          title="Meta Cumplimiento"
+          value={`${Math.round((stats.reportsCompletedMonth / stats.monthlyGoal) * 100)}%`}
+          subtitle={`Meta: ${stats.monthlyGoal}`}
+          icon={TrendingUp}
+          trend={5}
+          color="emerald"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Column */}
-        <div className="lg:col-span-2 space-y-8">
-          <section>
-            <div className="flex items-center justify-between mb-4">
-               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                 <Clock className="h-5 w-5 text-indigo-400" />
-                 Próximas Visitas
-               </h2>
-               <Link to="/visits" className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group">
-                 Ver agenda <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-               </Link>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Columna Principal - Inteligencia de Campo */}
+        <div className="lg:col-span-2 space-y-10">
+          <section className="animate-in slide-in-from-bottom-5 duration-700">
+            <div className="flex items-center justify-between mb-8 px-2">
+               <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[1.2rem] bg-primary/5 flex items-center justify-center text-primary shadow-soft">
+                    <Clock className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Misiones Programadas</h2>
+                    <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Despliegue táctico para las próximas horas</p>
+                  </div>
+               </div>
+               <Button variant="ghost" onClick={() => navigate('/visits')} className="text-[10px] font-black text-primary hover:bg-primary/5 rounded-xl px-4 py-6 uppercase flex items-center gap-2 group transition-all">
+                 VER TODOS <ChevronRight className="h-4 w-4 group-hover:translate-x-1" />
+               </Button>
             </div>
             
-            {loading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => <div key={i} className="h-24 w-full bg-white/5 rounded-2xl animate-pulse"></div>)}
-              </div>
-            ) : upcomingVisits.length > 0 ? (
-              <div className="space-y-4">
-                {upcomingVisits.map((visit) => (
-                  <Card key={visit.id} className="bg-slate-900/40 border-white/5 hover:border-white/10 transition-all group overflow-hidden">
-                    <CardContent className="p-5">
+            <div className="grid gap-4">
+              {loading ? (
+                [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-white rounded-[2.5rem] border border-slate-100 animate-pulse shadow-soft"></div>)
+              ) : upcomingVisits.length > 0 ? (
+                upcomingVisits.map((visit) => (
+                  <Card key={visit.id} className="border border-slate-100 bg-white shadow-premium-sm hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 rounded-[2.5rem] overflow-hidden group cursor-pointer" onClick={() => navigate(`/visits?id=${visit.id}`)}>
+                    <CardContent className="p-8">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                            <MapPin className="h-6 w-6 text-indigo-400" />
+                        <div className="flex items-center gap-6">
+                          <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:bg-primary group-hover:text-white transition-all duration-700">
+                            <MapPin className="h-8 w-8 opacity-40 group-hover:opacity-100" />
                           </div>
-                          <div>
-                            <h4 className="font-bold text-white group-hover:text-indigo-400 transition-colors uppercase tracking-tight">
-                              {visit.contacts?.full_name || 'Médico no especificado'}
+                          <div className="space-y-1">
+                            <h4 className="text-lg font-black text-slate-900 uppercase tracking-tighter font-display group-hover:text-primary transition-colors">
+                              {visit.contacts?.full_name || 'OBJETIVO SIN IDENTIFICAR'}
                             </h4>
-                            <p className="text-sm text-slate-400 flex items-center gap-2">
-                              {new Date(visit.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {visit.contacts?.category || 'General'}
-                            </p>
+                            <div className="flex items-center gap-3">
+                               <Badge className="bg-slate-50 text-slate-400 border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">
+                                 {new Date(visit.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                               </Badge>
+                               <Badge className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">
+                                 {visit.contacts?.category || 'TIER-1'}
+                               </Badge>
+                            </div>
                           </div>
                         </div>
                         <Badge className={cn(
-                          "px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-widest",
-                          visit.status === 'confirmed' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                          "px-6 py-2 rounded-full text-[10px] font-black tracking-widest border border-transparent shadow-sm",
+                          visit.status === 'confirmed' ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-amber-50 text-amber-600 border-amber-100"
                         )}>
-                          {visit.status === 'confirmed' ? 'Confirmado' : 'Pendiente'}
+                          {visit.status === 'confirmed' ? 'LOG_CONFIRMED' : 'LOG_SCHEDULED'}
                         </Badge>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-slate-900/40 border border-dashed border-white/10 rounded-2xl p-10 text-center">
-                 <Calendar className="h-10 w-10 text-slate-500 mx-auto mb-4 opacity-20" />
-                 <p className="text-slate-400">No hay visitas programadas para hoy.</p>
-              </div>
-            )}
+                ))
+              ) : (
+                <div className="bg-white border border-slate-100 rounded-[3rem] p-24 text-center shadow-premium-sm">
+                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <Calendar className="h-10 w-10 text-slate-200" />
+                   </div>
+                   <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2 font-display">Zona Despejada</h3>
+                   <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest">No existen misiones programadas para el ciclo actual</p>
+                </div>
+              )}
+            </div>
           </section>
 
-          <section>
-            <div className="flex items-center justify-between mb-4">
-               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                 <Activity className="h-5 w-5 text-emerald-400" />
-                 Actividad Reciente
-               </h2>
+          <section className="animate-in slide-in-from-bottom-10 duration-1000">
+            <div className="flex items-center gap-4 mb-8 px-2">
+                <div className="w-12 h-12 rounded-[1.2rem] bg-emerald-500/5 flex items-center justify-center text-emerald-600 shadow-soft">
+                  <Activity className="h-6 w-6" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Monitor de Actividad</h2>
+                    <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Telemetría de campo en tiempo real</p>
+                </div>
             </div>
-            <div className="bg-slate-900/40 border border-white/5 rounded-3xl p-6">
+            <Card className="border border-slate-100 bg-white shadow-premium-lg rounded-[3rem] p-10 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full -mr-32 -mt-32 blur-3xl" />
                {recentActivity.length > 0 ? (
-                 <div className="space-y-6">
+                 <div className="space-y-10 relative z-10">
                    {recentActivity.map((activity, idx) => (
-                     <div key={activity.id} className="flex gap-4 relative">
+                     <div key={activity.id} className="flex gap-8 relative group">
                         {idx !== recentActivity.length - 1 && (
-                          <div className="absolute left-2.5 top-6 bottom-0 w-0.5 bg-white/5"></div>
+                          <div className="absolute left-4 top-10 bottom-[-2.5rem] w-[2px] bg-slate-100" />
                         )}
-                        <div className="h-5 w-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center relative z-10 mt-1">
-                           <div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                        <div className="h-8 w-8 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center relative z-10 transition-transform group-hover:scale-125 shadow-sm">
+                           <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
-                        <div>
-                           <p className="text-sm text-white font-medium">
-                             Reporte completado: <span className="text-emerald-400">{activity.contacts?.full_name}</span>
+                        <div className="flex-1 space-y-1">
+                           <p className="text-sm text-slate-900 font-black uppercase tracking-tight font-display">
+                             MISIÓN COMPLETADA: <span className="text-emerald-600">{activity.contacts?.full_name}</span>
                            </p>
-                           <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
-                             {new Date(activity.actual_start_time || activity.created_at).toLocaleString()}
+                           <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black flex items-center gap-3">
+                             {new Date(activity.actual_start_time || activity.created_at).toLocaleString()} 
+                             <span className="w-1 h-1 bg-slate-200 rounded-full" />
+                             <Badge variant="outline" className="text-[8px] border-emerald-200 text-emerald-500 bg-emerald-50 font-black px-2 py-0">TELEMETRÍA_OK</Badge>
                            </p>
                         </div>
                      </div>
                    ))}
                  </div>
                ) : (
-                 <p className="text-slate-500 text-sm text-center py-4">Sin actividad reciente registrada.</p>
+                 <div className="text-center py-16 opacity-30">
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Sin telemetría reciente en el sector</p>
+                 </div>
                )}
-            </div>
+            </Card>
           </section>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-8">
-          <SmartAssistant />
-          <InventoryAlerts />
-          <ProcessAlerts />
-          {isManager && <AutoAssignmentPanel />}
+        {/* Sidebar Élite - Inteligencia Artificial & Alertas */}
+        <div className="space-y-10">
+          <div className="animate-in fade-in slide-in-from-right duration-1000 delay-200">
+             <SmartAssistant />
+          </div>
+          <div className="animate-in fade-in slide-in-from-right duration-1000 delay-400">
+             <InventoryAlerts />
+          </div>
+          <div className="animate-in fade-in slide-in-from-right duration-1000 delay-600">
+             <ProcessAlerts />
+          </div>
+          {isManager && (
+            <div className="animate-in fade-in slide-in-from-right duration-1000 delay-700">
+               <AutoAssignmentPanel />
+            </div>
+          )}
         </div>
       </div>
     </div>
