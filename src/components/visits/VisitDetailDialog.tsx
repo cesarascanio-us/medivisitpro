@@ -80,8 +80,8 @@ function MultiSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-white border-slate-100 rounded-2xl shadow-3xl overflow-hidden">
-        <Command className="bg-white text-slate-900">
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-card border-border rounded-2xl shadow-3xl overflow-hidden">
+        <Command className="bg-card text-foreground">
           <CommandInput placeholder="BUSCAR..." className="h-14 font-black  uppercase" />
           <CommandList className="max-h-60 custom-scrollbar">
             <CommandEmpty className="py-8 text-center text-[10px] font-black uppercase text-slate-400">{emptyMessage}</CommandEmpty>
@@ -207,7 +207,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-white shadow-3xl font-display max-h-[95vh]">
+      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-card shadow-3xl font-display max-h-[95vh]">
         {/* Header Elite Industrial */}
         <div className="bg-slate-50 px-10 py-8 text-slate-900 relative border-b border-slate-100">
           <div className="flex items-center justify-between relative z-10">
@@ -237,7 +237,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
         <div className="flex flex-col md:flex-row h-[700px] overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
             <TabsList className="flex flex-row md:flex-col h-auto md:h-full w-full md:w-72 bg-slate-50/50 border-r border-slate-100 p-4 justify-start gap-2 overflow-x-auto custom-scrollbar">
-              <TabsTrigger value="basic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-soft border-none text-slate-400 text-[10px] uppercase tracking-widest ">
+              <TabsTrigger value="basic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-soft border-none text-slate-400 text-[10px] uppercase tracking-widest ">
                 <LayoutGrid className="w-4 h-4" /> PERFIL & AGENDA
               </TabsTrigger>
 
@@ -274,7 +274,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
               )}
             </TabsList>
 
-            <div className="flex-1 overflow-y-auto bg-white p-10 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto bg-card p-10 custom-scrollbar">
               <form onSubmit={handleSubmit} id="visit-detail-form" className="space-y-10">
                 <TabsContent value="basic" className="mt-0 space-y-8 animate-in fade-in duration-500">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -282,7 +282,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                       <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Canal de Misión</Label>
                       <Select value={formData.visit_type} onValueChange={(val) => setFormData(p => ({ ...p, visit_type: val }))}>
                         <SelectTrigger className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-black text-slate-900 uppercase tracking-widest"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-white border-slate-100 text-slate-900 font-bold uppercase shadow-xl rounded-xl">
+                        <SelectContent className="bg-card border-border text-foreground font-bold uppercase shadow-xl rounded-xl">
                           <SelectItem value="doctor" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🩺 FICHERO MÉDICO</SelectItem>
                           <SelectItem value="hospital" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🏥 CENTRO DE SALUD</SelectItem>
                           <SelectItem value="pharmacy" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">💊 CANAL FARMACIAS</SelectItem>
@@ -296,7 +296,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                       <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Estatus del Ciclo</Label>
                       <Select value={formData.status} onValueChange={(val) => setFormData(p => ({ ...p, status: val }))}>
                         <SelectTrigger className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-black text-slate-900 uppercase tracking-widest"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-white border-slate-100 text-slate-900 font-bold uppercase shadow-xl rounded-xl">
+                        <SelectContent className="bg-card border-border text-foreground font-bold uppercase shadow-xl rounded-xl">
                           <SelectItem value="scheduled" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">📅 PROGRAMADA</SelectItem>
                           <SelectItem value="in_progress" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">⚡ EN CURSO</SelectItem>
                           <SelectItem value="completed" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">✅ FINALIZADA</SelectItem>
@@ -354,7 +354,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                               <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest  mb-3">{prod.name}</p>
                               <div className="flex flex-wrap gap-2">
                                 {prod.selling_points && Object.entries(prod.selling_points).map(([cat, val]: [string, any]) => val && (
-                                  <Badge key={cat} className={cn("px-4 py-2 rounded-xl border border-white/5 cursor-pointer transition-all text-[9px] font-bold  uppercase", formData.selling_points.includes(`${prod.name}: ${val}`) ? "bg-primary text-white" : "bg-white/5 text-slate-500 hover:bg-white/10")} onClick={() => {
+                                  <Badge key={cat} className={cn("px-4 py-2 rounded-xl border border-white/5 cursor-pointer transition-all text-[9px] font-bold  uppercase", formData.selling_points.includes(`${prod.name}: ${val}`) ? "bg-primary text-white" : "bg-background/5 text-slate-500 hover:bg-background/10")} onClick={() => {
                                     const tag = `${prod.name}: ${val}`;
                                     setFormData(p => ({ ...p, selling_points: p.selling_points.includes(tag) ? p.selling_points.filter(t => t !== tag) : [...p.selling_points, tag] }));
                                   }}>{cat}: {val}</Badge>
@@ -471,7 +471,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                   </div>
                   <div className="p-8 bg-amber-500/5 rounded-[2.5rem] border border-amber-100 space-y-4">
                     <Label className="text-[10px] font-black uppercase text-amber-600 ml-1 flex items-center gap-2 "><Award className="w-4 h-4" /> Pacto de Cierre & Compromisos</Label>
-                    <Textarea value={formData.closure_commitment} onChange={(e) => setFormData(p => ({ ...p, closure_commitment: e.target.value }))} placeholder="REDACTE EL ACUERDO FINAL ALCANZADO..." rows={3} className="bg-white border-slate-100 rounded-[2rem] text-slate-900 font-black uppercase p-8 px-8 shadow-inner" />
+                    <Textarea value={formData.closure_commitment} onChange={(e) => setFormData(p => ({ ...p, closure_commitment: e.target.value }))} placeholder="REDACTE EL ACUERDO FINAL ALCANZADO..." rows={3} className="bg-card border-border rounded-[2rem] text-foreground font-black uppercase p-8 px-8 shadow-inner" />
                   </div>
                 </TabsContent>
 

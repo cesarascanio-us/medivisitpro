@@ -107,7 +107,7 @@ export function ManualPaymentDialog({ open, onOpenChange, planName, amount }: Ma
                                 </div>
                             </div>
 
-                            <Button type="submit" disabled={loading} className="w-full h-14 bg-white text-slate-950 font-black uppercase rounded-2xl shadow-2xl hover:bg-slate-100 transition-all scale-100 active:scale-95">
+                            <Button type="submit" disabled={loading} className="w-full h-14 bg-card text-slate-950 font-black uppercase rounded-2xl shadow-2xl hover:bg-slate-100 transition-all scale-100 active:scale-95">
                                 {loading ? <Loader2 className="animate-spin w-5 h-5 mr-3" /> : <Smartphone className="w-5 h-5 mr-3" />}
                                 ENVIAR REPORTE DE PAGO
                             </Button>
@@ -121,7 +121,7 @@ export function ManualPaymentDialog({ open, onOpenChange, planName, amount }: Ma
                                 <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Misión en Validación</h3>
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-4 max-w-sm mx-auto leading-relaxed">Su reporte de pago ha sido inyectado en nuestro motor financiero. Será notificado una vez validado.</p>
                              </div>
-                             <Button onClick={() => onOpenChange(false)} className="bg-white/5 border border-white/10 text-white rounded-2xl px-12 h-12 font-black uppercase tracking-widest hover:bg-white/10 transition-all">ENTENDIDO</Button>
+                             <Button onClick={() => onOpenChange(false)} className="bg-background/5 border border-white/10 text-white rounded-2xl px-12 h-12 font-black uppercase tracking-widest hover:bg-background/10 transition-all">ENTENDIDO</Button>
                         </div>
                     )}
                 </div>

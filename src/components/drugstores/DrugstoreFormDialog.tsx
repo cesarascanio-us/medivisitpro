@@ -49,7 +49,7 @@ export function DrugstoreFormDialog({
                         <Building2 className="w-32 h-32" />
                     </div>
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                        <div className="w-14 h-14 rounded-2xl bg-background/10 backdrop-blur-xl border border-border/20 flex items-center justify-center shadow-inner">
                             <Building2 className="h-7 w-7 text-white" />
                         </div>
                         <div>
@@ -80,7 +80,7 @@ export function DrugstoreFormDialog({
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="Ej: Distribuidora Nacional"
-                                        className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
+                                        className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -92,7 +92,7 @@ export function DrugstoreFormDialog({
                                         value={formData.rif}
                                         onChange={(e) => setFormData({ ...formData, rif: e.target.value })}
                                         placeholder="J-12345678-9"
-                                        className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-mono font-bold shadow-sm"
+                                        className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-mono font-bold shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -107,14 +107,14 @@ export function DrugstoreFormDialog({
                                         value={formData.owner_name}
                                         onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })}
                                         placeholder="Nombre completo"
-                                        className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
+                                        className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
                                     />
                                 </div>
                             </div>
                             <div className="flex items-center h-full pt-6">
                                 <label
                                     htmlFor="permits"
-                                    className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-slate-400 transition-all w-full shadow-sm"
+                                    className="flex items-center gap-3 p-4 bg-muted border border-border rounded-xl cursor-pointer hover:border-slate-400 transition-all w-full shadow-sm"
                                 >
                                     <Checkbox
                                         id="permits"
@@ -145,7 +145,7 @@ export function DrugstoreFormDialog({
                                     value={formData.address}
                                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                     placeholder="Zona Industrial, Galpón, Localidad..."
-                                    className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
+                                    className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
                                 />
                             </div>
                         </div>
@@ -159,7 +159,7 @@ export function DrugstoreFormDialog({
                                         value={formData.city}
                                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                         placeholder="Ej: Valencia"
-                                        className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
+                                        className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -171,7 +171,7 @@ export function DrugstoreFormDialog({
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                         placeholder="+58 241 1234567"
-                                        className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-indigo-500/10 focus:border-indigo-500 font-bold shadow-sm"
+                                        className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-indigo-500/10 focus:border-indigo-500 font-bold shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -186,14 +186,14 @@ export function DrugstoreFormDialog({
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     placeholder="ventas@drogueria.com"
-                                    className="h-12 pl-10 bg-white border-slate-200 rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
+                                    className="h-12 pl-10 bg-muted border-border rounded-xl focus:ring-slate-500/10 focus:border-slate-500 font-bold shadow-sm"
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <DialogFooter className="bg-white border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                <DialogFooter className="bg-card border-t border-border px-8 py-6 flex items-center justify-between gap-4">
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}

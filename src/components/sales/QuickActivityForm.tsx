@@ -72,7 +72,7 @@ export function QuickActivityForm({ dealId, onSubmit, onCancel }: QuickActivityF
                                 "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 border",
                                 selectedType === type.value
                                     ? `${type.color} text-white border-transparent shadow-lg scale-105`
-                                    : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                                    : "bg-card text-slate-600 border-slate-200 hover:border-slate-300 hover:shadow-sm"
                             )}
                         >
                             <type.icon className="h-3.5 w-3.5" />

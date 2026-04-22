@@ -230,7 +230,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                         variant="outline"
                                         className={cn(
                                             "h-32 flex-col gap-4 border-2 rounded-[2rem] p-6 transition-all duration-500",
-                                            visitType === type.id ? "bg-white text-slate-950 border-white shadow-2xl scale-105" : "bg-slate-900 border-white/5 text-slate-500"
+                                            visitType === type.id ? "bg-card text-foreground border-white shadow-2xl scale-105" : "bg-slate-900 border-white/5 text-slate-500"
                                         )}
                                         onClick={() => { setVisitType(type.id as any); setContactId(''); }}
                                     >
@@ -258,7 +258,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                                     <Button 
                                                         variant="outline" 
                                                         size="sm" 
-                                                        className="bg-white/5 border-white/10 text-white font-black text-[9px] uppercase tracking-widest px-6 h-10 rounded-xl hover:bg-white/10"
+                                                        className="bg-background/5 border-white/10 text-white font-black text-[9px] uppercase tracking-widest px-6 h-10 rounded-xl hover:bg-background/10"
                                                         onClick={() => {
                                                             if (visitType === 'doctor') setShowDoctorDialog(true);
                                                             else if (visitType === 'pharmacy') setShowPharmacyDialog(true);
@@ -270,7 +270,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                                 </CommandEmpty>
                                                 <CommandGroup>
                                                     {filteredContacts.map((contact) => (
-                                                        <CommandItem key={contact.id} onSelect={() => { setContactId(contact.id); setOpenContactSelector(false); }} className="py-5 px-8 hover:bg-white/5 border-b border-white/5 cursor-pointer">
+                                                        <CommandItem key={contact.id} onSelect={() => { setContactId(contact.id); setOpenContactSelector(false); }} className="py-5 px-8 hover:bg-background/5 border-b border-white/5 cursor-pointer">
                                                             <div className="flex flex-col"><span className="text-sm font-black  uppercase text-white">{contact.name}</span><span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">{contact.specialty} | {contact.address}</span></div>
                                                         </CommandItem>
                                                     ))}
@@ -418,7 +418,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                     {/* Step 5: Confirmar */}
                     {currentStep === 5 && (
                         <div className="space-y-8 animate-in zoom-in-95 duration-700">
-                            <div className="bg-white text-slate-950 p-12 rounded-[3.5rem] shadow-3xl text-center space-y-8 relative overflow-hidden">
+                            <div className="bg-card text-foreground p-12 rounded-[3.5rem] shadow-3xl text-center space-y-8 relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-2 bg-primary" />
                                 <div className="flex flex-col items-center gap-6">
                                     <div className="w-24 h-24 rounded-full bg-slate-950 flex items-center justify-center text-white"><CheckCircle2 className="w-12 h-12 text-primary" /></div>
@@ -446,7 +446,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                             ...(visitType === 'hospital' ? institutionalPriorities : []),
                                             ...auditPriorities
                                         ].map(item => (
-                                            <Badge key={item} className="bg-white/10 text-white border-none px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest ">{item}</Badge>
+                                            <Badge key={item} className="bg-background/10 text-white border-none px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest ">{item}</Badge>
                                         ))}
                                     </div>
                                 </div>
@@ -457,7 +457,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
 
                 <div className="bg-slate-900 border-t border-white/5 px-10 py-8 flex items-center justify-between gap-6">
                     <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1} className="h-14 px-8 font-black uppercase text-slate-500 hover:text-white rounded-2xl text-[10px] tracking-widest gap-3 "><ChevronLeft className="w-4 h-4" /> REGRESAR</Button>
-                    <Button onClick={handleNext} disabled={loading} className="h-16 px-16 bg-white text-slate-950 rounded-[1.5rem] font-black uppercase  text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-3xl">
+                    <Button onClick={handleNext} disabled={loading} className="h-16 px-16 bg-card text-foreground rounded-[1.5rem] font-black uppercase  text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-3xl">
                         {loading ? <Sparkles className="animate-spin w-5 h-5 mr-3" /> : currentStep === 5 ? 'SINCRONIZAR MISIÓN MAESTRA' : 'CONTINUAR'}
                         {currentStep < 5 && <ChevronRight className="ml-3 w-5 h-5" />}
                     </Button>

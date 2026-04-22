@@ -149,7 +149,7 @@ export function CompetitivenessMonitor() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 col-span-1 lg:col-span-2">
             {/* Margins Monitor */}
-            <Card className="border-l-4 border-l-blue-500 shadow-md bg-white/50 backdrop-blur-sm">
+            <Card className="border-l-4 border-l-blue-500 shadow-md bg-background/50 backdrop-blur-sm">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-lg font-bold flex items-center gap-2">
                         <TrendingUp className="h-5 w-5 text-blue-600" /> Monitor de Márgenes
@@ -177,7 +177,7 @@ export function CompetitivenessMonitor() {
             </Card>
 
             {/* Share Monitor (Mapping Fix 360) */}
-            <Card className="border-l-4 border-l-emerald-500 shadow-md bg-white/50 backdrop-blur-sm">
+            <Card className="border-l-4 border-l-emerald-500 shadow-md bg-background/50 backdrop-blur-sm">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-lg font-bold flex items-center gap-2 text-emerald-800">
                         <Activity className="h-5 w-5 text-emerald-600" /> Share de Visibilidad

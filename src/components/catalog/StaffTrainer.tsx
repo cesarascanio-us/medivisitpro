@@ -36,19 +36,19 @@ export function StaffTrainer() {
                         <Accordion type="single" collapsible className="w-full">
                             <AccordionItem value="item-1" className="border-amber-200">
                                 <AccordionTrigger className="hover:text-amber-700">¿Para quién es ideal?</AccordionTrigger>
-                                <AccordionContent className="text-slate-600 bg-white/50 p-2 rounded">
+                                <AccordionContent className="text-slate-600 bg-background/50 p-2 rounded">
                                     Pacientes adultos con síntomas moderados que buscan alivio rápido sin somnolencia.
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-2" className="border-amber-200">
                                 <AccordionTrigger className="hover:text-amber-700">Diferenciador Clave</AccordionTrigger>
-                                <AccordionContent className="text-slate-600 bg-white/50 p-2 rounded">
+                                <AccordionContent className="text-slate-600 bg-background/50 p-2 rounded">
                                     A diferencia de la competencia, nuestro producto actúa en 15 minutos y dura 12 horas.
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-3" className="border-amber-200">
                                 <AccordionTrigger className="hover:text-amber-700">Venta Cruzada</AccordionTrigger>
-                                <AccordionContent className="text-slate-600 bg-white/50 p-2 rounded">
+                                <AccordionContent className="text-slate-600 bg-background/50 p-2 rounded">
                                     Recomendar junto con vitamina C o hidratación oral para recuperación completa.
                                 </AccordionContent>
                             </AccordionItem>

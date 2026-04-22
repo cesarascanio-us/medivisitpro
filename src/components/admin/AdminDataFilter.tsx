@@ -295,7 +295,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                                     <SelectValue placeholder="Estado" />
                                 </div>
                             </SelectTrigger>
-                            <SelectContent className="bg-white border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
+                            <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todos los estados</SelectItem>
                                 {visibleStates.map(s => (
                                     <SelectItem key={s} value={s} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{s}</SelectItem>
@@ -327,7 +327,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                                     <SelectValue placeholder="Sector" />
                                 </div>
                             </SelectTrigger>
-                            <SelectContent className="bg-white border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
+                            <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todas las zonas</SelectItem>
                                 {visibleZones.map(z => (
                                     <SelectItem key={z.id} value={z.id} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{z.name}</SelectItem>
@@ -359,7 +359,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                                     <SelectValue placeholder="Operador" />
                                 </div>
                             </SelectTrigger>
-                            <SelectContent className="bg-white border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
+                            <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todos los colaboradores</SelectItem>
                                 {visibleMembers.map(m => (
                                     <SelectItem key={m.id} value={m.id} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{m.name}</SelectItem>

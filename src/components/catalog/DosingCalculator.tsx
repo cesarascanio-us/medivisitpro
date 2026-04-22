@@ -44,7 +44,7 @@ export function DosingCalculator({ productName, standardDoseMgPerKg = 10, concen
                         <Input
                             type="number"
                             placeholder="Ej: 25 kg"
-                            className="pl-9 bg-white"
+                            className="pl-9 bg-card"
                             value={weight}
                             onChange={(e) => setWeight(e.target.value ? parseFloat(e.target.value) : "")}
                         />

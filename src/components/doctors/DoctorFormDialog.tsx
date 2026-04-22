@@ -150,7 +150,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                         <HeartPulse className="w-32 h-32" />
                     </div>
                     <div className="relative z-10 flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                        <div className="w-16 h-16 rounded-2xl bg-background/10 backdrop-blur-xl border border-border/20 flex items-center justify-center shadow-inner">
                             <Stethoscope className="w-8 h-8 text-white" />
                         </div>
                         <div>
@@ -170,35 +170,35 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                         <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
                             <TabsTrigger
                                 value="personal"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <User className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Datos Personales</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="professional"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <GraduationCap className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Especialidad</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="location"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Clock className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Horarios & Clínicas</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="tracking"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Activity className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Seguimiento</span>
                             </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex-1 overflow-y-auto bg-white">
+                        <div className="flex-1 overflow-y-auto bg-card">
                             {/* Tab 1: Información Personal */}
                             <TabsContent value="personal" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
@@ -373,7 +373,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                                                     onClick={() => setFormData({ ...formData, potential: p })}
                                                     className={`flex-1 py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-sm ${formData.potential === p
                                                         ? 'bg-blue-600 border-blue-600 text-white shadow-blue-500/20'
-                                                        : 'bg-white border-slate-100 text-slate-400 hover:border-blue-100'
+                                                        : 'bg-card border-border text-slate-400 hover:border-blue-100'
                                                         }`}
                                                 >
                                                     {p}
@@ -403,7 +403,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
 
                                 {!formData.id ? (
                                     <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center space-y-4">
-                                        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
+                                        <div className="w-16 h-16 bg-muted rounded-2xl shadow-sm flex items-center justify-center mx-auto">
                                             <Info className="w-8 h-8 text-blue-300" />
                                         </div>
                                         <div className="space-y-1">
@@ -413,7 +413,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                                     </div>
                                 ) : schedules.length === 0 ? (
                                     <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center space-y-4">
-                                        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
+                                        <div className="w-16 h-16 bg-muted rounded-2xl shadow-sm flex items-center justify-center mx-auto">
                                             <MapPin className="w-8 h-8 text-blue-300" />
                                         </div>
                                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Sin sedes registradas</p>
@@ -421,7 +421,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                                 ) : (
                                     <div className="space-y-4">
                                         {schedules.map((schedule) => (
-                                            <div key={schedule.id} className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5 transition-all">
+                                            <div key={schedule.id} className="group flex items-center justify-between p-4 bg-card border border-border rounded-2xl hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5 transition-all">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
                                                         <Building2 className="w-5 h-5 text-blue-600" />

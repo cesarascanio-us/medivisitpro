@@ -122,7 +122,7 @@ export function EventTreatmentForm({ eventId, onSuccess }: EventTreatmentFormPro
             .eq('movement_type', 'treatment_start')
             .order('created_at', { ascending: false });
 
-        // @ts-ignore
+        // @ts-expect-error - Join typing for Supabase
         setHistory(data || []);
         setLoadingHistory(false);
     };

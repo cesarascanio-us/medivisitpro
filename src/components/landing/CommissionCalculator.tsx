@@ -38,7 +38,7 @@ export const CommissionCalculator = () => {
     const extraEarnings = potentialIncome - currentIncome;
 
     return (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white border-y border-slate-100">
+        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-card border-y border-slate-100">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-xs font-black uppercase tracking-[0.2em] mb-6">
@@ -117,7 +117,7 @@ export const CommissionCalculator = () => {
 
                             {/* Formula Box */}
                             <div className="pt-8 border-t border-slate-200">
-                                <div className="bg-white p-5 rounded-3xl border border-slate-100 flex items-start gap-4">
+                                <div className="bg-card p-5 rounded-3xl border border-slate-100 flex items-start gap-4">
                                     <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-400 shrink-0">
                                         <Info className="w-5 h-5" />
                                     </div>
@@ -152,7 +152,7 @@ export const CommissionCalculator = () => {
                                 </div>
 
                                 <div className="space-y-5 mb-12">
-                                    <div className="p-5 rounded-[2rem] bg-white/5 border border-white/10 flex items-center gap-5">
+                                    <div className="p-5 rounded-[2rem] bg-background/5 border border-white/10 flex items-center gap-5">
                                         <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0">
                                             <TrendingUp className="w-6 h-6 text-primary" />
                                         </div>
@@ -161,7 +161,7 @@ export const CommissionCalculator = () => {
                                             <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">+{extraVisits} visitas efectivas / día</p>
                                         </div>
                                     </div>
-                                    <div className="p-5 rounded-[2rem] bg-white/5 border border-white/10 flex items-center gap-5">
+                                    <div className="p-5 rounded-[2rem] bg-background/5 border border-white/10 flex items-center gap-5">
                                         <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center shrink-0">
                                             <Check className="w-6 h-6 text-emerald-500" />
                                         </div>

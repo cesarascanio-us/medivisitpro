@@ -420,7 +420,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                                         <TableCell className="font-semibold text-primary">{item.product_name}</TableCell>
                                         <TableCell className="text-center">
                                             {item.last_audit_date === null ? (
-                                                <Badge variant="outline" className="text-gray-400 bg-gray-50 border-gray-200 uppercase text-[10px]">
+                                                <Badge variant="outline" className="text-muted-foreground bg-muted border-border uppercase text-[10px]">
                                                     Pendiente
                                                 </Badge>
                                             ) : item.tiene_stock ? (

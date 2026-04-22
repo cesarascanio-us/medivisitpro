@@ -224,7 +224,7 @@ export function POPCatalog() {
                         placeholder="Filtrar por material, categoría o SKU..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-16 h-16 bg-slate-50/50 border-transparent focus:bg-white focus:ring-emerald-500/10 rounded-2xl font-bold shadow-inner uppercase tracking-wider text-xs"
+                        className="pl-16 h-16 bg-slate-50/50 border-transparent focus:bg-card focus:ring-emerald-500/10 rounded-2xl font-bold shadow-inner uppercase tracking-wider text-xs"
                     />
                 </div>
 
@@ -253,7 +253,7 @@ export function POPCatalog() {
                                     <TableRow key={m.id} className="hover:bg-emerald-50/30 transition-all border-none group">
                                         <TableCell className="pl-10 py-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-14 h-14 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden">
+                                                <div className="w-14 h-14 rounded-xl bg-card border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden">
                                                     {m.image_url ? (
                                                         <img src={m.image_url} alt={m.name} className="w-full h-full object-cover" />
                                                     ) : (
@@ -264,7 +264,7 @@ export function POPCatalog() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="outline" className="bg-white border-slate-200 font-black text-[9px] uppercase px-3 py-1 rounded-full">{m.category}</Badge>
+                                            <Badge variant="outline" className="bg-card border-slate-200 font-black text-[9px] uppercase px-3 py-1 rounded-full">{m.category}</Badge>
                                         </TableCell>
                                         <TableCell className="text-slate-400 text-xs font-mono font-bold tracking-wider">{m.sku || "-"}</TableCell>
                                         <TableCell>
@@ -274,10 +274,10 @@ export function POPCatalog() {
                                         </TableCell>
                                         <TableCell className="text-right pr-10">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                                <Button variant="ghost" size="icon" onClick={() => openEditDialog(m)} className="h-10 w-10 bg-white hover:bg-slate-900 hover:text-white rounded-xl shadow-md border border-slate-100">
+                                                <Button variant="ghost" size="icon" onClick={() => openEditDialog(m)} className="h-10 w-10 bg-card hover:bg-slate-900 hover:text-white rounded-xl shadow-md border border-slate-100">
                                                     <Edit className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-10 w-10 bg-white hover:text-red-600 rounded-xl shadow-md border border-red-50" onClick={() => handleDelete(m.id, m.name)}>
+                                                <Button variant="ghost" size="icon" className="h-10 w-10 bg-card hover:text-red-600 rounded-xl shadow-md border border-red-50" onClick={() => handleDelete(m.id, m.name)}>
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>

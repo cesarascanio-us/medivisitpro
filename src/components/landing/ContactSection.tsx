@@ -70,7 +70,7 @@ export function ContactSection() {
 
     if (submitted) {
         return (
-            <section id="contacto" className="py-24 px-4 bg-white relative overflow-hidden">
+            <section id="contacto" className="py-24 px-4 bg-card relative overflow-hidden">
                 <div className="max-w-3xl mx-auto text-center space-y-8 animate-in zoom-in duration-700">
                     <div className="w-24 h-24 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
                         <CheckCircle2 className="w-12 h-12 text-emerald-600" />
@@ -117,7 +117,7 @@ export function ContactSection() {
                             { icon: Building2, label: 'Centro de Operaciones', text: 'Caracas, Venezuela / Global Remote' }
                         ].map((item, i) => (
                             <div key={i} className="flex items-center gap-4 group">
-                                <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-primary transition-all duration-300">
+                                <div className="w-12 h-12 bg-card rounded-xl shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-primary transition-all duration-300">
                                     <item.icon className="w-5 h-5 text-primary group-hover:text-white" />
                                 </div>
                                 <div>
@@ -131,8 +131,8 @@ export function ContactSection() {
 
                 {/* Form Side */}
                 <div className="relative">
-                    <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl rounded-[2.5rem] -rotate-2 scale-105 -z-10 border border-white/60"></div>
-                    <div className="bg-white rounded-[2.5rem] p-10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] border border-slate-100 relative">
+                    <div className="absolute inset-0 bg-background/40 backdrop-blur-3xl rounded-[2.5rem] -rotate-2 scale-105 -z-10 border border-white/60"></div>
+                    <div className="bg-card rounded-[2.5rem] p-10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] border border-slate-100 relative">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid sm:grid-cols-2 gap-6">
                                 <div className="space-y-2">
@@ -144,7 +144,7 @@ export function ContactSection() {
                                             value={formData.name}
                                             onChange={e => setFormData({ ...formData, name: e.target.value })}
                                             placeholder="Tu nombre completo"
-                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
+                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium"
                                         />
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@ export function ContactSection() {
                                             value={formData.email}
                                             onChange={e => setFormData({ ...formData, email: e.target.value })}
                                             placeholder="ejemplo@pharma.com"
-                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
+                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium"
                                         />
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@ export function ContactSection() {
                                         value={formData.company}
                                         onChange={e => setFormData({ ...formData, company: e.target.value })}
                                         placeholder="Nombre de tu laboratorio o empresa"
-                                        className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
+                                        className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium"
                                     />
                                 </div>
                             </div>
@@ -187,7 +187,7 @@ export function ContactSection() {
                                         value={formData.message}
                                         onChange={e => setFormData({ ...formData, message: e.target.value })}
                                         placeholder="¿Cómo podemos potenciar tu gestión médica?"
-                                        className="min-h-[140px] pl-12 pt-4 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium resize-none"
+                                        className="min-h-[140px] pl-12 pt-4 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium resize-none"
                                     />
                                 </div>
                             </div>

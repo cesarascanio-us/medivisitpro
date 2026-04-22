@@ -77,7 +77,7 @@ export function PlacesSearch({ center, onPlaceSelected, onAddAsContact }: Places
             doctors: 'bg-blue-100 text-blue-800',
             clinic: 'bg-amber-100 text-amber-800'
         };
-        return colors[type] || 'bg-gray-100 text-gray-800';
+        return colors[type] || 'bg-muted text-muted-foreground';
     };
 
     return (

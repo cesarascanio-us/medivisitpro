@@ -91,7 +91,7 @@ export function ClinicalInterview({ data, onChange, errors = [] }: ClinicalInter
                         placeholder="Ej: 25"
                         value={data.patients_per_week ?? ''}
                         onChange={(e) => updateField('patients_per_week', e.target.value ? parseInt(e.target.value) : null)}
-                        className={`bg-white ${!data.patients_per_week && hasErrors ? 'border-red-300' : ''}`}
+                        className={`bg-background ${!data.patients_per_week && hasErrors ? 'border-red-300' : ''}`}
                     />
                 </div>
 
@@ -104,7 +104,7 @@ export function ClinicalInterview({ data, onChange, errors = [] }: ClinicalInter
                         value={data.current_prescription_habit}
                         onValueChange={(v) => updateField('current_prescription_habit', v)}
                     >
-                        <SelectTrigger className={`bg-white ${!data.current_prescription_habit && hasErrors ? 'border-red-300' : ''}`}>
+                        <SelectTrigger className={`bg-background ${!data.current_prescription_habit && hasErrors ? 'border-red-300' : ''}`}>
                             <SelectValue placeholder="¿Qué receta actualmente?" />
                         </SelectTrigger>
                         <SelectContent>
@@ -124,7 +124,7 @@ export function ClinicalInterview({ data, onChange, errors = [] }: ClinicalInter
                         value={data.main_objection}
                         onValueChange={(v) => updateField('main_objection', v)}
                     >
-                        <SelectTrigger className={`bg-white ${!data.main_objection && hasErrors ? 'border-red-300' : ''}`}>
+                        <SelectTrigger className={`bg-background ${!data.main_objection && hasErrors ? 'border-red-300' : ''}`}>
                             <SelectValue placeholder="¿Cuál es su principal barrera?" />
                         </SelectTrigger>
                         <SelectContent>
@@ -144,7 +144,7 @@ export function ClinicalInterview({ data, onChange, errors = [] }: ClinicalInter
                         value={data.commitment_level}
                         onValueChange={(v) => updateField('commitment_level', v)}
                     >
-                        <SelectTrigger className={`bg-white ${!data.commitment_level && hasErrors ? 'border-red-300' : ''}`}>
+                        <SelectTrigger className={`bg-background ${!data.commitment_level && hasErrors ? 'border-red-300' : ''}`}>
                             <SelectValue placeholder="¿Qué compromiso obtuvo?" />
                         </SelectTrigger>
                         <SelectContent>

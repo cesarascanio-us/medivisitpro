@@ -116,9 +116,9 @@ export const BinancePayGateway: React.FC<BinancePayGatewayProps> = ({ orderData,
 
             <CardContent className="pt-8 pb-8 flex flex-col items-center">
                 {/* QR Code */}
-                <div className="p-4 bg-white rounded-3xl mb-6 shadow-xl relative group">
+                <div className="p-4 bg-card rounded-3xl mb-6 shadow-xl relative group">
                     {status === 'expired' && (
-                        <div className="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center z-10 p-4">
+                        <div className="absolute inset-0 bg-background/90 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center z-10 p-4">
                             <span className="text-slate-900 font-bold mb-2">Enlace Expirado</span>
                             <Button size="sm" onClick={() => window.location.reload()} variant="outline" className="border-slate-300">
                                 Reintentar

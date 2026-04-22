@@ -114,7 +114,7 @@ export const SupervisorEvaluationModal = ({
                     key={star}
                     type="button"
                     onClick={() => handleStarClick(field, star)}
-                    className={`p-1 transition-all hover:scale-110 focus:outline-none ${star <= currentVal ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'
+                    className={`p-1 transition-all hover:scale-110 focus:outline-none ${star <= currentVal ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'
                         }`}
                 >
                     <Star className={`w-6 h-6 ${star <= currentVal ? 'fill-yellow-500 text-yellow-500' : ''}`} />
@@ -186,7 +186,7 @@ export const SupervisorEvaluationModal = ({
                             checked={formData.score_sample_strategy}
                             onChange={(e) => setFormData(prev => ({ ...prev, score_sample_strategy: e.target.checked }))}
                             id="sample_strategy"
-                            className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+                            className="w-4 h-4 text-primary rounded border-border focus:ring-primary"
                         />
                         <Label htmlFor="sample_strategy" className="cursor-pointer font-medium">
                             ¿Usó las muestras médicas estratégicamente? (Inicio de tratamiento)

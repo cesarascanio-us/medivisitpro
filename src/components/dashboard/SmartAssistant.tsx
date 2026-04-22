@@ -119,7 +119,7 @@ export function SmartAssistant() {
 
     if (loading) {
         return (
-            <div className="bg-white dark:bg-card border-none rounded-[2rem] p-10 text-center animate-pulse shadow-soft">
+            <div className="bg-card border-none rounded-[2rem] p-10 text-center animate-pulse shadow-soft">
                 <Sparkles className="mx-auto h-10 w-10 text-primary/30 mb-4 animate-bounce" />
                 <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest ">Iniciando IA Predictiva...</p>
             </div>
@@ -128,7 +128,7 @@ export function SmartAssistant() {
 
     if (missions.length === 0) {
         return (
-            <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden group">
+            <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden group">
                 <CardContent className="pt-10 text-center pb-10">
                     <div className="w-16 h-16 bg-primary/10 rounded-[1.8rem] flex items-center justify-center mx-auto mb-6 rotate-3">
                         <CheckCircle2 className="h-8 w-8 text-primary" />
@@ -143,7 +143,7 @@ export function SmartAssistant() {
     }
 
     return (
-        <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit group">
+        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit group">
             <CardHeader className="pb-6 px-8 pt-8">
                 <div className="flex items-center justify-between">
                     <div>
@@ -185,7 +185,7 @@ export function SmartAssistant() {
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <div className={cn("p-1.5 rounded-lg bg-white dark:bg-card shadow-soft", config.textColor)}>
+                                        <div className={cn("p-1.5 rounded-lg bg-card shadow-soft", config.textColor)}>
                                             <EntityIcon className="h-4 w-4" />
                                         </div>
                                         <span className="font-black text-slate-700 dark:text-foreground truncate text-xs uppercase tracking-tight ">
@@ -233,7 +233,7 @@ export function SmartAssistant() {
                                     className={cn(
                                         "h-9 w-9 rounded-xl shadow-soft group-hover/item:scale-110 transition-all",
                                         config.textColor,
-                                        "bg-white dark:bg-card hover:bg-white dark:hover:bg-muted"
+                                        "bg-card hover:bg-muted"
                                     )}
                                     onClick={() => handleAction(mission)}
                                 >

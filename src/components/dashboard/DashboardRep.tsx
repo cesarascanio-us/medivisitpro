@@ -304,12 +304,12 @@ export default function DashboardRep() {
       {/* 2. Progress Indicators (Ruta Diaria and Cuota Ventas) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         {/* Ruta Diaria */}
-        <div className="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col justify-center">
+        <div className="bg-card p-5 rounded-2xl shadow-soft border border-border flex flex-col justify-center">
           <div className="flex justify-between items-end text-sm mb-3">
             <span className="text-text-muted font-bold uppercase tracking-wider text-xs">Ruta Diaria</span>
             <span className="text-primary font-bold">{metrics.visitedToday} / {metrics.totalPlanned}</span>
           </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(0,86,179,0.3)]"
               style={{ width: `${metrics.totalPlanned > 0 ? (metrics.visitedToday / metrics.totalPlanned) * 100 : 0}%` }}
@@ -318,12 +318,12 @@ export default function DashboardRep() {
         </div>
 
         {/* Cuota Ventas */}
-        <div className="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col justify-center">
+        <div className="bg-card p-5 rounded-2xl shadow-soft border border-border flex flex-col justify-center">
           <div className="flex justify-between items-end text-sm mb-3">
             <span className="text-text-muted font-bold uppercase tracking-wider text-xs">Cuota Ventas</span>
             <span className="text-secondary font-bold">${metrics.salesAmount.toLocaleString()} / ${metrics.salesQuota.toLocaleString()}</span>
           </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-secondary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(0,160,233,0.3)]"
               style={{ width: `${metrics.salesQuota > 0 ? (metrics.salesAmount / metrics.salesQuota) * 100 : 0}%` }}
@@ -335,7 +335,7 @@ export default function DashboardRep() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Tu Ruta Timeline */}
         <div className="lg:col-span-2">
-          <Card className="bg-white border-none shadow-xl rounded-[2rem] overflow-hidden text-slate-900 border-t-4 border-t-primary">
+          <Card className="bg-card border-none shadow-xl rounded-[2rem] overflow-hidden text-foreground border-t-4 border-t-primary">
             <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-50 px-8 py-6">
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-primary" />
@@ -353,16 +353,16 @@ export default function DashboardRep() {
                     return (
                       <div
                         key={visit.id}
-                        className="flex items-start gap-6 px-8 py-7 hover:bg-gray-50/80 transition-all group relative cursor-pointer"
+                        className="flex items-start gap-6 px-8 py-7 hover:bg-muted/80 transition-all group relative cursor-pointer"
                         onClick={() => !isCompleted && handleStartVisit(visit.id)}
                       >
                         {/* Timeline Connector */}
                         <div className="flex flex-col items-center pt-1.5 w-12 flex-shrink-0">
                           <span className="text-[10px] font-bold text-text-muted mb-1.5">{visit.scheduledTime}</span>
-                          <div className={`w-3.5 h-3.5 rounded-full border-2 z-10 transition-all ${isCompleted ? "bg-secondary border-secondary scale-110" : "bg-white border-primary group-hover:scale-110"
+                          <div className={`w-3.5 h-3.5 rounded-full border-2 z-10 transition-all ${isCompleted ? "bg-secondary border-secondary scale-110" : "bg-card border-primary group-hover:scale-110"
                             }`} />
                           {index < visits.length - 1 && (
-                            <div className={`w-0.5 h-20 -mb-6 mt-1.5 ${isCompleted ? "bg-secondary/40" : "bg-gray-200"
+                            <div className={`w-0.5 h-20 -mb-6 mt-1.5 ${isCompleted ? "bg-secondary/40" : "bg-muted"
                               }`} />
                           )}
                         </div>
@@ -408,24 +408,24 @@ export default function DashboardRep() {
         <div className="space-y-6">
           {/* Real-time KPIs mini grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-soft border-l-4 border-l-primary">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-soft border-l-4 border-l-primary">
               <p className="text-text-muted text-[10px] uppercase font-bold tracking-widest mb-2 opacity-60">Cobertura</p>
               <p className="text-2xl font-black text-text-main">{kpisLoading ? "..." : `${kpis?.coverage || 0}%`}</p>
             </div>
-            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-soft border-l-4 border-l-secondary">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-soft border-l-4 border-l-secondary">
               <p className="text-text-muted text-[10px] uppercase font-bold tracking-widest mb-2 opacity-60">Frecuencia</p>
               <p className="text-2xl font-black text-text-main">{kpisLoading ? "..." : kpis?.frequency || 0}%</p>
             </div>
           </div>
 
-          <Card className="bg-white border-gray-100 text-text-main rounded-3xl overflow-hidden shadow-xl border-t-4 border-t-secondary">
-            <CardHeader className="pb-3 px-6 pt-6 bg-gray-50/50 border-b border-gray-100">
+          <Card className="bg-card border-border text-text-main rounded-3xl overflow-hidden shadow-xl border-t-4 border-t-secondary">
+            <CardHeader className="pb-3 px-6 pt-6 bg-muted/50 border-b border-border">
               <CardTitle className="text-xs font-bold text-text-muted uppercase tracking-widest">Accesos Rápidos</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 p-6">
               <Button
                 variant="outline"
-                className="flex flex-col h-auto py-5 bg-white border-gray-200 hover:border-primary hover:text-primary text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl"
+                className="flex flex-col h-auto py-5 bg-card border-border hover:border-primary hover:text-primary text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl"
                 onClick={() => navigate('/products')}
               >
                 <div className="p-3 bg-primary/10 rounded-xl">
@@ -435,7 +435,7 @@ export default function DashboardRep() {
               </Button>
               <Button
                 variant="outline"
-                className="flex flex-col h-auto py-5 bg-white border-gray-200 hover:border-secondary hover:text-secondary text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl"
+                className="flex flex-col h-auto py-5 bg-card border-border hover:border-secondary hover:text-secondary text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl"
                 onClick={() => navigate('/expenses')}
               >
                 <div className="p-3 bg-secondary/10 rounded-xl">
@@ -445,7 +445,7 @@ export default function DashboardRep() {
               </Button>
               <Button
                 variant="outline"
-                className="flex flex-col h-auto py-5 bg-white border-gray-200 hover:border-indigo-600 hover:text-indigo-600 text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl col-span-2"
+                className="flex flex-col h-auto py-5 bg-card border-border hover:border-indigo-600 hover:text-indigo-600 text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl col-span-2"
                 onClick={() => setIsWizardOpen(true)}
               >
                 <div className="p-3 bg-indigo-50 rounded-xl">
@@ -457,7 +457,7 @@ export default function DashboardRep() {
           </Card>
 
           {/* Sync Status Card */}
-          <div className="bg-white border border-gray-100 rounded-[1.5rem] p-5 flex items-center justify-between shadow-soft">
+          <div className="bg-card border border-border rounded-[1.5rem] p-5 flex items-center justify-between shadow-soft">
             <div className="flex items-center gap-4">
               <div className="w-3 h-3 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_rgba(0,160,233,0.5)]" />
               <div>

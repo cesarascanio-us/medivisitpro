@@ -230,11 +230,11 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl bg-white">
+      <DialogContent className="max-w-3xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl bg-card">
         {/* Header with Gradient */}
         <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-8 text-white">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-inner">
+            <div className="w-12 h-12 rounded-xl bg-background/10 backdrop-blur-md flex items-center justify-center shadow-inner">
               <User className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -277,7 +277,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   value={formData.contact_type}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, contact_type: value }))}
                 >
-                  <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold bg-white shadow-sm">
+                  <SelectTrigger className="h-12 border-border rounded-xl font-bold bg-muted shadow-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl font-bold">
@@ -312,7 +312,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   value={formData.priority}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
                 >
-                  <SelectTrigger className="h-12 border-slate-200 rounded-xl font-bold bg-white shadow-sm">
+                  <SelectTrigger className="h-12 border-border rounded-xl font-bold bg-muted shadow-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl font-bold">
@@ -344,7 +344,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                       value={formData.rif}
                       onChange={(e) => setFormData(prev => ({ ...prev, rif: e.target.value }))}
                       placeholder="J-00000000-0"
-                      className="h-11 pl-10 border-emerald-200 bg-white rounded-xl font-bold focus:ring-emerald-500/10"
+                      className="h-11 pl-10 border-border bg-muted rounded-xl font-bold focus:ring-emerald-500/10"
                       required={formData.contact_type === 'natural_store'}
                     />
                   </div>
@@ -355,10 +355,10 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                     value={formData.owner_name}
                     onChange={(e) => setFormData(prev => ({ ...prev, owner_name: e.target.value }))}
                     placeholder="Nombre del encargado"
-                    className="h-11 border-emerald-200 bg-white rounded-xl font-bold"
+                    className="h-11 border-border bg-muted rounded-xl font-bold"
                   />
                 </div>
-                <div className="md:col-span-2 flex items-center gap-3 p-3 bg-white border border-emerald-100 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
+                <div className="md:col-span-2 flex items-center gap-3 p-3 bg-muted border border-border rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
                   <Checkbox
                     id="sanitary_permits"
                     checked={formData.sanitary_permits}
@@ -383,7 +383,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
 
               <div className="space-y-4">
                 {selectedCenters.length > 0 && (
-                  <div className="flex flex-wrap gap-2 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                  <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-2xl border border-border shadow-sm">
                     {selectedCenters.map(centerId => {
                       const center = getSelectedCenter(centerId);
                       return center ? (
@@ -403,7 +403,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-4 bg-white border border-slate-100 rounded-3xl custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-4 bg-muted border border-border rounded-3xl custom-scrollbar">
                   {healthCenters.map((center) => (
                     <div
                       key={center.id}
@@ -455,7 +455,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                     value={formData.address}
                     onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                     placeholder="Ubicación completa..."
-                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    className="h-12 pl-10 border-border rounded-xl font-bold bg-muted"
                   />
                 </div>
               </div>
@@ -470,7 +470,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                       value={formData.phone}
                       onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                       placeholder="+58 000 000 0000"
-                      className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                      className="h-12 pl-10 border-border rounded-xl font-bold bg-muted"
                     />
                   </div>
                 </div>
@@ -483,7 +483,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="email@servidor.com"
-                      className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                      className="h-12 pl-10 border-border rounded-xl font-bold bg-muted"
                     />
                   </div>
                 </div>
@@ -497,7 +497,7 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                     value={formData.work_hours}
                     onChange={(e) => setFormData(prev => ({ ...prev, work_hours: e.target.value }))}
                     placeholder="Ej: Lun-Vie 8am a 4pm"
-                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    className="h-12 pl-10 border-border rounded-xl font-bold bg-muted"
                   />
                 </div>
               </div>
@@ -508,14 +508,14 @@ export function ContactDialog({ trigger, contactData, onContactSaved, open: cont
                   value={formData.notes}
                   onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                   placeholder="Detalles sobre trato, preferencias o advertencias..."
-                  className="min-h-[100px] border-slate-200 bg-white rounded-2xl font-medium p-4 resize-none shadow-sm"
+                  className="min-h-[100px] border-border bg-muted rounded-2xl font-medium p-4 resize-none shadow-sm"
                 />
               </div>
             </div>
           </div>
         </form>
 
-        <div className="bg-white border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+        <div className="bg-card border-t border-border px-8 py-6 flex items-center justify-between gap-4">
           <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-400 hover:text-slate-600">Cancelar</Button>
           <Button onClick={handleSubmit} disabled={loading} className="h-12 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02]">
             {loading ? "Sincronizando..." : (contactData ? "Actualizar Perfil" : "Crear Contacto")}

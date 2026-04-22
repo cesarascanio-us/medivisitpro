@@ -50,7 +50,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Bas
     <BaseInput
         ref={ref}
         {...props}
-        className={cn("h-12 border-slate-200 rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500 bg-white shadow-sm transition-all", props.className)}
+        className={cn("h-12 border-border rounded-xl font-bold focus:ring-indigo-500/10 focus:border-indigo-500 bg-muted shadow-sm transition-all", props.className)}
     />
 ));
 Input.displayName = "HighContrastInput";
@@ -59,7 +59,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<type
     <BaseTextarea
         ref={ref}
         {...props}
-        className={cn("border-slate-200 rounded-xl font-medium focus:ring-indigo-500/10 focus:border-indigo-500 bg-white shadow-sm transition-all p-4", props.className)}
+        className={cn("border-border rounded-xl font-medium focus:ring-indigo-500/10 focus:border-indigo-500 bg-muted shadow-sm transition-all p-4", props.className)}
     />
 ));
 Textarea.displayName = "HighContrastTextarea";
@@ -336,7 +336,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                         <Package className="w-32 h-32" />
                     </div>
                     <div className="relative z-10 flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                        <div className="w-16 h-16 rounded-2xl bg-background/10 backdrop-blur-xl border border-border/20 flex items-center justify-center shadow-inner">
                             {formData.image_url ? (
                                 <img src={formData.image_url} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
                             ) : (
@@ -360,42 +360,42 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                         <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
                             <TabsTrigger
                                 value="basic"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Tag className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Ficha Básica</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="medical"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Stethoscope className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Científica</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="commercial"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <BarChart3 className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Marketing</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="training"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-purple-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <GraduationCap className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Entrenamiento</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="resources"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-orange-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-orange-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Files className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Activos Digitales</span>
                             </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex-1 overflow-y-auto bg-white">
+                        <div className="flex-1 overflow-y-auto bg-card">
                             <form onSubmit={handleSubmit} id="product-form" className="h-full flex flex-col">
                                 {/* Tab: Básico */}
                                 <TabsContent value="basic" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
@@ -468,15 +468,15 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                     <div className="space-y-2">
                                                         <Label className="text-[9px] font-bold uppercase text-blue-400">Dosis (mg/kg)</Label>
-                                                        <Input type="number" value={formData.dosage_config.default_dose_mg_kg} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, default_dose_mg_kg: Number(e.target.value) })} className="h-10 bg-white" />
+                                                        <Input type="number" value={formData.dosage_config.default_dose_mg_kg} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, default_dose_mg_kg: Number(e.target.value) })} className="h-10 bg-muted" />
                                                     </div>
                                                     <div className="space-y-2">
                                                         <Label className="text-[9px] font-bold uppercase text-blue-400">Conc. (mg/mL)</Label>
-                                                        <Input type="number" value={formData.dosage_config.concentration_mg_ml} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, concentration_mg_ml: Number(e.target.value) })} className="h-10 bg-white" />
+                                                        <Input type="number" value={formData.dosage_config.concentration_mg_ml} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, concentration_mg_ml: Number(e.target.value) })} className="h-10 bg-muted" />
                                                     </div>
                                                     <div className="space-y-2">
                                                         <Label className="text-[9px] font-bold uppercase text-blue-400">Unidad</Label>
-                                                        <Input value={formData.dosage_config.presentation_unit} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, presentation_unit: e.target.value })} className="h-10 bg-white" />
+                                                        <Input value={formData.dosage_config.presentation_unit} onChange={(e) => handleChange("dosage_config", { ...formData.dosage_config, presentation_unit: e.target.value })} className="h-10 bg-muted" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -543,7 +543,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                                     </>
                                                 ) : (
                                                     <div className="flex flex-col items-center gap-3">
-                                                        <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-300"><ImageIcon className="h-6 w-6" /></div>
+                                                        <div className="w-12 h-12 rounded-2xl bg-muted shadow-sm flex items-center justify-center text-slate-300"><ImageIcon className="h-6 w-6" /></div>
                                                         <div className="text-center"><Label className="cursor-pointer text-[10px] font-black text-emerald-600 block">SUBIR IMAGEN</Label><Input type="file" className="hidden" id="img-up" onChange={handleImageUpload} accept="image/*" /></div>
                                                     </div>
                                                 )}
@@ -554,13 +554,13 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                         <div className="space-y-6">
                                             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Literatura Médica (PDF)</h3>
                                             <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
-                                                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-orange-500"><FileText className="h-6 w-6" /></div>
+                                                <div className="w-12 h-12 bg-muted rounded-2xl shadow-sm flex items-center justify-center text-orange-500"><FileText className="h-6 w-6" /></div>
                                                 <div className="space-y-1">
                                                     <p className="font-bold text-slate-700">Dossier de Producto</p>
                                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Vademécum & Estudios</p>
                                                 </div>
                                                 {formData.pdf_link ? (
-                                                    <div className="flex items-center justify-between gap-3 p-3 bg-white rounded-xl border border-slate-100">
+                                                    <div className="flex items-center justify-between gap-3 p-3 bg-muted rounded-xl border border-slate-100">
                                                         <span className="text-[10px] font-bold text-emerald-600 truncate">ARCHIVO VINCULADO</span>
                                                         <Button onClick={() => handleChange('pdf_link', '')} variant="ghost" size="sm" className="h-7 w-7 p-0 text-slate-400"><X className="h-4 w-4" /></Button>
                                                     </div>

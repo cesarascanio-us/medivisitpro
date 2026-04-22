@@ -29,7 +29,7 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
         <DialogHeader className="bg-primary px-8 py-6 text-white rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-background/10 backdrop-blur-md flex items-center justify-center">
                 <Package className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -38,10 +38,10 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-white/10 text-white">
+              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-background/10 text-white">
                 <Heart className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-white/10 text-white">
+              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-background/10 text-white">
                 <Share2 className="h-4 w-4" />
               </Button>
             </div>

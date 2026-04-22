@@ -258,20 +258,20 @@ export function PresentationMode({
                         {doctorName && <p className="text-sm opacity-80">Presentando a: Dr. {doctorName}</p>}
                     </div>
                     <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-white/20 text-white">
+                        <Badge variant="secondary" className="bg-background/20 text-white">
                             {currentIndex + 1} / {products.length}
                         </Badge>
-                        <Button variant="ghost" size="icon" onClick={toggleFullscreen} className="text-white hover:bg-white/20">
+                        <Button variant="ghost" size="icon" onClick={toggleFullscreen} className="text-white hover:bg-background/20">
                             {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/20">
+                        <Button variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-background/20">
                             <X className="h-5 w-5" />
                         </Button>
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="flex w-full h-1 bg-gray-200">
+                <div className="flex w-full h-1 bg-muted">
                     {products.map((product, index) => (
                         <div
                             key={product.id}
@@ -279,7 +279,7 @@ export function PresentationMode({
                                 ? 'bg-green-500'
                                 : index === currentIndex
                                     ? 'bg-primary'
-                                    : 'bg-gray-300'
+                                    : 'bg-muted'
                                 }`}
                             onClick={() => goToProduct(index)}
                         />
@@ -305,7 +305,7 @@ export function PresentationMode({
                                 {products.map(product => (
                                     <div
                                         key={product.id}
-                                        className={`p-3 rounded-lg border flex items-center justify-between ${presentedProducts.has(product.id) ? 'bg-green-50 border-green-200' : 'bg-gray-50'
+                                        className={`p-3 rounded-lg border flex items-center justify-between ${presentedProducts.has(product.id) ? 'bg-green-50 border-green-200' : 'bg-muted'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -389,8 +389,8 @@ export function PresentationMode({
                                     />
                                 ) : (
                                     <div className="text-center">
-                                        <Package className="h-32 w-32 text-gray-300 mx-auto mb-4" />
-                                        <p className="text-gray-400">Sin imagen disponible</p>
+                                        <Package className="h-32 w-32 text-muted-foreground/50 mx-auto mb-4" />
+                                        <p className="text-muted-foreground">Sin imagen disponible</p>
                                     </div>
                                 )}
                             </div>
@@ -478,7 +478,7 @@ export function PresentationMode({
 
                 {/* Navigation Footer */}
                 {!showSummary && (
-                    <div className="flex items-center justify-between p-4 border-t bg-gray-50">
+                    <div className="flex items-center justify-between p-4 border-t bg-muted">
                         <Button
                             variant="outline"
                             onClick={prevProduct}
@@ -498,7 +498,7 @@ export function PresentationMode({
                                         ? 'border-primary bg-primary/10'
                                         : presentedProducts.has(product.id)
                                             ? 'border-green-400 bg-green-50'
-                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                            : 'border-border bg-card hover:border-slate-300'
                                         }`}
                                 >
                                     <span className="text-xs font-medium">{index + 1}</span>

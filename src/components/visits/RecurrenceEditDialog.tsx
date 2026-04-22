@@ -65,7 +65,7 @@ export function RecurrenceEditDialog({
         try {
             if (selectedOption === "this_only") {
                 // Actualizar solo esta visita como excepción
-                // @ts-ignore - RPC function created in recurring_visits.sql
+                // @ts-expect-error - RPC function created in recurring_visits.sql
                 const { data, error } = await supabase.rpc('update_single_visit', {
                     p_visit_id: visitId,
                     p_new_date: newDate?.toISOString() || null,
@@ -91,7 +91,7 @@ export function RecurrenceEditDialog({
                 const newDayOfWeek = newDate ? newDate.getDay() : null;
                 const newTimeValue = newTime ? newTime + ':00' : null;
 
-                // @ts-ignore - RPC function created in recurring_visits.sql
+                // @ts-expect-error - RPC function created in recurring_visits.sql
                 const { data, error } = await supabase.rpc('split_series', {
                     p_series_id: seriesId,
                     p_from_date: format(visitDate, 'yyyy-MM-dd'),

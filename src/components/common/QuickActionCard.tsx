@@ -61,13 +61,13 @@ export function QuickActionCard({
       {/* Decorative background circle */}
       <div className={cn(
         "absolute -right-4 -top-4 w-20 h-20 rounded-full blur-3xl transition-opacity",
-        selected ? "bg-white/20 opacity-100" : "bg-current opacity-0 group-hover:opacity-10"
+        selected ? "bg-background/20 opacity-100" : "bg-current opacity-0 group-hover:opacity-10"
       )} />
 
       <div className="flex flex-col items-center text-center gap-3 relative z-10">
         <div className={cn(
           "p-4 rounded-2xl transition-colors duration-300",
-          selected ? "bg-white/20" : "bg-white shadow-sm"
+          selected ? "bg-background/20" : "bg-card shadow-sm"
         )}>
           {React.cloneElement(icon as React.ReactElement, { 
             className: cn("h-8 w-8", (icon as any).props?.className) 
@@ -89,7 +89,7 @@ export function QuickActionCard({
         </div>
 
         {selected && (
-          <div className="absolute top-0 right-0 p-1 bg-white rounded-full translate-x-1 -translate-y-1 shadow-md">
+          <div className="absolute top-0 right-0 p-1 bg-card rounded-full translate-x-1 -translate-y-1 shadow-md">
             <Check className="h-4 w-4 text-emerald-600" />
           </div>
         )}

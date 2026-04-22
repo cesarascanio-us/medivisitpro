@@ -33,7 +33,7 @@ export const StatsCard = ({ title, value, subtitle, icon: Icon, trending, varian
   const vibrantClass = getVibrantClass();
 
   return (
-    <Card className="group relative overflow-hidden border-none bg-white/80 backdrop-blur-sm shadow-soft hover:shadow-card transition-all duration-500 rounded-3xl">
+    <Card className="group relative overflow-hidden border-none bg-background/80 backdrop-blur-sm shadow-soft hover:shadow-card transition-all duration-500 rounded-3xl">
       <div className={`absolute top-0 left-0 w-1.5 h-full ${variant === 'primary' ? 'bg-primary' : variant === 'success' ? 'bg-emerald-500' : 'bg-transparent'}`}></div>
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-6">

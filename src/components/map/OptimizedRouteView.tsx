@@ -54,7 +54,7 @@ const TYPE_COLORS: Record<string, string> = {
     hospital: 'bg-red-500',
     clinic: 'bg-amber-500',
     health_center: 'bg-purple-500',
-    default: 'bg-gray-500'
+    default: 'bg-muted'
 };
 
 const PRIORITY_BADGES: Record<string, { color: string; label: string }> = {
@@ -263,7 +263,7 @@ export function OptimizedRouteView({
                                     <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
                                         <Navigation className="h-4 w-4" />
                                     </div>
-                                    <div className="absolute -bottom-4 left-1/2 w-0.5 h-4 bg-gray-300 -translate-x-1/2" />
+                                    <div className="absolute -bottom-4 left-1/2 w-0.5 h-4 bg-muted -translate-x-1/2" />
                                 </div>
                                 <div className="flex-1">
                                     <p className="font-medium text-sm">Mi ubicación</p>
@@ -294,7 +294,7 @@ export function OptimizedRouteView({
                                             {index + 1}
                                         </div>
                                         {!isLast && (
-                                            <div className="absolute -bottom-4 left-1/2 w-0.5 h-4 bg-gray-300 -translate-x-1/2" />
+                                            <div className="absolute -bottom-4 left-1/2 w-0.5 h-4 bg-muted -translate-x-1/2" />
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">

@@ -122,7 +122,7 @@ export function ProcessAlerts() {
 
     if (loading) {
         return (
-            <div className="bg-white dark:bg-card border-none rounded-[2rem] p-8 text-center animate-pulse shadow-soft">
+            <div className="bg-card border-none rounded-[2rem] p-8 text-center animate-pulse shadow-soft">
                 <Loader2 className="mx-auto h-8 w-8 text-primary/30 mb-4 animate-spin" />
                 <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest  tracking-widest">Analizando Filtros CA...</p>
             </div>
@@ -132,7 +132,7 @@ export function ProcessAlerts() {
     if (alerts.length === 0) return null;
 
     return (
-        <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit">
+        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit">
             <CardHeader className="pb-6 px-8 pt-8">
                 <div className="flex items-center justify-between">
                     <div>
@@ -166,7 +166,7 @@ export function ProcessAlerts() {
                         >
                             <div className="flex items-center gap-4">
                                 <div className={cn(
-                                    "p-2.5 rounded-xl bg-white dark:bg-card shadow-soft",
+                                    "p-2.5 rounded-xl bg-card shadow-soft",
                                     isCritical ? 'text-rose-500' : 'text-amber-500'
                                 )}>
                                     <Icon className="h-5 w-5" />

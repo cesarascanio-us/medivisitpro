@@ -66,7 +66,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 bg-white">
+            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 bg-card">
                 <div className="relative">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
                         <Loader2 className="h-8 w-8 text-white animate-spin" />
@@ -79,7 +79,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
 
     if (!product) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 bg-white">
+            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 bg-card">
                 <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center">
                     <AlertCircle className="h-8 w-8 text-red-500" />
                 </div>
@@ -107,7 +107,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
         : [];
 
     return (
-        <div className="flex flex-col h-full bg-white overflow-y-auto">
+        <div className="flex flex-col h-full bg-card overflow-y-auto">
             {/* Clean Top Bar with Product Name */}
             <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white">
                 <div className="flex items-center gap-3">
@@ -116,7 +116,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
                             variant="ghost"
                             size="icon"
                             onClick={onBack}
-                            className="rounded-xl text-white hover:bg-white/20"
+                            className="rounded-xl text-white hover:bg-background/20"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
@@ -129,7 +129,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
                     </div>
                 </div>
                 {product.category && (
-                    <Badge className="bg-white/20 text-white border-0 text-sm">
+                    <Badge className="bg-background/20 text-white border-0 text-sm">
                         {product.category}
                     </Badge>
                 )}
@@ -138,7 +138,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
             {/* Premium Tab Navigation */}
             <div className="px-6 py-4 bg-slate-50 border-b">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 max-w-lg h-12 p-1 bg-white rounded-xl shadow-sm border">
+                    <TabsList className="grid w-full grid-cols-3 max-w-lg h-12 p-1 bg-card rounded-xl shadow-sm border">
                         <TabsTrigger
                             value="clinical"
                             className="rounded-lg gap-2 text-sm font-medium data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"

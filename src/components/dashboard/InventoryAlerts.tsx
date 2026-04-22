@@ -125,7 +125,7 @@ export function InventoryAlerts({
 
     if (loading) {
         return (
-            <div className="bg-white dark:bg-card border-none rounded-[2rem] p-10 text-center animate-pulse shadow-soft">
+            <div className="bg-card border-none rounded-[2rem] p-10 text-center animate-pulse shadow-soft">
                 <Package className="mx-auto h-10 w-10 text-primary/30 mb-4 animate-bounce" />
                 <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest ">Sincronizando Mando FEFO...</p>
             </div>
@@ -134,7 +134,7 @@ export function InventoryAlerts({
 
     if (totalAlerts === 0) {
         return compact ? null : (
-            <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden group">
+            <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden group">
                 <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-3 text-sm font-black text-slate-700 dark:text-foreground uppercase tracking-tight ">
                         <Package className="h-5 w-5 text-emerald-500" />
@@ -160,7 +160,7 @@ export function InventoryAlerts({
     };
 
     return (
-        <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit">
+        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit">
             <CardHeader className="pb-6 px-8 pt-8">
                 <div className="flex items-center justify-between">
                     <div>
@@ -189,7 +189,7 @@ export function InventoryAlerts({
                                 className="flex items-center justify-between p-5 bg-rose-500/5 rounded-[1.5rem] border border-rose-500/10 group hover:border-rose-500/30 transition-all font-outfit"
                             >
                                 <div className="flex items-center gap-4">
-                                    <div className="p-2.5 rounded-xl bg-white dark:bg-card shadow-soft text-rose-500">
+                                    <div className="p-2.5 rounded-xl bg-card shadow-soft text-rose-500">
                                         <AlertTriangle className="h-5 w-5" />
                                     </div>
                                     <div>
@@ -226,7 +226,7 @@ export function InventoryAlerts({
                             >
                                 <div className="flex items-center gap-4">
                                     <div className={cn(
-                                        "p-2.5 rounded-xl bg-white dark:bg-card shadow-soft",
+                                        "p-2.5 rounded-xl bg-card shadow-soft",
                                         item.daysUntilExpiry <= 7 ? 'text-rose-500' : item.daysUntilExpiry <= 14 ? 'text-amber-500' : 'text-indigo-500'
                                     )}>
                                         <Clock className="h-5 w-5" />

@@ -62,7 +62,7 @@ export function RepInventoryView() {
                 .order('quantity', { ascending: false });
 
             if (error) throw error;
-            // @ts-ignore - Supabase generic types might not have rep_inventory yet without regen
+            // @ts-expect-error - Supabase generic types might not have rep_inventory yet without regen
             setInventory(data || []);
         } catch (error) {
             console.error('Error loading inventory:', error);

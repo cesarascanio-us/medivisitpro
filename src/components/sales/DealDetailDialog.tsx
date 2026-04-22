@@ -280,7 +280,7 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
                                         <Input
                                             value={editData.title}
                                             onChange={(e) => setEditData((p: any) => ({ ...p, title: e.target.value }))}
-                                            className="bg-white/20 border-white/30 text-white text-2xl font-black h-12 rounded-xl"
+                                            className="bg-background/20 border-white/30 text-white text-2xl font-black h-12 rounded-xl"
                                         />
                                     ) : (
                                         <h2 className="text-2xl font-black text-white tracking-tight">{deal.title}</h2>
@@ -291,7 +291,7 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => (isEditing ? handleSaveEdit() : setIsEditing(true))}
-                                        className="text-white/70 hover:text-white hover:bg-white/20 rounded-xl"
+                                        className="text-white/70 hover:text-white hover:bg-background/20 rounded-xl"
                                     >
                                         {isEditing ? <Check className="h-5 w-5" /> : <Edit3 className="h-5 w-5" />}
                                     </Button>
@@ -300,14 +300,14 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
 
                             {/* Quick Stats */}
                             <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                                <div className="bg-background/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
                                     <p className="text-white/50 text-[9px] font-black uppercase tracking-widest">Valor</p>
                                     {isEditing ? (
                                         <Input
                                             type="number"
                                             value={editData.value}
                                             onChange={(e) => setEditData((p: any) => ({ ...p, value: e.target.value }))}
-                                            className="bg-white/20 border-white/20 text-white font-black h-8 text-lg rounded-lg mt-1"
+                                            className="bg-background/20 border-white/20 text-white font-black h-8 text-lg rounded-lg mt-1"
                                         />
                                     ) : (
                                         <p className="text-white text-xl font-black">
@@ -315,11 +315,11 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
                                         </p>
                                     )}
                                 </div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                                <div className="bg-background/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
                                     <p className="text-white/50 text-[9px] font-black uppercase tracking-widest">Probabilidad</p>
                                     <p className="text-white text-xl font-black">{editData.probability || deal.probability}%</p>
                                 </div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                                <div className="bg-background/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
                                     <p className="text-white/50 text-[9px] font-black uppercase tracking-widest">Días Activo</p>
                                     <p className="text-white text-xl font-black">{daysSinceCreation}d</p>
                                 </div>

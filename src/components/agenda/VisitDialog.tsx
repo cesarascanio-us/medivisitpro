@@ -123,11 +123,11 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
         <DialogTrigger asChild>
           {trigger}
         </DialogTrigger>
-        <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl bg-white">
+        <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl bg-card">
           {/* Calendar Header */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-10 text-white relative">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
+              <div className="w-14 h-14 rounded-2xl bg-background/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
                 <CalendarIcon className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -186,7 +186,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
                     type="date"
                     value={formData.scheduled_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))}
-                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-background"
                     required
                   />
                 </div>
@@ -199,7 +199,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
                     type="time"
                     value={formData.scheduled_time}
                     onChange={(e) => setFormData(prev => ({ ...prev, scheduled_time: e.target.value }))}
-                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-white"
+                    className="h-12 pl-10 border-slate-200 rounded-xl font-bold bg-background"
                     required
                   />
                 </div>

@@ -76,7 +76,7 @@ export default function InboundForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto p-6 border rounded-xl bg-white shadow-lg border-purple-100">
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto p-6 border rounded-xl bg-card shadow-lg border-purple-100">
             <div className="flex items-center justify-between border-b pb-4 mb-2">
                 <h2 className="text-2xl font-bold text-purple-900">Registrar Entrada de Mercancía</h2>
                 {selectedProductData && (
@@ -88,7 +88,7 @@ export default function InboundForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Almacén Destino</label>
+                    <label className="text-sm font-semibold text-foreground">Almacén Destino</label>
                     <Select value={selectedWarehouse} onValueChange={setSelectedWarehouse}>
                         <SelectTrigger className="h-11 border-purple-100 focus:ring-purple-500"><SelectValue placeholder="Seleccionar Almacén" /></SelectTrigger>
                         <SelectContent>
@@ -100,7 +100,7 @@ export default function InboundForm() {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Producto</label>
+                    <label className="text-sm font-semibold text-foreground">Producto</label>
                     <Select value={selectedProduct} onValueChange={setSelectedProduct}>
                         <SelectTrigger className="h-11 border-purple-100 focus:ring-purple-500"><SelectValue placeholder="Seleccionar Producto" /></SelectTrigger>
                         <SelectContent>
@@ -114,7 +114,7 @@ export default function InboundForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Número de Lote</label>
+                    <label className="text-sm font-semibold text-foreground">Número de Lote</label>
                     <Input
                         value={batchNumber}
                         onChange={e => setBatchNumber(e.target.value)}
@@ -124,7 +124,7 @@ export default function InboundForm() {
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Cantidad (Unidades)</label>
+                    <label className="text-sm font-semibold text-foreground">Cantidad (Unidades)</label>
                     <Input
                         type="number"
                         value={quantity}
@@ -142,9 +142,9 @@ export default function InboundForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                         Fecha de Elaboración
-                        <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">Opcional</span>
+                        <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground rounded">Opcional</span>
                     </label>
                     <Input
                         type="date"
@@ -154,7 +154,7 @@ export default function InboundForm() {
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Fecha de Vencimiento</label>
+                    <label className="text-sm font-semibold text-foreground">Fecha de Vencimiento</label>
                     <Input
                         type="date"
                         value={expirationDate}

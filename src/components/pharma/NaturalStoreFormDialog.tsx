@@ -45,7 +45,7 @@ export function NaturalStoreFormDialog({
                 {/* Elite Header Industrial */}
                 <div className="bg-primary px-10 py-12 text-white relative">
                     <div className="flex items-center gap-6 relative z-10">
-                        <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-2xl">
+                        <div className="w-16 h-16 rounded-2xl bg-background/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-2xl">
                             <Store className="h-8 w-8 text-white" />
                         </div>
                         <div>

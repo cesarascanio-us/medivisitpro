@@ -62,7 +62,7 @@ export function VisitHeatmap({
         }
 
         // Crear nueva capa de heatmap
-        // @ts-ignore - leaflet.heat no tiene tipos completos
+        // @ts-expect-error - leaflet.heat no tiene tipos completos
         if (typeof L.heatLayer !== 'function') {
             console.error('L.heatLayer is not a function. Heatmap plugin may not be loaded.');
             return;

@@ -139,7 +139,7 @@ export const AppShowcaseCarousel: React.FC = () => {
                             onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
                             className={cn(
                                 "h-1 transition-all rounded-full",
-                                i === current ? "w-8 bg-emerald-500" : "w-2 bg-white/30 hover:bg-white/50"
+                                i === current ? "w-8 bg-emerald-500" : "w-2 bg-background/30 hover:bg-background/50"
                             )}
                         />
                     ))}

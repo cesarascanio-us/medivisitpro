@@ -79,7 +79,7 @@ export function MasterDataCard({
                                         placeholder="correo@ejemplo.com"
                                         value={email}
                                         onChange={(e) => handleEmailChange(e.target.value)}
-                                        className="bg-white border-amber-300 focus:border-amber-500 h-9 text-sm"
+                                        className="bg-background border-amber-300 focus:border-amber-500 h-9 text-sm"
                                     />
                                 </div>
                             )}
@@ -94,7 +94,7 @@ export function MasterDataCard({
                                         placeholder="+58 412 123 4567"
                                         value={phone}
                                         onChange={(e) => handlePhoneChange(e.target.value)}
-                                        className="bg-white border-amber-300 focus:border-amber-500 h-9 text-sm"
+                                        className="bg-background border-amber-300 focus:border-amber-500 h-9 text-sm"
                                     />
                                 </div>
                             )}

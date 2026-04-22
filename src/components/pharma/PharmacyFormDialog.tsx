@@ -73,7 +73,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                         <Building2 className="w-32 h-32" />
                     </div>
                     <div className="relative z-10 flex items-center gap-5">
-                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
+                        <div className="w-16 h-16 rounded-2xl bg-background/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
                             <Plus className="w-8 h-8 text-white" />
                         </div>
                         <div>
@@ -93,35 +93,35 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                         <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-card border-r border-border/40 p-4 h-auto md:w-64 space-y-1">
                             <TabsTrigger
                                 value="basico"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Info className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Información Básica</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="contacto"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Phone className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Contacto Detalle</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="segmentacion"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Target className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Segmentación</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="seguimiento"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
+                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
                             >
                                 <Activity className="w-4 h-4" />
                                 <span className="text-xs uppercase tracking-tight">Seguimiento</span>
                             </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex-1 overflow-y-auto bg-white">
+                        <div className="flex-1 overflow-y-auto bg-card">
                             {/* Tab 1: Información Básica */}
                             <TabsContent value="basico" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">

@@ -195,7 +195,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                           : "text-muted-foreground hover:bg-muted/50 hover:text-primary transition-colors"
                       )}
                     >
-                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white" />}
+                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-background" />}
                       <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110 premium-icon", isActive ? "text-primary-foreground premium-icon-active" : "text-muted-foreground premium-icon-hover")} />
                       {isExpanded && <span className="ml-4 transition-all">{item.name}</span>}
                     </NavLink>

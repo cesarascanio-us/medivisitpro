@@ -126,7 +126,7 @@ export function BillingPortal({ subscription, transactions, onManageSubscription
                                     </TableRow>
                                 ) : (
                                     transactions.map((tx) => (
-                                        <TableRow key={tx.id} className="border-slate-800/50 hover:bg-white/5 transition-colors">
+                                        <TableRow key={tx.id} className="border-slate-800/50 hover:bg-background/5 transition-colors">
                                             <TableCell className="font-medium text-slate-300">
                                                 {formatDate(tx.created_at)}
                                             </TableCell>

@@ -126,14 +126,14 @@ export function CommercialCalculator({
     };
 
     return (
-        <Card className="border-slate-200 bg-white shadow-md overflow-hidden animate-in fade-in duration-300">
+        <Card className="border-border bg-card shadow-md overflow-hidden animate-in fade-in duration-300">
             {/* Header Financiero */}
             <div className="bg-slate-50 px-4 py-3 border-b flex flex-col gap-3">
 
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     {/* Selector de Canal y Droguería */}
                     <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                        <div className="bg-white p-1 rounded-lg border shadow-sm">
+                        <div className="bg-muted p-1 rounded-lg border border-border shadow-sm">
                             <ToggleGroup type="single" value={mode} onValueChange={(v) => v && setMode(v as any)} className="justify-start">
                                 <ToggleGroupItem value="transfer" className="data-[state=on]:bg-blue-600 data-[state=on]:text-white gap-2 px-3">
                                     <ArrowRightLeft className="h-4 w-4" />
@@ -148,7 +148,7 @@ export function CommercialCalculator({
 
                         {/* Distributor Select - Only in Transfer Mode */}
                         {mode === 'transfer' && (
-                            <div className="bg-white rounded-lg border shadow-sm w-[180px]">
+                            <div className="bg-muted rounded-lg border border-border shadow-sm w-[180px]">
                                 <Select value={selectedDrugstoreId} onValueChange={setSelectedDrugstoreId}>
                                     <SelectTrigger className="h-10 border-0 focus:ring-0">
                                         <SelectValue placeholder="Seleccionar..." />
@@ -164,7 +164,7 @@ export function CommercialCalculator({
                     </div>
 
                     {/* Tasa BCV Input */}
-                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border shadow-sm ml-auto">
+                    <div className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-lg border border-border shadow-sm ml-auto">
                         <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">Tasa BCV</span>
                         <div className="flex items-center">
                             <span className="text-slate-400 font-medium mr-1">Bs.</span>
@@ -237,7 +237,7 @@ export function CommercialCalculator({
                         </div>
                         {/* Only show refresh button if NOT wholesale */}
                         {!isWholesale && (
-                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-white text-blue-600">
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-card text-blue-600">
                                 <ArrowLeftRight className="h-5 w-5" />
                             </Button>
                         )}
@@ -259,7 +259,7 @@ export function CommercialCalculator({
                                     min="1"
                                     value={quantity}
                                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 0))}
-                                    className="pl-4 h-11 text-lg font-semibold bg-white border-slate-200"
+                                    className="pl-4 h-11 text-lg font-semibold bg-muted border-border"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-400">unid.</span>
                             </div>
@@ -274,10 +274,10 @@ export function CommercialCalculator({
                                 value={discount}
                                 onValueChange={setDiscount}
                             >
-                                <SelectTrigger id="discount" className="h-11 bg-white border-slate-200 text-slate-900">
+                                <SelectTrigger id="discount" className="h-11 bg-muted border-border text-foreground">
                                     <SelectValue placeholder="Seleccionar desct..." />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white border-slate-200">
+                                <SelectContent className="bg-card border-border">
                                     <SelectItem value="0" className="text-slate-700">0% - Base</SelectItem>
                                     <SelectItem value="3" className="text-slate-700">3% - Volumen</SelectItem>
                                     <SelectItem value="5" className="text-slate-700">5% - Pronto Pago</SelectItem>
@@ -323,7 +323,7 @@ export function CommercialCalculator({
                                 <span className="text-base font-bold text-slate-800">Total a Pagar</span>
                                 <span className="text-3xl font-black text-slate-900 tracking-tight">${totalUSD.toFixed(2)}</span>
                             </div>
-                            <div className="text-right text-sm text-slate-500 font-mono bg-white inline-block px-2 py-1 rounded border border-slate-100 float-right">
+                            <div className="text-right text-sm text-slate-500 font-mono bg-card inline-block px-2 py-1 rounded border border-border float-right">
                                 Bs. {totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
                         </div>
@@ -333,7 +333,7 @@ export function CommercialCalculator({
                 {/* 4. EL AHORRO (Hero Metric) - Solo "Direct Mode" */}
                 {mode === 'direct' && showComparison && totalSavingsUSD > 0 && (
                     <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl p-1 shadow-lg shadow-emerald-200 mt-2 animate-in slide-in-from-bottom-2 fade-in duration-500">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center border border-white/20">
+                        <div className="bg-background/10 backdrop-blur-sm rounded-lg p-4 text-center border border-white/20">
                             <div className="flex items-center justify-center gap-2 text-emerald-50 font-medium mb-1 uppercase tracking-wide text-sm">
                                 <Wallet className="h-4 w-4" />
                                 Ahorro Estimado Hoy
@@ -341,7 +341,7 @@ export function CommercialCalculator({
                             <div className="text-4xl font-black text-white drop-shadow-sm">
                                 ${totalSavingsUSD.toFixed(2)}
                             </div>
-                            <div className="text-emerald-100 font-medium mt-1 text-sm bg-white/10 inline-block px-3 py-0.5 rounded-full">
+                            <div className="text-emerald-100 font-medium mt-1 text-sm bg-background/10 inline-block px-3 py-0.5 rounded-full">
                                 ~ Bs. {totalSavingsBs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
                         </div>

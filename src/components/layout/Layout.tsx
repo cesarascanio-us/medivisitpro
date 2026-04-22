@@ -53,7 +53,7 @@ export const Layout = ({ children }: LayoutProps) => {
       {location.pathname.startsWith('/demo/') && (
         <div className="bg-gradient-to-r from-primary-dark to-primary text-white px-3 py-1.5 shadow-md flex items-center justify-between z-50">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/20 rounded-full text-xs">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-background/20 rounded-full text-xs">
               <Rocket className="h-3 w-3" />
               <span className="font-bold">MODO DEMO</span>
             </div>
@@ -66,7 +66,7 @@ export const Layout = ({ children }: LayoutProps) => {
             <Button
               onClick={handleCreateAccount}
               size="sm"
-              className="bg-white text-primary hover:bg-slate-100 text-[10px] font-bold h-6 px-3 hidden sm:inline-flex rounded-full"
+              className="bg-background text-primary hover:bg-accent text-[10px] font-bold h-6 px-3 hidden sm:inline-flex rounded-full"
             >
               <UserPlus className="h-3 w-3 mr-1" />
               REGISTRARSE
@@ -75,7 +75,7 @@ export const Layout = ({ children }: LayoutProps) => {
               onClick={handleExitDemo}
               size="sm"
               variant="ghost"
-              className="text-white hover:bg-white/20 text-[10px] font-bold h-6 px-3 rounded-full"
+              className="text-white hover:bg-background/20 text-[10px] font-bold h-6 px-3 rounded-full"
             >
               <LogOut className="h-3 w-3 mr-1" />
               SALIR

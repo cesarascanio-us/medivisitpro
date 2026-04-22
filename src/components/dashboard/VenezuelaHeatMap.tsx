@@ -92,7 +92,7 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
 
     return (
         <Card className="corporate-card overflow-hidden">
-            <CardHeader className="bg-gray-50 border-b border-gray-100 pb-3">
+            <CardHeader className="bg-muted border-b border-border pb-3">
                 <CardTitle className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <span className="font-black text-text-main tracking-tight">Mapa de Calor Comercial</span>
                     <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
@@ -153,13 +153,13 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
                 {/* Tooltip */}
                 {hoveredData && (
                     <div
-                        className="fixed z-[100] bg-white border border-gray-100 px-4 py-3 rounded-2xl shadow-2xl pointer-events-none animate-in fade-in zoom-in-95 duration-200"
+                        className="fixed z-[100] bg-card border border-border px-4 py-3 rounded-2xl shadow-2xl pointer-events-none animate-in fade-in zoom-in-95 duration-200"
                         style={{
                             left: `${tooltipPos.x + 15}px`,
                             top: `${tooltipPos.y + 15}px`,
                         }}
                     >
-                        <div className="font-black text-text-main text-base mb-2 border-b border-gray-50 pb-1">{hoveredData.name}</div>
+                        <div className="font-black text-text-main text-base mb-2 border-b border-border pb-1">{hoveredData.name}</div>
                         <div className="space-y-1.5">
                             <div className="flex justify-between items-center gap-4">
                                 <span className="text-[10px] font-bold text-text-muted uppercase">Ventas</span>

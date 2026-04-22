@@ -329,11 +329,11 @@ export default function FulfillmentManager() {
 
             <Tabs defaultValue="pending" className="w-full">
                 <TabsList className="bg-slate-100 p-1 mb-4">
-                    <TabsTrigger value="pending" className="data-[state=active]:bg-white">
+                    <TabsTrigger value="pending" className="data-[state=active]:bg-card">
                         <Clock className="mr-2 h-4 w-4 text-amber-500" />
                         Pendientes de Picking ({filteredRequests.length})
                     </TabsTrigger>
-                    <TabsTrigger value="completed" className="data-[state=active]:bg-white">
+                    <TabsTrigger value="completed" className="data-[state=active]:bg-card">
                         <PackageCheck className="mr-2 h-4 w-4 text-green-600" />
                         Historial de Despachos ({completedRequests.length})
                     </TabsTrigger>
@@ -396,7 +396,7 @@ export default function FulfillmentManager() {
                 </TabsContent>
 
                 <TabsContent value="completed">
-                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div className="bg-card rounded-xl border border-slate-200 overflow-hidden shadow-sm">
                         <Table>
                             <TableHeader className="bg-slate-50">
                                 <TableRow>
@@ -457,7 +457,7 @@ export default function FulfillmentManager() {
                                 Requisición <b>{selectedRequest?.display_id}</b> - {selectedRequest?.target_name}
                             </p>
                         </div>
-                        <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+                        <div className="h-12 w-12 rounded-full bg-background/10 flex items-center justify-center">
                             <Truck className="h-6 w-6 text-white" />
                         </div>
                     </div>
@@ -473,7 +473,7 @@ export default function FulfillmentManager() {
                             </div>
                         )}
 
-                        <div className="bg-white rounded-xl border border-slate-200 shadow-inner max-h-[50vh] overflow-y-auto">
+                        <div className="bg-card rounded-xl border border-slate-200 shadow-inner max-h-[50vh] overflow-y-auto">
                             <Table>
                                 <TableHeader className="bg-slate-50/50 sticky top-0 z-10">
                                     <TableRow>
@@ -525,7 +525,7 @@ export default function FulfillmentManager() {
                             </Table>
                         </div>
 
-                        <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div className="flex justify-between items-center bg-card p-4 rounded-xl border border-slate-200 shadow-sm">
                             <div className="text-xs text-slate-400">
                                 <b>Almacén Origen:</b> {warehouses.find(w => w.id === selectedWarehouse)?.name || 'Central'}
                             </div>

@@ -45,7 +45,7 @@ export function CommerceFormDialog({
                 {/* Retail Header with Gradient */}
                 <div className="bg-gradient-to-br from-emerald-600 via-emerald-800 to-slate-900 px-8 py-12 text-white relative">
                     <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 rounded-[1.5rem] bg-white/10 backdrop-blur-2xl border border-white/20 flex items-center justify-center shadow-2xl rotate-3">
+                        <div className="w-16 h-16 rounded-[1.5rem] bg-background/10 backdrop-blur-2xl border border-white/20 flex items-center justify-center shadow-2xl rotate-3">
                             <ShoppingCart className="h-8 w-8 text-white" />
                         </div>
                         <div>

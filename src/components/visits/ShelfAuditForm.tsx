@@ -122,13 +122,13 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                                 <CardContent className="p-8">
                                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                                         <div className="flex items-center gap-6">
-                                            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-primary  font-black shadow-inner">
+                                            <div className="w-14 h-14 rounded-2xl bg-background/5 flex items-center justify-center text-primary  font-black shadow-inner">
                                                 {field.product_name.charAt(0)}
                                             </div>
                                             <div>
                                                 <h4 className="text-lg font-black text-white  uppercase tracking-tighter leading-none mb-2">{field.product_name}</h4>
                                                 <div className="flex items-center gap-3">
-                                                    <Badge className="bg-white/5 text-slate-500 border-none font-bold text-[8px] uppercase tracking-widest ">Inventory Sync</Badge>
+                                                    <Badge className="bg-background/5 text-slate-500 border-none font-bold text-[8px] uppercase tracking-widest ">Inventory Sync</Badge>
                                                     <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest ">Ant: <span className="text-white ml-2 tabular-nums">{field.cantidad_anterior}</span></span>
                                                 </div>
                                             </div>
@@ -181,7 +181,7 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                                 <div className="grid grid-cols-2 gap-6">
                                     {[["pop_poster", "Afiche"], ["pop_talker", "Hablador"], ["pop_stack", "Ruma/Pila"], ["pop_extra", "Exh. Adic"]].map(([name, label]) => (
                                         <FormField key={name} control={form.control} name={name as any} render={({ field }) => (
-                                            <FormItem className="flex items-center gap-4 space-y-0 p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                                            <FormItem className="flex items-center gap-4 space-y-0 p-4 bg-background/5 rounded-2xl border border-white/5 hover:bg-background/10 transition-colors">
                                                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                                 <FormLabel className="text-xs font-black uppercase  text-slate-400 cursor-pointer">{label}</FormLabel>
                                             </FormItem>
@@ -228,7 +228,7 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                     </Card>
 
                     <div className="flex justify-end pt-4">
-                        <Button type="submit" disabled={saving} className="h-16 px-12 bg-white text-slate-900 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-3xl">
+                        <Button type="submit" disabled={saving} className="h-16 px-12 bg-card text-foreground rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-3xl">
                             {saving ? <Loader2 className="mr-3 h-5 w-5 animate-spin" /> : <Save className="mr-3 h-5 w-5" />}
                             SINCRONIZAR AUDITORÍA
                         </Button>

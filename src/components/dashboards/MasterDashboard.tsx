@@ -197,11 +197,11 @@ const MasterDashboard = () => {
         <div className="min-h-screen bg-[#f8fbff]">
             {/* Master Header - Corporate Blue Gradient */}
             <header className="bg-gradient-to-r from-primary-dark via-primary to-primary-light text-white shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-background/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
                 <div className="container mx-auto px-6 py-4 relative z-10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-inner">
+                            <div className="p-2.5 bg-background/10 backdrop-blur-md rounded-xl border border-white/20 shadow-inner">
                                 <Shield className="w-6 h-6 text-white" />
                             </div>
                             <div>
@@ -212,11 +212,11 @@ const MasterDashboard = () => {
                         <div className="flex items-center gap-6">
                             <div className="text-right hidden md:block border-r border-white/20 pr-6">
                                 <p className="text-sm font-black">{user?.email}</p>
-                                <Badge variant="outline" className="bg-white/10 text-white border-white/30 text-[9px] font-bold h-4">
+                                <Badge variant="outline" className="bg-background/10 text-white border-white/30 text-[9px] font-bold h-4">
                                     AUTH MASTER
                                 </Badge>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={signOut} className="text-white hover:bg-white/20 rounded-full w-10 h-10 transition-transform active:scale-90">
+                            <Button variant="ghost" size="icon" onClick={signOut} className="text-white hover:bg-background/20 rounded-full w-10 h-10 transition-transform active:scale-90">
                                 <LogOut className="w-5 h-5" />
                             </Button>
                         </div>
@@ -277,7 +277,7 @@ const MasterDashboard = () => {
 
                 {/* Organizations Management */}
                 <Card className="corporate-card shadow-xl overflow-hidden">
-                    <CardHeader className="bg-gray-50 border-b border-gray-100 py-6">
+                    <CardHeader className="bg-muted border-b border-border py-6">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                                 <CardTitle className="text-xl font-black text-text-main tracking-tight">Gestión de Tenants</CardTitle>
@@ -301,7 +301,7 @@ const MasterDashboard = () => {
                                             <Input
                                                 id="name"
                                                 placeholder="Ej: PharmaGroup S.A."
-                                                className="h-12 rounded-xl border-gray-100 bg-gray-50/50 font-bold focus:ring-primary"
+                                                className="h-12 rounded-xl border-border bg-muted/50 font-bold focus:ring-primary"
                                                 value={currentOrganization.name}
                                                 onChange={(e) => setCurrentOrganization({ ...currentOrganization, name: e.target.value })}
                                             />
@@ -312,7 +312,7 @@ const MasterDashboard = () => {
                                                 value={currentOrganization.plan_tier}
                                                 onValueChange={(val) => setCurrentOrganization({ ...currentOrganization, plan_tier: val })}
                                             >
-                                                <SelectTrigger className="h-12 rounded-xl border-gray-100 bg-gray-50/50 font-bold">
+                                                <SelectTrigger className="h-12 rounded-xl border-border bg-muted/50 font-bold">
                                                     <SelectValue placeholder="Selecciona un plan" />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-xl">
@@ -341,8 +341,8 @@ const MasterDashboard = () => {
                             </div>
                         ) : organizations.length === 0 ? (
                             <div className="text-center py-24">
-                                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                                    <Building2 className="h-10 w-10 text-gray-200" />
+                                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                                    <Building2 className="h-10 w-10 text-muted-foreground" />
                                 </div>
                                 <p className="text-text-muted font-black text-lg">No hay infraestructuras activas.</p>
                                 <p className="text-sm text-text-muted/60 font-medium">Comienza registrando un nuevo cliente corporativo.</p>
@@ -350,7 +350,7 @@ const MasterDashboard = () => {
                         ) : (
                             <div className="overflow-x-auto">
                                 <Table>
-                                    <TableHeader className="bg-gray-50/50">
+                                    <TableHeader className="bg-muted/50">
                                         <TableRow className="border-b-gray-100 hover:bg-transparent">
                                             <TableHead className="py-4 text-[10px] font-black uppercase tracking-widest text-text-muted">IDENTIDAD CORPORATIVA</TableHead>
                                             <TableHead className="text-[10px] font-black uppercase tracking-widest text-text-muted">NIVEL</TableHead>
@@ -393,7 +393,7 @@ const MasterDashboard = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
-                                                        <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500 border border-gray-200">
+                                                        <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground border border-border">
                                                             {(getAdminName(org.id)[0] || '?').toUpperCase()}
                                                         </div>
                                                         <span className="text-xs font-bold text-text-main">{getAdminName(org.id)}</span>
@@ -402,17 +402,17 @@ const MasterDashboard = () => {
                                                 <TableCell className="text-right px-6">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" className="h-10 w-10 p-0 rounded-full hover:bg-gray-100">
+                                                            <Button variant="ghost" className="h-10 w-10 p-0 rounded-full hover:bg-muted">
                                                                 <MoreVertical className="h-4 w-4 text-text-muted" />
                                                             </Button>
                                                         </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end" className="rounded-xl p-2 shadow-2xl border-gray-100">
+                                                        <DropdownMenuContent align="end" className="rounded-xl p-2 shadow-2xl border-border">
                                                             <DropdownMenuLabel className="text-[10px] font-black uppercase text-text-muted px-3 py-2">Operaciones</DropdownMenuLabel>
                                                             <DropdownMenuItem className="rounded-lg font-bold text-sm cursor-pointer py-2.5" onClick={() => openEdit(org)}>
                                                                 <Settings className="w-4 h-4 mr-3 text-primary" />
                                                                 Configurar Tenant
                                                             </DropdownMenuItem>
-                                                            <DropdownMenuSeparator className="bg-gray-50" />
+                                                            <DropdownMenuSeparator className="bg-muted" />
                                                             <DropdownMenuItem className="rounded-lg font-bold text-sm cursor-pointer py-2.5 text-destructive hover:bg-destructive/5" onClick={() => handleDeleteOrganization(org.id, org.name)}>
                                                                 <LogOut className="w-4 h-4 mr-3" />
                                                                 Eliminar Ecosistema
@@ -441,7 +441,7 @@ const MasterDashboard = () => {
                                 <Label htmlFor="edit-name" className="text-[10px] font-black uppercase tracking-widest text-text-muted">Nombre Comercial</Label>
                                 <Input
                                     id="edit-name"
-                                    className="h-12 rounded-xl border-gray-100 bg-gray-50/50 font-bold focus:ring-primary"
+                                    className="h-12 rounded-xl border-border bg-muted/50 font-bold focus:ring-primary"
                                     value={currentOrganization.name}
                                     onChange={(e) => setCurrentOrganization({ ...currentOrganization, name: e.target.value })}
                                 />
@@ -452,7 +452,7 @@ const MasterDashboard = () => {
                                     value={currentOrganization.plan_tier}
                                     onValueChange={(val) => setCurrentOrganization({ ...currentOrganization, plan_tier: val })}
                                 >
-                                    <SelectTrigger className="h-12 rounded-xl border-gray-100 bg-gray-50/50 font-bold">
+                                    <SelectTrigger className="h-12 rounded-xl border-border bg-muted/50 font-bold">
                                         <SelectValue placeholder="Selecciona un plan" />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl">
