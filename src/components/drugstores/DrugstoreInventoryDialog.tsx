@@ -31,7 +31,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import * as XLSX from 'xlsx';
 import { useDemoData } from "@/contexts/MockDataProvider";
 
 interface DrugstoreInventoryDialogProps {
@@ -140,6 +139,7 @@ export function DrugstoreInventoryDialog({ drugstoreId, drugstoreName, trigger }
 
         reader.onload = async (e) => {
             try {
+                const XLSX = await import('xlsx');
                 const data = new Uint8Array(e.target?.result as ArrayBuffer);
                 const workbook = XLSX.read(data, { type: 'array' });
                 const firstSheetName = workbook.SheetNames[0];
@@ -223,7 +223,8 @@ export function DrugstoreInventoryDialog({ drugstoreId, drugstoreName, trigger }
         reader.readAsArrayBuffer(file);
     };
 
-    const handleExport = () => {
+    const handleExport = async () => {
+        const XLSX = await import('xlsx');
         const exportData = inventory.map(item => ({
             'Producto': item.product_name,
             'Precio Farmacia': item.price,

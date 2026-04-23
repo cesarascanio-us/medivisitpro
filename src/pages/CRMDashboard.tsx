@@ -8,7 +8,7 @@
  ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
     Search,
@@ -211,7 +211,7 @@ export default function CRMDashboard() {
                                 lead.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
                             )
                             .map((lead, i) => (
-                                <motion.div
+                                <m.div
                                     key={lead.id}
                                     layout
                                     initial={{ opacity: 0, x: -20 }}
@@ -306,7 +306,7 @@ export default function CRMDashboard() {
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </motion.div>
+                                </m.div>
                             ))}
                     </AnimatePresence>
                 </div>

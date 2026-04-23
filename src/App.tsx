@@ -23,6 +23,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { ThemeProvider } from "./components/theme-provider";
+import { LazyMotion } from "framer-motion";
+
+const loadFeatures = () => import('./lib/framer-features').then(r => r.default);
 
 // Eager load critical pages for faster First Contentful Paint (FCP)
 import LandingPage from "./pages/LandingPage";
@@ -385,50 +388,52 @@ const App = () => (
     <HelmetProvider>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
         <AuthProvider>
-          <MockDataProvider>
-            <DemoDataSeeder />
-            <OrganizationProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter
-                  future={{
-                    v7_startTransition: true,
-                    v7_relativeSplatPath: true,
-                  }}
-                >
-                  <Suspense fallback={<PageLoader />}>
-                    <RoutesWithRemount>
-                      <Routes>
-                        {/* Public Routes */}
-                        <Route path="/" element={<LandingPage />} />
-                        <Route path="/auth" element={<AuthPage />} />
+          <LazyMotion features={loadFeatures} strict>
+            <MockDataProvider>
+              <DemoDataSeeder />
+              <OrganizationProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter
+                    future={{
+                      v7_startTransition: true,
+                      v7_relativeSplatPath: true,
+                    }}
+                  >
+                    <Suspense fallback={<PageLoader />}>
+                      <RoutesWithRemount>
+                        <Routes>
+                          {/* Public Routes */}
+                          <Route path="/" element={<LandingPage />} />
+                          <Route path="/auth" element={<AuthPage />} />
 
-                        {/* Demo Landing - Initiates Demo Mode */}
-                        <Route path="/demo" element={<DemoPage />} />
+                          {/* Demo Landing - Initiates Demo Mode */}
+                          <Route path="/demo" element={<DemoPage />} />
 
-                        {/* Isolated Demo Routes Cluster */}
-                        <Route path="/demo/*" element={<AppContent />} />
+                          {/* Isolated Demo Routes Cluster */}
+                          <Route path="/demo/*" element={<AppContent />} />
 
-                        {/* Main Application Routes Cluster */}
-                        <Route path="/*" element={<AppContent />} />
+                          {/* Main Application Routes Cluster */}
+                          <Route path="/*" element={<AppContent />} />
 
-                        <Route path="/onboarding" element={
-                          <ProtectedRoute>
-                            <OnboardingWizard />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/product/:id" element={<PublicProductPage />} />
+                          <Route path="/onboarding" element={
+                            <ProtectedRoute>
+                              <OnboardingWizard />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="/product/:id" element={<PublicProductPage />} />
 
-                        {/* Global Catch-all */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </RoutesWithRemount>
-                  </Suspense>
-                </BrowserRouter>
-              </TooltipProvider>
-            </OrganizationProvider>
-          </MockDataProvider>
+                          {/* Global Catch-all */}
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </RoutesWithRemount>
+                    </Suspense>
+                  </BrowserRouter>
+                </TooltipProvider>
+              </OrganizationProvider>
+            </MockDataProvider>
+          </LazyMotion>
         </AuthProvider>
       </ThemeProvider>
     </HelmetProvider>

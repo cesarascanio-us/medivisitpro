@@ -25,7 +25,6 @@ import { exportToCSV, handlePrint } from "@/utils/exportUtils";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { read, utils } from 'xlsx';
 import { FileSpreadsheet, HelpCircle, Upload } from "lucide-react";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useNavigate } from "react-router-dom";
@@ -234,8 +233,9 @@ export default function Visits() {
 
     reader.onload = async (event) => {
       try {
+        const { read, utils } = await import('xlsx');
         const bstr = event.target?.result;
-        const wb = read(bstr, { type: 'binary' });
+        const wb = read(bstr as string, { type: 'binary' });
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         const data = utils.sheet_to_json(ws);

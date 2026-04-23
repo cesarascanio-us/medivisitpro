@@ -25,7 +25,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
-import * as XLSX from 'xlsx';
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { InstructionCard } from "@/components/ui/InstructionCard";

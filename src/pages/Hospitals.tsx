@@ -23,7 +23,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
-import * as XLSX from 'xlsx';
 
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { InstructionCard } from "@/components/ui/InstructionCard";
@@ -164,6 +163,7 @@ export default function Hospitals() {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
+                    const XLSX = await import('xlsx');
                     const data = new Uint8Array(e.target?.result as ArrayBuffer);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const sheetName = workbook.SheetNames[0];

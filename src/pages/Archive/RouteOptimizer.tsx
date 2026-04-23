@@ -16,7 +16,7 @@ import { Loader2, MapPin, Navigation, CheckCircle2, ArrowRight, Zap, ShieldCheck
 import { geocodeAddress } from "@/services/nominatimService";
 import { optimizeRoute, formatDistance, formatDuration } from "@/services/osrmService";
 import LeafletMap, { MapMarker } from "@/components/map/LeafletMap";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 export default function RouteOptimizer() {
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ export default function RouteOptimizer() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
         <div className="text-center mb-12">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -98,12 +98,12 @@ export default function RouteOptimizer() {
             <p className="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl font-light">
               Experimente el poder de la geolocalización industrial. Planifique sus visitas médicas con precisión soberana.
             </p>
-          </motion.div>
+          </m.div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Controls Side */}
-          <motion.div 
+          <m.div 
             className="lg:col-span-4 space-y-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -165,10 +165,10 @@ export default function RouteOptimizer() {
                     Esta herramienta utiliza **OpenStreetMap** y **OSRM**, garantizando que sus rutas no dependan de APIs propietarias costosas. 100% privacidad, 0% rastreo de Google/Bing.
                 </p>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Map Side */}
-          <motion.div 
+          <m.div 
             className="lg:col-span-8 space-y-6"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -185,7 +185,7 @@ export default function RouteOptimizer() {
               
               <AnimatePresence>
                 {routeData && (
-                  <motion.div 
+                  <m.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
@@ -219,7 +219,7 @@ export default function RouteOptimizer() {
                         </Button>
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
             </div>
@@ -241,7 +241,7 @@ export default function RouteOptimizer() {
                     </div>
                 ))}
             </div>
-          </motion.div>
+          </m.div>
         </div>
         
         {/* Footer Branding */}

@@ -5,9 +5,9 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -17,7 +17,8 @@ import { Rocket, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { StrategicOnboarding360 } from '../onboarding/StrategicOnboarding360';
+
+const StrategicOnboarding360 = lazy(() => import('../onboarding/StrategicOnboarding360').then(module => ({ default: module.StrategicOnboarding360 })));
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -118,7 +119,9 @@ export const Layout = ({ children }: LayoutProps) => {
           </main>
         </div>
       </div>
-      <StrategicOnboarding360 />
+      <Suspense fallback={null}>
+        <StrategicOnboarding360 />
+      </Suspense>
     </div>
   );
 }

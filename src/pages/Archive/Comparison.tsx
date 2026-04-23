@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, ArrowRight, Activity, Database, Shield, Zap, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function ComparisonPage() {
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function ComparisonPage() {
             <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 md:py-32">
                 {/* Hero Section */}
                 <div className="text-center mb-24">
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
@@ -67,11 +67,11 @@ export default function ComparisonPage() {
                                 </span>
                             </Button>
                         </div>
-                    </motion.div>
+                    </m.div>
                 </div>
 
                 {/* Comparison Grid */}
-                <motion.div
+                <m.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ duration: 0.8 }}
@@ -121,7 +121,7 @@ export default function ComparisonPage() {
                             </div>
                         </div>
                     </div>
-                </motion.div>
+                </m.div>
 
                 {/* Trust/Infrastructure Section */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

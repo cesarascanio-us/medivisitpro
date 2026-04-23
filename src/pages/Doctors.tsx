@@ -27,7 +27,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
-import * as XLSX from 'xlsx';
 import { DoctorFormDialog } from "@/components/doctors/DoctorFormDialog";
 import { DoctorProfileDialog } from "@/components/doctors/DoctorProfileDialog";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
@@ -223,6 +222,7 @@ export default function Doctors() {
         if (!file) return;
         setImporting(true);
         try {
+            const XLSX = await import('xlsx');
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const data = new Uint8Array(e.target?.result as ArrayBuffer);

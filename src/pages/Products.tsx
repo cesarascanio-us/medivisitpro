@@ -27,7 +27,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { exportToCSV } from "@/utils/exportUtils";
-import * as XLSX from 'xlsx';
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 
 import { useDemoData } from "@/contexts/MockDataProvider";
@@ -157,6 +156,7 @@ export default function Products() {
 
       reader.onload = async (e) => {
         try {
+          const XLSX = await import('xlsx');
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           const sheetName = workbook.SheetNames[0];

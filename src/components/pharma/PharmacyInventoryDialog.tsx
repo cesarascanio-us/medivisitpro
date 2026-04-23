@@ -32,7 +32,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useDemoData } from "@/contexts/MockDataProvider";
-import * as XLSX from 'xlsx';
 
 interface PharmacyInventoryDialogProps {
     pharmacyId: string;
@@ -225,7 +224,8 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
         }
     };
 
-    const handleExport = () => {
+    const handleExport = async () => {
+        const XLSX = await import('xlsx');
         const exportData = stock.map(item => ({
             'Producto': item.product_name,
             'Tiene Stock': item.tiene_stock ? 'Sí' : 'No',

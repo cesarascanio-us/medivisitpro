@@ -8,7 +8,7 @@
  ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     Users,
     Search,
@@ -151,7 +151,7 @@ export default function HRRecruitment() {
                     { label: "En Proceso", value: "08", icon: Clock, color: "text-blue-500" },
                     { label: "Top Match Score", value: "95%", icon: Star, color: "text-amber-500" },
                 ].map((stat, i) => (
-                    <motion.div
+                    <m.div
                         key={stat.label}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -163,7 +163,7 @@ export default function HRRecruitment() {
                             <stat.icon className={cn("h-5 w-5", stat.color)} />
                         </div>
                         <p className="text-4xl font-black text-slate-900 mt-3 tabular-nums tracking-tighter">{stat.value}</p>
-                    </motion.div>
+                    </m.div>
                 ))}
             </div>
 
@@ -201,7 +201,7 @@ export default function HRRecruitment() {
                                 lead.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
                             )
                             .map((lead, i) => (
-                                <motion.div
+                                <m.div
                                     key={lead.id}
                                     layout
                                     initial={{ opacity: 0, x: -20 }}
@@ -291,7 +291,7 @@ export default function HRRecruitment() {
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </motion.div>
+                                </m.div>
                             ))}
                     </AnimatePresence>
                 </div>

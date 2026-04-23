@@ -26,7 +26,6 @@ import { exportToCSV } from "@/utils/exportUtils";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import * as XLSX from 'xlsx';
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { cn } from "@/lib/utils";
@@ -79,6 +78,7 @@ export default function Contacts() {
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
+          const XLSX = await import('xlsx');
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           const sheetName = workbook.SheetNames[0];

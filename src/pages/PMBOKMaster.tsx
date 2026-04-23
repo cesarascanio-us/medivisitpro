@@ -7,7 +7,7 @@
    ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
     Plus,
@@ -230,7 +230,7 @@ export default function PMBOKMaster() {
                                 {projects
                                     .filter(p => p.current_phase_id === phase.id)
                                     .map((project, idx) => (
-                                        <motion.div
+                                        <m.div
                                             key={project.id}
                                             layout
                                             initial={{ opacity: 0, scale: 0.9 }}
@@ -315,7 +315,7 @@ export default function PMBOKMaster() {
                                                     </div>
                                                 </CardContent>
                                             </Card>
-                                        </motion.div>
+                                        </m.div>
                                     ))}
                             </AnimatePresence>
 
