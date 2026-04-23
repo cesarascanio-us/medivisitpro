@@ -86,7 +86,7 @@ export default function LandingPage() {
 
       {/* Navbar - Institutional Glassmorphism */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-xl shadow-soft py-2' : 'bg-transparent py-4'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-xl shadow-soft py-2' : 'bg-transparent py-4'
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -141,7 +141,7 @@ export default function LandingPage() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl shadow-2xl border-t border-gray-100 p-6 flex flex-col gap-4 animate-in slide-in-from-top duration-300">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-2xl shadow-2xl border-t border-border p-6 flex flex-col gap-4 animate-in slide-in-from-top duration-300">
             {['Características', 'Precios', 'Testimonios', 'FAQ'].map((item) => (
               <a
                 key={item}
@@ -165,7 +165,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section - Elite Corporate Aesthetic */}
-      <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
+      <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 bg-background overflow-hidden">
         {/* Background Gradients */}
         <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[radial-gradient(circle_at_top_right,rgba(0,86,179,0.05),transparent_50%)]"></div>
 
@@ -240,7 +240,7 @@ export default function LandingPage() {
 
 
       {/* Features Grid */}
-      <section id="características" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+      <section id="características" className="py-24 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 text-center md:text-left">
             <div className="max-w-2xl">
@@ -258,9 +258,9 @@ export default function LandingPage() {
               return (
                 <div
                   key={index}
-                  className="group bg-slate-50/50 p-10 rounded-3xl border border-transparent hover:border-primary/10 hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500"
+                  className="group bg-slate-50/50 p-10 rounded-3xl border border-transparent hover:border-primary/10 hover:bg-card hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500"
                 >
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary transition-all">
+                  <div className="w-16 h-16 bg-card rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary transition-all">
                     <Icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
@@ -279,7 +279,7 @@ export default function LandingPage() {
         <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(0,86,179,0.03),transparent_50%)]"></div>
         <div className="max-w-7xl mx-auto px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="flex items-center gap-8">
-            <div className="w-20 h-20 rounded-[2rem] bg-white flex items-center justify-center shadow-premium-md border border-slate-100">
+            <div className="w-20 h-20 rounded-[2rem] bg-card flex items-center justify-center shadow-premium-md border border-border">
               <ShieldCheck className="w-10 h-10 text-primary" />
             </div>
             <div>
@@ -288,9 +288,9 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Badge className="bg-white text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 9001 QUALITY</Badge>
-            <Badge className="bg-white text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 27001 READY</Badge>
-            <Badge className="bg-white text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">GDPR COMPLIANT</Badge>
+            <Badge className="bg-card text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 9001 QUALITY</Badge>
+            <Badge className="bg-card text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 27001 READY</Badge>
+            <Badge className="bg-card text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">GDPR COMPLIANT</Badge>
           </div>
         </div>
       </section>
@@ -300,7 +300,7 @@ export default function LandingPage() {
       <ContactSection />
 
       {/* Footer Final */}
-      <footer className="bg-white pt-24 pb-12 text-slate-500 border-t border-slate-100">
+      <footer className="bg-background pt-24 pb-12 text-slate-500 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-12 gap-12 mb-20">
             <div className="col-span-2 md:col-span-5 space-y-6">
@@ -362,7 +362,7 @@ export default function LandingPage() {
         aria-label="Contactar Mission Control"
       >
         <Smartphone className="w-7 h-7" />
-        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-slate-900 px-4 py-2 rounded-2xl text-xs font-black shadow-2xl opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 whitespace-nowrap pointer-events-none border border-slate-100">
+        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-card text-foreground px-4 py-2 rounded-2xl text-xs font-black shadow-2xl opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 whitespace-nowrap pointer-events-none border border-border">
           CONECTAR CON MISSION CONTROL
         </span>
       </button>
