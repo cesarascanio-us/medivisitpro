@@ -81,7 +81,7 @@ export default function HumanResources() {
     const [searchTerm, setSearchTerm] = useState("");
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50/50 dark:bg-background p-8 font-outfit transition-colors duration-500 overflow-y-auto">
+        <div className="min-h-screen flex flex-col bg-background p-8 font-outfit transition-colors duration-500 overflow-y-auto">
             
             {/* HEADER NATURISTA ELITE - TALENTO HUMANO */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-8 animate-in fade-in slide-in-from-top duration-700">
@@ -90,16 +90,16 @@ export default function HumanResources() {
                         <ShieldCheck className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-4xl font-black text-slate-800 dark:text-foreground tracking-tight leading-tight">Talento Humano</h1>
+                        <h1 className="text-4xl font-black text-foreground tracking-tight leading-tight">Talento Humano</h1>
                         <div className="flex items-center gap-2 mt-1">
-                            <Badge className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-none font-black text-[9px] uppercase tracking-widest px-3">Estrategia 2026</Badge>
-                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest pl-2 border-l border-slate-200 dark:border-border leading-none">Gestión Integral • V06-CA</p>
+                            <Badge className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 font-black text-[9px] uppercase tracking-widest px-3">Estrategia 2026</Badge>
+                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest pl-2 border-l border-border leading-none">Gestión Integral • V06-CA</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-12 px-6 border-slate-200 dark:border-border hover:bg-white dark:hover:bg-card bg-transparent rounded-2xl font-bold text-xs uppercase tracking-widest transition-all">
+                    <Button variant="outline" className="h-12 px-6 border-border hover:bg-card bg-transparent rounded-2xl font-bold text-xs uppercase tracking-widest transition-all">
                         <Scale className="mr-2 h-4 w-4" /> Auditoría
                     </Button>
                     <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/20 font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95">
@@ -146,43 +146,43 @@ export default function HumanResources() {
 
                 {/* Directorio de Empleados */}
                 <TabsContent value="directory" className="flex-1 min-h-0 flex flex-col gap-6 animate-in slide-in-from-bottom-5 duration-700">
-                    <Card className="bg-white dark:bg-card border border-slate-100 dark:border-border rounded-[1.5rem] shadow-soft p-4 shrink-0">
+                    <Card className="bg-card border border-border rounded-[1.5rem] shadow-soft p-4 shrink-0">
                         <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 dark:text-muted-foreground" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                             <Input
                                 placeholder="Busca por nombre, cargo o rol..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-12 h-14 bg-slate-50/50 dark:bg-muted/20 border-transparent focus-visible:ring-indigo-500 font-bold rounded-2xl text-slate-700 dark:text-foreground transition-all focus:bg-white dark:focus:bg-card shadow-inner"
+                                className="pl-12 h-14 bg-muted/20 border-transparent focus-visible:ring-indigo-500 font-bold rounded-2xl text-foreground transition-all focus:bg-card shadow-inner"
                             />
                         </div>
                     </Card>
 
-                    <Card className="flex-1 min-h-0 bg-white dark:bg-card border border-slate-100 dark:border-border rounded-[2rem] shadow-soft overflow-hidden flex flex-col p-6">
+                    <Card className="flex-1 min-h-0 bg-card border border-border rounded-[2rem] shadow-soft overflow-hidden flex flex-col p-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {EMPLOYEES.map((employee) => (
-                                <div key={employee.id} className="bg-slate-50/50 dark:bg-muted/10 rounded-2xl border border-slate-100 dark:border-border p-6 hover:bg-white dark:hover:bg-muted/20 transition-all group relative overflow-hidden">
+                                <div key={employee.id} className="bg-muted/10 rounded-2xl border border-border p-6 hover:bg-muted/20 transition-all group relative overflow-hidden">
                                     <div className="flex items-center justify-between mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-white dark:bg-card border border-slate-100 dark:border-border shadow-inner flex items-center justify-center group-hover:scale-110 transition-all group-hover:bg-indigo-600">
+                                        <div className="w-12 h-12 rounded-xl bg-card border border-border shadow-inner flex items-center justify-center group-hover:scale-110 transition-all group-hover:bg-indigo-600">
                                             <UserRound className="h-6 w-6 text-slate-400 group-hover:text-white" />
                                         </div>
-                                        <Badge className={cn("px-3 py-1 font-black text-[8px] uppercase tracking-widest rounded-full", employee.status === 'activo' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none' : 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-none')}>
+                                        <Badge className={cn("px-3 py-1 font-black text-[8px] uppercase tracking-widest rounded-full", employee.status === 'activo' ? 'bg-emerald-500/10 text-emerald-500 border-none' : 'bg-rose-500/10 text-rose-500 border-none')}>
                                             {employee.status}
                                         </Badge>
                                     </div>
                                     <div className="space-y-1 mb-6">
-                                        <h3 className="text-lg font-black text-slate-700 dark:text-foreground tracking-tight uppercase ">{employee.name}</h3>
-                                        <p className="text-[10px] text-slate-400 dark:text-muted-foreground font-black uppercase tracking-widest opacity-60 leading-none">{employee.role}</p>
+                                        <h3 className="text-lg font-black text-foreground tracking-tight uppercase ">{employee.name}</h3>
+                                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-60 leading-none">{employee.role}</p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4 pb-6 border-b border-slate-100 dark:border-border">
+                                    <div className="grid grid-cols-2 gap-4 pb-6 border-b border-border">
                                         <div className="space-y-1">
                                             <p className="text-[8px] uppercase text-slate-400 font-black tracking-widest">Antigüedad</p>
-                                            <p className="text-xs font-black text-slate-600 dark:text-foreground">{employee.seniority_months} Meses</p>
+                                            <p className="text-xs font-black text-foreground">{employee.seniority_months} Meses</p>
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-[8px] uppercase text-slate-400 font-black tracking-widest">Cumplimiento</p>
-                                            <p className="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tighter">{employee.lottt_status}</p>
+                                            <p className="text-xs font-black text-indigo-500 uppercase tracking-tighter">{employee.lottt_status}</p>
                                         </div>
                                     </div>
 
@@ -199,8 +199,8 @@ export default function HumanResources() {
                 {/* Módulo Legal LOTTT */}
                 <TabsContent value="legal" className="mt-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <Card className="lg:col-span-2 border border-slate-100 dark:border-border shadow-soft rounded-[2rem] bg-white dark:bg-card overflow-hidden">
-                            <CardHeader className="px-10 py-8 border-b border-slate-50 dark:border-border bg-slate-50/50 dark:bg-muted/5">
+                        <Card className="lg:col-span-2 border border-border shadow-soft rounded-[2rem] bg-card overflow-hidden">
+                            <CardHeader className="px-10 py-8 border-b border-border bg-muted/5">
                                 <CardTitle className="text-xl font-black uppercase tracking-tight  flex items-center gap-3">
                                     <FileCheck className="h-6 w-6 text-indigo-600" /> 
                                     Bóveda de Documentos
@@ -213,13 +213,13 @@ export default function HumanResources() {
                                     { doc: "Contrato de Confidencialidad (NDA)", date: "2026-02-20", status: "Firma Pendiente" },
                                     { doc: "Reporte Salud Ocupacional", date: "2025-12-05", status: "Vencido" }
                                 ].map((doc, idx) => (
-                                    <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-slate-50/50 dark:bg-muted/5 border border-slate-50 dark:border-border group hover:bg-white dark:hover:bg-muted/10 transition-all cursor-pointer">
+                                    <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-muted/5 border border-border group hover:bg-muted/10 transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg bg-white dark:bg-card border border-slate-100 dark:border-border flex items-center justify-center group-hover:bg-indigo-600 transition-all">
+                                            <div className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center group-hover:bg-indigo-600 transition-all">
                                                 <FileText className="h-5 w-5 text-slate-400 group-hover:text-white" />
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-700 dark:text-foreground uppercase text-xs tracking-tight">{doc.doc}</p>
+                                                <p className="font-black text-foreground uppercase text-xs tracking-tight">{doc.doc}</p>
                                                 <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Auditado: {doc.date}</p>
                                             </div>
                                         </div>
@@ -256,20 +256,20 @@ export default function HumanResources() {
                 </TabsContent>
 
                 <TabsContent value="simulator" className="mt-8">
-                    <Card className="border border-slate-100 dark:border-border shadow-soft bg-white dark:bg-card rounded-[2rem] max-w-xl mx-auto overflow-hidden">
-                        <div className="p-8 text-center border-b border-slate-50 dark:border-border">
-                            <h3 className="text-2xl font-black text-slate-700 dark:text-foreground tracking-tight uppercase ">Simulador de Prestaciones</h3>
+                    <Card className="border border-border shadow-soft bg-card rounded-[2rem] max-w-xl mx-auto overflow-hidden">
+                        <div className="p-8 text-center border-b border-border">
+                            <h3 className="text-2xl font-black text-foreground tracking-tight uppercase ">Simulador de Prestaciones</h3>
                             <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2">Motor de proyección LOTTT v6.0</p>
                         </div>
                         <CardContent className="p-10 space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Fecha de Ingreso</label>
-                                    <Input type="date" className="h-12 rounded-xl border-slate-100 bg-slate-50/50 dark:bg-muted/10 font-bold text-slate-700 dark:text-foreground" defaultValue="2024-01-15" />
+                                    <Input type="date" className="h-12 rounded-xl border-slate-100 bg-muted/10 font-bold text-foreground" defaultValue="2024-01-15" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Salario Base ($)</label>
-                                    <Input type="number" className="h-12 rounded-xl border-slate-100 bg-slate-50/50 dark:bg-muted/10 font-bold text-slate-700 dark:text-foreground" defaultValue="1500" />
+                                    <Input type="number" className="h-12 rounded-xl border-slate-100 bg-muted/10 font-bold text-foreground" defaultValue="1500" />
                                 </div>
                             </div>
                             <div className="bg-indigo-600 p-8 rounded-2xl border border-indigo-400 shadow-xl shadow-indigo-500/20 relative overflow-hidden text-center">
