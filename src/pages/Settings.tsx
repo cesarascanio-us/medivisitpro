@@ -320,20 +320,20 @@ export default function Settings() {
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-        <TabsList className="flex items-center gap-2 bg-slate-100/50 p-2 rounded-2xl w-fit border border-slate-200/50 shadow-inner">
-          <TabsTrigger value="profile" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest ">
+        <TabsList className="flex items-center gap-2 bg-slate-100/50 p-2 rounded-2xl w-fit border border-border shadow-inner">
+          <TabsTrigger value="profile" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest ">
             <User className="h-4 w-4" />
             Perfil
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest">
+          <TabsTrigger value="notifications" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest">
             <Bell className="h-4 w-4" />
             Alertas
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest">
+          <TabsTrigger value="appearance" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest">
             <Palette className="h-4 w-4" />
             Personalizado
           </TabsTrigger>
-          <TabsTrigger value="system" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest">
+          <TabsTrigger value="system" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest">
             <Settings2 className="h-4 w-4" />
             Infraestructura
           </TabsTrigger>
@@ -347,8 +347,8 @@ export default function Settings() {
 
         {/* Profile Tab */}
         <TabsContent value="profile" className="animate-in slide-in-from-left-4 duration-500">
-          <Card className="border-slate-100 shadow-premium-lg bg-white rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
+          <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Identidad del Colaborador</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Sincronización de credenciales y datos de contacto</CardDescription>
             </CardHeader>
@@ -429,10 +429,10 @@ export default function Settings() {
               </div>
 
               {/* Territories Multi-Select */}
-              <div className="space-y-4 bg-slate-50 pt-8 pb-8 px-8 rounded-3xl border border-slate-100 shadow-inner">
+              <div className="space-y-4 bg-slate-50 pt-8 pb-8 px-8 rounded-3xl border border-border shadow-inner">
                 <div className="flex items-center justify-between">
                   <Label className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                    <div className="p-2 bg-card rounded-lg shadow-sm">
                       <MapPin className="h-4 w-4 text-slate-900" />
                     </div>
                     Cobertura Geográfica Operativa
@@ -449,12 +449,12 @@ export default function Settings() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {AVAILABLE_TERRITORIES.map((territory) => (
-                    <div key={territory.id} className="flex items-center space-x-3 bg-white p-4 rounded-xl border border-slate-200/50 shadow-sm group hover:border-slate-300 transition-all cursor-pointer" onClick={() => toggleTerritory(territory.id)}>
+                    <div key={territory.id} className="flex items-center space-x-3 bg-card p-4 rounded-xl border border-border shadow-sm group hover:border-border transition-all cursor-pointer" onClick={() => toggleTerritory(territory.id)}>
                       <Checkbox
                         id={territory.id}
                         checked={profile.territories.includes(territory.id)}
                         onCheckedChange={() => toggleTerritory(territory.id)}
-                        className="data-[state=checked]:bg-slate-900 border-slate-300 rounded-md"
+                        className="data-[state=checked]:bg-slate-900 border-border rounded-md"
                       />
                       <label
                         htmlFor={territory.id}
@@ -497,8 +497,8 @@ export default function Settings() {
 
         {/* Notifications Tab */}
         <TabsContent value="notifications" className="animate-in slide-in-from-left-4 duration-500">
-          <Card className="border-slate-100 shadow-premium-lg bg-white rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
+          <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Alertas & Comunicaciones</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Configuración del radar de notificaciones en tiempo real</CardDescription>
             </CardHeader>
@@ -511,9 +511,9 @@ export default function Settings() {
                   { id: 'alerts', icon: AlertTriangle, label: 'Alertas de Objetivos', desc: 'Control de cuotas y desviaciones', checked: notifications.objective_alerts, key: 'objective_alerts' },
                 ].map((item) => (
                   <div key={item.id} className="group transition-all">
-                    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all">
+                    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-border transition-all">
                       <div className="flex items-center gap-5">
-                        <div className="p-3 bg-white rounded-xl shadow-soft group-hover:shadow-md transition-all">
+                        <div className="p-3 bg-card rounded-xl shadow-soft group-hover:shadow-md transition-all">
                           <item.icon className="h-5 w-5 text-primary" />
                         </div>
                         <div>
@@ -541,7 +541,7 @@ export default function Settings() {
                     <SelectTrigger id="reminder-time" className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                    <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
                       <SelectItem value="15">15 minutos antes</SelectItem>
                       <SelectItem value="30">30 minutos antes</SelectItem>
                       <SelectItem value="60">1 hora antes</SelectItem>
@@ -551,7 +551,7 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="flex justify-between pt-8 border-t border-slate-100">
+              <div className="flex justify-between pt-8 border-t border-border">
                 <Button variant="ghost" onClick={() => resetToDefaults('notifications')} className="text-[10px] font-black uppercase tracking-widest hover:bg-red-50 text-red-400 px-6 h-12 rounded-xl">
                   <RotateCcw className="h-4 w-4 mr-3" />
                   Restaurar Bóveda
@@ -567,8 +567,8 @@ export default function Settings() {
 
         {/* Appearance Tab */}
         <TabsContent value="appearance" className="animate-in slide-in-from-left-4 duration-500">
-          <Card className="border-slate-100 shadow-premium-lg bg-white rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
+          <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Identidad de Marca CA</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Soberanía visual y refinamiento de interfaz</CardDescription>
             </CardHeader>
@@ -616,7 +616,7 @@ export default function Settings() {
                       <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                      <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
                         <SelectItem value="es">Español Corporativo</SelectItem>
                         <SelectItem value="en">English (Global)</SelectItem>
                         <SelectItem value="pt">Português (Região)</SelectItem>
@@ -636,7 +636,7 @@ export default function Settings() {
                       <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                      <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
                         <SelectItem value="small">ISO Small</SelectItem>
                         <SelectItem value="medium">ISO Standard</SelectItem>
                         <SelectItem value="large">ISO Display</SelectItem>
@@ -647,9 +647,9 @@ export default function Settings() {
 
                 <Separator className="bg-slate-100" />
 
-                <div className="flex items-center justify-between bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <div className="flex items-center justify-between bg-slate-50 p-6 rounded-2xl border border-border">
                   <div className="flex items-center gap-5">
-                    <div className="p-3 bg-white rounded-xl shadow-soft">
+                    <div className="p-3 bg-card rounded-xl shadow-soft">
                       <LayoutGrid className="h-5 w-5 text-primary" />
                     </div>
                     <div>
@@ -665,7 +665,7 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="flex justify-between pt-8 border-t border-slate-100">
+              <div className="flex justify-between pt-8 border-t border-border">
                 <Button variant="ghost" onClick={() => resetToDefaults('appearance')} className="text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 text-slate-400 px-6 h-12 rounded-xl">
                   <RotateCcw className="h-4 w-4 mr-3" />
                   Reset Visual
@@ -681,8 +681,8 @@ export default function Settings() {
 
         {/* System Tab */}
         <TabsContent value="system" className="animate-in slide-in-from-left-4 duration-500">
-          <Card className="border-slate-100 shadow-premium-lg bg-white rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
+          <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Arquitectura de Infraestructura</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Ajustes avanzados de sincronización y datos</CardDescription>
             </CardHeader>
@@ -694,9 +694,9 @@ export default function Settings() {
                   { id: 'analytics', icon: BarChart3, label: 'Telemetría de Rendimiento', desc: 'Recolección de métricas de uso anónimas', checked: system.analytics_enabled, key: 'analytics_enabled' },
                 ].map((item) => (
                   <div key={item.id} className="group">
-                    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all">
+                    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-border transition-all">
                       <div className="flex items-center gap-5">
-                        <div className="p-3 bg-white rounded-xl shadow-soft">
+                        <div className="p-3 bg-card rounded-xl shadow-soft">
                           <item.icon className="h-5 w-5 text-primary" />
                         </div>
                         <div>
@@ -727,7 +727,7 @@ export default function Settings() {
                     <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                    <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
                       <SelectItem value="1">Ciclo de 1 Minuto</SelectItem>
                       <SelectItem value="5">Ciclo de 5 Minutos</SelectItem>
                       <SelectItem value="15">Ciclo de 15 Minutos</SelectItem>
@@ -737,7 +737,7 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="flex justify-between pt-8 border-t border-slate-100">
+              <div className="flex justify-between pt-8 border-t border-border">
                 <Button variant="ghost" onClick={() => resetToDefaults('system')} className="text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 text-slate-400 px-6 h-12 rounded-xl">
                   <RotateCcw className="h-4 w-4 mr-3" />
                   Restaurar Core
@@ -755,10 +755,10 @@ export default function Settings() {
         {isMaster && (
           <TabsContent value="organization" className="animate-in slide-in-from-left-4 duration-500">
             <div className="space-y-8">
-              <Card className="border-red-100 shadow-premium-lg bg-white rounded-[2rem] overflow-hidden">
+              <Card className="border-red-100 shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
                 <CardHeader className="bg-red-50/50 border-b border-red-100 p-8">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white rounded-2xl shadow-soft">
+                    <div className="p-3 bg-card rounded-2xl shadow-soft">
                       <ShieldAlert className="h-6 w-6 text-red-500" />
                     </div>
                     <div>
@@ -794,7 +794,7 @@ export default function Settings() {
 
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-        <DialogContent className="sm:max-w-[500px] bg-white rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+        <DialogContent className="sm:max-w-[500px] bg-card rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
           <div className="p-10 space-y-8">
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center border-4 border-white shadow-xl shadow-red-100">
