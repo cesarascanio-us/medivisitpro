@@ -198,7 +198,7 @@ export default function PMBOKMaster() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-12 border-slate-200 bg-white shadow-sm rounded-lg text-slate-700">
+                    <Button variant="outline" className="h-12 border-slate-200 bg-card shadow-sm rounded-lg text-slate-700">
                         <FileText className="h-4 w-4 mr-2" />
                         Auditoría ISO 9001
                     </Button>
@@ -238,7 +238,7 @@ export default function PMBOKMaster() {
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             transition={{ duration: 0.3, ease: "easeOut" }}
                                         >
-                                            <Card className="bg-white/80 backdrop-blur-md border border-white/50 shadow-[0_10px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.1)] transition-all duration-300 group overflow-hidden rounded-xl border-l-4 border-l-[#0056b3]">
+                                            <Card className="bg-background/80 backdrop-blur-md border border-white/50 shadow-[0_10px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.1)] transition-all duration-300 group overflow-hidden rounded-xl border-l-4 border-l-[#0056b3]">
                                                 <CardContent className="p-5 space-y-4">
                                                     <div className="flex justify-between items-start">
                                                         <Badge variant="outline" className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400 border-none">

@@ -20,7 +20,7 @@ export default function PublicProductPage() {
     return (
         <div className="min-h-screen bg-slate-100">
             {/* Public Header */}
-            <header className="bg-white border-b py-3 px-6 flex justify-between items-center sticky top-0 z-50">
+            <header className="bg-card border-b py-3 px-6 flex justify-between items-center sticky top-0 z-50">
                 <div className="font-bold text-xl text-blue-600 flex items-center gap-2">
                     <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">M</div>
                     MediVisitPro <span className="text-slate-400 font-normal text-sm">| Catálogo Digital</span>

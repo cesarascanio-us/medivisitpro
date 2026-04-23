@@ -226,7 +226,7 @@ export default function Dashboard() {
               <span className="text-sm font-black text-slate-900 tracking-tight uppercase  mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             <div className="h-12 w-[1px] bg-slate-100 mx-2" />
-            <div className="flex items-center gap-4 bg-white p-2 pr-6 rounded-2xl shadow-premium-sm border border-slate-100 group hover:shadow-premium-md transition-all">
+            <div className="flex items-center gap-4 bg-card p-2 pr-6 rounded-2xl shadow-premium-sm border border-slate-100 group hover:shadow-premium-md transition-all">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 overflow-hidden group-hover:rotate-6 transition-transform">
                 <span className="text-lg font-black text-primary uppercase">
                   {getWelcomeName().charAt(0)}
@@ -298,10 +298,10 @@ export default function Dashboard() {
             
             <div className="grid gap-4">
               {loading ? (
-                [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-white rounded-[2.5rem] border border-slate-100 animate-pulse shadow-soft"></div>)
+                [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-card rounded-[2.5rem] border border-slate-100 animate-pulse shadow-soft"></div>)
               ) : upcomingVisits.length > 0 ? (
                 upcomingVisits.map((visit) => (
-                  <Card key={visit.id} className="border border-slate-100 bg-white shadow-premium-sm hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 rounded-[2.5rem] overflow-hidden group cursor-pointer" onClick={() => navigate(`/visits?id=${visit.id}`)}>
+                  <Card key={visit.id} className="border border-slate-100 bg-card shadow-premium-sm hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 rounded-[2.5rem] overflow-hidden group cursor-pointer" onClick={() => navigate(`/visits?id=${visit.id}`)}>
                     <CardContent className="p-8">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-6">
@@ -333,7 +333,7 @@ export default function Dashboard() {
                   </Card>
                 ))
               ) : (
-                <div className="bg-white border border-slate-100 rounded-[3rem] p-24 text-center shadow-premium-sm">
+                <div className="bg-card border border-slate-100 rounded-[3rem] p-24 text-center shadow-premium-sm">
                    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                       <Calendar className="h-10 w-10 text-slate-200" />
                    </div>
@@ -354,7 +354,7 @@ export default function Dashboard() {
                     <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Telemetría de campo en tiempo real</p>
                 </div>
             </div>
-            <Card className="border border-slate-100 bg-white shadow-premium-lg rounded-[3rem] p-10 relative overflow-hidden">
+            <Card className="border border-slate-100 bg-card shadow-premium-lg rounded-[3rem] p-10 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full -mr-32 -mt-32 blur-3xl" />
                {recentActivity.length > 0 ? (
                  <div className="space-y-10 relative z-10">
@@ -363,7 +363,7 @@ export default function Dashboard() {
                         {idx !== recentActivity.length - 1 && (
                           <div className="absolute left-4 top-10 bottom-[-2.5rem] w-[2px] bg-slate-100" />
                         )}
-                        <div className="h-8 w-8 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center relative z-10 transition-transform group-hover:scale-125 shadow-sm">
+                        <div className="h-8 w-8 rounded-full bg-card border-2 border-emerald-500 flex items-center justify-center relative z-10 transition-transform group-hover:scale-125 shadow-sm">
                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
                         <div className="flex-1 space-y-1">

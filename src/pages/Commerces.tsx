@@ -83,10 +83,10 @@ export default function Commerces() {
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-3 ml-20 ">Gestión de Puntos de Venta Masivos y Retail Estratégico</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Button variant="outline" onClick={() => exportToCSV(commerces, 'canal_comercio')} className="bg-white border-slate-100 text-slate-900 rounded-2xl h-14 px-8 font-black uppercase  text-xs hover:bg-slate-50 transition-all duration-300 shadow-soft">
+                    <Button variant="outline" onClick={() => exportToCSV(commerces, 'canal_comercio')} className="bg-card border-slate-100 text-slate-900 rounded-2xl h-14 px-8 font-black uppercase  text-xs hover:bg-slate-50 transition-all duration-300 shadow-soft">
                         <Download className="h-4 w-4 mr-3 text-primary" /> EXPORTAR
                     </Button>
-                    <Button variant="outline" className="bg-white border-slate-100 text-slate-900 rounded-2xl h-14 px-8 font-black uppercase  text-xs hover:bg-slate-50 transition-all duration-300 shadow-soft">
+                    <Button variant="outline" className="bg-card border-slate-100 text-slate-900 rounded-2xl h-14 px-8 font-black uppercase  text-xs hover:bg-slate-50 transition-all duration-300 shadow-soft">
                         <Upload className="h-4 w-4 mr-3 text-primary" /> IMPORTAR
                     </Button>
                     <Button onClick={() => { setIsEditing(false); setFormDialogOpen(true); }} className="bg-primary text-white rounded-2xl h-14 px-10 font-black uppercase  text-xs hover:bg-primary/90 shadow-premium-md transition-all duration-300 hover:scale-105 active:scale-95">
@@ -105,7 +105,7 @@ export default function Commerces() {
                     { label: "Cobertura Canal", value: "94%", color: "text-primary" },
                     { label: "Visitas Hoy", value: "12", color: "text-rose-500" }
                 ].map((kpi, i) => (
-                    <Card key={i} className="bg-white border border-slate-100 rounded-[2rem] p-8 shadow-premium-md border-l-4 border-l-primary relative overflow-hidden group hover:bg-slate-50 transition-all duration-500">
+                    <Card key={i} className="bg-card border border-slate-100 rounded-[2rem] p-8 shadow-premium-md border-l-4 border-l-primary relative overflow-hidden group hover:bg-slate-50 transition-all duration-500">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ">{kpi.label}</p>
                         <div className={cn("text-5xl font-black  tracking-tighter leading-none tabular-nums", kpi.color)}>{kpi.value}</div>
@@ -125,7 +125,7 @@ export default function Commerces() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     {commerces.map((commerce) => (
-                        <Card key={commerce.id} className="bg-white border border-slate-100 rounded-[3rem] overflow-hidden hover:border-primary/30 transition-all duration-500 group relative shadow-premium-md hover:shadow-premium-lg">
+                        <Card key={commerce.id} className="bg-card border border-slate-100 rounded-[3rem] overflow-hidden hover:border-primary/30 transition-all duration-500 group relative shadow-premium-md hover:shadow-premium-lg">
                             <CardHeader className="p-10 pb-4">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-3">
@@ -149,8 +149,8 @@ export default function Commerces() {
                                 </div>
                             </CardContent>
                             <CardFooter className="p-6 bg-slate-50 flex gap-3 border-t border-slate-100">
-                                <Button variant="ghost" onClick={() => navigate(`/visits/execution/new?contactId=${commerce.id}`)} className="flex-1 bg-white border border-slate-100 rounded-2xl h-12 text-[10px] font-black uppercase hover:bg-primary hover:text-white transition-all shadow-soft">NUEVA VISITA</Button>
-                                <Button onClick={() => handleEdit(commerce)} variant="ghost" className="bg-white border border-slate-100 rounded-2xl h-12 px-4 hover:bg-primary/10 hover:text-primary text-slate-400 shadow-soft"><Pencil className="h-4 w-4" /></Button>
+                                <Button variant="ghost" onClick={() => navigate(`/visits/execution/new?contactId=${commerce.id}`)} className="flex-1 bg-card border border-slate-100 rounded-2xl h-12 text-[10px] font-black uppercase hover:bg-primary hover:text-white transition-all shadow-soft">NUEVA VISITA</Button>
+                                <Button onClick={() => handleEdit(commerce)} variant="ghost" className="bg-card border border-slate-100 rounded-2xl h-12 px-4 hover:bg-primary/10 hover:text-primary text-slate-400 shadow-soft"><Pencil className="h-4 w-4" /></Button>
                             </CardFooter>
                         </Card>
                     ))}

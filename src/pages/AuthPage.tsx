@@ -108,14 +108,14 @@ export default function AuthPage() {
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="min-h-screen flex items-center justify-center bg-card">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-white flex flex-col lg:flex-row font-display overflow-y-auto">
+        <div className="min-h-screen bg-card flex flex-col lg:flex-row font-display overflow-y-auto">
             {/* Seccion Izquierda: Hero & Features - Elite Titanium Edition */}
             <div className="hidden lg:flex flex-[1.4] relative flex-col justify-center p-16 xl:p-28 overflow-hidden bg-primary">
                 {/* Hero Background with Deep Glassmorphism Overlay */}
@@ -132,7 +132,7 @@ export default function AuthPage() {
                 <div className="absolute -bottom-40 -left-20 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px]" />
 
                 <div className="relative z-10 max-w-2xl">
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl mb-16 backdrop-blur-3xl shadow-2xl transition-all hover:bg-white/10 group">
+                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-background/5 border border-white/10 rounded-2xl mb-16 backdrop-blur-3xl shadow-2xl transition-all hover:bg-background/10 group">
                         <Zap className="w-5 h-5 text-secondary fill-secondary group-hover:scale-125 transition-transform" />
                         <span className="text-[11px] font-black text-white uppercase tracking-[0.4em] leading-none">Nueva Era en Visita Médica</span>
                     </div>
@@ -161,7 +161,7 @@ export default function AuthPage() {
                             { icon: CheckCircle2, text: 'Muestras Control' }
                         ].map((item, idx) => (
                             <div key={idx} className="flex items-center gap-4 lg:gap-5 group cursor-default">
-                                <div className="w-10 h-10 lg:w-14 lg:h-14 bg-white/5 rounded-xl lg:rounded-2xl group-hover:bg-white/10 transition-all border border-white/5 shadow-2xl flex items-center justify-center backdrop-blur-3xl group-hover:scale-110 duration-500">
+                                <div className="w-10 h-10 lg:w-14 lg:h-14 bg-background/5 rounded-xl lg:rounded-2xl group-hover:bg-background/10 transition-all border border-white/5 shadow-2xl flex items-center justify-center backdrop-blur-3xl group-hover:scale-110 duration-500">
                                     <item.icon className="w-5 h-5 lg:w-7 lg:h-7 text-secondary" />
                                 </div>
                                 <span className="font-black text-white text-xs lg:text-lg tracking-tight uppercase opacity-80 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">{item.text}</span>
@@ -181,7 +181,7 @@ export default function AuthPage() {
             </div>
 
             {/* Seccion Derecha: El Panel de Control Elite */}
-                    <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-white relative min-h-screen">
+                    <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-card relative min-h-screen">
                 <div className="w-full max-w-[460px] animate-in fade-in slide-in-from-right-12 duration-1000">
                     {/* Brand Mobile */}
                     <div className="lg:hidden text-center mb-12">
@@ -226,15 +226,15 @@ export default function AuthPage() {
                             <div className="w-full border-t border-slate-100" />
                         </div>
                         <div className="relative flex justify-center px-6">
-                            <span className="bg-white px-6 text-slate-400 font-black tracking-[0.4em] text-[9px] uppercase opacity-40">Identificación de Usuario</span>
+                            <span className="bg-card px-6 text-slate-400 font-black tracking-[0.4em] text-[9px] uppercase opacity-40">Identificación de Usuario</span>
                         </div>
                     </div>
 
-                    <Card className="border-none bg-white shadow-premium-lg rounded-[4rem] overflow-hidden p-3 border-4 border-slate-50">
+                    <Card className="border-none bg-card shadow-premium-lg rounded-[4rem] overflow-hidden p-3 border-4 border-slate-50">
                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                             <TabsList className="grid w-full grid-cols-2 bg-slate-50 p-1.5 rounded-xl lg:rounded-2xl mb-5">
-                                <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-soft rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Login</TabsTrigger>
-                                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-soft rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Registro</TabsTrigger>
+                                <TabsTrigger value="login" className="data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-soft rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Login</TabsTrigger>
+                                <TabsTrigger value="signup" className="data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-soft rounded-lg lg:rounded-xl h-11 lg:h-16 text-[10px] lg:text-xs font-black tracking-[0.2em] transition-all uppercase">Registro</TabsTrigger>
                             </TabsList>
 
                             <CardContent className="pt-6 pb-12 px-8">
@@ -252,7 +252,7 @@ export default function AuthPage() {
                                                     placeholder="EMAIL@SISTEMA.COM"
                                                     value={loginEmail}
                                                     onChange={(e) => setLoginEmail(e.target.value)}
-                                                    className="pl-14 h-14 lg:h-20 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase tracking-tight shadow-sm hover:bg-white"
+                                                    className="pl-14 h-14 lg:h-20 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase tracking-tight shadow-sm hover:bg-card"
                                                     required
                                                 />
                                             </div>
@@ -270,7 +270,7 @@ export default function AuthPage() {
                                                     placeholder="••••••••"
                                                     value={loginPassword}
                                                     onChange={(e) => setLoginPassword(e.target.value)}
-                                                    className="pl-14 h-14 lg:h-20 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase shadow-sm hover:bg-white"
+                                                    className="pl-14 h-14 lg:h-20 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 focus:ring-0 focus:border-primary/40 rounded-xl lg:rounded-2xl text-base lg:text-lg transition-all font-black uppercase shadow-sm hover:bg-card"
                                                     required
                                                 />
                                             </div>
@@ -280,7 +280,7 @@ export default function AuthPage() {
                                             {loading ? <Loader2 className="h-8 w-8 lg:h-10 lg:w-10 animate-spin text-white" /> : (
                                                 <div className="flex items-center gap-3 lg:gap-4">
                                                     <span>AUTENTICAR</span>
-                                                    <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                                    <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-background/10 flex items-center justify-center group-hover:bg-background/20 transition-colors">
                                                         <ArrowRight className="w-4 h-4 lg:w-5 lg:h-5 group-hover:translate-x-2 transition-transform duration-500" />
                                                     </div>
                                                 </div>

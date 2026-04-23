@@ -193,7 +193,7 @@ export default function PharmaciesElite() {
                 statusColor="bg-primary"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="h-14 px-8 rounded-2xl border-slate-100 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <Download className="mr-3 h-5 w-5 text-primary" /> Exportar
                         </Button>
                         <Button
@@ -255,7 +255,7 @@ export default function PharmaciesElite() {
                 <TabsContent value="pharmacies" className="animate-in slide-in-from-bottom-5 duration-700">
                     {/* SEARCH AREA PREMIUM */}
                     <div className="mb-10">
-                        <Card className="bg-white border border-slate-100 rounded-[2.5rem] shadow-premium-sm p-6 flex-1 flex flex-col md:flex-row gap-6 relative overflow-hidden group/search">
+                        <Card className="bg-card border border-slate-100 rounded-[2.5rem] shadow-premium-sm p-6 flex-1 flex flex-col md:flex-row gap-6 relative overflow-hidden group/search">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl opacity-0 group-hover/search:opacity-100 transition-opacity" />
                             <div className="flex-1 relative">
                                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-300 group-focus-within/search:text-primary transition-colors" />
@@ -271,10 +271,10 @@ export default function PharmaciesElite() {
 
                     <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3">
                         {loading ? (
-                            Array(6).fill(0).map((_, i) => <div key={i} className="h-80 bg-white rounded-[3rem] animate-pulse border border-slate-100 shadow-premium-sm" />)
+                            Array(6).fill(0).map((_, i) => <div key={i} className="h-80 bg-card rounded-[3rem] animate-pulse border border-slate-100 shadow-premium-sm" />)
                         ) : filteredPharmacies.length === 0 ? (
                             <div className="col-span-full flex flex-col items-center justify-center py-24 bg-slate-50/50 rounded-[4rem] border border-dashed border-slate-200">
-                                <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-soft mb-6">
+                                <div className="w-24 h-24 rounded-full bg-card flex items-center justify-center shadow-soft mb-6">
                                     <Store className="h-10 w-10 text-slate-200" />
                                 </div>
                                 <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2 font-display">Sin Activos Registrados</h3>
@@ -282,7 +282,7 @@ export default function PharmaciesElite() {
                             </div>
                         ) : (
                             filteredPharmacies.map(pharma => (
-                                <Card key={pharma.id} className="bg-white border-slate-100 rounded-[3rem] overflow-hidden hover:border-primary/30 transition-all duration-700 group relative shadow-premium-sm hover:shadow-premium-xl cursor-pointer" onClick={() => { setSelectedPharmacyView(pharma); setViewPharmacyDialogOpen(true); }}>
+                                <Card key={pharma.id} className="bg-card border-slate-100 rounded-[3rem] overflow-hidden hover:border-primary/30 transition-all duration-700 group relative shadow-premium-sm hover:shadow-premium-xl cursor-pointer" onClick={() => { setSelectedPharmacyView(pharma); setViewPharmacyDialogOpen(true); }}>
                                     <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-50 overflow-hidden">
                                         <div className="h-full bg-primary/20 w-1/4 transition-all duration-1000 group-hover:w-full group-hover:bg-primary" />
                                     </div>
@@ -324,7 +324,7 @@ export default function PharmaciesElite() {
                                             pharmacyId={pharma.id}
                                             pharmacyName={pharma.name}
                                             trigger={
-                                                <Button onClick={(e) => e.stopPropagation()} variant="ghost" className="w-12 h-12 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
+                                                <Button onClick={(e) => e.stopPropagation()} variant="ghost" className="w-12 h-12 rounded-xl border border-slate-200 bg-card hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
                                                     <Package className="h-5 w-5" />
                                                 </Button>
                                             }
@@ -337,7 +337,7 @@ export default function PharmaciesElite() {
                 </TabsContent>
 
                 <TabsContent value="transfers" className="animate-in slide-in-from-bottom-5 duration-700">
-                    <Card className="bg-white border border-slate-100 rounded-[3rem] shadow-premium-lg p-10">
+                    <Card className="bg-card border border-slate-100 rounded-[3rem] shadow-premium-lg p-10">
                          <div className="flex items-center justify-between mb-10">
                             <div>
                                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter font-display leading-none">Logística de Transferencia</h2>
@@ -380,7 +380,7 @@ export default function PharmaciesElite() {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell className="pr-10 text-right">
-                                                    <Button variant="ghost" className="h-10 w-10 bg-white border border-slate-100 text-slate-400 hover:text-primary rounded-xl transition-all shadow-sm">
+                                                    <Button variant="ghost" className="h-10 w-10 bg-card border border-slate-100 text-slate-400 hover:text-primary rounded-xl transition-all shadow-sm">
                                                         <Eye className="h-4 w-4" />
                                                     </Button>
                                                 </TableCell>

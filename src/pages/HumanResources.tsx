@@ -236,16 +236,16 @@ export default function HumanResources() {
 
                         <div className="space-y-6">
                             <Card className="border-none shadow-xl shadow-indigo-500/10 rounded-[2rem] bg-indigo-600 text-white overflow-hidden p-8 relative">
-                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-background/10 rounded-full blur-2xl"></div>
                                 <CardTitle className="text-lg font-black uppercase tracking-widest flex items-center gap-3 relative z-10 mb-6 font-outfit leading-none">
                                     <AlertCircle className="h-5 w-5" /> Notificaciones
                                 </CardTitle>
                                 <div className="space-y-4 relative z-10">
-                                    <div className="p-5 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-all">
+                                    <div className="p-5 bg-background/10 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-background/20 transition-all">
                                         <p className="text-[9px] font-black uppercase tracking-widest text-white/60 mb-1 leading-none">Urgente</p>
                                         <p className="text-xs font-black  uppercase leading-tight">Actualizar Expediente Morffe</p>
                                     </div>
-                                    <div className="p-5 bg-white/5 rounded-xl border border-white/5 opacity-80">
+                                    <div className="p-5 bg-background/5 rounded-xl border border-white/5 opacity-80">
                                         <p className="text-[9px] font-black uppercase tracking-widest text-white/40 mb-1 leading-none">Nómina</p>
                                         <p className="text-xs font-black  uppercase leading-tight">Cierre Ciclo Vacacional</p>
                                     </div>

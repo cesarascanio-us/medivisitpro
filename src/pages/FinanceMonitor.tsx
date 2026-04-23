@@ -318,12 +318,12 @@ export default function FinanceMonitor() {
                         </div>
                         
                         <div className="space-y-4">
-                            <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-md">
+                            <div className="bg-background/10 p-4 rounded-2xl backdrop-blur-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="text-sm font-bold opacity-80">Salud Financiera</span>
                                     <Badge className="bg-emerald-400 text-white border-none">Excelente</Badge>
                                 </div>
-                                <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+                                <div className="w-full bg-background/20 h-2 rounded-full overflow-hidden">
                                     <div className="bg-emerald-400 h-full rounded-full" style={{ width: '85%' }}></div>
                                 </div>
                             </div>

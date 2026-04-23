@@ -218,7 +218,7 @@ export default function LandingPage() {
 
             {/* Interface Showcase - Fixed for Responsive */}
             <div className="lg:col-span-5 relative mt-12 lg:mt-0 px-4 sm:px-0">
-              <div className="relative z-10 bg-white/20 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/30 p-3 transform lg:perspective-1000 lg:rotate-y-6 lg:hover:rotate-y-0 transition-all duration-1000 max-w-full overflow-hidden group">
+              <div className="relative z-10 bg-background/20 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/30 p-3 transform lg:perspective-1000 lg:rotate-y-6 lg:hover:rotate-y-0 transition-all duration-1000 max-w-full overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <img
                   src="/img/landing/hero-premium.png"

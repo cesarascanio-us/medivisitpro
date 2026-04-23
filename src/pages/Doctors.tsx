@@ -261,10 +261,10 @@ export default function Doctors() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="h-14 px-8 rounded-2xl border-slate-100 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <Download className="h-5 w-5 mr-3 text-primary" /> Exportar
                         </Button>
-                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 rounded-2xl border-slate-100 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             {importing ? <RefreshCw className="animate-spin h-5 w-5 mr-3 text-primary" /> : <Upload className="h-5 w-5 mr-3 text-primary" />} Importar
                         </Button>
                         <Button onClick={() => setDialogOpen(true)} className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
@@ -359,7 +359,7 @@ export default function Doctors() {
                                 <Button onClick={(e) => { e.stopPropagation(); navigate(`/agenda?doctorId=${doc.id}&doctorName=${encodeURIComponent(doc.name)}`); }} className="flex-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 shadow-premium-md h-12">
                                     <Calendar className="h-4 w-4 mr-2" /> AGENDAR
                                 </Button>
-                                <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleEdit(doc); }} className="w-12 h-12 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
+                                <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleEdit(doc); }} className="w-12 h-12 rounded-xl border border-slate-200 bg-card hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
                                     <Pencil className="h-4 w-4" />
                                 </Button>
                             </CardFooter>

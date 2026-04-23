@@ -60,7 +60,7 @@ export default function ComparisonPage() {
                             <Button 
                                 onClick={() => navigate('/auth')}
                                 variant="outline"
-                                className="border-slate-800 text-slate-400 hover:bg-white/5 font-bold py-8 px-10 rounded-none transform skew-x-[-10deg] transition-all"
+                                className="border-slate-800 text-slate-400 hover:bg-background/5 font-bold py-8 px-10 rounded-none transform skew-x-[-10deg] transition-all"
                             >
                                 <span className="skew-x-[10deg] uppercase tracking-widest flex items-center gap-2">
                                     Registrar Empresa <ArrowRight className="w-4 h-4" />
@@ -153,7 +153,7 @@ export default function ComparisonPage() {
                     <h2 className="text-3xl md:text-5xl font-black  uppercase text-white mb-8 tracking-tighter">¿Listo para la <span className="text-blue-500 underline decoration-indigo-500 decoration-4 underline-offset-8">Soberanía Digital</span>?</h2>
                     <Button 
                         onClick={() => navigate('/auth')}
-                        className="bg-white text-black hover:bg-slate-200 font-black px-12 py-8 rounded-none uppercase tracking-widest shadow-2xl hover:scale-105 transition-all"
+                        className="bg-card text-black hover:bg-slate-200 font-black px-12 py-8 rounded-none uppercase tracking-widest shadow-2xl hover:scale-105 transition-all"
                     >
                         Comenzar Ahora - 100% Gratis
                     </Button>

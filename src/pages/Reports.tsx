@@ -41,6 +41,8 @@ export default function Reports() {
   const [loading, setLoading] = useState(true);
   const [heatmapType, setHeatmapType] = useState<"doctor" | "pharmacy" | "health_center" | "natural_store" | "drugstore" | "commerce">("pharmacy");
   const chartTheme = useChartTheme();
+  const hasAdvancedReports = useFeatureAccess('advanced_reports');
+  const hasGeolocalization = useFeatureAccess('geolocalization');
 
   // State for SQL View Data
   const [gerencialKpis, setGerencialKpis] = useState<{
@@ -82,6 +84,7 @@ export default function Reports() {
       loadNextGenData();
       loadOrgSettings();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, timeRange, userRole]);
 
   const loadOrgSettings = async () => {
@@ -102,6 +105,7 @@ export default function Reports() {
       loadHeatmapData();
       loadCorrelationData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, heatmapType]);
 
   const loadCorrelationData = async () => {
@@ -254,7 +258,7 @@ export default function Reports() {
         </div>
       </div>
 
-      {!useFeatureAccess('advanced_reports') && (
+      {!hasAdvancedReports && (
         <SubscriptionLock
           featureName="Métricas Gerenciales"
           requiredPlan="Profesional"
@@ -262,7 +266,7 @@ export default function Reports() {
         />
       )}
 
-      <div className={!useFeatureAccess('advanced_reports') ? "opacity-20 pointer-events-none filter blur-sm grayscale select-none mt-6" : "mt-6"}>
+      <div className={!hasAdvancedReports ? "opacity-20 pointer-events-none filter blur-sm grayscale select-none mt-6" : "mt-6"}>
         {/* NIVEL 1: Impact KPI Cards */}
         {/* NIVEL 2: Strategy 360 KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
@@ -404,7 +408,7 @@ export default function Reports() {
           </Card>
         </div>
         {/* Heatmap Section */}
-        <Card className="mt-6 shadow-premium-md overflow-hidden border-slate-100 bg-white">
+        <Card className="mt-6 shadow-premium-md overflow-hidden border-slate-100 bg-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 bg-slate-50/50 border-b border-slate-100">
             <div>
               <CardTitle className="text-xl font-black flex items-center text-slate-900 uppercase tracking-tight font-display">
@@ -414,10 +418,10 @@ export default function Reports() {
               <CardDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
             <Select value={heatmapType} onValueChange={(v: any) => setHeatmapType(v)}>
-              <SelectTrigger className="w-[200px] bg-white border-slate-200 text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-xl">
+              <SelectTrigger className="w-[200px] bg-card border-slate-200 text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-xl">
                 <SelectValue placeholder="Tipo de Punto" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-slate-100 text-slate-900 shadow-xl rounded-xl">
+              <SelectContent className="bg-card border-slate-100 text-slate-900 shadow-xl rounded-xl">
                 <SelectItem value="doctor" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Stethoscope className="h-3.5 w-3.5" /> Médicos</div></SelectItem>
                 <SelectItem value="pharmacy" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Store className="h-3.5 w-3.5" /> Farmacias</div></SelectItem>
                 <SelectItem value="health_center" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5" /> Centros Salud</div></SelectItem>
@@ -428,7 +432,7 @@ export default function Reports() {
             </Select>
           </CardHeader>
           <CardContent className="p-0 relative h-[550px]">
-            {!useFeatureAccess('geolocalization') && (
+            {!hasGeolocalization && (
               <SubscriptionLock
                 featureName="Heatmap Táctico"
                 requiredPlan="Empresarial"
@@ -436,7 +440,7 @@ export default function Reports() {
               />
             )}
 
-            <div className={!useFeatureAccess('geolocalization') ? "h-full w-full opacity-30 pointer-events-none filter blur-sm grayscale select-none" : "h-full w-full"}>
+            <div className={!hasGeolocalization ? "h-full w-full opacity-30 pointer-events-none filter blur-sm grayscale select-none" : "h-full w-full"}>
               <MapContainer
                 center={[10.4806, -66.9036]}
                 zoom={12}
@@ -449,7 +453,7 @@ export default function Reports() {
                 />
                 <VisitHeatmap
                   visits={heatmapData}
-                  show={useFeatureAccess('geolocalization')}
+                  show={hasGeolocalization}
                 />
               </MapContainer>
             </div>
@@ -470,7 +474,7 @@ export default function Reports() {
           <CardContent className="p-10">
             <div className="space-y-4">
               {correlationData.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-4 bg-white rounded-xl border border-emerald-100 shadow-sm">
+                <div key={idx} className="flex items-center justify-between p-4 bg-card rounded-xl border border-emerald-100 shadow-sm">
                   <div className="flex items-center gap-4">
                     <div className="p-2 bg-emerald-50 rounded-full">
                       <UserRound className="h-5 w-5 text-emerald-600" />

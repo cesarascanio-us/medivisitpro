@@ -108,7 +108,7 @@ export default function DemoPage() {
 
                 {/* Progress Bar */}
                 <div className="space-y-3">
-                    <div className="h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                    <div className="h-3 bg-muted rounded-full overflow-hidden shadow-inner">
                         <div
                             className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500 ease-out shadow-[0_0_10px_rgba(0,86,179,0.3)]"
                             style={{ width: `${progress}%` }}
@@ -129,7 +129,7 @@ export default function DemoPage() {
                             className="flex flex-col items-center gap-2 opacity-0 animate-in fade-in slide-in-from-bottom-4"
                             style={{ animationDelay: `${i * 100}ms`, animationFillMode: 'forwards' }}
                         >
-                            <div className="w-12 h-12 rounded-2xl bg-white border border-gray-100 shadow-soft flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-2xl bg-card border border-border shadow-soft flex items-center justify-center">
                                 <feature.icon className="w-6 h-6 text-primary" />
                             </div>
                             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{feature.label}</span>

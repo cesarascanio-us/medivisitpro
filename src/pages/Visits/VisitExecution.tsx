@@ -1180,7 +1180,7 @@ export default function VisitExecutionPage() {
                             </Button>
                         </div>
                         <div className="bg-emerald-500 rounded-[2rem] p-6 text-white shadow-xl shadow-emerald-200">
-                            <VoiceInput label="Narra la visita (IA detectará campos)" rows={2} placeholder="Pisa el micro y cuenta qué pasó..." value={formData.notes} onValueChange={(val) => { setFormData(prev => ({ ...prev, notes: val })); processVoiceHeuristics(val); }} className="bg-white/10 border-white/20 text-white placeholder:text-emerald-100" />
+                            <VoiceInput label="Narra la visita (IA detectará campos)" rows={2} placeholder="Pisa el micro y cuenta qué pasó..." value={formData.notes} onValueChange={(val) => { setFormData(prev => ({ ...prev, notes: val })); processVoiceHeuristics(val); }} className="bg-background/10 border-white/20 text-white placeholder:text-emerald-100" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-4">

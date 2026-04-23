@@ -270,7 +270,7 @@ export default function ExpenseReport() {
                                             <Label className="text-xs font-bold">KM Inicial (Semana)</Label>
                                             <Input 
                                                 type="number" 
-                                                className="h-11 bg-white" 
+                                                className="h-11 bg-card" 
                                                 value={newExpense.start_km}
                                                 onChange={e => setNewExpense({...newExpense, start_km: e.target.value})}
                                             />
@@ -279,7 +279,7 @@ export default function ExpenseReport() {
                                             <Label className="text-xs font-bold flex items-center gap-2">
                                                 <Camera className="h-4 w-4" /> Foto Cluster Inicial
                                             </Label>
-                                            <Input type="file" accept="image/*" className="bg-white" onChange={e => handleFileChange(e, 'km_start')} />
+                                            <Input type="file" accept="image/*" className="bg-card" onChange={e => handleFileChange(e, 'km_start')} />
                                         </div>
                                     </div>
                                     <div className="space-y-4">
@@ -287,7 +287,7 @@ export default function ExpenseReport() {
                                             <Label className="text-xs font-bold">KM Final (Semana)</Label>
                                             <Input 
                                                 type="number" 
-                                                className="h-11 bg-white" 
+                                                className="h-11 bg-card" 
                                                 value={newExpense.end_km}
                                                 onChange={e => setNewExpense({...newExpense, end_km: e.target.value})}
                                             />
@@ -296,7 +296,7 @@ export default function ExpenseReport() {
                                             <Label className="text-xs font-bold flex items-center gap-2">
                                                 <Camera className="h-4 w-4" /> Foto Cluster Final
                                             </Label>
-                                            <Input type="file" accept="image/*" className="bg-white" onChange={e => handleFileChange(e, 'km_end')} />
+                                            <Input type="file" accept="image/*" className="bg-card" onChange={e => handleFileChange(e, 'km_end')} />
                                         </div>
                                     </div>
                                 </div>

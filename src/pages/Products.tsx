@@ -271,7 +271,7 @@ export default function Products() {
       />
 
       {/* Header - SCIENTIFIC VAULT */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-8 bg-white p-10 rounded-[3rem] border border-slate-100 shadow-premium-sm relative overflow-hidden group">
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-8 bg-card p-10 rounded-[3rem] border border-slate-100 shadow-premium-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-1000 group-hover:bg-primary/10" />
         <div className="relative z-10 flex items-center gap-8">
           <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-lg group-hover:scale-105 transition-transform duration-500">
@@ -317,7 +317,7 @@ export default function Products() {
       {/* Stats Cards */}
       {/* Stats Cards - INVENTORY INTELLIGENCE */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden group hover:shadow-premium-md transition-all duration-500">
+        <Card className="border-slate-100 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden group hover:shadow-premium-md transition-all duration-500">
           <CardContent className="p-8">
             <div className="flex items-center justify-between">
               <div>
@@ -332,7 +332,7 @@ export default function Products() {
         </Card>
 
         {Object.entries(productStats.byCategory).slice(0, 3).map(([category, count], i) => (
-          <Card key={category} className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden group hover:shadow-premium-md transition-all duration-500">
+          <Card key={category} className="border-slate-100 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden group hover:shadow-premium-md transition-all duration-500">
             <CardContent className="p-8">
               <div className="flex items-center justify-between">
                 <div>
@@ -349,7 +349,7 @@ export default function Products() {
       </div>
 
       {/* Action Bar - PRECISION TOOLS */}
-      <Card className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden">
+      <Card className="border-slate-100 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden">
         <CardContent className="p-10">
           <div className="flex flex-col xl:flex-row gap-6">
             <div className="flex-1 relative">
@@ -396,7 +396,7 @@ export default function Products() {
       </Card>
 
       <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-        <DialogContent className="max-w-2xl bg-white rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+        <DialogContent className="max-w-2xl bg-card rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
           <div className="bg-slate-50 p-8 border-b border-slate-100">
             <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Estructura de Manifiesto</h3>
             <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Sincronización de Inventario Científico</p>
@@ -435,15 +435,15 @@ export default function Products() {
       {/* Products Display - MASTER VIEWSET */}
       <Tabs defaultValue="grid" className="w-full space-y-8">
         <TabsList className="flex w-full md:w-[450px] p-1 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
-          <TabsTrigger value="grid" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Galería Maestro</TabsTrigger>
-          <TabsTrigger value="list" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Lista Operativa</TabsTrigger>
-          <TabsTrigger value="favorites" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm transition-all h-10">Favoritos</TabsTrigger>
+          <TabsTrigger value="grid" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Galería Maestro</TabsTrigger>
+          <TabsTrigger value="list" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Lista Operativa</TabsTrigger>
+          <TabsTrigger value="favorites" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm transition-all h-10">Favoritos</TabsTrigger>
         </TabsList>
 
         <TabsContent value="grid" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
+              <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
                 <CardContent className="p-6">
                   {/* Product Image */}
                   <div className="relative mb-6 rounded-[1.5rem] overflow-hidden bg-slate-50 border border-slate-100 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
@@ -510,7 +510,7 @@ export default function Products() {
         <TabsContent value="list" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="space-y-4">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-white rounded-[2rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
+              <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
                 <CardContent className="p-8">
                   <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center">
                     <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
@@ -565,7 +565,7 @@ export default function Products() {
               {products
                 .filter(product => isFavorite(product.id))
                 .map((product) => (
-                  <Card key={product.id} className="border-red-50 shadow-premium-sm bg-white rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-red-200 transition-all duration-500 group">
+                  <Card key={product.id} className="border-red-50 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-red-200 transition-all duration-500 group">
                     <CardContent className="p-6">
                       <div className="relative mb-6 rounded-[1.5rem] overflow-hidden bg-red-50/30 border border-red-50 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                         {product.image_url ? (

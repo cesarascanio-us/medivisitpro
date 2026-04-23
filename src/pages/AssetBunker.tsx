@@ -199,8 +199,8 @@ export default function AssetBunker() {
 
 function SecurityStat({ icon, label, value }: any) {
     return (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-            <div className="p-2 bg-white/10 rounded-xl text-primary">
+        <div className="bg-background/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+            <div className="p-2 bg-background/10 rounded-xl text-primary">
                 {icon}
             </div>
             <div>

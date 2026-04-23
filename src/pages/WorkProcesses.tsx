@@ -103,10 +103,10 @@ export default function WorkProcesses() {
           </div>
 
           <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="w-14 h-14 rounded-2xl bg-white border border-slate-100 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm">
+              <Button variant="ghost" size="icon" className="w-14 h-14 rounded-2xl bg-card border border-slate-100 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm">
                   <Activity className="h-6 w-6 text-slate-300" />
               </Button>
-              <Button variant="outline" className="h-14 px-8 border-slate-200 hover:bg-white hover:text-primary hover:shadow-premium-sm bg-transparent rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">
+              <Button variant="outline" className="h-14 px-8 border-slate-200 hover:bg-card hover:text-primary hover:shadow-premium-sm bg-transparent rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">
                   <Zap className="mr-3 h-5 w-5 text-amber-500" /> Auditoría SOP
               </Button>
           </div>
@@ -116,7 +116,7 @@ export default function WorkProcesses() {
       <div className="flex-1 min-h-0">
         <Tabs defaultValue="sop" className="h-full flex flex-col">
           {/* Tabs Selector Industrial */}
-          <TabsList className="bg-white p-2 rounded-[1.5rem] w-fit mb-12 border border-slate-100 shadow-premium-sm">
+          <TabsList className="bg-card p-2 rounded-[1.5rem] w-fit mb-12 border border-slate-100 shadow-premium-sm">
             <TabsTrigger value="sop" className="rounded-xl px-10 py-3 font-black text-[10px] uppercase tracking-[0.2em] data-[state=active]:bg-primary data-[state=active]:text-white transition-all shadow-none">SOP (Procedimientos)</TabsTrigger>
             <TabsTrigger value="manual" className="rounded-xl px-10 py-3 font-black text-[10px] uppercase tracking-[0.2em] data-[state=active]:bg-primary data-[state=active]:text-white transition-all shadow-none">Manual Estándar</TabsTrigger>
           </TabsList>
@@ -129,7 +129,7 @@ export default function WorkProcesses() {
                       <TabsTrigger 
                         key={idx} 
                         value={`fase${idx+1}`}
-                        className="w-full flex items-center justify-between p-6 rounded-[2rem] bg-white border border-slate-100 shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
+                        className="w-full flex items-center justify-between p-6 rounded-[2rem] bg-card border border-slate-100 shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
                       >
                          <div className="flex items-center gap-5">
                             <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3 group-data-[state=active]:rotate-0 transition-transform", phase.color)}>
@@ -161,7 +161,7 @@ export default function WorkProcesses() {
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                  {phase.steps.map((step, sIdx) => (
-                                    <Card key={sIdx} className="border border-slate-100 bg-white shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[2.5rem] group/step relative overflow-hidden">
+                                    <Card key={sIdx} className="border border-slate-100 bg-card shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[2.5rem] group/step relative overflow-hidden">
                                        <CardContent className="p-10 flex items-start gap-8 relative z-10">
                                           <div className="h-14 w-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 font-black text-sm font-mono group-hover/step:bg-primary group-hover/step:text-white transition-colors duration-500 shadow-inner">
                                              {step.id}
@@ -185,7 +185,7 @@ export default function WorkProcesses() {
 
                    {/* Sidebar of Intelligence */}
                    <div className="w-full 2xl:w-80 flex flex-col gap-8 shrink-0">
-                      <Card className="bg-white border border-primary/10 shadow-premium-lg rounded-[3rem] p-10 overflow-hidden relative group">
+                      <Card className="bg-card border border-primary/10 shadow-premium-lg rounded-[3rem] p-10 overflow-hidden relative group">
                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-110 transition-transform">
                             <ShieldCheck className="w-40 h-40 text-primary" />
                         </div>
@@ -205,7 +205,7 @@ export default function WorkProcesses() {
                                 { label: 'Eficiencia CA', val: '+22.5%', color: 'text-emerald-400' },
                                 { label: 'Precisión GPS', val: '99.8%', color: 'text-emerald-400' }
                               ].map((stat, i) => (
-                                 <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 transition-colors hover:bg-white/10">
+                                 <div key={i} className="flex items-center justify-between p-4 bg-background/5 rounded-2xl border border-white/10 transition-colors hover:bg-background/10">
                                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">{stat.label}</span>
                                     <span className={cn("text-xs font-black tabular-nums ", stat.color)}>{stat.val}</span>
                                  </div>
@@ -214,7 +214,7 @@ export default function WorkProcesses() {
                         </div>
                       </Card>
 
-                      <Card className="bg-white border border-slate-100 rounded-[3rem] shadow-premium-sm p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
+                      <Card className="bg-card border border-slate-100 rounded-[3rem] shadow-premium-sm p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
                         <div className="w-16 h-16 rounded-[2rem] bg-slate-50 flex items-center justify-center text-slate-300 mb-8 shadow-inner">
                             <Calendar className="h-8 w-8" />
                         </div>
@@ -227,7 +227,7 @@ export default function WorkProcesses() {
           </TabsContent>
 
           <TabsContent value="manual" className="flex-1 flex items-center justify-center">
-             <div className="text-center p-24 bg-white rounded-[4rem] border border-slate-100 shadow-premium-lg max-w-xl relative overflow-hidden group">
+             <div className="text-center p-24 bg-card rounded-[4rem] border border-slate-100 shadow-premium-lg max-w-xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-16 opacity-[0.02]">
                    <ClipboardList className="h-64 w-64" />
                 </div>

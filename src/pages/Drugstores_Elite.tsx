@@ -359,7 +359,7 @@ export default function DrugstoresElite() {
                             {loading ? (
                                 Array(5).fill(0).map((_, i) => (
                                     <TableRow key={i} className="border-white/5">
-                                        <TableCell colSpan={5} className="h-24"><div className="w-full h-8 bg-white/5 animate-pulse rounded-xl" /></TableCell>
+                                        <TableCell colSpan={5} className="h-24"><div className="w-full h-8 bg-background/5 animate-pulse rounded-xl" /></TableCell>
                                     </TableRow>
                                 ))
                             ) : drugstores.length === 0 ? (
@@ -371,7 +371,7 @@ export default function DrugstoresElite() {
                                 </TableRow>
                             ) : (
                                 drugstores.map(store => (
-                                    <TableRow key={store.id} className="border-white/5 group hover:bg-white/5 transition-all duration-300">
+                                    <TableRow key={store.id} className="border-white/5 group hover:bg-background/5 transition-all duration-300">
                                         <TableCell className="pl-10 py-6">
                                             <div className="flex flex-col">
                                                 <span className="text-lg font-black text-slate-900 tracking-tighter uppercase">{store.name}</span>
@@ -402,20 +402,20 @@ export default function DrugstoresElite() {
                                                     drugstoreId={store.id}
                                                     drugstoreName={store.name}
                                                     trigger={
-                                                        <Button variant="ghost" className="h-12 w-12 rounded-2xl bg-white/5 hover:bg-indigo-500/20 text-indigo-400 transition-all border border-transparent hover:border-indigo-500/20">
+                                                        <Button variant="ghost" className="h-12 w-12 rounded-2xl bg-background/5 hover:bg-indigo-500/20 text-indigo-400 transition-all border border-transparent hover:border-indigo-500/20">
                                                             <Package className="h-5 w-5" />
                                                         </Button>
                                                     }
                                                 />
-                                                <Button variant="ghost" onClick={() => handleViewDetails(store)} className="h-12 w-12 rounded-2xl bg-white/5 hover:bg-blue-500/20 text-blue-400 transition-all border border-transparent hover:border-blue-500/20">
+                                                <Button variant="ghost" onClick={() => handleViewDetails(store)} className="h-12 w-12 rounded-2xl bg-background/5 hover:bg-blue-500/20 text-blue-400 transition-all border border-transparent hover:border-blue-500/20">
                                                     <Eye className="h-5 w-5" />
                                                 </Button>
-                                                <Button variant="ghost" onClick={() => handleEditDrugstore(store)} className="h-12 w-12 rounded-2xl bg-white/5 hover:bg-amber-500/20 text-amber-400 transition-all border border-transparent hover:border-amber-500/20">
+                                                <Button variant="ghost" onClick={() => handleEditDrugstore(store)} className="h-12 w-12 rounded-2xl bg-background/5 hover:bg-amber-500/20 text-amber-400 transition-all border border-transparent hover:border-amber-500/20">
                                                     <Edit className="h-5 w-5" />
                                                 </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="ghost" className="h-12 w-12 rounded-2xl bg-white/5 hover:bg-rose-500/20 text-rose-400 transition-all border border-transparent hover:border-rose-500/20">
+                                                        <Button variant="ghost" className="h-12 w-12 rounded-2xl bg-background/5 hover:bg-rose-500/20 text-rose-400 transition-all border border-transparent hover:border-rose-500/20">
                                                             <Trash2 className="h-5 w-5" />
                                                         </Button>
                                                     </AlertDialogTrigger>
@@ -519,7 +519,7 @@ export default function DrugstoresElite() {
                                                 <Button onClick={handleRegisterVisit} className="w-full bg-card text-primary shadow-premium-lg font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl transition-all hover:bg-slate-50 hover:scale-[1.02] active:scale-95">
                                                     <Navigation className="mr-3 h-5 w-5" /> Iniciar Gestión Táctica
                                                 </Button>
-                                                <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 h-14 rounded-2xl uppercase font-black tracking-widest text-[10px] shadow-sm" onClick={() => handleEditDrugstore(selectedDrugstore)}>
+                                                <Button variant="outline" className="w-full border-white/30 text-white hover:bg-background/10 h-14 rounded-2xl uppercase font-black tracking-widest text-[10px] shadow-sm" onClick={() => handleEditDrugstore(selectedDrugstore)}>
                                                     <Edit className="mr-3 h-4 w-4" /> Editar ADN Comercial
                                                 </Button>
                                             </div>

@@ -119,7 +119,7 @@ export default function HRRecruitment() {
     return (
         <div className="min-h-screen bg-slate-50 p-4 md:p-8 space-y-8 font-display overflow-x-hidden animate-in fade-in duration-700">
             {/* Header SaaS Style */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium-md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-8 rounded-[2rem] border border-slate-100 shadow-premium-md">
                 <div>
                     <h1 className="text-3xl font-black tracking-tighter text-slate-900 flex items-center gap-4 uppercase font-display">
                         <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
@@ -133,7 +133,7 @@ export default function HRRecruitment() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-12 border-slate-100 bg-white shadow-soft hover:shadow-md transition-all rounded-xl text-slate-600 font-black uppercase text-[10px] tracking-widest px-6">
+                    <Button variant="outline" className="h-12 border-slate-100 bg-card shadow-soft hover:shadow-md transition-all rounded-xl text-slate-600 font-black uppercase text-[10px] tracking-widest px-6">
                         <ArrowUpRight className="h-4 w-4 mr-2 text-primary" />
                         Exportar Reporte
                     </Button>
@@ -156,7 +156,7 @@ export default function HRRecruitment() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-white p-8 rounded-[2rem] shadow-premium-md border border-slate-100 group hover:border-primary/20 transition-all"
+                        className="bg-card p-8 rounded-[2rem] shadow-premium-md border border-slate-100 group hover:border-primary/20 transition-all"
                     >
                         <div className="flex items-center justify-between">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
@@ -168,7 +168,7 @@ export default function HRRecruitment() {
             </div>
 
             {/* Filters and Search */}
-            <div className="flex flex-col md:flex-row gap-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-soft">
+            <div className="flex flex-col md:flex-row gap-4 bg-card p-5 rounded-2xl border border-slate-100 shadow-soft">
                 <div className="relative flex-1">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
@@ -178,7 +178,7 @@ export default function HRRecruitment() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <Button variant="outline" className="h-14 px-8 border-slate-100 bg-white rounded-xl font-black text-slate-600 gap-3 uppercase text-[10px] tracking-widest shadow-soft hover:bg-slate-50 transition-all">
+                <Button variant="outline" className="h-14 px-8 border-slate-100 bg-card rounded-xl font-black text-slate-600 gap-3 uppercase text-[10px] tracking-widest shadow-soft hover:bg-slate-50 transition-all">
                     <Filter className="h-5 w-5 text-primary" />
                     Filtros Avanzados
                 </Button>
@@ -209,7 +209,7 @@ export default function HRRecruitment() {
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ delay: i * 0.05 }}
                                 >
-                                    <Card className="bg-white border border-slate-100 shadow-premium-md hover:shadow-premium-lg transition-all duration-500 group cursor-pointer overflow-hidden rounded-[2rem]">
+                                    <Card className="bg-card border border-slate-100 shadow-premium-md hover:shadow-premium-lg transition-all duration-500 group cursor-pointer overflow-hidden rounded-[2rem]">
                                         <CardContent className="p-0">
                                             <div className="flex flex-col lg:flex-row lg:items-center">
                                                 {/* Score Column */}

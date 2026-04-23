@@ -222,7 +222,7 @@ export default function DashboardMaster() {
     };
 
     if (loading && !stats.totalVisits) return (
-        <div className="h-screen flex flex-col items-center justify-center bg-white space-y-8">
+        <div className="h-screen flex flex-col items-center justify-center bg-card space-y-8">
             <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
                 <RefreshCw className="h-10 w-10 text-primary animate-spin" />
             </div>
@@ -244,7 +244,7 @@ export default function DashboardMaster() {
                         <Button 
                             onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} 
                             variant="ghost" 
-                            className="h-14 w-14 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-primary hover:shadow-premium-sm transition-all"
+                            className="h-14 w-14 rounded-2xl bg-card border border-slate-100 text-slate-400 hover:text-primary hover:shadow-premium-sm transition-all"
                         >
                             <RefreshCw className={cn("h-6 w-6", loading && "animate-spin")} />
                         </Button>
@@ -259,14 +259,14 @@ export default function DashboardMaster() {
                     <TabsList className="bg-slate-50 border border-slate-100 p-1.5 rounded-2xl h-auto flex flex-nowrap gap-2 shadow-inner">
                         <TabsTrigger 
                             value="dashboard" 
-                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none group"
+                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none group"
                         >
                             <LayoutDashboard size={16} strokeWidth={3} className="text-slate-300 group-data-[state=active]:text-primary" /> TABLERO
                         </TabsTrigger>
                         
                         <TabsTrigger 
                             value="pedidos" 
-                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none text-slate-400 group"
+                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-card data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none text-slate-400 group"
                         >
                             <ShoppingCart size={16} strokeWidth={3} className="group-data-[state=active]:text-rose-500" /> PEDIDOS
                             {pendingOrders.length > 0 && (
@@ -276,7 +276,7 @@ export default function DashboardMaster() {
  
                         <TabsTrigger 
                             value="equipo" 
-                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none text-slate-400 group"
+                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-card data-[state=active]:text-amber-600 data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none text-slate-400 group"
                         >
                             <Users size={16} strokeWidth={3} className="group-data-[state=active]:text-amber-600" /> EQUIPO
                         </TabsTrigger>
@@ -320,7 +320,7 @@ export default function DashboardMaster() {
                 </TabsContent>
 
                 <TabsContent value="pedidos" className="space-y-4 animate-in slide-in-from-right-10 duration-500">
-                    <Card className="border border-slate-100 bg-white shadow-premium-sm rounded-[2.5rem] overflow-hidden">
+                    <Card className="border border-slate-100 bg-card shadow-premium-sm rounded-[2.5rem] overflow-hidden">
                         <Table>
                             <TableHeader className="bg-slate-50">
                                 <TableRow className="border-slate-100">
@@ -345,7 +345,7 @@ export default function DashboardMaster() {
                 <TabsContent value="equipo" className="animate-in slide-in-from-left-10 duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {repData.map(rep => (
-                            <Card key={rep.id} className="border border-slate-100 bg-white shadow-premium-sm p-8 rounded-[2.5rem] group hover:shadow-premium-md transition-all duration-300">
+                            <Card key={rep.id} className="border border-slate-100 bg-card shadow-premium-sm p-8 rounded-[2.5rem] group hover:shadow-premium-md transition-all duration-300">
                                 <div className="flex justify-between items-start mb-6">
                                      <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100 transition-transform group-hover:scale-110">
                                          <Users className="text-amber-500 h-8 w-8" />
@@ -381,7 +381,7 @@ function KPICard({ title, value, icon, color }: any) {
         amber: "text-amber-500"
     };
     return (
-        <Card className="border border-slate-100 bg-white shadow-premium-sm rounded-[2.5rem] hover:shadow-premium-md transition-all group overflow-hidden">
+        <Card className="border border-slate-100 bg-card shadow-premium-sm rounded-[2.5rem] hover:shadow-premium-md transition-all group overflow-hidden">
             <CardContent className="p-10 flex items-center justify-between relative">
                 <div className={cn("absolute -right-4 -bottom-4 opacity-[0.03] transition-transform group-hover:scale-110", colors[color])}>
                      {cloneElement(icon, { size: 120, strokeWidth: 1 })}
@@ -390,7 +390,7 @@ function KPICard({ title, value, icon, color }: any) {
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 font-display">{title}</p>
                     <p className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums font-display leading-none">{value}</p>
                 </div>
-                <div className={cn("h-14 w-14 flex items-center justify-center shrink-0 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner group-hover:bg-white transition-all relative z-10", colors[color])}>
+                <div className={cn("h-14 w-14 flex items-center justify-center shrink-0 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner group-hover:bg-card transition-all relative z-10", colors[color])}>
                     {cloneElement(icon, { size: 28, strokeWidth: 2.5 })}
                 </div>
             </CardContent>

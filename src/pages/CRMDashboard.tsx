@@ -135,7 +135,7 @@ export default function CRMDashboard() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-card border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <ArrowUpRight className="h-5 w-5 mr-3 text-primary" /> Reporte de Conversión
                         </Button>
                         <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
@@ -179,17 +179,17 @@ export default function CRMDashboard() {
             </div>
 
             {/* Control Bar */}
-            <div className="flex flex-col md:flex-row gap-4 bg-white/60 backdrop-blur-md p-4 rounded-lg border border-white/80 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 bg-background/60 backdrop-blur-md p-4 rounded-lg border border-white/80 shadow-sm">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
                         placeholder="Buscar leads por empresa, contacto o etiqueta..."
-                        className="pl-12 h-14 bg-white border-slate-100 focus:ring-2 focus:ring-[#00a0e9]/20 transition-all rounded-lg text-lg"
+                        className="pl-12 h-14 bg-card border-slate-100 focus:ring-2 focus:ring-[#00a0e9]/20 transition-all rounded-lg text-lg"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <Button variant="outline" className="h-14 px-6 border-slate-200 bg-white rounded-lg font-bold text-slate-600 gap-2">
+                <Button variant="outline" className="h-14 px-6 border-slate-200 bg-card rounded-lg font-bold text-slate-600 gap-2">
                     <Filter className="h-5 w-5" />
                     Filtros de Pipeline
                 </Button>
@@ -219,7 +219,7 @@ export default function CRMDashboard() {
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ delay: i * 0.05 }}
                                 >
-                                    <Card className="bg-white border-none shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] transition-all duration-300 group cursor-pointer overflow-hidden rounded-lg">
+                                    <Card className="bg-card border-none shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] transition-all duration-300 group cursor-pointer overflow-hidden rounded-lg">
                                         <CardContent className="p-0">
                                             <div className="flex flex-col lg:flex-row lg:items-center">
                                                 {/* Score / Conversion Column */}

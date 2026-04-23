@@ -295,7 +295,7 @@ export default function PayoutDashboard() {
                                 <p className="text-[10px] font-black text-emerald-600 uppercase">Viáticos (Alim/Hosp)</p>
                                 <p className="text-2xl font-black text-emerald-700">${stats.viaticos.toFixed(2)}</p>
                             </div>
-                            <Button size="sm" variant="outline" className="bg-white border-emerald-200 text-emerald-700 font-bold gap-2">
+                            <Button size="sm" variant="outline" className="bg-card border-emerald-200 text-emerald-700 font-bold gap-2">
                                 Nuevo Reporte <ArrowRight className="h-4 w-4" />
                             </Button>
                         </div>

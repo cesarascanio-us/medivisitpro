@@ -112,7 +112,7 @@ export default function Billing() {
     return (
         <div className="space-y-8 p-6 max-w-7xl mx-auto mb-20 font-sans animate-in fade-in duration-700">
             {/* Header / Active Subscription */}
-            <div className="relative overflow-hidden p-8 rounded-[2rem] bg-white border border-slate-100 shadow-premium-lg">
+            <div className="relative overflow-hidden p-8 rounded-[2rem] bg-card border border-slate-100 shadow-premium-lg">
                 <div className="absolute top-0 right-0 p-8 opacity-5">
                     <Shield className="w-32 h-32 text-primary" />
                 </div>
@@ -190,7 +190,7 @@ export default function Billing() {
                             const isCurrent = planTier === plan.tier;
 
                             return (
-                                <Card key={plan.id} className={`relative flex flex-col border-slate-100 bg-white hover:bg-slate-50 transition-all duration-500 shadow-premium-md hover:shadow-premium-lg rounded-[2.5rem] overflow-hidden group ${isCurrent ? 'ring-2 ring-primary/20 bg-slate-50/50' : ''}`}>
+                                <Card key={plan.id} className={`relative flex flex-col border-slate-100 bg-card hover:bg-slate-50 transition-all duration-500 shadow-premium-md hover:shadow-premium-lg rounded-[2.5rem] overflow-hidden group ${isCurrent ? 'ring-2 ring-primary/20 bg-slate-50/50' : ''}`}>
                                     {plan.tier === 'professional' && (
                                         <div className="absolute top-0 right-0 p-0 overflow-hidden">
                                             <div className="bg-primary text-white text-[8px] font-black uppercase tracking-widest py-1.5 px-10 rotate-45 translate-x-10 translate-y-2 shadow-lg">
@@ -246,7 +246,7 @@ export default function Billing() {
 
             {/* Payment Modal */}
             <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
-                <DialogContent className="sm:max-w-[500px] bg-white border border-slate-100 rounded-[2.5rem] shadow-premium-2xl overflow-hidden p-0">
+                <DialogContent className="sm:max-w-[500px] bg-card border border-slate-100 rounded-[2.5rem] shadow-premium-2xl overflow-hidden p-0">
                     <div className="bg-slate-50 p-10 border-b border-slate-100">
                         <DialogHeader>
                             <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Método de Pago Seguro</DialogTitle>
@@ -270,7 +270,7 @@ export default function Billing() {
                         <div className="grid gap-4 py-2">
                             <Button
                                 variant="outline"
-                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-primary hover:bg-primary/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-card hover:border-primary hover:bg-primary/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('stripe')}
                             >
                                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
@@ -284,7 +284,7 @@ export default function Billing() {
 
                             <Button
                                 variant="outline"
-                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-indigo-500 hover:bg-indigo-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-card hover:border-indigo-500 hover:bg-indigo-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('paypal')}
                             >
                                 <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
@@ -298,7 +298,7 @@ export default function Billing() {
 
                             <Button
                                 variant="outline"
-                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-yellow-500 hover:bg-yellow-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-card hover:border-yellow-500 hover:bg-yellow-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('binance')}
                             >
                                 <div className="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center group-hover:bg-yellow-100 transition-colors">
@@ -314,7 +314,7 @@ export default function Billing() {
 
                             <Button
                                 variant="outline"
-                                className="h-20 justify-start gap-4 border-slate-100 bg-white hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
+                                className="h-20 justify-start gap-4 border-slate-100 bg-card hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => {
                                     setShowPaymentModal(false);
                                     setShowManualPaymentDialog(true);

@@ -291,7 +291,7 @@ export default function OrderBuilder() {
                                 </div>
                             ) : (
                                 filteredProducts.map(product => (
-                                    <div key={product.id} className="border rounded-lg p-3 hover:border-blue-400 transition-colors bg-white shadow-sm flex flex-col justify-between">
+                                    <div key={product.id} className="border rounded-lg p-3 hover:border-blue-400 transition-colors bg-card shadow-sm flex flex-col justify-between">
                                         <div>
                                             <div className="flex justify-between items-start">
                                                 <h4 className="font-semibold text-sm line-clamp-2 text-slate-900">{product.name}</h4>

@@ -128,6 +128,7 @@ export default function Users() {
             loadUsers();
             loadZones();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     // Initial load of form when opening dialog
@@ -160,6 +161,7 @@ export default function Users() {
                 setSelectedZones([]);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedRegion]);
 
     useEffect(() => {
@@ -180,6 +182,7 @@ export default function Users() {
                 setSelectedZones([]);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedState]);
 
 
@@ -533,7 +536,7 @@ export default function Users() {
                                                 <TableCell>
                                                     <Badge
                                                         variant="outline"
-                                                        className={cn("font-medium", ROLE_COLORS[user.role] || "bg-gray-100 text-gray-800")}
+                                                        className={cn("font-medium", ROLE_COLORS[user.role] || "bg-muted text-gray-800")}
                                                     >
                                                         {ROLE_LABELS[user.role]}
                                                     </Badge>

@@ -253,7 +253,7 @@ export default function SalesPipeline() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={loadDeals} className="h-14 px-8 rounded-2xl bg-white border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={loadDeals} className="h-14 px-8 rounded-2xl bg-card border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <BarChart3 className="h-5 w-5 mr-3 text-primary" /> Resumen
                         </Button>
                         <Button
@@ -277,7 +277,7 @@ export default function SalesPipeline() {
 
             {/* SEARCH & SYSTEM FILTERS */}
             <div className="flex flex-col gap-8">
-                <Card className="bg-white border border-slate-100 rounded-3xl shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
+                <Card className="bg-card border border-slate-100 rounded-3xl shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
                     <div className="flex-1 relative">
                         <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
                         <Input
@@ -292,7 +292,7 @@ export default function SalesPipeline() {
                             <SelectTrigger className="h-16 w-full md:w-64 rounded-2xl border-slate-100 bg-slate-50 font-black uppercase text-[10px] tracking-widest text-slate-500 shadow-inner px-8">
                                 <SelectValue placeholder="ETAPA DEL EMBUDO" />
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-slate-100 bg-white">
+                            <SelectContent className="rounded-2xl border-slate-100 bg-card">
                                 <SelectItem value="all" className="font-black text-[10px] uppercase tracking-widest">TODAS LAS ETAPAS</SelectItem>
                                 {PIPELINE_STAGES.map((s) => (
                                     <SelectItem key={s.value} value={s.value} className="font-black text-[10px] uppercase tracking-widest">
@@ -305,7 +305,7 @@ export default function SalesPipeline() {
                             variant="ghost"
                             size="icon"
                             onClick={loadDeals}
-                            className="w-16 h-16 rounded-2xl bg-slate-50 shadow-inner hover:bg-white hover:shadow-premium-sm transition-all"
+                            className="w-16 h-16 rounded-2xl bg-slate-50 shadow-inner hover:bg-card hover:shadow-premium-sm transition-all"
                         >
                             <RefreshCw className={cn("w-6 h-6", loading ? "animate-spin text-primary" : "text-slate-300")} />
                         </Button>
@@ -350,7 +350,7 @@ export default function SalesPipeline() {
                                             </span>
                                         </div>
                                     </div>
-                                    <Badge variant="outline" className="h-8 min-w-8 p-0 flex items-center justify-center rounded-xl border-slate-200 bg-white shadow-inner text-[10px] font-black text-slate-400">
+                                    <Badge variant="outline" className="h-8 min-w-8 p-0 flex items-center justify-center rounded-xl border-slate-200 bg-card shadow-inner text-[10px] font-black text-slate-400">
                                         {stageDeals.length}
                                     </Badge>
                                 </div>
@@ -369,7 +369,7 @@ export default function SalesPipeline() {
                                                         setSelectedDeal(deal);
                                                         setDetailOpen(true);
                                                     }}
-                                                    className="bg-white rounded-3xl p-6 border border-slate-100 shadow-premium-sm hover:shadow-premium-md hover:translate-y-[-6px] transition-all duration-300 cursor-pointer group relative overflow-hidden"
+                                                    className="bg-card rounded-3xl p-6 border border-slate-100 shadow-premium-sm hover:shadow-premium-md hover:translate-y-[-6px] transition-all duration-300 cursor-pointer group relative overflow-hidden"
                                                 >
                                                     <div className="relative z-10">
                                                         <div className="flex items-start justify-between mb-4 gap-4">
@@ -436,7 +436,7 @@ export default function SalesPipeline() {
 
             {/* CREATE DIALOG - INDUSTRIAL STYLE */}
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-                <DialogContent className="rounded-[3.5rem] border border-slate-100 shadow-premium-2xl bg-white p-0 overflow-hidden font-sans max-w-lg">
+                <DialogContent className="rounded-[3.5rem] border border-slate-100 shadow-premium-2xl bg-card p-0 overflow-hidden font-sans max-w-lg">
                     <div className="bg-primary p-12 text-white relative">
                          <div className="absolute top-0 right-0 p-12 opacity-10">
                             <Zap className="w-40 h-40" />

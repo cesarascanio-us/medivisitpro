@@ -173,11 +173,11 @@ export default function Contacts() {
       <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden">
         <CardContent className="p-0">
           <div className="mesh-gradient-primary px-8 py-10 text-white relative">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -mr-40 -mt-40 blur-[100px] pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-80 h-80 bg-background/10 rounded-full -mr-40 -mt-40 blur-[100px] pointer-events-none"></div>
             
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
               <div className="flex items-center gap-6">
-                <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl transform hover:rotate-2 transition-transform">
+                <div className="w-16 h-16 bg-background/20 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl transform hover:rotate-2 transition-transform">
                   <User className="h-8 w-8 text-white" />
                 </div>
                 <div className="flex flex-col justify-center">
@@ -192,17 +192,17 @@ export default function Contacts() {
                   open={isDialogOpen}
                   onOpenChange={setIsDialogOpen}
                   trigger={
-                    <Button disabled={hasReachedLimit} className="bg-white text-primary hover:bg-white/90 h-14 px-8 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95">
+                    <Button disabled={hasReachedLimit} className="bg-card text-primary hover:bg-background/90 h-14 px-8 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95">
                       <Plus className="mr-2 h-5 w-5" />
                       Añadir Contacto
                     </Button>
                   }
                   onContactSaved={refresh}
                 />
-                <Button variant="ghost" onClick={triggerImport} disabled={importing} className="h-14 w-14 rounded-2xl bg-white/10 border border-white/10 hover:bg-white/20 text-white transition-all">
+                <Button variant="ghost" onClick={triggerImport} disabled={importing} className="h-14 w-14 rounded-2xl bg-background/10 border border-white/10 hover:bg-background/20 text-white transition-all">
                   {importing ? <RefreshCw className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />}
                 </Button>
-                <Button variant="ghost" onClick={() => exportToCSV(contacts, 'directorio')} className="h-14 w-14 rounded-2xl bg-white/10 border border-white/10 hover:bg-white/20 text-white transition-all">
+                <Button variant="ghost" onClick={() => exportToCSV(contacts, 'directorio')} className="h-14 w-14 rounded-2xl bg-background/10 border border-white/10 hover:bg-background/20 text-white transition-all">
                   <Download className="h-5 w-5" />
                 </Button>
               </div>
@@ -234,7 +234,7 @@ export default function Contacts() {
       </div>
 
       {/* Advanced Filters */}
-      <Card className="rounded-[2.5rem] border-none shadow-soft bg-white/60 backdrop-blur-sm overflow-hidden p-8">
+      <Card className="rounded-[2.5rem] border-none shadow-soft bg-background/60 backdrop-blur-sm overflow-hidden p-8">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1 relative w-full group">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
@@ -245,13 +245,13 @@ export default function Contacts() {
               placeholder="Buscar por nombre, especialidad o ciudad..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 h-14 bg-white/50 border-slate-100 rounded-2xl focus-visible:ring-primary/20 shadow-inner text-sm font-semibold"
+              className="pl-12 h-14 bg-background/50 border-slate-100 rounded-2xl focus-visible:ring-primary/20 shadow-inner text-sm font-semibold"
             />
           </div>
 
           <div className="w-full md:w-64">
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-14 bg-white/50 border-slate-100 rounded-2xl shadow-inner font-bold text-slate-700">
+              <SelectTrigger className="h-14 bg-background/50 border-slate-100 rounded-2xl shadow-inner font-bold text-slate-700">
                 <div className="flex items-center">
                   <Filter className="mr-3 h-4 w-4 text-primary" />
                   <SelectValue placeholder="Categoría" />
@@ -289,7 +289,7 @@ export default function Contacts() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {contacts.map((contact) => (
-            <Card key={contact.id} className="rounded-[2.5rem] bg-white border-none shadow-soft hover:shadow-card transition-all duration-500 overflow-hidden group">
+            <Card key={contact.id} className="rounded-[2.5rem] bg-card border-none shadow-soft hover:shadow-card transition-all duration-500 overflow-hidden group">
               <div className="p-8">
                 <div className="flex items-start justify-between mb-8">
                   <div className="flex items-center gap-6">
@@ -359,7 +359,7 @@ export default function Contacts() {
                     )}
                   </div>
 
-                  <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 group-hover:bg-white transition-colors group-hover:shadow-inner">
+                  <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 group-hover:bg-card transition-colors group-hover:shadow-inner">
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Historial de Visitas</p>
                       <div className="flex items-center text-amber-400">

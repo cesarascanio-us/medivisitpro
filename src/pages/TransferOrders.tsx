@@ -133,7 +133,7 @@ export default function TransferOrders() {
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter border-border/40 bg-slate-50 text-slate-500 px-3 py-1.5  group-hover:bg-white transition-all">{order.drugstore}</Badge>
+                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter border-border/40 bg-slate-50 text-slate-500 px-3 py-1.5  group-hover:bg-card transition-all">{order.drugstore}</Badge>
                                     </TableCell>
                                     <TableCell className="text-center font-black  text-xs tabular-nums text-slate-400">{order.items} UNI</TableCell>
                                     <TableCell className="text-right font-black text-slate-900  tabular-nums text-sm">${order.total.toLocaleString()}</TableCell>

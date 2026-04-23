@@ -225,7 +225,7 @@ export default function ManualPaymentApprover() {
                             </TableRow>
                         ) : (
                             reports.map((report) => (
-                                <TableRow key={report.id} className="border-slate-800/50 hover:bg-white/5 transition-colors group">
+                                <TableRow key={report.id} className="border-slate-800/50 hover:bg-background/5 transition-colors group">
                                     <TableCell>
                                         <div className="flex flex-col">
                                             <span className="text-white font-medium text-sm">{report.organizations?.name}</span>

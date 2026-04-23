@@ -57,7 +57,7 @@ interface Product {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-    draft: { label: 'Borrador', color: 'bg-gray-100 text-gray-800', icon: Clock },
+    draft: { label: 'Borrador', color: 'bg-muted text-gray-800', icon: Clock },
     active: { label: 'Activo', color: 'bg-green-100 text-green-800', icon: Play },
     completed: { label: 'Completado', color: 'bg-blue-100 text-blue-800', icon: CheckCircle },
     cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-800', icon: AlertCircle },

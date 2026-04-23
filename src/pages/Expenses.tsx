@@ -261,7 +261,7 @@ export default function Expenses() {
             rejected: "Rechazado",
             reimbursed: "Reembolsado"
         };
-        return <Badge className={styles[status] || "bg-gray-100"}>{labels[status] || status}</Badge>;
+        return <Badge className={styles[status] || "bg-muted"}>{labels[status] || status}</Badge>;
     };
 
     const filteredExpenses = filterCategory === "all"
@@ -513,7 +513,7 @@ export default function Expenses() {
                         <Receipt className="h-4 w-4" /> Detalle de Movimientos
                     </h3>
                     <Select value={filterCategory} onValueChange={setFilterCategory}>
-                        <SelectTrigger className="w-56 border-slate-200 bg-white shadow-sm">
+                        <SelectTrigger className="w-56 border-slate-200 bg-card shadow-sm">
                             <Filter className="mr-2 h-4 w-4 text-slate-400" />
                             <SelectValue placeholder="Filtrar por categoría" />
                         </SelectTrigger>
@@ -558,7 +558,7 @@ export default function Expenses() {
                                         <TableRow key={expense.id} className="hover:bg-slate-50/50 transition-colors border-slate-50">
                                             <TableCell className="font-medium text-slate-950">{new Date(expense.expense_date).toLocaleDateString()}</TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="bg-white border-slate-200 text-slate-700 font-medium px-3 py-1 rounded-full whitespace-nowrap">
+                                                <Badge variant="outline" className="bg-card border-slate-200 text-slate-700 font-medium px-3 py-1 rounded-full whitespace-nowrap">
                                                     <span className="mr-2">{catInfo.icon}</span>
                                                     {catInfo.label}
                                                 </Badge>

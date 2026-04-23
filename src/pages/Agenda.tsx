@@ -117,7 +117,7 @@ export default function Agenda() {
         statusText={`CARGA OPERATIVA: ${visits.length} MISIONES`}
         statusColor="bg-primary"
         rightContent={
-          <div className="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 pl-4 rounded-[1.5rem] border border-slate-100 shadow-premium-sm group hover:shadow-premium-md transition-all">
+          <div className="flex items-center gap-4 bg-background/50 backdrop-blur-md p-2 pl-4 rounded-[1.5rem] border border-slate-100 shadow-premium-sm group hover:shadow-premium-md transition-all">
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="icon" onClick={() => changeDate(-1)} className="h-10 w-10 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
                 <ChevronLeft className="h-5 w-5" />
@@ -146,7 +146,7 @@ export default function Agenda() {
               </div>
             </div>
           ) : visits.length === 0 ? (
-            <div className="bg-white/50 backdrop-blur-3xl rounded-[4rem] border border-dashed border-slate-200 p-24 text-center shadow-inner">
+            <div className="bg-background/50 backdrop-blur-3xl rounded-[4rem] border border-dashed border-slate-200 p-24 text-center shadow-inner">
               <PremiumEmptyState
                 icon={Calendar}
                 title="OBJETIVOS NO DETECTADOS"
@@ -158,7 +158,7 @@ export default function Agenda() {
           ) : (
             <div className="grid gap-8">
               {visits.map((v) => (
-                <Card key={v.id} className="group relative overflow-hidden rounded-[3rem] bg-white border-slate-100 hover:border-primary/30 transition-all duration-700 shadow-premium-sm hover:shadow-premium-xl cursor-pointer">
+                <Card key={v.id} className="group relative overflow-hidden rounded-[3rem] bg-card border-slate-100 hover:border-primary/30 transition-all duration-700 shadow-premium-sm hover:shadow-premium-xl cursor-pointer">
                   <div className="absolute top-0 left-0 w-2 h-full bg-slate-50 group-hover:bg-primary transition-colors duration-1000" />
                   <CardContent className="p-10">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
@@ -220,7 +220,7 @@ export default function Agenda() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-10">
         <VisitDetailDialog
           trigger={
-            <Card className="rounded-[3.5rem] border border-slate-100 bg-white hover:border-primary/30 cursor-pointer group transition-all duration-700 overflow-hidden shadow-premium-sm hover:shadow-premium-xl">
+            <Card className="rounded-[3.5rem] border border-slate-100 bg-card hover:border-primary/30 cursor-pointer group transition-all duration-700 overflow-hidden shadow-premium-sm hover:shadow-premium-xl">
               <CardContent className="p-12 text-center relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-slate-300 transition-all transform group-hover:scale-110 group-hover:rotate-12 group-hover:bg-primary group-hover:text-white shadow-inner">

@@ -238,7 +238,7 @@ export default function WeeklyScheduler() {
                 const dayOfWeek = dayMapping[selectedSlot.day] ?? 1;
                 const preferredTime = selectedSlot.turn === 'AM' ? '09:00:00' : '14:00:00';
 
-                // @ts-ignore - RPC function created in recurring_visits.sql
+                // @ts-expect-error - RPC function created in recurring_visits.sql
                 const { data, error } = await supabase.rpc('create_visit_series', {
                     p_user_id: userId,
                     p_contact_id: directoryItem.id,

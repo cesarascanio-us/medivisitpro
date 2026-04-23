@@ -103,9 +103,12 @@ export default function MasterPanel() {
     const [newUserLastName, setNewUserLastName] = useState('');
     const [isCreatingUser, setIsCreatingUser] = useState(false);
 
-    if (!isMaster) return <Navigate to="/" replace />;
+    useEffect(() => { 
+        loadData(); 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    useEffect(() => { loadData(); }, []);
+    if (!isMaster) return <Navigate to="/" replace />;
 
     const loadData = async () => {
         setLoading(true);
@@ -185,7 +188,7 @@ export default function MasterPanel() {
     };
 
     if (loading) return (
-        <div className="h-screen flex flex-col items-center justify-center bg-white space-y-8">
+        <div className="h-screen flex flex-col items-center justify-center bg-card space-y-8">
             <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
                 <Zap className="h-12 w-12 text-primary animate-pulse" />
             </div>
@@ -399,7 +402,7 @@ export default function MasterPanel() {
 
                 <TabsContent value="system" className="mt-6">
                     <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[3rem] p-24 text-center">
-                        <div className="w-20 h-20 rounded-[2rem] bg-white shadow-soft border border-slate-100 flex items-center justify-center mx-auto mb-8">
+                        <div className="w-20 h-20 rounded-[2rem] bg-card shadow-soft border border-slate-100 flex items-center justify-center mx-auto mb-8">
                              <Database className="h-10 w-10 text-slate-300" />
                         </div>
                         <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-3 font-display">Auditoría del Núcleo</h3>
@@ -412,10 +415,10 @@ export default function MasterPanel() {
 
             {/* EDIT USER DIALOG */}
             <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
-                <DialogContent className="max-w-lg bg-white rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+                <DialogContent className="max-w-lg bg-card rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
                     <div className="bg-slate-50 p-10 border-b border-slate-100">
                          <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-soft border border-slate-200">
+                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
                                  <RefreshCw className="h-6 w-6 text-primary" />
                              </div>
                              <div>
@@ -462,10 +465,10 @@ export default function MasterPanel() {
 
             {/* NEW USER DIALOG */}
             <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
-                <DialogContent className="max-w-xl bg-white rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
+                <DialogContent className="max-w-xl bg-card rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
                     <div className="bg-slate-50 p-10 border-b border-slate-100">
                          <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-soft border border-slate-200">
+                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
                                  <Plus className="h-6 w-6 text-primary" />
                              </div>
                              <div>

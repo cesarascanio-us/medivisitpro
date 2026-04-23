@@ -95,7 +95,7 @@ export default function Events() {
             completed: "Completado",
             cancelled: "Cancelado"
         };
-        return <Badge className={styles[status] || "bg-gray-100"}>{labels[status] || status}</Badge>;
+        return <Badge className={styles[status] || "bg-muted"}>{labels[status] || status}</Badge>;
     };
 
     const getEventTypeLabel = (type: string) => {

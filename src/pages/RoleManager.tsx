@@ -249,7 +249,7 @@ export default function RoleManager() {
     return (
         <div className="flex flex-col h-full bg-slate-50/30 space-y-8 p-1">
             {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE SEGURIDAD */}
-            <header className="bg-white px-8 py-10 rounded-[3rem] shadow-premium-sm border border-slate-100 relative overflow-hidden">
+            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-premium-sm border border-slate-100 relative overflow-hidden">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-80 h-80 bg-blue-50/50 rounded-full blur-3xl opacity-40" />
                 <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-slate-50 rounded-full blur-3xl opacity-40" />
@@ -279,7 +279,7 @@ export default function RoleManager() {
                             onClick={loadData}
                             size="icon"
                             variant="ghost"
-                            className="w-14 h-14 rounded-2xl bg-white border border-slate-100 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm group"
+                            className="w-14 h-14 rounded-2xl bg-card border border-slate-100 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm group"
                         >
                             <RefreshCw className={cn("h-6 w-6 text-slate-300 group-hover:text-primary transition-colors", loading && "animate-spin text-primary")} />
                         </Button>
@@ -296,7 +296,7 @@ export default function RoleManager() {
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {roles.map(role => (
-                    <Card key={role.slug} className="relative overflow-hidden border border-slate-100 shadow-premium-sm bg-white rounded-[3rem] group hover:shadow-premium-md transition-all duration-500">
+                    <Card key={role.slug} className="relative overflow-hidden border border-slate-100 shadow-premium-sm bg-card rounded-[3rem] group hover:shadow-premium-md transition-all duration-500">
                         <div className={cn("absolute top-0 left-0 w-2 h-full opacity-10", role.color.split(' ')[0] || 'bg-slate-200')} />
                         <CardHeader className="p-8 pb-4">
                             <div className="flex justify-between items-start">
@@ -344,7 +344,7 @@ export default function RoleManager() {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="max-w-3xl max-h-[90vh] rounded-[3.5rem] border-none shadow-premium-lg p-0 overflow-hidden flex flex-col font-sans">
-                    <DialogHeader className="bg-white p-12 pb-8 border-b border-slate-100 relative">
+                    <DialogHeader className="bg-card p-12 pb-8 border-b border-slate-100 relative">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
                         <DialogTitle className="text-3xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none relative z-10">
                             {editingRole ? 'Configurar Privilegios' : 'Nueva Entidad de Acceso'}
@@ -364,7 +364,7 @@ export default function RoleManager() {
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="Ej: AUDITOR MAESTRO"
-                                        className="h-16 rounded-2xl border-transparent bg-white font-bold text-slate-900 focus:ring-primary/20 shadow-sm"
+                                        className="h-16 rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm"
                                     />
                                 </div>
                                 <div className="space-y-3">
@@ -374,7 +374,7 @@ export default function RoleManager() {
                                         onChange={e => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
                                         placeholder="ej: auditor_maestro"
                                         disabled={!!editingRole} 
-                                        className="h-16 rounded-2xl border-transparent bg-white font-black text-primary focus:ring-primary/20 shadow-sm disabled:opacity-50"
+                                        className="h-16 rounded-2xl border-transparent bg-card font-black text-primary focus:ring-primary/20 shadow-sm disabled:opacity-50"
                                     />
                                 </div>
                                 <div className="col-span-2 space-y-3">
@@ -382,7 +382,7 @@ export default function RoleManager() {
                                     <Textarea
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                        className="rounded-2xl border-transparent bg-white font-bold text-slate-900 focus:ring-primary/20 shadow-sm min-h-[100px]"
+                                        className="rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm min-h-[100px]"
                                         placeholder="Describa el alcance de este rol..."
                                     />
                                 </div>
@@ -393,9 +393,9 @@ export default function RoleManager() {
                                             value={formData.color}
                                             onChange={e => setFormData({ ...formData, color: e.target.value })}
                                             placeholder="ej: bg-blue-50 text-blue-600"
-                                            className="h-16 rounded-2xl border-transparent bg-white font-bold text-slate-900 shadow-sm flex-1"
+                                            className="h-16 rounded-2xl border-transparent bg-card font-bold text-slate-900 shadow-sm flex-1"
                                         />
-                                        <div className="flex items-center px-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+                                        <div className="flex items-center px-6 rounded-2xl bg-card shadow-sm border border-slate-100">
                                             <Badge className={cn("px-4 py-2 rounded-full border-none font-black text-[10px] uppercase tracking-widest", formData.color)}>Vista Previa</Badge>
                                         </div>
                                     </div>
@@ -408,7 +408,7 @@ export default function RoleManager() {
                                     <Shield className="h-4 w-4" /> Matriz de Permisos Operativos
                                 </h3>
                                 {Object.entries(permissionsByModule).map(([module, perms]) => (
-                                    <div key={module} className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden transform transition-all hover:shadow-md">
+                                    <div key={module} className="bg-card rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden transform transition-all hover:shadow-md">
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] bg-slate-50 text-slate-400 border-b border-slate-100 px-8 py-4 font-display flex items-center gap-2">
                                             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                             {module}
@@ -442,7 +442,7 @@ export default function RoleManager() {
                         </div>
                     </ScrollArea>
 
-                    <DialogFooter className="bg-white p-10 px-12 border-t border-slate-100">
+                    <DialogFooter className="bg-card p-10 px-12 border-t border-slate-100">
                         <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="h-16 rounded-2xl px-8 font-black uppercase text-[10px] tracking-widest text-slate-400 hover:bg-slate-50 transition-all">
                             Abortar Cambios
                         </Button>

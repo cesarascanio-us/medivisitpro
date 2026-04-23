@@ -130,7 +130,7 @@ export default function HealthCenters() {
           <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="bg-slate-900 border-white/5 text-white rounded-2xl h-14 px-8 font-black uppercase  text-xs hover:bg-slate-800 transition-all duration-300">
             <Upload className="h-4 w-4 mr-3" /> IMPORTAR
           </Button>
-          <Button onClick={() => setDialogOpen(true)} className="bg-white text-slate-900 rounded-2xl h-14 px-10 font-black uppercase  text-xs hover:bg-slate-100 shadow-2xl transition-all duration-300 scale-105">
+          <Button onClick={() => setDialogOpen(true)} className="bg-card text-slate-900 rounded-2xl h-14 px-10 font-black uppercase  text-xs hover:bg-slate-100 shadow-2xl transition-all duration-300 scale-105">
             <Plus className="h-6 w-6 mr-3" /> NUEVO CENTRO
           </Button>
         </div>
@@ -155,7 +155,7 @@ export default function HealthCenters() {
                 <div className="flex justify-between items-start">
                   <div className="space-y-3">
                     <CardTitle className="text-2xl font-black text-white uppercase  tracking-tighter group-hover:text-indigo-400 transition-colors leading-none">{center.name}</CardTitle>
-                    <Badge className="bg-white/5 text-slate-500 border-none font-bold text-[9px] uppercase tracking-widest ">{center.facility_type || 'CENTRO MÉDICO'}</Badge>
+                    <Badge className="bg-background/5 text-slate-500 border-none font-bold text-[9px] uppercase tracking-widest ">{center.facility_type || 'CENTRO MÉDICO'}</Badge>
                   </div>
                   {getPotentialBadge(center.potential)}
                 </div>
@@ -172,8 +172,8 @@ export default function HealthCenters() {
                 </div>
               </CardContent>
               <CardFooter className="p-6 bg-slate-950/50 flex gap-3 border-t border-white/5">
-                <Button variant="ghost" className="flex-1 bg-white/5 rounded-2xl h-12 text-[10px] font-black uppercase  hover:bg-white/10 text-white">DIRECTORIO</Button>
-                <Button onClick={() => handleEdit(center)} variant="ghost" className="bg-white/5 rounded-2xl h-12 px-4 hover:bg-indigo-500/20 hover:text-indigo-400 text-slate-600"><Pencil className="h-4 w-4" /></Button>
+                <Button variant="ghost" className="flex-1 bg-background/5 rounded-2xl h-12 text-[10px] font-black uppercase  hover:bg-background/10 text-white">DIRECTORIO</Button>
+                <Button onClick={() => handleEdit(center)} variant="ghost" className="bg-background/5 rounded-2xl h-12 px-4 hover:bg-indigo-500/20 hover:text-indigo-400 text-slate-600"><Pencil className="h-4 w-4" /></Button>
               </CardFooter>
             </Card>
           ))}
@@ -217,7 +217,7 @@ export default function HealthCenters() {
             </div>
             <div className="flex gap-4 mt-10">
               <Button variant="ghost" onClick={() => setDialogOpen(false)} className="h-14 px-8 font-black uppercase text-rose-500 hover:bg-rose-500/10 rounded-2xl">CANCELAR</Button>
-              <Button onClick={handleSubmit} className="flex-1 h-14 bg-white text-slate-950 font-black uppercase  rounded-2xl hover:bg-slate-100 shadow-2xl">CONFIRMAR REGISTRO</Button>
+              <Button onClick={handleSubmit} className="flex-1 h-14 bg-card text-slate-950 font-black uppercase  rounded-2xl hover:bg-slate-100 shadow-2xl">CONFIRMAR REGISTRO</Button>
             </div>
           </div>
         </DialogContent>
