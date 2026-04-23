@@ -254,7 +254,7 @@ export default function DrugstoresElite() {
                 statusColor="bg-primary"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="h-14 px-8 border-slate-200 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all duration-300 shadow-premium-sm">
+                        <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="h-14 px-8 border-border bg-card text-foreground rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all duration-300 shadow-premium-sm">
                             <Download className="mr-3 h-4 w-4" /> Exportar
                         </Button>
                         <Button
@@ -319,7 +319,7 @@ export default function DrugstoresElite() {
 
             {/* Search and Filters Section */}
             <div className="space-y-6 mb-10">
-                <Card className="bg-white border border-slate-100 rounded-[2rem] p-4 shadow-premium-sm">
+                <Card className="bg-card border border-border rounded-[2rem] p-4 shadow-premium-sm">
                     <div className="relative">
                         <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
                         <Input
@@ -337,7 +337,7 @@ export default function DrugstoresElite() {
             </div>
 
             {/* Table Section Industrial */}
-            <Card className="bg-white border border-slate-100 rounded-[3rem] shadow-premium-lg overflow-hidden">
+            <Card className="bg-card border border-border rounded-[3rem] shadow-premium-lg overflow-hidden">
                 <CardHeader className="p-10 border-b border-slate-100 bg-slate-50/50">
                     <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
                         <Building className="h-6 w-6 text-primary" />
@@ -444,7 +444,7 @@ export default function DrugstoresElite() {
 
             {/* Detail View Dialog */}
             <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white border-none shadow-premium-2xl rounded-[3rem] p-0 font-display">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-none shadow-premium-2xl rounded-[3rem] p-0 font-display">
                     <DialogHeader className="p-10 border-b border-slate-100 bg-slate-50/50">
                         <DialogTitle className="flex items-center gap-6 text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">
                             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-premium-sm">
@@ -471,7 +471,7 @@ export default function DrugstoresElite() {
                                     <div className="space-y-6">
                                         <div className="bg-slate-100/50 p-8 rounded-[2rem] border border-slate-200/50 shadow-inner">
                                             <h3 className="text-[10px] font-black text-slate-400 mb-6 flex items-center gap-3 uppercase tracking-[0.3em] ">
-                                                <div className="p-2 bg-white rounded-lg shadow-sm">
+                                                <div className="p-2 bg-card rounded-lg shadow-sm">
                                                     <Building className="h-4 w-4 text-primary" />
                                                 </div>
                                                 Información Comercial
@@ -496,7 +496,7 @@ export default function DrugstoresElite() {
 
                                         <div className="bg-slate-100/50 p-8 rounded-[2rem] border border-slate-200/50 shadow-inner">
                                             <h3 className="text-[10px] font-black text-slate-400 mb-6 flex items-center gap-3 uppercase tracking-[0.3em] ">
-                                                <div className="p-2 bg-white rounded-lg shadow-sm">
+                                                <div className="p-2 bg-card rounded-lg shadow-sm">
                                                     <MapPin className="h-4 w-4 text-primary" />
                                                 </div>
                                                 Geolocalización Táctica
@@ -516,7 +516,7 @@ export default function DrugstoresElite() {
                                                 <p className="text-primary-foreground/70 text-[10px] font-black uppercase tracking-widest mb-8">Ejecutar gestión de cobranza o inventario de alto nivel.</p>
                                             </div>
                                             <div className="space-y-4 relative z-10">
-                                                <Button onClick={handleRegisterVisit} className="w-full bg-white text-primary shadow-premium-lg font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl transition-all hover:bg-slate-50 hover:scale-[1.02] active:scale-95">
+                                                <Button onClick={handleRegisterVisit} className="w-full bg-card text-primary shadow-premium-lg font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl transition-all hover:bg-slate-50 hover:scale-[1.02] active:scale-95">
                                                     <Navigation className="mr-3 h-5 w-5" /> Iniciar Gestión Táctica
                                                 </Button>
                                                 <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 h-14 rounded-2xl uppercase font-black tracking-widest text-[10px] shadow-sm" onClick={() => handleEditDrugstore(selectedDrugstore)}>
@@ -540,7 +540,7 @@ export default function DrugstoresElite() {
                                     ) : (
                                         <div className="space-y-4">
                                             {storeVisits.map(v => (
-                                                <div key={v.id} className="p-8 bg-white border border-slate-100 rounded-[2rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
+                                                <div key={v.id} className="p-8 bg-card border border-border rounded-[2rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
                                                     <div className="flex items-center gap-6">
                                                         <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 shadow-inner">
                                                             <Calendar className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
@@ -572,7 +572,7 @@ export default function DrugstoresElite() {
                                     ) : (
                                         <div className="space-y-4">
                                             {storeOrders.map(o => (
-                                                <div key={o.id} className="p-10 bg-white border border-slate-100 rounded-[2.5rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
+                                                <div key={o.id} className="p-10 bg-card border border-border rounded-[2.5rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
                                                     <div className="flex items-center gap-8">
                                                         <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 shadow-inner">
                                                             <Package className="h-8 w-8 text-slate-400 group-hover:text-primary transition-colors" />
