@@ -330,7 +330,7 @@ export default function VisitExecutionPage() {
                 setDynamicInterviewData(getEmptyInterviewData(scenario, entityType));
             }
         }
-    }, [scenario, entityType]);
+    }, [scenario, entityType, dynamicInterviewData]);
 
     // Sample Limit Warning for Conquest (Visit 1)
     useEffect(() => {
@@ -342,7 +342,7 @@ export default function VisitExecutionPage() {
                 duration: 5000
             });
         }
-    }, [deliveredSamples, scenario]);
+    }, [deliveredSamples, scenario, toast]);
 
 
 
@@ -695,7 +695,7 @@ export default function VisitExecutionPage() {
             </div>
 
             {!visit.checkin_at ? (
-                <div className="py-12 text-center bg-white rounded-xl border border-dashed border-slate-300">
+                <div className="py-12 text-center bg-card rounded-xl border border-dashed border-border">
                     <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Navigation className="h-8 w-8" />
                     </div>
@@ -720,7 +720,7 @@ export default function VisitExecutionPage() {
                 </div>
             ) : (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 bg-white p-1 h-auto md:h-14 rounded-xl border border-slate-200 shadow-md">
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 bg-card p-1 h-auto md:h-14 rounded-xl border border-border shadow-md">
                         <TabsTrigger
                             value="strategy"
                             className="rounded-lg text-slate-500 data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-xs md:text-sm gap-2 h-10 md:h-full"
@@ -778,7 +778,7 @@ export default function VisitExecutionPage() {
                             )}
 
 
-                            <Card className="border-slate-200 bg-white shadow-md rounded-xl overflow-hidden">
+                            <Card className="border-border bg-card shadow-md rounded-xl overflow-hidden">
                                 <CardHeader className="bg-slate-50 py-3 px-4 border-b border-slate-100">
                                     <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
                                         <FileText className="h-4 w-4 text-emerald-600" /> Preparación y Foco
@@ -801,7 +801,7 @@ export default function VisitExecutionPage() {
                                             <Input
                                                 value={customObjective || (visit as any).objective || ''}
                                                 readOnly
-                                                className="relative bg-white border-slate-300 text-slate-800 font-medium h-14 text-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+                                                className="relative bg-card border-border text-foreground font-medium h-14 text-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
                                             />
                                         </div>
                                     </div>
@@ -838,7 +838,7 @@ export default function VisitExecutionPage() {
 
                     {/* TAB 2: DESARROLLO (NEURO VENTAS & ENTREVISTA) */}
                     <TabsContent value="development" className="space-y-4 animate-in fade-in-50">
-                        <Card className="border-slate-200 bg-white shadow-lg rounded-2xl overflow-hidden">
+                        <Card className="border-border bg-card shadow-lg rounded-2xl overflow-hidden">
                             <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100">
                                 <CardTitle className="flex items-center gap-2 text-xl font-bold text-slate-900">
                                     <Star className="h-5 w-5 text-yellow-500" /> Psicología de Venta & Interés
@@ -855,13 +855,13 @@ export default function VisitExecutionPage() {
                                                 onClick={() => setFormData((prev: any) => ({ ...prev, doctor_interest: star }))}
                                                 className={`p-3 transition-all transform hover:scale-110 rounded-xl border ${formData.doctor_interest >= star
                                                     ? 'bg-yellow-400 text-white shadow-md border-yellow-500'
-                                                    : 'bg-white text-slate-300 border-slate-200 hover:text-yellow-400 hover:border-yellow-300'}`}
+                                                    : 'bg-card text-muted-foreground border-border hover:text-yellow-400 hover:border-yellow-300'}`}
                                             >
                                                 <Star className={`h-8 w-8 ${formData.doctor_interest >= star ? 'fill-current' : ''}`} />
                                             </button>
                                         ))}
                                     </div>
-                                    <p className="text-center sm:text-left text-base font-bold text-slate-700 mt-4 bg-white py-2 px-4 rounded-full border border-slate-200 inline-block">
+                                    <p className="text-center sm:text-left text-base font-bold text-foreground mt-4 bg-card py-2 px-4 rounded-full border border-border inline-block">
                                         {formData.doctor_interest === 1 && "❌ Rechazo Frontal"}
                                         {formData.doctor_interest === 2 && "🤔 Escéptico / Barreras"}
                                         {formData.doctor_interest === 3 && "😐 Neutral / Informativo"}
@@ -877,10 +877,10 @@ export default function VisitExecutionPage() {
                                             value={formData.emotional_state}
                                             onValueChange={(v) => setFormData({ ...formData, emotional_state: v })}
                                         >
-                                            <SelectTrigger className="bg-white border-slate-300 text-slate-900 h-12">
+                                            <SelectTrigger className="bg-card border-border text-foreground h-12">
                                                 <SelectValue placeholder="Seleccionar..." />
                                             </SelectTrigger>
-                                            <SelectContent className="bg-white border-slate-200 text-slate-900">
+                                            <SelectContent className="bg-card border-border text-foreground">
                                                 <SelectItem value="open">Abierto / Receptivo</SelectItem>
                                                 <SelectItem value="skeptical">Escéptico / Crítico</SelectItem>
                                                 <SelectItem value="indifferent">Indiferente</SelectItem>
@@ -895,10 +895,10 @@ export default function VisitExecutionPage() {
                                             value={formData.purchase_driver}
                                             onValueChange={(v) => setFormData({ ...formData, purchase_driver: v })}
                                         >
-                                            <SelectTrigger className="bg-white border-slate-300 text-slate-900 h-12">
+                                            <SelectTrigger className="bg-card border-border text-foreground h-12">
                                                 <SelectValue placeholder="Seleccionar..." />
                                             </SelectTrigger>
-                                            <SelectContent className="bg-white border-slate-200 text-slate-900">
+                                            <SelectContent className="bg-card border-border text-foreground">
                                                 <SelectItem value="price">Precio / Rentabilidad</SelectItem>
                                                 <SelectItem value="quality">Calidad / Eficacia</SelectItem>
                                                 <SelectItem value="relationship">Relación / Confianza</SelectItem>
@@ -943,7 +943,7 @@ export default function VisitExecutionPage() {
                                 </div>
                             )}
                              {(entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore') && scenario && scenario.type !== 'conquest' && (
-                                <div className="bg-white rounded-xl border border-slate-200 p-3 shadow-md">
+                                <div className="bg-card rounded-xl border border-border p-3 shadow-md">
                                     <CommercialAudit
                                         data={commercialData}
                                         onChange={(data) => {
@@ -981,7 +981,7 @@ export default function VisitExecutionPage() {
                                         </h4>
                                         <div className="space-y-4">
                                             {negotiationProducts.slice(0, 5).map(product => (
-                                                <div key={`alert-${product.id}`} className="flex items-center justify-between bg-white p-3 rounded-lg border border-red-100">
+                                                <div key={`alert-${product.id}`} className="flex items-center justify-between bg-card p-3 rounded-lg border border-red-100">
                                                     <span className="text-sm font-medium text-slate-700">{product.name}</span>
                                                     <Select
                                                         value={centralStockAlerts.find(a => a.productId === product.id)?.status || 'available'}
@@ -1017,7 +1017,7 @@ export default function VisitExecutionPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {negotiationProducts.map(product => (
-                                        <Card key={product.id} className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <Card key={product.id} className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
                                             <CardContent className="p-4 flex flex-col justify-between h-full gap-4">
                                                 <div>
                                                     <h4 className="font-bold text-slate-900 text-lg leading-tight">{product.name}</h4>
@@ -1053,7 +1053,7 @@ export default function VisitExecutionPage() {
                                     placeholder="¿Qué está haciendo la competencia en este punto? (Precios, promociones, visitas...)"
                                     value={formData.competitor_activity}
                                     onChange={(e) => setFormData(prev => ({ ...prev, competitor_activity: e.target.value }))}
-                                    className="w-full text-base p-4 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[100px]"
+                                    className="w-full text-base p-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[100px]"
                                 />
                             </CardContent>
                         </Card>
@@ -1123,7 +1123,7 @@ export default function VisitExecutionPage() {
                                             placeholder="¿Cuál es el compromiso para la siguiente visita?"
                                             value={formData.next_commitment}
                                             onChange={(e) => setFormData({ ...formData, next_commitment: e.target.value })}
-                                            className="w-full text-lg p-4 rounded-xl border border-blue-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 transition-all min-h-[120px]"
+                                            className="w-full text-lg p-4 rounded-xl border border-blue-200 bg-card text-foreground placeholder:text-muted-foreground focus:border-blue-500 transition-all min-h-[120px]"
                                         />
                                     </div>
                                 </div>
@@ -1132,7 +1132,7 @@ export default function VisitExecutionPage() {
                                     className="w-full h-20 text-xl font-black bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-200 border border-slate-200 rounded-2xl group overflow-hidden relative"
                                     onClick={handleCheckOut}
                                 >
-                                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <div className="absolute inset-0 bg-card/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                     <Square className="h-6 w-6 mr-3 fill-current group-hover:scale-110 transition-transform" />
                                     FINALIZAR VISITA ESTRATÉGICA
                                 </Button>
@@ -1146,7 +1146,7 @@ export default function VisitExecutionPage() {
             {/* CALCULATOR MODAL */}
             <Dialog open={negotiationModalOpen} onOpenChange={setNegotiationModalOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-50 p-0 rounded-2xl border-0">
-                    <DialogHeader className="p-6 pb-2 bg-white">
+                    <DialogHeader className="p-6 pb-2 bg-card">
                         <DialogTitle className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                             <Calculator className="h-6 w-6 text-blue-600" />
                             Negociación: <span className="text-blue-600">{negotiationProduct?.name}</span>
@@ -1171,7 +1171,7 @@ export default function VisitExecutionPage() {
         
             {/* FOCUS MODE OVERLAY (FRICTIONLESS) */}
             {isFocusMode && (
-                <div className="fixed inset-x-0 bottom-0 z-[60] p-4 bg-white/90 backdrop-blur-2xl border-t border-slate-200 animate-in slide-in-from-bottom duration-500 shadow-[0_-20px_50px_rgba(0,0,0,0.1)] rounded-t-[3rem]">
+                <div className="fixed inset-x-0 bottom-0 z-[60] p-4 bg-card/90 backdrop-blur-2xl border-t border-border animate-in slide-in-from-bottom duration-500 shadow-[0_-20px_50px_rgba(0,0,0,0.1)] rounded-t-[3rem]">
                     <div className="max-w-4xl mx-auto space-y-8 pb-8">
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">MODO <span className="text-emerald-500">MANOS LIBRES</span></h2>
