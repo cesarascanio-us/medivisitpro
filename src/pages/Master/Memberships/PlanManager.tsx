@@ -278,9 +278,9 @@ export default function PlanManager() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-8 p-1">
+        <div className="flex flex-col h-full bg-background space-y-8 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
@@ -291,11 +291,11 @@ export default function PlanManager() {
                             <Rocket className="text-white h-10 w-10" />
                         </div>
                         <div>
-                            <p className="text-indigo-600 dark:text-indigo-400 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Monetización & SaaS</p>
-                            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-indigo-500 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Monetización & SaaS</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tight">
                                 Gestión de Planes
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-lg font-medium">Configura la oferta comercial, límites de uso e infraestructura de precios</p>
+                            <p className="text-muted-foreground text-sm mt-1 max-w-lg font-medium">Configura la oferta comercial, límites de uso e infraestructura de precios</p>
                         </div>
                     </div>
 
@@ -310,9 +310,9 @@ export default function PlanManager() {
                                     Crear Nuevo Plan
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-white dark:bg-slate-900 border-none shadow-2xl rounded-[2rem] max-w-md">
+                            <DialogContent className="bg-card border-none shadow-2xl rounded-[2rem] max-w-md">
                                 <DialogHeader>
-                                    <DialogTitle className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">
+                                    <DialogTitle className="text-2xl font-black text-foreground tracking-tight">
                                         {editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}
                                     </DialogTitle>
                                 </DialogHeader>
@@ -353,8 +353,8 @@ export default function PlanManager() {
                                         </div>
                                         <div className="max-h-40 overflow-y-auto space-y-2 mt-4 p-1">
                                             {newPlanFeatures.map((feat, idx) => (
-                                                <div key={idx} className="flex items-center justify-between bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate mr-2">{feat}</span>
+                                                <div key={idx} className="flex items-center justify-between bg-muted p-3 rounded-xl border border-border">
+                                                    <span className="text-xs font-bold text-muted-foreground truncate mr-2">{feat}</span>
                                                     <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg">
                                                         <X className="h-4 w-4" />
                                                     </Button>
@@ -393,15 +393,15 @@ export default function PlanManager() {
                     {plans.map((plan) => (
                         <Card
                             key={plan.id}
-                            className={`relative flex flex-col h-full rounded-[3rem] border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 overflow-hidden group transition-all duration-500 hover:translate-y-[-10px] ${!plan.active ? 'opacity-60 grayscale' : 'hover:shadow-indigo-200/50'}`}
+                            className={`relative flex flex-col h-full rounded-[3rem] border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-card overflow-hidden group transition-all duration-500 hover:translate-y-[-10px] ${!plan.active ? 'opacity-60 grayscale' : 'hover:shadow-indigo-200/50'}`}
                         >
                             {/* Decorative accent */}
                             <div className="absolute top-0 left-0 w-full h-2.5 bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-600"></div>
 
                             <CardHeader className="pt-12 pb-8 px-10">
                                 <div className="flex justify-between items-start mb-8">
-                                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-[1.5rem] flex items-center justify-center group-hover:bg-indigo-600 transition-colors duration-500">
-                                        <Shield className="w-8 h-8 text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors" />
+                                    <div className="w-16 h-16 bg-muted rounded-[1.5rem] flex items-center justify-center group-hover:bg-indigo-600 transition-colors duration-500">
+                                        <Shield className="w-8 h-8 text-indigo-500 group-hover:text-white transition-colors" />
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <Badge className={`${plan.active ? 'bg-indigo-50 text-indigo-700' : 'bg-red-50 text-red-700'} border-none font-black text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-full`}>
@@ -415,29 +415,29 @@ export default function PlanManager() {
                                     </div>
                                 </div>
 
-                                <CardTitle className="text-3xl font-black text-slate-800 dark:text-white tracking-tighter mb-3 uppercase flex items-center gap-2">
+                                <CardTitle className="text-3xl font-black text-foreground tracking-tighter mb-3 uppercase flex items-center gap-2">
                                     {plan.name}
                                     {plan.name === 'Pro' && <Badge className="bg-amber-400 text-amber-950 font-black border-none text-[9px] px-2 py-0.5 rounded-md">POPULAR</Badge>}
                                 </CardTitle>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter">${plan.price}</span>
-                                    <span className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
+                                    <span className="text-5xl font-black text-foreground tracking-tighter">${plan.price}</span>
+                                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
                                 </div>
-                                <CardDescription className="text-slate-500 dark:text-slate-400 mt-6 font-medium leading-relaxed  text-sm">
+                                <CardDescription className="text-muted-foreground mt-6 font-medium leading-relaxed  text-sm">
                                     {plan.description || "Solución avanzada para la industria farmacéutica."}
                                 </CardDescription>
                             </CardHeader>
 
                             <CardContent className="flex-grow px-10 pb-10">
-                                <div className="pt-8 border-t border-slate-50 dark:border-slate-800">
+                                <div className="pt-8 border-t border-border">
                                     <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400 mb-6">Capacidades del Plan</p>
                                     <ul className="space-y-4">
                                         {plan.features?.map((feature, i) => (
                                             <li key={i} className="flex items-start group/li">
                                                 <div className="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mr-3 mt-0.5 shrink-0 group-hover/li:bg-emerald-500 group-hover/li:text-white transition-all">
-                                                    <Check className="h-3 w-3 text-emerald-600 dark:text-emerald-400 group-hover/li:text-white transition-all" />
+                                                    <Check className="h-3 w-3 text-emerald-500 group-hover/li:text-white transition-all" />
                                                 </div>
-                                                <span className="text-slate-600 dark:text-slate-300 text-sm font-bold leading-tight group-hover/li:text-slate-900 dark:group-hover/li:text-white transition-colors">{feature}</span>
+                                                <span className="text-muted-foreground text-sm font-bold leading-tight group-hover/li:text-slate-900 dark:group-hover/li:text-white transition-colors">{feature}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -446,7 +446,7 @@ export default function PlanManager() {
                                 <div className="mt-12 grid grid-cols-2 gap-4">
                                     <Button
                                         variant="outline"
-                                        className="rounded-2xl border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/20 font-black uppercase text-[10px] tracking-widest h-14 transition-all"
+                                        className="rounded-2xl border-border bg-muted/50 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/20 font-black uppercase text-[10px] tracking-widest h-14 transition-all"
                                         onClick={() => {
                                             setEditingPlan(plan);
                                             setNewPlanName(plan.name);

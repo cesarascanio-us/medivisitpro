@@ -71,9 +71,9 @@ export default function AuditLogs() {
     }, [searchTerm]);
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6 p-1">
+        <div className="flex flex-col h-full bg-background space-y-6 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
@@ -84,11 +84,11 @@ export default function AuditLogs() {
                             <ShieldAlert className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Seguridad del Sistema</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Seguridad del Sistema</p>
+                            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
                                 Auditoría de Logs
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Registro de actividad y eventos de seguridad</p>
+                            <p className="text-muted-foreground text-sm mt-1">Registro de actividad y eventos de seguridad</p>
                         </div>
                     </div>
 
@@ -98,21 +98,21 @@ export default function AuditLogs() {
                             placeholder="Buscar acción o entidad..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-11 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 h-12 rounded-2xl focus:ring-emerald-500 transition-all shadow-sm"
+                            className="pl-11 bg-muted border-border h-12 rounded-2xl focus:ring-emerald-500 transition-all shadow-sm"
                         />
                     </div>
                 </div>
             </header>
 
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden mx-1">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6">
+            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-card rounded-[2rem] overflow-hidden mx-1">
+                <CardHeader className="border-b border-border pb-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+                            <CardTitle className="text-xl font-black text-foreground tracking-tight flex items-center gap-2">
                                 <Activity className="h-5 w-5 text-emerald-500" />
                                 Actividad Crítica
                             </CardTitle>
-                            <CardDescription className="text-slate-400 dark:text-slate-500 font-medium">Últimos 100 eventos registrados sincrónicamente</CardDescription>
+                            <CardDescription className="text-muted-foreground font-medium">Últimos 100 eventos registrados sincrónicamente</CardDescription>
                         </div>
                         <Button
                             variant="outline"
@@ -135,16 +135,16 @@ export default function AuditLogs() {
                         </div>
                     ) : logs.length === 0 ? (
                         <div className="text-center py-24 px-6">
-                            <div className="bg-slate-50 dark:bg-slate-800/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                                <Activity className="w-10 h-10 text-slate-300 dark:text-slate-700" />
+                            <div className="bg-muted/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                                <Activity className="w-10 h-10 text-muted-foreground/30" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800 dark:text-white">Sin actividad registrada</h3>
-                            <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-xs mx-auto">No se encontraron logs que coincidan con los criterios de búsqueda actuales.</p>
+                            <h3 className="text-lg font-black text-foreground">Sin actividad registrada</h3>
+                            <p className="text-muted-foreground mt-2 max-w-xs mx-auto">No se encontraron logs que coincidan con los criterios de búsqueda actuales.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+                                <TableHeader className="bg-muted/50">
                                     <TableRow className="hover:bg-transparent border-none">
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6 pl-8">Acción / Entidad</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6">Datos Técnicos (Payload)</TableHead>
@@ -154,29 +154,29 @@ export default function AuditLogs() {
                                 </TableHeader>
                                 <TableBody>
                                     {logs.map((log) => (
-                                        <TableRow key={log.id} className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                        <TableRow key={log.id} className="border-b border-border hover:bg-muted/10 transition-colors group">
                                             <TableCell className="pl-8 py-5">
                                                 <div className="flex items-center gap-3">
                                                     <Badge variant="outline" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
                                                         {log.operation}
                                                     </Badge>
-                                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-tighter opacity-60 group-hover:opacity-100 transition-opacity">{log.table_name}</span>
+                                                    <span className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter opacity-60 group-hover:opacity-100 transition-opacity">{log.table_name}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-5">
-                                                <code className="text-[11px] font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-slate-600 dark:text-slate-400 block max-w-[280px] truncate border border-slate-200/50 dark:border-slate-700/50">
+                                                <code className="text-[11px] font-mono bg-muted p-2 rounded-lg text-muted-foreground block max-w-[280px] truncate border border-border/50">
                                                     {JSON.stringify(log.new_data || log.old_data || {})}
                                                 </code>
                                             </TableCell>
                                             <TableCell className="py-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center gap-1.5 font-bold text-xs text-slate-700 dark:text-slate-300">
+                                                    <div className="flex items-center gap-1.5 font-bold text-xs text-muted-foreground">
                                                         <div className="w-5 h-5 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
-                                                            <User className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                                                            <User className="w-3 h-3 text-blue-500" />
                                                         </div>
                                                         <span className="truncate max-w-[140px]">{log.changed_by || 'Autómata'}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 pl-6">
+                                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground pl-6">
                                                         <Globe className="w-2.5 h-2.5" />
                                                         {log.table_name || 'Red Interna'}
                                                     </div>
@@ -184,8 +184,8 @@ export default function AuditLogs() {
                                             </TableCell>
                                             <TableCell className="text-right pr-8 py-5">
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-sm font-black text-slate-800 dark:text-slate-200 tabular-nums lowercase tracking-tighter">{new Date(log.changed_at).toLocaleDateString()}</span>
-                                                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{new Date(log.changed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <span className="text-sm font-black text-muted-foreground tabular-nums lowercase tracking-tighter">{new Date(log.changed_at).toLocaleDateString()}</span>
+                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{new Date(log.changed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </div>
                                             </TableCell>
                                         </TableRow>

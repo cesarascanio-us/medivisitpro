@@ -123,9 +123,9 @@ export default function BillingManager() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-8 p-1">
+        <div className="flex flex-col h-full bg-background space-y-8 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-slate-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
@@ -136,11 +136,11 @@ export default function BillingManager() {
                             <CreditCard className="text-white h-10 w-10" />
                         </div>
                         <div>
-                            <p className="text-indigo-600 dark:text-indigo-400 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Finanzas & Facturación</p>
-                            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-indigo-500 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Finanzas & Facturación</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tight">
                                 Facturación y Pagos
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-lg font-medium">Control centralizado de ingresos, comprobantes y suscripciones SaaS</p>
+                            <p className="text-muted-foreground text-sm mt-1 max-w-lg font-medium">Control centralizado de ingresos, comprobantes y suscripciones SaaS</p>
                         </div>
                     </div>
 
@@ -152,7 +152,7 @@ export default function BillingManager() {
                                     Generar Factura
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-white dark:bg-slate-900 border-none shadow-2xl rounded-[2.5rem] max-w-md p-0 overflow-hidden">
+                            <DialogContent className="bg-card border-none shadow-2xl rounded-[2.5rem] max-w-md p-0 overflow-hidden">
                                 <div className="bg-slate-900 p-8 text-white">
                                     <DialogTitle className="text-2xl font-black uppercase tracking-tight">Nueva Factura Manual</DialogTitle>
                                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Sincronización con Pasarela de Pagos</p>
@@ -209,7 +209,7 @@ export default function BillingManager() {
                     { label: 'Facturas Vencidas', val: '0', sub: 'Requieren atención', icon: Clock, color: 'rose' },
                     { label: 'Planes Activos', val: '1', sub: 'Suscripciones vigentes', icon: CreditCard, color: 'slate' }
                 ].map((kpi, i) => (
-                    <Card key={i} className="bg-white dark:bg-slate-900 border-none rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none p-8 group hover:translate-y-[-5px] transition-all duration-300">
+                    <Card key={i} className="bg-card border-none rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none p-8 group hover:translate-y-[-5px] transition-all duration-300">
                         <div className="flex items-center justify-between mb-6">
                             <div className={`w-14 h-14 rounded-2xl bg-${kpi.color}-50 dark:bg-${kpi.color}-900/20 flex items-center justify-center group-hover:bg-${kpi.color}-600 transition-colors duration-500`}>
                                 <kpi.icon className={`h-7 w-7 text-${kpi.color}-600 dark:text-${kpi.color}-400 group-hover:text-white transition-colors`} />
@@ -225,12 +225,12 @@ export default function BillingManager() {
             </div>
 
             {/* Invoices Table */}
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden mx-1">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6 pt-10 px-10">
+            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-card rounded-[3rem] overflow-hidden mx-1">
+                <CardHeader className="border-b border-border pb-6 pt-10 px-10">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-2xl font-black text-slate-800 dark:text-white tracking-tight uppercase">Historial de Cobros</CardTitle>
-                            <p className="text-slate-400 dark:text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">Listado maestro de transacciones SaaS</p>
+                            <CardTitle className="text-2xl font-black text-foreground tracking-tight uppercase">Historial de Cobros</CardTitle>
+                            <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest mt-1">Listado maestro de transacciones SaaS</p>
                         </div>
                         <Button
                             variant="outline"
@@ -250,16 +250,16 @@ export default function BillingManager() {
                         </div>
                     ) : invoices.length === 0 ? (
                         <div className="text-center py-32">
-                            <div className="bg-slate-50 dark:bg-slate-800 w-24 h-24 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6">
+                            <div className="bg-muted w-24 h-24 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6">
                                 <CreditCard className="w-12 h-12 text-slate-300" />
                             </div>
-                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Sin facturación</h3>
+                            <h3 className="text-xl font-black text-foreground uppercase tracking-tight">Sin facturación</h3>
                             <p className="text-slate-400 text-sm mt-2 max-w-xs mx-auto font-medium">Aún no se han generado comprobantes en el sistema.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+                                <TableHeader className="bg-muted/50">
                                     <TableRow className="hover:bg-transparent border-none">
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7 pl-10">N° Comprobante</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-7">Cliente / Org</TableHead>
@@ -271,21 +271,21 @@ export default function BillingManager() {
                                 </TableHeader>
                                 <TableBody>
                                     {invoices.map((inv) => (
-                                        <TableRow key={inv.id} className="border-b border-slate-50 dark:border-slate-800 hover:bg-indigo-50/20 dark:hover:bg-slate-800/50 transition-all group">
+                                        <TableRow key={inv.id} className="border-b border-border hover:bg-indigo-500/10 transition-all group">
                                             <TableCell className="pl-10 py-6">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center font-black text-indigo-600 text-xs">#</div>
-                                                    <span className="font-black text-slate-900 dark:text-slate-200 tracking-tight">{inv.invoice_number}</span>
+                                                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center font-black text-indigo-600 text-xs">#</div>
+                                                    <span className="font-black text-foreground tracking-tight">{inv.invoice_number}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-6">
                                                 <div className="flex items-center gap-2">
                                                     <Building2 className="w-4 h-4 text-slate-400" />
-                                                    <span className="font-bold text-slate-600 dark:text-slate-400">{organizations.find(o => o.id === inv.organization_id)?.name || 'Organización'}</span>
+                                                    <span className="font-bold text-muted-foreground">{organizations.find(o => o.id === inv.organization_id)?.name || 'Organización'}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-6">
-                                                <span className="text-lg font-black text-slate-900 dark:text-white tracking-tighter">${inv.amount.toFixed(2)}</span>
+                                                <span className="text-lg font-black text-foreground tracking-tighter">${inv.amount.toFixed(2)}</span>
                                             </TableCell>
                                             <TableCell className="py-6">
                                                 {getStatusBadge(inv.status)}

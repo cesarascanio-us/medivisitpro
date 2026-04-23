@@ -404,8 +404,8 @@ export default function WeeklyScheduler() {
 
                                     <div className="space-y-2 overflow-y-auto pr-1">
                                         {planDetails?.filter(d => d.day_of_week === day.key && d.turn === turn).map((detail) => (
-                                            <div key={detail.id} className="text-xs bg-white dark:bg-slate-800 p-2 rounded border shadow-sm group relative hover:border-primary transition-colors">
-                                                <div className="font-semibold truncate text-slate-900 dark:text-white">{detail.directory_item?.name || "⚠️ Sin nombre"}</div>
+                                            <div key={detail.id} className="text-xs bg-muted p-2 rounded border shadow-sm group relative hover:border-primary transition-colors">
+                                                <div className="font-semibold truncate text-foreground">{detail.directory_item?.name || "⚠️ Sin nombre"}</div>
                                                 <div className="text-muted-foreground flex items-center gap-1">
                                                     <MapPin className="h-3 w-3" />
                                                     <span className="truncate">{detail.directory_item?.city || detail.directory_item?.address || "Sin dirección"}</span>

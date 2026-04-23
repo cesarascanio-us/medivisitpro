@@ -280,7 +280,7 @@ export default function Documentation() {
                                     </div>
                                 </div>
                             </CardHeader>
-                            <CardContent className="flex-1 min-h-0 p-0 bg-white dark:bg-zinc-950 relative">
+                            <CardContent className="flex-1 min-h-0 p-0 bg-background relative">
                                 {isEditing ? (
                                     <Textarea
                                         className="w-full h-full resize-none p-6 font-mono text-sm border-0 focus-visible:ring-0 rounded-none bg-transparent"

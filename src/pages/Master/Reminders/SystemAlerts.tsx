@@ -119,9 +119,9 @@ export default function SystemAlerts() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6 p-1">
+        <div className="flex flex-col h-full bg-background space-y-6 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-amber-50 dark:bg-amber-900/10 rounded-full blur-3xl opacity-60"></div>
@@ -132,11 +132,11 @@ export default function SystemAlerts() {
                             <Bell className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Comunicación Global</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Comunicación Global</p>
+                            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
                                 Alertas del Sistema
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestiona notificaciones y avisos globales para todos los usuarios</p>
+                            <p className="text-muted-foreground text-sm mt-1">Gestiona notificaciones y avisos globales para todos los usuarios</p>
                         </div>
                     </div>
 
@@ -147,9 +147,9 @@ export default function SystemAlerts() {
                                 Nueva Alerta
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-white dark:bg-slate-900 border-none shadow-2xl rounded-[2rem] max-w-md">
+                        <DialogContent className="bg-card border-none shadow-2xl rounded-[2rem] max-w-md">
                             <DialogHeader>
-                                <DialogTitle className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Crear Notificación</DialogTitle>
+                                <DialogTitle className="text-2xl font-black text-foreground tracking-tight">Crear Notificación</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-6 py-6">
                                 <div className="space-y-2">
@@ -170,9 +170,9 @@ export default function SystemAlerts() {
                                         placeholder="Escribe el contenido de la notificación..."
                                     />
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center justify-between p-4 bg-muted rounded-xl border border-border">
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">Mensaje Global</span>
+                                        <span className="text-sm font-bold text-muted-foreground">Mensaje Global</span>
                                         <span className="text-[10px] text-slate-400 font-medium">Visible para todos los usuarios</span>
                                     </div>
                                     <Switch
@@ -191,12 +191,12 @@ export default function SystemAlerts() {
                 </div>
             </header>
 
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden mx-1">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6 pt-8">
+            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-card rounded-[2rem] overflow-hidden mx-1">
+                <CardHeader className="border-b border-border pb-6 pt-8">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Alertas Históricas</CardTitle>
-                            <CardDescription className="text-slate-400 dark:text-slate-500 font-medium tracking-tight">Registro completo de comunicaciones del sistema</CardDescription>
+                            <CardTitle className="text-xl font-black text-foreground tracking-tight">Alertas Históricas</CardTitle>
+                            <CardDescription className="text-muted-foreground font-medium tracking-tight">Registro completo de comunicaciones del sistema</CardDescription>
                         </div>
                         <Button
                             variant="outline"
@@ -215,16 +215,16 @@ export default function SystemAlerts() {
                         </div>
                     ) : alerts.length === 0 ? (
                         <div className="text-center py-24 px-6">
-                            <div className="bg-slate-50 dark:bg-slate-800/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                                <Bell className="w-10 h-10 text-slate-300 dark:text-slate-700" />
+                            <div className="bg-muted/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                                <Bell className="w-10 h-10 text-muted-foreground/30" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800 dark:text-white">Sin alertas activas</h3>
-                            <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-xs mx-auto">No hay notificaciones pendientes por mostrar en este momento.</p>
+                            <h3 className="text-lg font-black text-foreground">Sin alertas activas</h3>
+                            <p className="text-muted-foreground mt-2 max-w-xs mx-auto">No hay notificaciones pendientes por mostrar en este momento.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+                                <TableHeader className="bg-muted/50">
                                     <TableRow className="hover:bg-transparent border-none">
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6 pl-8">Alerta / Mensaje</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6">Alcance</TableHead>
@@ -235,11 +235,11 @@ export default function SystemAlerts() {
                                 </TableHeader>
                                 <TableBody>
                                     {alerts.map((alert) => (
-                                        <TableRow key={alert.id} className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50/30 transition-all group">
+                                        <TableRow key={alert.id} className="border-b border-border hover:bg-slate-50/30 transition-all group">
                                             <TableCell className="pl-8 py-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="font-bold text-slate-900 dark:text-slate-200">{alert.title}</span>
-                                                    <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">{alert.message}</span>
+                                                    <span className="font-bold text-foreground">{alert.title}</span>
+                                                    <span className="text-[11px] text-muted-foreground font-medium line-clamp-1">{alert.message}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-5">

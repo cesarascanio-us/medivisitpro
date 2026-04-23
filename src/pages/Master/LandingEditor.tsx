@@ -180,9 +180,9 @@ export default function LandingEditor() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-8 p-1">
+        <div className="flex flex-col h-full bg-background space-y-8 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
@@ -193,11 +193,11 @@ export default function LandingEditor() {
                             <Layout className="text-white h-10 w-10" />
                         </div>
                         <div>
-                            <p className="text-indigo-600 dark:text-indigo-400 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Marketing & Presencia</p>
-                            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-indigo-500 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Marketing & Presencia</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tight">
                                 Editor de Landing
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-lg font-medium">Personaliza la narrativa visual y técnica de tu página pública</p>
+                            <p className="text-muted-foreground text-sm mt-1 max-w-lg font-medium">Personaliza la narrativa visual y técnica de tu página pública</p>
                         </div>
                     </div>
 
@@ -222,7 +222,7 @@ export default function LandingEditor() {
             </header>
 
             <Tabs defaultValue="hero" className="w-full px-2">
-                <div className="mb-10 px-6 py-4 bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto">
+                <div className="mb-10 px-6 py-4 bg-card rounded-[2rem] border border-border shadow-sm overflow-x-auto">
                     <TabsList className="bg-transparent text-slate-400 gap-1 h-auto p-0">
                         {[
                             { val: 'hero', label: 'Inicio', icon: Globe },
@@ -246,9 +246,9 @@ export default function LandingEditor() {
 
                 <div className="pb-20">
                     <TabsContent value="hero" className="space-y-8">
-                        <Card className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
-                            <CardHeader className="p-10 border-b border-slate-50 dark:border-slate-800">
-                                <CardTitle className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Sección Hero</CardTitle>
+                        <Card className="bg-card border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
+                            <CardHeader className="p-10 border-b border-border">
+                                <CardTitle className="text-2xl font-black text-foreground uppercase tracking-tight">Sección Hero</CardTitle>
                                 <CardDescription className="font-bold text-slate-400 text-xs uppercase tracking-widest mt-1">Primaria narrativa y visual</CardDescription>
                             </CardHeader>
                             <CardContent className="p-10 space-y-8">
@@ -280,7 +280,7 @@ export default function LandingEditor() {
                                         <Input value={content.hero.cta_secondary} onChange={e => updateHero('cta_secondary', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6" />
                                     </div>
                                 </div>
-                                <div className="pt-6 border-t border-slate-50 dark:border-slate-800">
+                                <div className="pt-6 border-t border-border">
                                     <ImageField
                                         label="Imagen Hero Proyectada"
                                         value={content.hero.hero_image}
@@ -290,9 +290,9 @@ export default function LandingEditor() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
+                        <Card className="bg-card border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
                             <CardHeader className="p-10 border-b border-slate-50">
-                                <CardTitle className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Cifras Maestras (Stats)</CardTitle>
+                                <CardTitle className="text-2xl font-black text-foreground uppercase tracking-tight">Cifras Maestras (Stats)</CardTitle>
                                 <CardDescription className="font-bold text-slate-400 text-xs uppercase tracking-widest mt-1">Efecto de validación social inmediata</CardDescription>
                             </CardHeader>
                             <CardContent className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-white text-white">
@@ -316,9 +316,9 @@ export default function LandingEditor() {
                     {/* For brevity and since the pattern is clear, applying the high-end styling to the rest of the tabs */}
 
                     <TabsContent value="intelligence" className="space-y-8">
-                        <Card className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
+                        <Card className="bg-card border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
                             <CardHeader className="p-10 border-b border-slate-50">
-                                <CardTitle className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Módulo de Inteligencia</CardTitle>
+                                <CardTitle className="text-2xl font-black text-foreground uppercase tracking-tight">Módulo de Inteligencia</CardTitle>
                             </CardHeader>
                             <CardContent className="p-10 space-y-8">
                                 <div className="space-y-3">
@@ -352,7 +352,7 @@ export default function LandingEditor() {
                     </TabsContent>
 
                     <TabsContent value="features" className="space-y-8">
-                        <Card className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
+                        <Card className="bg-card border-none rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
                             <CardHeader className="p-10 border-b border-slate-50">
                                 <CardTitle className="text-2xl font-black text-slate-800 uppercase tracking-tight">Red de Beneficios</CardTitle>
                             </CardHeader>
@@ -370,12 +370,12 @@ export default function LandingEditor() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {content.features.items.map((item, i) => (
-                                        <div key={i} className="p-10 bg-slate-50 dark:bg-slate-800 rounded-[3rem] space-y-6 border border-slate-100 dark:border-slate-800 group hover:bg-white dark:hover:bg-slate-900 transition-all hover:shadow-xl hover:shadow-indigo-50">
+                                        <div key={i} className="p-10 bg-muted rounded-[3rem] space-y-6 border border-border group hover:bg-card transition-all hover:shadow-xl hover:shadow-indigo-50">
                                             <div className="flex items-center justify-between">
-                                                <div className="w-16 h-16 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-indigo-600 transition-colors">
+                                                <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-indigo-600 transition-colors">
                                                     <Loader2 className="w-8 h-8 text-indigo-600 group-hover:text-white transition-colors" />
                                                 </div>
-                                                <Badge className="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-none font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full">Card {i + 1}</Badge>
+                                                <Badge className="bg-muted text-muted-foreground border-none font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full">Card {i + 1}</Badge>
                                             </div>
                                             <div className="space-y-4">
                                                 <div className="space-y-2">

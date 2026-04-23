@@ -153,68 +153,68 @@ export default function NaturalStores() {
 
             {/* Main Area: Search + Tablet */}
             <div className="flex-1 min-h-0 flex flex-col gap-6">
-                <Card className="bg-card dark:bg-card border border-border/40 dark:border-border rounded-[1.5rem] shadow-soft p-4 shrink-0">
+                <Card className="bg-card border border-border/40 rounded-[1.5rem] shadow-soft p-4 shrink-0">
                     <div className="relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 dark:text-muted-foreground" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         <Input
                             placeholder="Busca por nombre, RIF o ciudad..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-12 h-14 bg-muted/10 dark:bg-muted/20 border-transparent focus-visible:ring-indigo-500 font-bold rounded-2xl text-slate-700 dark:text-foreground transition-all focus:bg-card dark:focus:bg-card shadow-inner"
+                            className="pl-12 h-14 bg-muted/10 border-transparent focus-visible:ring-indigo-500 font-bold rounded-2xl text-foreground transition-all focus:bg-card shadow-inner"
                         />
                     </div>
                 </Card>
 
-                <Card className="flex-1 min-h-0 bg-card dark:bg-card border border-border/40 dark:border-border rounded-[2rem] shadow-soft overflow-hidden flex flex-col">
+                <Card className="flex-1 min-h-0 bg-card border border-border/40 rounded-[2rem] shadow-soft overflow-hidden flex flex-col">
                     <ScrollArea className="flex-1 font-outfit">
                         <Table>
-                            <TableHeader className="bg-slate-50/80 dark:bg-muted/5 sticky top-0 z-10 backdrop-blur-sm">
-                                <TableRow className="hover:bg-transparent border-border/40 dark:border-border">
-                                    <TableHead className="pl-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-muted-foreground">Punto de Venta</TableHead>
-                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-muted-foreground">Localidad</TableHead>
-                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-muted-foreground">Identificación</TableHead>
-                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-muted-foreground">Estatus</TableHead>
-                                    <TableHead className="text-right pr-8 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-muted-foreground">Acciones</TableHead>
+                            <TableHeader className="bg-muted/5 sticky top-0 z-10 backdrop-blur-sm">
+                                <TableRow className="hover:bg-transparent border-border/40">
+                                    <TableHead className="pl-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Punto de Venta</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Localidad</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Identificación</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Estatus</TableHead>
+                                    <TableHead className="text-right pr-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Acciones</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loading ? (
                                     Array(6).fill(0).map((_, i) => (
-                                        <TableRow key={i} className="animate-pulse border-slate-50 dark:border-border"><TableCell colSpan={5} className="h-16 bg-slate-50/30 dark:bg-muted/5" /></TableRow>
+                                        <TableRow key={i} className="animate-pulse border-border"><TableCell colSpan={5} className="h-16 bg-muted/10" /></TableRow>
                                     ))
                                 ) : naturalStores.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={5} className="h-[300px] text-center">
                                             <div className="flex flex-col items-center gap-4 opacity-30">
                                                 <Sprout className="h-20 w-20 text-indigo-400" />
-                                                <p className="font-bold text-slate-500 dark:text-muted-foreground">No se encontraron tiendas en el canal.</p>
+                                                <p className="font-bold text-muted-foreground">No se encontraron tiendas en el canal.</p>
                                             </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     naturalStores.map(store => (
-                                        <TableRow key={store.id} className="hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-all border-slate-50 dark:border-border group">
+                                        <TableRow key={store.id} className="hover:bg-indigo-500/10 transition-all border-border group">
                                             <TableCell className="pl-8 py-6">
                                                 <div className="flex flex-col">
-                                                    <span className="font-black text-sm text-slate-700 dark:text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase tracking-tight ">{store.name}</span>
-                                                    <span className="text-[10px] text-slate-400 dark:text-muted-foreground font-bold flex items-center gap-2 mt-1">
+                                                    <span className="font-black text-sm text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase tracking-tight ">{store.name}</span>
+                                                    <span className="text-[10px] text-muted-foreground font-bold flex items-center gap-2 mt-1">
                                                        <Phone className="h-3 w-3 text-indigo-300" /> {store.phone || 'S/N Registrado'}
                                                     </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-col">
-                                                    <p className="text-xs font-black text-slate-600 dark:text-muted-foreground uppercase mb-0.5">{store.city || 'N/A'}</p>
-                                                    <p className="text-[10px] text-slate-400 dark:text-muted-foreground font-medium truncate max-w-[200px]">{store.address}</p>
+                                                    <p className="text-xs font-black text-muted-foreground uppercase mb-0.5">{store.city || 'N/A'}</p>
+                                                    <p className="text-[10px] text-muted-foreground font-medium truncate max-w-[200px]">{store.address}</p>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="px-3 py-1 bg-slate-100 dark:bg-muted/20 rounded-lg text-[10px] font-mono font-bold text-slate-500 dark:text-indigo-300/60 inline-block">
+                                                <div className="px-3 py-1 bg-muted/20 rounded-lg text-[10px] font-mono font-bold text-muted-foreground/60 inline-block">
                                                     {store.rif}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className={store.priority === 'high' ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-none font-black text-[9px] uppercase tracking-widest px-3" : "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-none font-black text-[9px] uppercase tracking-widest px-3"}>
+                                                <Badge className={store.priority === 'high' ? "bg-amber-500/10 text-amber-500 border-none font-black text-[9px] uppercase tracking-widest px-3" : "bg-indigo-500/10 text-indigo-500 border-none font-black text-[9px] uppercase tracking-widest px-3"}>
                                                     {store.priority === 'high' ? "Alta Prioridad" : "Activa"}
                                                 </Badge>
                                             </TableCell>
@@ -223,7 +223,7 @@ export default function NaturalStores() {
                                                     <Button variant="ghost" size="icon" onClick={() => navigate(`/visits/execution/new?contactId=${store.id}`)} className="h-10 w-10 p-0 hover:bg-indigo-600 hover:text-white rounded-xl transition-all shadow-md hover:shadow-indigo-500/30">
                                                         <Navigation className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="h-10 w-10 p-0 hover:bg-slate-900 dark:hover:bg-card-foreground hover:text-white rounded-xl transition-all">
+                                                    <Button variant="ghost" size="icon" className="h-10 w-10 p-0 hover:bg-foreground hover:text-background rounded-xl transition-all">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -238,7 +238,7 @@ export default function NaturalStores() {
             </div>
 
             {/* Float Label: Industrial Standard */}
-            <div className="mt-6 flex items-center justify-between text-slate-400 dark:text-muted-foreground px-2">
+            <div className="mt-6 flex items-center justify-between text-muted-foreground px-2">
                 <p className="text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
                    <ShieldCheck className="h-3.5 w-3.5" /> Directiva de Auditoría Médica César Ascanio CA
                 </p>

@@ -138,9 +138,9 @@ export default function TicketList() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6 p-1">
+        <div className="flex flex-col h-full bg-background space-y-6 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl opacity-60"></div>
@@ -151,18 +151,18 @@ export default function TicketList() {
                             <Ticket className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Centro de Ayuda</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-blue-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Centro de Ayuda</p>
+                            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
                                 Soporte & Tickets
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestión centralizada de incidencias y soporte técnico</p>
+                            <p className="text-muted-foreground text-sm mt-1">Gestión centralizada de incidencias y soporte técnico</p>
                         </div>
                     </div>
 
                     <Button
                         onClick={fetchTickets}
                         variant="outline"
-                        className="h-12 px-6 rounded-2xl border-slate-200 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 text-slate-600 font-bold uppercase text-[10px] tracking-widest"
+                        className="h-12 px-6 rounded-2xl border-slate-200 bg-muted shadow-sm hover:shadow-md transition-all active:scale-95 text-slate-600 font-bold uppercase text-[10px] tracking-widest"
                     >
                         <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin text-blue-500' : ''}`} />
                         Sincronizar Tickets
@@ -170,12 +170,12 @@ export default function TicketList() {
                 </div>
             </header>
 
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden mx-1">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6 pt-8">
+            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-card rounded-[2rem] overflow-hidden mx-1">
+                <CardHeader className="border-b border-border pb-6 pt-8">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Solicitudes Recientes</CardTitle>
-                            <CardDescription className="text-slate-400 dark:text-slate-500 font-medium">Bandeja de entrada de soporte consolidada</CardDescription>
+                            <CardTitle className="text-xl font-black text-foreground tracking-tight">Solicitudes Recientes</CardTitle>
+                            <CardDescription className="text-muted-foreground font-medium">Bandeja de entrada de soporte consolidada</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
@@ -189,16 +189,16 @@ export default function TicketList() {
                         </div>
                     ) : tickets.length === 0 ? (
                         <div className="text-center py-24 px-6">
-                            <div className="bg-slate-50 dark:bg-slate-800/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                                <Ticket className="w-10 h-10 text-slate-300 dark:text-slate-700" />
+                            <div className="bg-muted/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                                <Ticket className="w-10 h-10 text-muted-foreground/30" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800 dark:text-white">Sin tickets pendientes</h3>
-                            <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-xs mx-auto">Todo parece funcionar correctamente en el sistema hoy.</p>
+                            <h3 className="text-lg font-black text-foreground">Sin tickets pendientes</h3>
+                            <p className="text-muted-foreground mt-2 max-w-xs mx-auto">Todo parece funcionar correctamente en el sistema hoy.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+                                <TableHeader className="bg-muted/50">
                                     <TableRow className="hover:bg-transparent border-none">
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6 pl-8">Asunto / Incidencia</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6">Solicitante (Org)</TableHead>
@@ -212,19 +212,19 @@ export default function TicketList() {
                                     {tickets.map((ticket) => (
                                         <TableRow
                                             key={ticket.id}
-                                            className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-all cursor-pointer group"
+                                            className="border-b border-border hover:bg-muted/10 transition-all cursor-pointer group"
                                             onClick={() => openTicketDialog(ticket)}
                                         >
                                             <TableCell className="pl-8 py-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="font-bold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 transition-colors">{ticket.subject}</span>
-                                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate max-w-[280px]">{ticket.description}</span>
+                                                    <span className="font-bold text-foreground group-hover:text-blue-600 transition-colors">{ticket.subject}</span>
+                                                    <span className="text-[10px] text-muted-foreground font-medium truncate max-w-[280px]">{ticket.description}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <div className="text-xs font-black text-slate-800 dark:text-slate-300 uppercase tracking-tighter">{ticket.organizations?.name || 'Sistema'}</div>
-                                                    <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500">{ticket.profiles?.email}</div>
+                                                    <div className="text-xs font-black text-foreground uppercase tracking-tighter">{ticket.organizations?.name || 'Sistema'}</div>
+                                                    <div className="text-[10px] font-bold text-muted-foreground">{ticket.profiles?.email}</div>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-5">
@@ -233,12 +233,12 @@ export default function TicketList() {
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="py-5">
-                                                <div className="flex items-center gap-2 capitalize text-[11px] font-black text-slate-600 dark:text-slate-400 tracking-tight">
+                                                <div className="flex items-center gap-2 capitalize text-[11px] font-black text-muted-foreground tracking-tight">
                                                     {getStatusIcon(ticket.status)}
                                                     {ticket.status.replace('_', ' ')}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-slate-400 dark:text-slate-500 text-sm font-black tabular-nums py-5 lowercase tracking-tighter">
+                                            <TableCell className="text-muted-foreground text-sm font-black tabular-nums py-5 lowercase tracking-tighter">
                                                 {new Date(ticket.created_at).toLocaleDateString()}
                                             </TableCell>
                                             <TableCell className="text-right pr-8 py-5">
