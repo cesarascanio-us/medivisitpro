@@ -291,16 +291,7 @@ export default function LandingPage() {
                             </ul>
                         </div>
 
-                        <div className="md:col-span-3 space-y-6">
-                            <h4 className="font-bold text-white text-sm tracking-wide">Newsletter</h4>
-                            <p className="text-sm font-medium leading-relaxed">Suscríbase para recibir actualizaciones operativas de élite.</p>
-                            <div className="flex gap-2">
-                                <Input placeholder="Email" className="bg-white/5 border-white/10 text-white rounded-xl h-11" />
-                                <Button className="bg-blue-600 hover:bg-blue-500 h-11 px-4 rounded-xl">
-                                    <Send className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-6 text-sm font-medium">

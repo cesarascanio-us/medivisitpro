@@ -122,7 +122,7 @@ export default function DrugstoresElite() {
 
         try {
             if (isEditing && selectedDrugstore) {
-                const { error } = await supabase
+                const { error } = await (supabase as any)
                     .from('drugstores')
                     .update({
                         ...formData,
@@ -134,7 +134,7 @@ export default function DrugstoresElite() {
                 if (error) throw error;
                 toast({ title: "Éxito", description: "Droguería actualizada correctamente." });
             } else {
-                const { error } = await supabase
+                const { error } = await (supabase as any)
                     .from('drugstores')
                     .insert({
                         ...formData,
@@ -176,7 +176,7 @@ export default function DrugstoresElite() {
 
     const handleDeleteDrugstore = async (id: string) => {
         try {
-            const { error } = await supabase.from('drugstores').delete().eq('id', id).eq('organization_id', organizationId);
+            const { error } = await (supabase as any).from('drugstores').delete().eq('id', id).eq('organization_id', organizationId);
             if (error) throw error;
             toast({ title: "Eliminado", description: "La droguería ha sido eliminada del directorio." });
             loadDrugstores();
@@ -194,7 +194,7 @@ export default function DrugstoresElite() {
     const loadStoreHistory = async (drugstoreId: string) => {
         try {
             setHistoryLoading(true);
-            const { data: visits, error: visitsError } = await supabase
+            const { data: visits, error: visitsError } = await (supabase as any)
                 .from('visits')
                 .select('*')
                 .eq('contact_id', drugstoreId)
@@ -203,7 +203,7 @@ export default function DrugstoresElite() {
             if (visitsError) throw visitsError;
             setStoreVisits(visits || []);
 
-            const { data: orders, error: ordersError } = await supabase
+            const { data: orders, error: ordersError } = await (supabase as any)
                 .from('transfer_orders')
                 .select('*')
                 .eq('contact_id', drugstoreId)
@@ -221,7 +221,7 @@ export default function DrugstoresElite() {
     const handleRegisterVisit = async () => {
         if (!selectedDrugstore) return;
         try {
-            const { data: visit, error } = await supabase
+            const { data: visit, error } = await (supabase as any)
                 .from('visits')
                 .insert([{
                     contact_id: selectedDrugstore.id,
@@ -236,6 +236,8 @@ export default function DrugstoresElite() {
                 .single();
 
             if (error) throw error;
+            if (!visit) throw new Error("No se pudo crear la visita");
+            
             toast({ title: "Visita Iniciada", description: "Redirigiendo..." });
             navigate(`/visits/execution/${visit.id}`);
         } catch (error: any) {
