@@ -254,36 +254,22 @@ export default function LandingPage() {
 
             <ContactSection />
 
-            {/* Footer Final - Corporate Deepness */}
-            <footer className="bg-slate-950 pt-24 pb-12 text-slate-500 border-t border-white/5">
+            <footer className="bg-slate-950 py-12 text-slate-500 border-t border-white/5">
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-                    <div className="grid grid-cols-2 md:grid-cols-12 gap-12 mb-20">
-                        <div className="col-span-2 md:col-span-5 space-y-8">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white">
-                                    <Stethoscope className="h-5 w-5 text-white" />
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-10">
+                        <div className="space-y-4 text-center md:text-left">
+                            <div className="flex items-center justify-center md:justify-start gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                                    <Stethoscope className="h-4 w-4 text-white" />
                                 </div>
-                                <span className="text-2xl font-bold text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
+                                <span className="text-xl font-bold text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
                             </div>
-                            <p className="text-base max-w-sm font-medium leading-relaxed">
-                                Liderando la orquestación digital de la visita médica con tecnología de grado operativo y analítica avanzada.
+                            <p className="text-sm max-w-sm font-medium leading-relaxed">
+                                Liderando la orquestación digital de la visita médica con tecnología de grado operativo.
                             </p>
-                            <div className="flex items-center gap-4 text-white/50 hover:text-white transition-colors cursor-default">
-                                <Globe className="w-5 h-5" /> <span className="font-bold text-xs tracking-wide">Global Operations Network</span>
-                            </div>
                         </div>
-
-
-
-
-                    </div>
-
-                    <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-6 text-sm font-medium">
-                        <p>© 2026 Empresa CA - MediVisitPro. Nivel de acceso: Confidencial.</p>
-                        <div className="flex items-center gap-8">
-                            <a href="#" className="hover:text-white transition-colors">Privacidad</a>
-                            <a href="#" className="hover:text-white transition-colors">Seguridad</a>
-                            <a href="#" className="hover:text-white transition-colors">Legal</a>
+                        <div className="text-xs font-bold tracking-widest uppercase opacity-40">
+                            © 2026 Empresa CA - MediVisitPro
                         </div>
                     </div>
                 </div>
