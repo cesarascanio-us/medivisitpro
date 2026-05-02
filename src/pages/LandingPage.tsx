@@ -1,5 +1,5 @@
 /* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
+ MASTER FRAMEWORK - CESAR ASCANIO CA
  Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
 
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
@@ -16,23 +16,23 @@ import { CommissionCalculator } from '@/components/landing/CommissionCalculator'
 import { ContactSection } from '@/components/landing/ContactSection';
 import { Badge } from '@/components/ui/badge';
 import {
-  Stethoscope,
-  Calendar,
-  BarChart3,
-  Users,
-  MapPin,
-  Package,
-  ArrowRight,
-  CheckCircle2,
-  ShieldCheck,
-  Zap,
-  Smartphone,
-  Menu,
-  X,
-  PlayCircle,
-  Globe,
-  Lock,
-  Send
+    Stethoscope,
+    Calendar,
+    BarChart3,
+    Users,
+    MapPin,
+    Package,
+    ArrowRight,
+    CheckCircle2,
+    ShieldCheck,
+    Zap,
+    Smartphone,
+    Menu,
+    X,
+    PlayCircle,
+    Globe,
+    Lock,
+    Send
 } from 'lucide-react';
 import { useState } from 'react';
 import { SEO } from '@/components/common/SEO';
@@ -40,41 +40,41 @@ import { trackEvent } from '@/lib/analytics';
 import { useLandingContent } from '@/hooks/useLandingContent';
 
 const IconMap: Record<string, any> = {
-  Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Stethoscope
+    Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Stethoscope
 };
 
 export default function LandingPage() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const { content } = useLandingContent();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const { content } = useLandingContent();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    trackEvent('view_landing');
+    useEffect(() => {
+        trackEvent('view_landing');
 
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleAuthNavigation = () => {
+        if (user) {
+            navigate('/dashboard');
+        } else {
+            trackEvent('click_login');
+            navigate('/auth');
+        }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleAuthNavigation = () => {
-    if (user) {
-      navigate('/dashboard');
-    } else {
-      trackEvent('click_login');
-      navigate('/auth');
-    }
-  };
-
-  const activeFeatures = content.features?.items || [
-    { title: "Gestión de Visitas 2.0", description: "Planifica rutas inteligentes, reporta en tiempo real y optimiza cada segundo de tu jornada médica.", icon: "Calendar" },
-    { title: "Bóveda de Muestras", description: "Trazabilidad quirúrgica de muestras médicas alineados a la norma ISO 9000. Evita mermas y asegura entregas de calidad.", icon: "Package" },
-    { title: "Dashboard Inteligente", description: "Analíticas avanzadas con visión Sentinel. Descubre oportunidades donde otros ven datos.", icon: "BarChart3" }
-  ];
+    const activeFeatures = content.features?.items || [
+        { title: "Gestión de Visitas 2.0", description: "Planifica rutas inteligentes, reporta en tiempo real y optimiza cada segundo de tu jornada médica.", icon: "Calendar" },
+        { title: "Bóveda de Muestras", description: "Trazabilidad quirúrgica de muestras médicas alineados a la norma ISO 9000. Evita mermas y asegura entregas de calidad.", icon: "Package" },
+        { title: "Dashboard Inteligente", description: "Analíticas avanzadas con visión Sentinel. Descubre oportunidades donde otros ven datos.", icon: "BarChart3" }
+    ];
 
     return (
         <div className="min-h-screen bg-slate-950 font-display text-white selection:bg-blue-600 selection:text-white overflow-x-hidden">
@@ -136,7 +136,7 @@ export default function LandingPage() {
             {/* Hero Section - Sophisticated Presence */}
             <section className="relative min-h-[85vh] flex items-center py-20 lg:py-32 overflow-hidden bg-slate-950">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
-                
+
                 <div className="absolute top-0 right-0 w-full max-w-[800px] h-full max-h-[800px] bg-blue-600/10 rounded-full blur-[150px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-full max-w-[600px] h-full max-h-[600px] bg-slate-800/20 rounded-full blur-[120px] -z-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
@@ -269,7 +269,7 @@ export default function LandingPage() {
                             </p>
                         </div>
                         <div className="text-xs font-bold tracking-widest uppercase opacity-40">
-                            © 2026 Empresa CA - MediVisitPro
+                            © 2026 Cesar Ascanio CA - MediVisitPro
                         </div>
                     </div>
                 </div>
