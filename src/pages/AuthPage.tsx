@@ -31,6 +31,7 @@ import {
     Zap,
     ArrowRight
 } from 'lucide-react';
+import { SEO } from '@/components/common/SEO';
 
 export default function AuthPage() {
     const navigate = useNavigate();
@@ -115,202 +116,208 @@ export default function AuthPage() {
     }
 
     return (
-        <div className="h-screen flex flex-col lg:flex-row font-display overflow-hidden bg-slate-950">
-            {/* Seccion Izquierda: Hero & Features - Elite Titanium Edition */}
-            <div className="hidden lg:flex flex-[1.4] relative flex-col justify-center p-12 xl:p-20 overflow-hidden text-white border-r border-white/5">
-                {/* Hero Background with High-End Medical Image */}
+        <div className="h-screen flex flex-col lg:flex-row font-display overflow-hidden bg-slate-950 text-white">
+            <SEO title="Autenticación Elite - MediVisitPro" description="Acceso al centro de mando de MediVisitPro." />
+
+            {/* Seccion Izquierda: The Visionary Hero */}
+            <div className="hidden lg:flex flex-[1.3] relative flex-col justify-center p-16 xl:p-24 overflow-hidden border-r border-white/5">
+                {/* Hero Background - High End Treatment */}
                 <div 
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-[30s] hover:scale-110 opacity-40" 
-                    style={{ backgroundImage: `url('/medical_tech_background_1777751917579.png')` }}
+                    className="absolute inset-0 bg-cover bg-center scale-100 opacity-60" 
+                    style={{ backgroundImage: "url('/medical_tech_background.png')" }}
                 />
                 
-                {/* Sophisticated Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900/80 to-primary/20" />
-                <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[2px]" />
+                {/* Deep Sophisticated Overlays - Adjusted for clarity */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/40 to-blue-900/10" />
+                <div className="absolute inset-0 backdrop-blur-[0.5px]" />
                 
-                {/* Elite Effects */}
-                <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay" />
-                <div className="absolute top-20 right-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[180px] animate-pulse" />
+                {/* Data Grid Overlay Effect - Subtler */}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 mix-blend-overlay" />
 
                 <div className="relative z-10 max-w-xl">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-10 backdrop-blur-3xl shadow-2xl transition-all hover:bg-white/10 group">
-                        <Zap className="w-4 h-4 text-secondary fill-secondary group-hover:scale-125 transition-transform" />
-                        <span className="text-[9px] font-black text-white uppercase tracking-[0.4em] leading-none">Nueva Era en Visita Médica</span>
+                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-8 backdrop-blur-3xl">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                        <span className="text-[10px] font-bold tracking-wider text-blue-100 uppercase">Sistema Operativo v4.0</span>
                     </div>
 
-                    <h1 className="text-3xl lg:text-5xl xl:text-6xl font-black text-white leading-[0.9] mb-6 tracking-tighter uppercase select-none">
-                        Optimiza <br />
-                        tu fuerza <br />
-                        <span className="text-secondary drop-shadow-[0_10px_30px_rgba(255,183,1,0.3)]">Comercial</span> <br />
-                        <span className="relative inline-block text-white">
-                            Médica 
-                            <div className="absolute bottom-2 left-0 w-full h-2 bg-secondary/20 -z-10 skew-x-[-12deg]" />
-                        </span>
+                    <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.1] mb-6 tracking-tight">
+                        El poder de la <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">Inteligencia</span> <br />
+                        <span className="text-amber-500 drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">Farmacéutica</span>
                     </h1>
 
-                    <p className="text-sm lg:text-base text-white/60 mb-8 leading-relaxed font-medium max-w-md">
-                        Gestiona visitas, muestras y análisis de mercado en una única plataforma diseñada para el éxito farmacéutico.
+                    <p className="text-base text-slate-400 mb-10 leading-relaxed font-medium max-w-md">
+                        Gestione su fuerza comercial con la precisión de un cirujano. Datos en tiempo real, rutas optimizadas y control total de muestras médicas.
                     </p>
 
-                    <div className="grid grid-cols-2 gap-4 lg:gap-6 mb-12">
+                    <div className="grid grid-cols-2 gap-6">
                         {[
-                            { icon: MapPin, text: 'Rutas Intelligentes' },
-                            { icon: Stethoscope, text: 'Panel Médico' },
-                            { icon: PieChart, text: 'Analytics Elite' },
-                            { icon: CheckCircle2, text: 'Muestras Control' }
+                            { icon: MapPin, text: 'Rutas Maestras', sub: 'Optimización GPS' },
+                            { icon: ShieldCheck, text: 'Bóveda Segura', sub: 'ISO 27001 Ready' }
                         ].map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-3 group cursor-default">
-                                <div className="w-10 h-10 bg-white/5 rounded-xl group-hover:bg-white/10 transition-all border border-white/10 shadow-2xl flex items-center justify-center backdrop-blur-3xl group-hover:scale-110 duration-500">
-                                    <item.icon className="w-5 h-5 text-secondary" />
+                            <div key={idx} className="flex items-start gap-4 p-5 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl hover:bg-white/10 transition-all group">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <item.icon className="w-5 h-5 text-blue-400" />
                                 </div>
-                                <span className="font-bold text-white text-[11px] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition-all">{item.text}</span>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-12 pt-8 border-t border-white/10 opacity-40">
-                        {['HIPAA', 'SECURE', 'ISO 27001'].map((tag, i) => (
-                            <div key={i} className="flex items-center gap-2 group">
-                                <ShieldCheck className="w-4 h-4 text-white" />
-                                <span className="text-[9px] uppercase font-black tracking-[0.2em] text-white">{tag}</span>
+                                <div>
+                                    <p className="font-bold text-sm text-white">{item.text}</p>
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-1">{item.sub}</p>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
+
+                {/* Footer Left */}
+                <div className="absolute bottom-12 left-16 flex items-center gap-6 opacity-30">
+                    <span className="text-[10px] font-bold tracking-wider">Powered by CA Labs</span>
+                    <div className="w-12 h-px bg-white/20" />
+                    <span className="text-[10px] font-bold tracking-wider">Sentinel Oracle Integrated</span>
+                </div>
             </div>
 
-            {/* Seccion Derecha: El Panel de Control Elite */}
-            <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-8 bg-white relative h-screen overflow-hidden">
-                <div className="w-full max-w-[420px] animate-in fade-in slide-in-from-right-8 duration-700">
+            {/* Seccion Derecha: Command Center Access */}
+            <div className="flex-1 flex flex-col justify-center items-center p-6 bg-slate-950 relative h-screen overflow-hidden">
+                {/* Subtle Ambient Glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+                <div className="w-full max-w-[400px] relative z-10 animate-in fade-in zoom-in-95 duration-700">
                     {/* Brand Header */}
-                    <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-[1.5rem] bg-slate-50 shadow-premium-md mb-4 group transition-all duration-700 hover:shadow-premium-lg border border-slate-100">
-                            <Stethoscope className="h-8 w-8 text-primary group-hover:rotate-12 transition-transform" />
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 shadow-2xl shadow-blue-500/20 mb-6 group">
+                            <Stethoscope className="h-7 w-7 text-white group-hover:rotate-12 transition-transform" />
                         </div>
-                        <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tighter uppercase select-none">Bienvenido</h2>
-                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] mt-2">Portal de Gestión Profesional</p>
+                        <h2 className="text-3xl font-black text-white tracking-tight">Acceso Master</h2>
+                        <p className="text-blue-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-1.5">Identificación Requerida</p>
                     </div>
 
-                    {/* Boton de Demo Elite - INTERNO */}
+                    {/* Boton de Demo Elite - AMBER ACCENT */}
                     <Button
                         onClick={() => navigate('/demo')}
-                        className="w-full mb-8 bg-primary hover:bg-primary-dark text-white font-black h-16 rounded-2xl shadow-xl transition-all hover:-translate-y-1 active:scale-95 group relative overflow-hidden"
+                        className="w-full mb-10 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold h-14 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.2)] transition-all hover:-translate-y-1 active:scale-95 group relative overflow-hidden"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
-                        <div className="flex flex-col items-center">
-                            <div className="flex items-center gap-3">
-                                <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                                <span className="text-base lg:text-lg tracking-[0.05em] uppercase font-black">Acceso Demo Inmediato</span>
-                                <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
-                            </div>
-                            <span className="text-[8px] uppercase tracking-[0.2em] opacity-40 font-bold">Experiencia 360 Full Access</span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
+                        <div className="flex items-center justify-center gap-3">
+                            <Rocket className="w-5 h-5" />
+                            <span className="text-sm font-bold">Solicitar Demo 72h</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </div>
                     </Button>
 
-                    <div className="relative mb-8">
+                    <div className="relative mb-10">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-slate-100" />
+                            <div className="w-full border-t border-white/5" />
                         </div>
                         <div className="relative flex justify-center">
-                            <span className="bg-white px-4 text-slate-400 font-black tracking-[0.3em] text-[8px] uppercase opacity-40">Identificación de Usuario</span>
+                            <span className="bg-slate-950 px-4 text-slate-600 font-bold text-xs tracking-wider">Credenciales del Sistema</span>
                         </div>
                     </div>
 
-                    <Card className="border-none bg-white shadow-premium-lg rounded-[2.5rem] p-1 border-2 border-slate-50">
+                    <div className="bg-white/5 border border-white/10 p-1.5 rounded-3xl backdrop-blur-2xl shadow-2xl">
                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 bg-slate-50/50 p-1 rounded-xl mb-2">
-                                <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg h-10 text-[9px] font-black tracking-[0.2em] transition-all uppercase">Login</TabsTrigger>
-                                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg h-10 text-[9px] font-black tracking-[0.2em] transition-all uppercase">Registro</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-2 bg-black/40 p-1.5 rounded-2xl mb-4">
+                                <TabsTrigger value="login" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-xl h-11 text-xs font-bold transition-all">Identificarse</TabsTrigger>
+                                <TabsTrigger value="signup" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-xl h-11 text-xs font-bold transition-all">Registrarse</TabsTrigger>
                             </TabsList>
 
-                            <CardContent className="pt-4 pb-6 px-4">
-                                <TabsContent value="login" className="mt-0 space-y-6">
-                                    <form onSubmit={handleLogin} className="space-y-6">
+                            <CardContent className="pt-2 pb-8 px-6">
+                                <TabsContent value="login" className="mt-0 space-y-8">
+                                    <form onSubmit={handleLogin} className="space-y-8">
                                         <div className="space-y-3">
-                                            <Label className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] ml-2">Credencial Corporativa</Label>
+                                            <Label className="text-slate-300 text-xs font-bold ml-1">Email Corporativo</Label>
                                             <div className="relative group">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                                                 <Input
                                                     type="email"
-                                                    placeholder="EMAIL@SISTEMA.COM"
+                                                    placeholder="usuario@sistema.com"
                                                     value={loginEmail}
                                                     onChange={(e) => setLoginEmail(e.target.value)}
-                                                    className="pl-12 h-14 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 rounded-xl text-sm transition-all font-bold uppercase tracking-tight focus:bg-white"
+                                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-slate-700 rounded-xl text-base transition-all font-medium focus:bg-white/10 focus:border-blue-500/50"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
                                         <div className="space-y-3">
-                                            <Label className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] ml-2">Código Secreto</Label>
+                                            <Label className="text-slate-300 text-xs font-bold ml-1">Código de Acceso</Label>
                                             <div className="relative group">
-                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                                                 <Input
                                                     type="password"
                                                     placeholder="••••••••"
                                                     value={loginPassword}
                                                     onChange={(e) => setLoginPassword(e.target.value)}
-                                                    className="pl-12 h-14 bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 rounded-xl text-sm transition-all font-bold focus:bg-white"
+                                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-slate-700 rounded-xl text-base transition-all font-medium focus:bg-white/10 focus:border-blue-500/50"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
-                                        <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black h-16 rounded-xl transition-all shadow-lg text-sm tracking-widest active:scale-95" disabled={loading}>
-                                            {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : 'AUTENTICAR ACCESO'}
+                                        <Button type="submit" className="w-full bg-white text-slate-950 hover:bg-slate-200 font-bold h-14 rounded-xl transition-all shadow-xl text-sm active:scale-95" disabled={loading}>
+                                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Autenticar sistema'}
                                         </Button>
                                     </form>
                                 </TabsContent>
 
-                                <TabsContent value="signup" className="mt-0">
-                                    {/* Signup form simplified for one-view fit */}
-                                    <form onSubmit={handleSignup} className="space-y-4">
-                                        <Input
-                                            placeholder="NOMBRE COMPLETO"
-                                            value={signupFullName}
-                                            onChange={(e) => setSignupFullName(e.target.value)}
-                                            className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold text-xs"
-                                            required
-                                        />
-                                        <Input
-                                            type="email"
-                                            placeholder="EMAIL CORPORATIVO"
-                                            value={signupEmail}
-                                            onChange={(e) => setSignupEmail(e.target.value)}
-                                            className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold text-xs"
-                                            required
-                                        />
-                                        <div className="grid grid-cols-2 gap-3">
+                                <TabsContent value="signup" className="mt-0 space-y-6">
+                                    <form onSubmit={handleSignup} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-bold text-slate-300 ml-1">Nombre Completo</Label>
                                             <Input
-                                                type="password"
-                                                placeholder="PASSWORD"
-                                                value={signupPassword}
-                                                onChange={(e) => setSignupPassword(e.target.value)}
-                                                className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold text-xs"
-                                                required
-                                            />
-                                            <Input
-                                                type="password"
-                                                placeholder="CONFIRMA"
-                                                value={signupConfirmPassword}
-                                                onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                                                className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold text-xs"
+                                                placeholder="Nombre completo"
+                                                value={signupFullName}
+                                                onChange={(e) => setSignupFullName(e.target.value)}
+                                                className="h-12 bg-white/5 border-white/10 text-white rounded-xl font-medium text-sm"
                                                 required
                                             />
                                         </div>
-                                        <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-black h-14 rounded-xl mt-2 text-xs tracking-widest" disabled={loading}>
-                                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'CREAR CREDENCIAL'}
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-bold text-slate-300 ml-1">Email</Label>
+                                            <Input
+                                                type="email"
+                                                placeholder="email@corporativo.com"
+                                                value={signupEmail}
+                                                onChange={(e) => setSignupEmail(e.target.value)}
+                                                className="h-12 bg-white/5 border-white/10 text-white rounded-xl font-medium text-sm"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-xs font-bold text-slate-300 ml-1">Password</Label>
+                                                <Input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    value={signupPassword}
+                                                    onChange={(e) => setSignupPassword(e.target.value)}
+                                                    className="h-12 bg-white/5 border-white/10 text-white rounded-xl font-medium text-sm"
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-xs font-bold text-slate-300 ml-1">Confirmar</Label>
+                                                <Input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    value={signupConfirmPassword}
+                                                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                                                    className="h-12 bg-white/5 border-white/10 text-white rounded-xl font-medium text-sm"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold h-14 rounded-xl mt-4 text-sm" disabled={loading}>
+                                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Crear credencial'}
                                         </Button>
                                     </form>
                                 </TabsContent>
                             </CardContent>
                         </Tabs>
-                    </Card>
+                    </div>
 
-                    <div className="mt-8 text-center space-y-4 opacity-30 hover:opacity-100 transition-opacity duration-1000">
-                        <div className="h-px w-20 bg-slate-200 mx-auto" />
-                        <p className="text-[8px] text-slate-400 font-black uppercase tracking-[0.3em]">
-                            System v4.0 Titanium • © 2026 César Ascanio
+                    <div className="mt-12 text-center opacity-40 hover:opacity-100 transition-opacity duration-1000">
+                        <p className="text-[10px] text-slate-500 font-bold tracking-wider">
+                            © 2026 MediVisitPro Titanium • CA Labs Proprietary
                         </p>
                     </div>
                 </div>

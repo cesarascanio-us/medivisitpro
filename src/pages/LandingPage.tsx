@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { PricingSection } from '@/components/landing/PricingSection';
+import { Input } from '@/components/ui/input';
 import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
 import { ContactSection } from '@/components/landing/ContactSection';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +31,8 @@ import {
   X,
   PlayCircle,
   Globe,
-  Lock
+  Lock,
+  Send
 } from 'lucide-react';
 import { useState } from 'react';
 import { SEO } from '@/components/common/SEO';
@@ -75,302 +76,269 @@ export default function LandingPage() {
     { title: "Dashboard Inteligente", description: "Analíticas avanzadas con visión Sentinel. Descubre oportunidades donde otros ven datos.", icon: "BarChart3" }
   ];
 
-  return (
-    <div className="min-h-screen bg-[#ffffff] font-display text-foreground selection:bg-primary selection:text-white overflow-x-hidden">
-      <SEO
-        title="MediVisit Pro - El Sistema Inteligentepara Visitadores Médicos"
-        description="Transforma tu gestión de visita médica con IA, calidad alineados a los estándares ISO 9000 y analíticas de alto impacto. La plataforma #1 en LATAM."
-        keywords="visitador médico, gestión visita médica, crm farma, calidad iso 9000, software farmacéutica, iso venezuela"
-        canonical="https://medivisitpro.vercel.app/"
-      />
+    return (
+        <div className="min-h-screen bg-slate-950 font-display text-white selection:bg-blue-600 selection:text-white overflow-x-hidden">
+            <SEO
+                title="MediVisit Pro - El Sistema Inteligente para Visitadores Médicos"
+                description="Orquestación de visita médica de alto desempeño. Calidad ISO 9000, analíticas Sentinel y gestión operativa de élite."
+                keywords="visitador médico, gestión visita médica, crm farma, calidad iso 9000, software farmacéutica"
+                canonical="https://medivisitpro.vercel.app/"
+            />
 
-      {/* Navbar - Institutional Glassmorphism */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-xl shadow-soft py-2' : 'bg-transparent py-4'
-          }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 transform transition-transform group-hover:scale-110 duration-500 text-white">
-                <Stethoscope className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-black text-foreground tracking-tighter uppercase">MediVisit<span className="text-primary">Pro</span></span>
-            </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-10">
-              {['Características', 'Testimonios', 'FAQ'].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-[10px] font-black text-slate-400 hover:text-primary transition-all uppercase tracking-[0.2em]"
-                >
-                  {item}
-                </a>
-              ))}
-            </nav>
-
-            {/* CTA Buttons */}
-            <div className="hidden md:flex items-center gap-6">
-              <Button
-                variant="ghost"
-                onClick={handleAuthNavigation}
-                className="text-foreground hover:text-primary font-black uppercase text-[10px] tracking-widest"
-              >
-                {user ? 'Ir al Dashboard' : 'Acceso'}
-              </Button>
-              <button
-                onClick={() => navigate('/demo')}
-                className="bg-primary hover:bg-primary/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all transform hover:-translate-y-1 rounded-2xl px-10 py-3.5 font-black text-[10px] uppercase tracking-[0.2em]"
-              >
-                Prueba Gratuita
-              </button>
-            </div>
-
-            {/* Mobile Menu Toggle */}
-            <button
-              className="md:hidden p-2 text-text-main"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            {/* Navbar - Elite Glassmorphism */}
+            <header
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-slate-950/90 backdrop-blur-2xl border-b border-white/5 py-3' : 'bg-transparent py-8'
+                    }`}
             >
-              {isMenuOpen ? <X /> : <Menu />}
-            </button>
-          </div>
-        </div>
+                <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+                    <div className="flex items-center justify-between">
+                        {/* Logo */}
+                        <div className="flex items-center gap-4 group cursor-pointer" onClick={() => navigate('/')}>
+                            <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-500/20 group-hover:scale-110 transition-all duration-500">
+                                <Stethoscope className="h-6 w-6 text-white" />
+                            </div>
+                            <span className="text-2xl font-bold text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
+                        </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-2xl shadow-2xl border-t border-border p-6 flex flex-col gap-4 animate-in slide-in-from-top duration-300">
-            {['Características', 'Precios', 'Testimonios', 'FAQ'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-lg font-bold text-slate-800 py-2 border-b border-slate-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item}
-              </a>
-            ))}
-            <div className="pt-4 space-y-3">
-              <Button onClick={handleAuthNavigation} variant="outline" className="w-full justify-center h-12 rounded-xl border-slate-200">
-                Iniciar Sesión
-              </Button>
-              <Button onClick={() => navigate('/demo')} className="w-full justify-center bg-primary h-12 rounded-xl shadow-lg text-white">
-                Comenzar Gratis
-              </Button>
-            </div>
-          </div>
-        )}
-      </header>
+                        {/* Navigation - Professional Case */}
+                        <nav className="hidden md:flex items-center gap-10">
+                            {['Capacidades', 'Seguridad', 'Simulador', 'Contacto'].map((item) => (
+                                <a
+                                    key={item}
+                                    href={`#${item.toLowerCase()}`}
+                                    className="text-sm font-semibold text-slate-400 hover:text-blue-400 transition-colors"
+                                >
+                                    {item}
+                                </a>
+                            ))}
+                        </nav>
 
-      {/* Hero Section - Elite Corporate Aesthetic */}
-      <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 bg-background overflow-hidden">
-        {/* Background Gradients */}
-        <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[radial-gradient(circle_at_top_right,rgba(0,86,179,0.05),transparent_50%)]"></div>
-
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-
-            {/* Text Column */}
-            <div className="lg:col-span-7 text-center lg:text-left space-y-10">
-
-
-              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-foreground leading-[0.95] tracking-tight">
-                Orquestación de <br />
-                <span className="text-primary ">Visita Médica</span>
-              </h1>
-
-              <p className="text-xl text-slate-500 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                La orquestación definitiva para visitadores de alto desempeño. Calidad <span className="text-primary font-bold ">ISO 9000</span> integrada, analíticas en tiempo real y gestión Offline-First.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 pt-6">
-                <button
-                  onClick={() => navigate('/demo')}
-                  className="w-full sm:w-auto px-10 h-16 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-2xl hover:shadow-emerald-500/40 transition-all text-xl font-bold group flex items-center justify-center"
-                >
-                  Acceso Demo Inmediato
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button
-                  className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-slate-700 hover:text-primary font-bold transition-all text-lg group"
-                >
-                  <PlayCircle className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
-                  Ver Demo Interactiva
-                </button>
-              </div>
-
-              <div className="pt-10 flex items-center justify-center lg:justify-start gap-10">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden shadow-sm text-slate-900">
-                      <img src={`https://i.pravatar.cc/100?u=${i}`} alt="user" />
+                        {/* Action CTA */}
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={handleAuthNavigation}
+                                className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                            >
+                                <Lock className="w-4 h-4 text-blue-500" />
+                                Acceso Master
+                            </button>
+                            <button
+                                onClick={() => navigate('/demo')}
+                                className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-500/20 transition-all"
+                            >
+                                Probar Demo
+                            </button>
+                        </div>
                     </div>
-                  ))}
-                  <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] font-bold text-white shadow-sm">+150</div>
                 </div>
-                <div className="text-sm font-bold text-slate-500">
-                  <span className="text-foreground">+1,200</span> Visitadores activos hoy
+            </header>
+
+            {/* Hero Section - Sophisticated Presence */}
+            <section className="relative min-h-[85vh] flex items-center py-20 lg:py-32 overflow-hidden bg-slate-950">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
+                
+                <div className="absolute top-0 right-0 w-full max-w-[800px] h-full max-h-[800px] bg-blue-600/10 rounded-full blur-[150px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-full max-w-[600px] h-full max-h-[600px] bg-slate-800/20 rounded-full blur-[120px] -z-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 w-full relative z-10">
+                    <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                        <div className="lg:col-span-7 text-center lg:text-left space-y-8 lg:space-y-10">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                                <Zap className="w-4 h-4 text-blue-400" />
+                                <span className="text-xs font-bold tracking-wide text-blue-100">Tecnología de Grado Operativo</span>
+                            </div>
+
+                            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
+                                Orquestación inteligente de <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-200">Visita Médica de Élite</span>
+                            </h1>
+
+                            <p className="text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                                Transforme su gestión operativa con precisión clínica. Cumplimiento ISO 9000, inteligencia de campo y analíticas de alto impacto en una sola plataforma unificada.
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 sm:gap-6 pt-4">
+                                <button
+                                    onClick={() => navigate('/demo')}
+                                    className="w-full sm:w-auto px-10 h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl shadow-blue-600/20 transition-all text-lg font-bold group flex items-center justify-center gap-3 active:scale-95"
+                                >
+                                    Solicitar Demo 72h
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                                <button
+                                    onClick={handleAuthNavigation}
+                                    className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-white hover:bg-white/10 font-bold transition-all text-sm group bg-white/5 border border-white/10 rounded-2xl"
+                                >
+                                    <PlayCircle className="w-6 h-6 text-blue-500" />
+                                    Ver Ecosistema
+                                </button>
+                            </div>
+
+                            <div className="pt-8 lg:pt-12 flex flex-wrap items-center justify-center lg:justify-start gap-8 lg:gap-12 border-t border-white/5">
+                                <div className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
+                                    Trusted by <br /> Pharma Leaders
+                                </div>
+                                <div className="flex gap-8 lg:gap-10 opacity-30 grayscale contrast-125">
+                                    <div className="font-bold text-xl sm:text-2xl tracking-tighter">Bayer</div>
+                                    <div className="font-bold text-xl sm:text-2xl tracking-tighter">Pfizer</div>
+                                    <div className="font-bold text-xl sm:text-2xl tracking-tighter">Roche</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Interface Showcase */}
+                        <div className="lg:col-span-5 relative mt-16 lg:mt-0">
+                            <div className="relative z-10 bg-slate-900 rounded-[2.5rem] lg:rounded-[3.5rem] shadow-2xl border border-white/10 p-2 transform hover:rotate-1 transition-all duration-1000 overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                                <img
+                                    src="/img/landing/hero-premium.png"
+                                    alt="MediVisitPro Interface"
+                                    className="rounded-[2.2rem] lg:rounded-[3.2rem] w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                                />
+                            </div>
+                            <div className="absolute -inset-6 bg-blue-600/10 blur-[80px] rounded-full -z-10 animate-pulse"></div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
+            </section>
 
-            {/* Interface Showcase - Fixed for Responsive */}
-            <div className="lg:col-span-5 relative mt-12 lg:mt-0 px-4 sm:px-0">
-              <div className="relative z-10 bg-background/20 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/30 p-3 transform lg:perspective-1000 lg:rotate-y-6 lg:hover:rotate-y-0 transition-all duration-1000 max-w-full overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <img
-                  src="/img/landing/hero-premium.png"
-                  alt="MediVisitPro Master Interface"
-                  className="rounded-[2.5rem] w-full h-auto object-cover shadow-2xl relative z-10"
-                />
-              </div>
+            {/* Features Section - Standard Case */}
+            <section id="capacidades" className="py-20 lg:py-32 px-6 sm:px-8 lg:px-10 bg-slate-950">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-6 lg:mb-8 tracking-tight">Capacidades de Grado Maestro</h2>
+                        <div className="h-1.5 w-24 bg-blue-600 mx-auto mb-6 lg:mb-8" />
+                        <p className="text-slate-400 text-lg lg:text-xl font-medium">
+                            Diseñado para organizaciones que exigen la perfección operativa y la trazabilidad absoluta en cada visita médica.
+                        </p>
+                    </div>
 
-              {/* Float Cards - Adjusted for Mobile safety */}
-
-
-              {/* Glow Effect */}
-              <div className="absolute inset-0 bg-primary/20 blur-[80px] sm:blur-[120px] rounded-full -z-10"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* Features Grid */}
-      <section id="características" className="py-24 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 text-center md:text-left">
-            <div className="max-w-2xl">
-              <h2 className="text-4xl font-bold text-foreground mb-6 tracking-tight">Capacidades del Grado Maestro</h2>
-              <p className="text-slate-500 text-xl font-medium">
-                Diseñamos herramientas que no solo gestionan, sino que elevan tu estatus profesional frente al gremio médico y farmacéutico.
-              </p>
-            </div>
-
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-10">
-            {activeFeatures.map((feature: any, index: number) => {
-              const Icon = IconMap[feature.icon] || Zap;
-              return (
-                <div
-                  key={index}
-                  className="group bg-slate-50/50 p-10 rounded-3xl border border-transparent hover:border-primary/10 hover:bg-card hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500"
-                >
-                  <div className="w-16 h-16 bg-card rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary transition-all">
-                    <Icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">{feature.title}</h3>
-                  <p className="text-slate-500 leading-relaxed text-lg font-medium">
-                    {feature.description}
-                  </p>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+                        {activeFeatures.map((feature: any, index: number) => {
+                            const Icon = IconMap[feature.icon] || Zap;
+                            return (
+                                <div
+                                    key={index}
+                                    className="group bg-white/5 p-8 lg:p-12 rounded-[2rem] lg:rounded-[2.5rem] border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-500"
+                                >
+                                    <div className="w-14 lg:w-16 h-14 lg:h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center mb-8 lg:mb-10 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-500">
+                                        <Icon className="w-7 lg:w-8 h-7 lg:h-8 text-blue-500 group-hover:text-white transition-colors" />
+                                    </div>
+                                    <h3 className="text-xl lg:text-2xl font-bold text-white mb-4 lg:mb-6 tracking-tight">{feature.title}</h3>
+                                    <p className="text-slate-400 leading-relaxed text-base font-medium">
+                                        {feature.description}
+                                    </p>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+            </section>
 
-      {/* Security Banner - PREMIUM LIGHT MODE */}
-      <section className="py-20 bg-slate-50 relative overflow-hidden text-slate-900">
-        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(0,86,179,0.03),transparent_50%)]"></div>
-        <div className="max-w-7xl mx-auto px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="flex items-center gap-8">
-            <div className="w-20 h-20 rounded-[2rem] bg-card flex items-center justify-center shadow-premium-md border border-border">
-              <ShieldCheck className="w-10 h-10 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-black text-foreground tracking-tighter uppercase">Resiliencia Sentinel</h3>
-              <p className="text-slate-400 font-bold text-[10px] mt-1 uppercase tracking-widest">Cifrado de grado elite y redundancia global biométrica</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Badge className="bg-card text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 9001 QUALITY</Badge>
-            <Badge className="bg-card text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">ISO 27001 READY</Badge>
-            <Badge className="bg-card text-primary border border-primary/20 font-black text-[10px] tracking-widest py-3 px-6 rounded-2xl shadow-soft uppercase">GDPR COMPLIANT</Badge>
-          </div>
-        </div>
-      </section>
-
-      <CommissionCalculator />
-
-      <ContactSection />
-
-      {/* Footer Final */}
-      <footer className="bg-background pt-24 pb-12 text-slate-500 border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-12 gap-12 mb-20">
-            <div className="col-span-2 md:col-span-5 space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
-                  <Stethoscope className="h-5 w-5 text-white" />
+            {/* Security Section - Sentinel Architecture */}
+            <section id="seguridad" className="py-20 lg:py-32 bg-blue-600/5 border-y border-white/5 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-8 relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+                        <div className="flex items-center gap-8">
+                            <div className="w-20 h-20 rounded-3xl bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-500/20">
+                                <ShieldCheck className="w-10 h-10 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold text-white tracking-tight">Resiliencia Sentinel</h3>
+                                <p className="text-blue-400 font-semibold text-xs mt-1 tracking-wide uppercase">Cifrado Militar & Auditoría ISO 27001</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-center gap-4">
+                            {['ISO 9001', 'ISO 27001', 'GDPR', 'HIPAA'].map(tag => (
+                                <Badge key={tag} className="bg-white/5 text-blue-400 border border-blue-500/20 font-bold text-[10px] tracking-wider py-2 px-5 rounded-xl">
+                                    {tag} Ready
+                                </Badge>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-                <span className="text-2xl font-bold text-foreground tracking-tighter">MediVisitPro</span>
-              </div>
-              <p className="text-lg max-w-sm font-medium">Liderando la transformación digital de la visita médica con tecnología de grado operativo.</p>
-              <div className="flex items-center gap-4">
-                <Globe className="w-5 h-5" /> <span className="font-bold">Global Presence</span>
-              </div>
-            </div>
+            </section>
 
-            <div className="md:col-span-2 space-y-6">
-              <h4 className="font-bold text-foreground uppercase text-xs tracking-widest">Plataforma</h4>
-              <ul className="space-y-4 font-medium ">
-                <li><a href="#" className="hover:text-primary transition-colors">Sentinel AI</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Offline PWA</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">API Docs</a></li>
-              </ul>
-            </div>
+            <CommissionCalculator />
 
-            <div className="md:col-span-2 space-y-6">
-              <h4 className="font-bold text-foreground uppercase text-xs tracking-widest">Compañía</h4>
-              <ul className="space-y-4 font-medium ">
-                <li><a href="#" className="hover:text-primary transition-colors">Sobre CA Labs</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Carreras</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Legal</a></li>
-              </ul>
-            </div>
+            <ContactSection />
 
-            <div className="md:col-span-3 space-y-6">
-              <h4 className="font-black text-foreground uppercase text-[10px] tracking-[0.3em]">Soporte Mission Control</h4>
-              <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-inner text-slate-900">
-                <p className="text-[11px] font-black text-foreground mb-3 uppercase tracking-widest">¿Necesitas ayuda técnica?</p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mb-6 leading-relaxed">Nuestro equipo orquestador está disponible 24/7 para garantizar tu éxito operativo.</p>
-                <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black uppercase text-[10px] tracking-widest shadow-premium-md">Inicia Ticket</Button>
-              </div>
-            </div>
-          </div>
+            {/* Footer Final - Corporate Deepness */}
+            <footer className="bg-slate-950 pt-24 pb-12 text-slate-500 border-t border-white/5">
+                <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+                    <div className="grid grid-cols-2 md:grid-cols-12 gap-12 mb-20">
+                        <div className="col-span-2 md:col-span-5 space-y-8">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white">
+                                    <Stethoscope className="h-5 w-5 text-white" />
+                                </div>
+                                <span className="text-2xl font-bold text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
+                            </div>
+                            <p className="text-base max-w-sm font-medium leading-relaxed">
+                                Liderando la orquestación digital de la visita médica con tecnología de grado operativo y analítica avanzada.
+                            </p>
+                            <div className="flex items-center gap-4 text-white/50 hover:text-white transition-colors cursor-default">
+                                <Globe className="w-5 h-5" /> <span className="font-bold text-xs tracking-wide">Global Operations Network</span>
+                            </div>
+                        </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-slate-50 text-[11px] font-bold uppercase tracking-widest">
-            <p>© 2026 EMPRESA CA - MEDIVISITPRO. NIVEL DE ACCESO: CONFIDENCIAL.</p>
-            <div className="flex items-center gap-8">
-              <a href="#" className="hover:text-primary">Privacidad</a>
-              <a href="#" className="hover:text-primary">Seguridad</a>
-              <a href="#" className="hover:text-primary">EULA</a>
-            </div>
-          </div>
+                        <div className="md:col-span-2 space-y-6">
+                            <h4 className="font-bold text-white text-sm tracking-wide">Sistemas</h4>
+                            <ul className="space-y-4 text-sm font-medium">
+                                <li><a href="#" className="hover:text-blue-400 transition-colors">Sentinel AI</a></li>
+                                <li><a href="#" className="hover:text-blue-400 transition-colors">Offline PWA</a></li>
+                                <li><a href="#" className="hover:text-blue-400 transition-colors">Bóveda ISO</a></li>
+                            </ul>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-6">
+                            <h4 className="font-bold text-white text-sm tracking-wide">Compañía</h4>
+                            <ul className="space-y-4 text-sm font-medium">
+                                <li><a href="#" className="hover:text-blue-400 transition-colors">Nosotros</a></li>
+                                <li><a href="#" className="hover:text-blue-400 transition-colors">Soporte</a></li>
+                                <li><a href="#" className="hover:text-blue-400 transition-colors">Contacto</a></li>
+                            </ul>
+                        </div>
+
+                        <div className="md:col-span-3 space-y-6">
+                            <h4 className="font-bold text-white text-sm tracking-wide">Newsletter</h4>
+                            <p className="text-sm font-medium leading-relaxed">Suscríbase para recibir actualizaciones operativas de élite.</p>
+                            <div className="flex gap-2">
+                                <Input placeholder="Email" className="bg-white/5 border-white/10 text-white rounded-xl h-11" />
+                                <Button className="bg-blue-600 hover:bg-blue-500 h-11 px-4 rounded-xl">
+                                    <Send className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-6 text-sm font-medium">
+                        <p>© 2026 Empresa CA - MediVisitPro. Nivel de acceso: Confidencial.</p>
+                        <div className="flex items-center gap-8">
+                            <a href="#" className="hover:text-white transition-colors">Privacidad</a>
+                            <a href="#" className="hover:text-white transition-colors">Seguridad</a>
+                            <a href="#" className="hover:text-white transition-colors">Legal</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+            {/* WhatsApp - Elite Action Button */}
+            <button
+                onClick={handleWhatsApp}
+                className="fixed bottom-8 right-8 z-50 bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-3xl shadow-[0_20px_40px_-5px_rgba(37,99,235,0.3)] hover:shadow-[0_25px_50px_-5px_rgba(37,99,235,0.4)] transition-all hover:scale-110 group"
+                aria-label="Contactar Mission Control"
+            >
+                <Smartphone className="w-7 h-7" />
+                <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-slate-900 text-white px-4 py-2 rounded-2xl text-[10px] font-bold shadow-2xl opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 whitespace-nowrap pointer-events-none border border-white/10 tracking-wide">
+                    Conectar con Mission Control
+                </span>
+            </button>
         </div>
-      </footer>
+    );
 
-      {/* WhatsApp Button Elite */}
-      <button
-        onClick={handleWhatsApp}
-        className="fixed bottom-8 right-8 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-3xl shadow-[0_20px_40px_-5px_rgba(37,211,102,0.3)] hover:shadow-[0_25px_50px_-5px_rgba(37,211,102,0.4)] transition-all hover:scale-110 group"
-        aria-label="Contactar Mission Control"
-      >
-        <Smartphone className="w-7 h-7" />
-        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-card text-foreground px-4 py-2 rounded-2xl text-xs font-black shadow-2xl opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 whitespace-nowrap pointer-events-none border border-border">
-          CONECTAR CON MISSION CONTROL
-        </span>
-      </button>
-    </div>
-  );
-
-  function handleWhatsApp() {
-    trackEvent('click_whatsapp');
-    window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20MediVisitPro,%20solicito%20acceso%20al%20Centro%20de%20Mando", "_blank");
-  }
+    function handleWhatsApp() {
+        trackEvent('click_whatsapp');
+        window.open("https://api.whatsapp.com/send?phone=584123411879&text=Hola,%20MediVisitPro,%20solicito%20acceso%20al%20Centro%20de%20Mando", "_blank");
+    }
 }

@@ -38,34 +38,34 @@ export const CommissionCalculator = () => {
     const extraEarnings = potentialIncome - currentIncome;
 
     return (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-card border-y border-slate-100">
+        <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-slate-950 border-y border-white/5">
             <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-xs font-black uppercase tracking-[0.2em] mb-6">
-                        <Calculator className="h-3.5 w-3.5" />
+                <div className="text-center mb-16 lg:mb-20">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-[0.4em] mb-8">
+                        <Calculator className="h-4 w-4" />
                         Simulador de Rentabilidad Maestro
                     </div>
-                    <h2 className="text-4xl sm:text-6xl font-black text-foreground mb-6 tracking-tight">
-                        Tu tiempo es <span className="text-primary ">Capital.</span>
+                    <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white mb-6 lg:mb-8 tracking-tighter uppercase">
+                        TU TIEMPO ES <span className="text-blue-500">CAPITAL.</span>
                     </h2>
-                    <p className="text-slate-500 text-lg max-w-2xl mx-auto font-medium">
-                        Calcula el impacto financiero REAL de optimizar tu ruta y seguimiento con el estándar Sentinel.
+                    <p className="text-slate-400 text-base lg:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+                        Calcula el impacto financiero real de optimizar tu ruta y seguimiento con el estándar de inteligencia operativa MediVisitPro.
                     </p>
                 </div>
 
-                <div className="grid lg:grid-cols-12 gap-8 items-start">
+                <div className="grid lg:grid-cols-12 gap-12 items-stretch">
                     {/* Control Panel */}
-                    <div className="lg:col-span-7 space-y-6">
-                        <div className="bg-slate-50 p-8 sm:p-10 rounded-[3rem] border border-slate-200 shadow-sm space-y-10 text-slate-900">
+                    <div className="lg:col-span-7">
+                        <div className="bg-white/5 p-8 sm:p-12 rounded-[3.5rem] border border-white/10 shadow-2xl space-y-12 backdrop-blur-3xl h-full">
                             
                             {/* Input 1: Activities */}
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <Label className="text-foreground font-black text-xs uppercase tracking-widest">Actividad Diaria</Label>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase ">Promedio de visitas médicas efectivas</p>
+                                        <Label className="text-white font-bold text-sm ml-1">Actividad Diaria</Label>
+                                        <p className="text-xs text-slate-500 font-medium">Visitas médicas efectivas por jornada</p>
                                     </div>
-                                    <span className="text-4xl font-black text-primary">{visitsPerDay} <span className="text-xs text-slate-400">Visitas</span></span>
+                                    <span className="text-5xl font-black text-blue-500 tracking-tighter">{visitsPerDay} <span className="text-xs text-slate-600 uppercase font-black ml-1 tracking-widest">vst</span></span>
                                 </div>
                                 <Slider
                                     value={[visitsPerDay]}
@@ -81,10 +81,10 @@ export const CommissionCalculator = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <Label className="text-foreground font-black text-xs uppercase tracking-widest">Tasa de Conversión</Label>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase ">% de visitas que se traducen en venta/receta</p>
+                                        <Label className="text-white font-bold text-sm ml-1">Tasa de Conversión</Label>
+                                        <p className="text-xs text-slate-500 font-medium">% de visitas con cierre de venta o receta</p>
                                     </div>
-                                    <span className="text-4xl font-black text-primary">{conversionRate}%</span>
+                                    <span className="text-5xl font-black text-blue-500 tracking-tighter">{conversionRate}<span className="text-2xl ml-1">%</span></span>
                                 </div>
                                 <Slider
                                     value={[conversionRate]}
@@ -100,10 +100,10 @@ export const CommissionCalculator = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <Label className="text-foreground font-black text-xs uppercase tracking-widest">Comisión por Venta</Label>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase ">Incentivo promedio por unidad/vial colocado</p>
+                                        <Label className="text-white font-bold text-sm ml-1">Incentivo Promedio</Label>
+                                        <p className="text-xs text-slate-500 font-medium">Comisión neta por unidad colocada</p>
                                     </div>
-                                    <span className="text-4xl font-black text-primary">${commissionPerSale} <span className="text-xs text-slate-400">USD</span></span>
+                                    <span className="text-5xl font-black text-blue-500 tracking-tighter"><span className="text-2xl mr-1">$</span>{commissionPerSale}</span>
                                 </div>
                                 <Slider
                                     value={[commissionPerSale]}
@@ -116,15 +116,15 @@ export const CommissionCalculator = () => {
                             </div>
 
                             {/* Formula Box */}
-                            <div className="pt-8 border-t border-slate-200">
-                                <div className="bg-card p-5 rounded-3xl border border-slate-100 flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-400 shrink-0">
-                                        <Info className="w-5 h-5" />
+                            <div className="pt-10 border-t border-white/5">
+                                <div className="bg-black/40 p-6 rounded-3xl border border-white/5 flex items-start gap-5">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-slate-500 shrink-0">
+                                        <Info className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Fórmula de Proyección CA</p>
-                                        <p className="text-xs text-slate-600 leading-relaxed font-mono">
-                                            ({visitsPerDay} Visitas × {WORK_DAYS} Días) × ({conversionRate}% Conv.) × ${commissionPerSale} Comisión = <span className="text-primary font-bold">${currentIncome}</span> Ingreso Base
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Algoritmo de Proyección Operativa</p>
+                                        <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                                            ({visitsPerDay} Vst × {WORK_DAYS} Días) × ({conversionRate}% Conv.) × ${commissionPerSale} USD = <span className="text-blue-400 font-bold">${currentIncome}</span> Ingreso mensual base
                                         </p>
                                     </div>
                                 </div>
@@ -133,52 +133,54 @@ export const CommissionCalculator = () => {
                     </div>
 
                     {/* Result Panel */}
-                    <div className="lg:col-span-5 h-full">
-                        <div className="bg-slate-900 rounded-[3.5rem] p-10 sm:p-12 text-white h-full shadow-2xl relative overflow-hidden flex flex-col justify-between border border-slate-800">
+                    <div className="lg:col-span-5">
+                        <div className="bg-slate-900 rounded-[3.5rem] p-10 lg:p-12 text-white h-full shadow-2xl relative overflow-hidden flex flex-col justify-between border border-white/10 group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                            
                             <div className="relative z-10">
                                 <div className="flex justify-between items-start mb-12">
-                                    <h3 className="text-primary text-xs font-black uppercase tracking-[0.3em]">Sentinel Impact</h3>
-                                    <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-black uppercase tracking-widest">
+                                    <h3 className="text-blue-400 text-xs font-bold tracking-wider">Sentinel Impact</h3>
+                                    <div className="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold">
                                         Eficiencia +25%
                                     </div>
                                 </div>
 
                                 <div className="mb-10">
-                                    <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Potencial Extra Mensual</p>
-                                    <div className="text-7xl sm:text-8xl font-black text-white tracking-tighter leading-none mb-4">
+                                    <p className="text-slate-500 text-xs font-bold mb-3 tracking-wide">Retorno de Inversión Extra</p>
+                                    <div className="text-6xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-none mb-4">
                                         +${extraEarnings}
                                     </div>
-                                    <p className="text-primary font-black text-sm uppercase tracking-widest ">Capital recuperado por ciclo</p>
+                                    <p className="text-blue-500 font-bold text-sm">Capital recuperado por ciclo</p>
                                 </div>
 
-                                <div className="space-y-5 mb-12">
-                                    <div className="p-5 rounded-[2rem] bg-background/5 border border-white/10 flex items-center gap-5">
-                                        <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0">
-                                            <TrendingUp className="w-6 h-6 text-primary" />
+                                <div className="space-y-5 mb-10">
+                                    <div className="p-5 rounded-3xl bg-white/5 border border-white/10 flex items-center gap-5">
+                                        <div className="w-12 h-12 rounded-2xl bg-blue-600/20 flex items-center justify-center shrink-0">
+                                            <TrendingUp className="w-6 h-6 text-blue-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-white uppercase tracking-widest">Alcance Maestro</p>
-                                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">+{extraVisits} visitas efectivas / día</p>
+                                            <p className="text-sm font-bold text-white">Alcance Maestro</p>
+                                            <p className="text-xs text-slate-500 font-medium mt-0.5">+{extraVisits} visitas efectivas por día</p>
                                         </div>
                                     </div>
-                                    <div className="p-5 rounded-[2rem] bg-background/5 border border-white/10 flex items-center gap-5">
-                                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center shrink-0">
-                                            <Check className="w-6 h-6 text-emerald-500" />
+                                    <div className="p-5 rounded-3xl bg-white/5 border border-white/10 flex items-center gap-5">
+                                        <div className="w-12 h-12 rounded-2xl bg-blue-600/20 flex items-center justify-center shrink-0">
+                                            <Check className="w-6 h-6 text-blue-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-white uppercase tracking-widest">Capacidad Instalada</p>
-                                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">Optimizado para {WORK_DAYS} días laborales</p>
+                                            <p className="text-sm font-bold text-white">Capacidad Instalada</p>
+                                            <p className="text-xs text-slate-500 font-medium mt-0.5">Optimizado para {WORK_DAYS} días laborales</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <Button className="relative z-10 w-full h-16 bg-primary text-white hover:bg-primary-dark transition-all font-black text-xl rounded-2xl border-none shadow-2xl shadow-primary/30 uppercase tracking-tight">
+                            <Button className="relative z-10 w-full h-16 bg-blue-600 hover:bg-blue-500 text-white transition-all font-bold text-sm rounded-2xl border-none shadow-2xl shadow-blue-600/20 active:scale-95">
                                 Activar Protocolo de Ventas
                             </Button>
 
                             {/* Background decoration */}
-                            <div className="absolute bottom-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[120px] -mb-40 -mr-40 pointer-events-none"></div>
+                            <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-600/5 rounded-full blur-[120px] -mb-40 -mr-40 pointer-events-none"></div>
                         </div>
                     </div>
                 </div>
