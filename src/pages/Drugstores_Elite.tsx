@@ -452,7 +452,7 @@ export default function DrugstoresElite() {
                             </div>
                             <div>
                                 <h2 className="text-3xl font-black tracking-tighter text-foreground uppercase">{selectedDrugstore?.name}</h2>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-1 italic">Expediente Comercial V.Industrial</p>
+                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-1">Expediente Comercial V.Industrial</p>
                             </div>
                         </DialogTitle>
                     </DialogHeader>

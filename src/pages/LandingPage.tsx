@@ -174,16 +174,7 @@ export default function LandingPage() {
                                 </button>
                             </div>
 
-                            <div className="pt-8 lg:pt-12 flex flex-wrap items-center justify-center lg:justify-start gap-8 lg:gap-12 border-t border-white/5">
-                                <div className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
-                                    Trusted by <br /> Pharma Leaders
-                                </div>
-                                <div className="flex gap-8 lg:gap-10 opacity-30 grayscale contrast-125">
-                                    <div className="font-bold text-xl sm:text-2xl tracking-tighter">Bayer</div>
-                                    <div className="font-bold text-xl sm:text-2xl tracking-tighter">Pfizer</div>
-                                    <div className="font-bold text-xl sm:text-2xl tracking-tighter">Roche</div>
-                                </div>
-                            </div>
+
                         </div>
 
                         {/* Interface Showcase */}
