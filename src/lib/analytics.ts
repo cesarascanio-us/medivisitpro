@@ -18,7 +18,9 @@ type EventName =
     | 'calculate_commissions'
     | 'submit_contact_form_init'
     | 'submit_contact_form_success'
-    | 'submit_contact_form_error';
+    | 'submit_contact_form_error'
+    | 'click_demo_header'
+    | 'click_demo_hero';
 
 interface EventProperties {
     [key: string]: string | number | boolean;
