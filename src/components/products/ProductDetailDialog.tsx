@@ -221,7 +221,7 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
                       <span className="font-medium text-foreground">Moderados</span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '15%' }}></div>
+                      <div className="bg-primary h-2 rounded-full text-white" style={{ width: '15%' }}></div>
                     </div>
                   </div>
 

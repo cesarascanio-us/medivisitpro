@@ -69,7 +69,7 @@ export function BillingPortal({ subscription, transactions, onManageSubscription
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* Subscription Summary */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden group">
+                <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden group text-white">
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <History className="w-16 h-16" />
                     </div>
@@ -99,7 +99,7 @@ export function BillingPortal({ subscription, transactions, onManageSubscription
                 </Card>
 
                 {/* Additional Stats can go here (Users, SMS, etc) */}
-                <Card className="bg-slate-900 border-slate-800 shadow-xl md:col-span-2">
+                <Card className="bg-slate-900 border-slate-800 shadow-xl md:col-span-2 text-white">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
                             <CardTitle className="text-white">Historial de Transacciones</CardTitle>

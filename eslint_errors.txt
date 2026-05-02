@@ -1,0 +1,126 @@
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\check_data.js
+  10:1  error  Parsing error: Unexpected character '�'
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\live_chunk.js
+  1:1  error  Parsing error: Unexpected token <
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\dashboard\SmartAssistant.tsx
+  90:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\map\VisitHeatmap.tsx
+  65:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\samples\BankSupervisorDashboard.tsx
+  46:13  error  Unexpected constant condition                                                                                        no-constant-condition
+  60:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  82:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\samples\EventTreatmentForm.tsx
+  125:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\samples\InventoryDashboard.tsx
+  83:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\samples\RepInventoryView.tsx
+  65:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\ui\command.tsx
+  33:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\ui\textarea.tsx
+  14:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\components\visits\RecurrenceEditDialog.tsx
+  68:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  94:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\pages\Doctors.tsx
+  188:21  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\pages\MasterPanel.tsx
+  168:5  error  React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\pages\Planning\WeeklyScheduler.tsx
+  241:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\pages\Reports.tsx
+  256:9   error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render                                                                 react-hooks/rules-of-hooks
+  264:24  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  426:15  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  434:30  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  447:25  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\pages\RoleManager.tsx
+  251:4  error  Parsing error: Expression expected
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\pages\Samples.tsx
+  79:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\src\services\objectiveService.ts
+  35:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  47:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  58:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  71:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  83:21  error  Unexpected lexical declaration in case block  no-case-declarations
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\supabase\functions\invite-user\index.ts
+  10:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\.kilo\worktrees\ossified-cinnamon\supabase\functions\seed-tenant-data\index.ts
+  10:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\map\VisitHeatmap.tsx
+  65:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\samples\BankSupervisorDashboard.tsx
+  46:13  error  Unexpected constant condition                                                                                        no-constant-condition
+  60:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  82:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\samples\EventTreatmentForm.tsx
+  125:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\samples\InventoryDashboard.tsx
+  83:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\samples\RepInventoryView.tsx
+  65:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\ui\command.tsx
+  33:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\ui\textarea.tsx
+  14:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\components\visits\RecurrenceEditDialog.tsx
+  68:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  94:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\pages\MasterPanel.tsx
+  108:5  error  React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\pages\Planning\WeeklyScheduler.tsx
+  241:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\pages\Reports.tsx
+  257:9   error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render                                                                 react-hooks/rules-of-hooks
+  265:24  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  431:15  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  439:30  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  452:25  error  React Hook "useFeatureAccess" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\src\services\objectiveService.ts
+  35:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  47:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  58:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  71:21  error  Unexpected lexical declaration in case block  no-case-declarations
+  83:21  error  Unexpected lexical declaration in case block  no-case-declarations
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\supabase\functions\invite-user\index.ts
+  10:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+C:\Users\cesar\Cesar Ascanio\CA_CORE\Proyectos_Dev\MediVisitPro\supabase\functions\seed-tenant-data\index.ts
+  10:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+✖ 56 problems (56 errors, 0 warnings)

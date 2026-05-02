@@ -104,11 +104,12 @@ export const useDemoData = () => {
         return context;
     }
 
-    // 3. AUTO DEMO: If user is in demo org but NOT a master, use mock data
-    const isTrialUser = context.isDemo && !isMaster && !isSystemAdmin;
-    if (isTrialUser) {
-        return context;
-    }
+    // 3. AUTO DEMO: DISABLED (Propagating real data)
+    // const isTrialUser = context.isDemo && !isMaster && !isSystemAdmin;
+    // if (isTrialUser) {
+    //     return context;
+    // }
+    const isTrialUser = false; // Force real data for production-grade testing
 
     // Default: Real data
     if (context.isDemo) {

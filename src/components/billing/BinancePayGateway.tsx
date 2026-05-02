@@ -98,7 +98,7 @@ export const BinancePayGateway: React.FC<BinancePayGatewayProps> = ({ orderData,
     }
 
     return (
-        <Card className="max-w-md mx-auto border-slate-700 bg-slate-900 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+        <Card className="max-w-md mx-auto border-slate-700 bg-slate-900 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500 text-white">
             <CardHeader className="bg-slate-800/50 border-b border-slate-700">
                 <div className="flex justify-between items-center">
                     <CardTitle className="text-xl flex items-center gap-2">
@@ -119,7 +119,7 @@ export const BinancePayGateway: React.FC<BinancePayGatewayProps> = ({ orderData,
                 <div className="p-4 bg-card rounded-3xl mb-6 shadow-xl relative group">
                     {status === 'expired' && (
                         <div className="absolute inset-0 bg-background/90 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center z-10 p-4">
-                            <span className="text-slate-900 font-bold mb-2">Enlace Expirado</span>
+                            <span className="text-foreground font-bold mb-2">Enlace Expirado</span>
                             <Button size="sm" onClick={() => window.location.reload()} variant="outline" className="border-slate-300">
                                 Reintentar
                             </Button>

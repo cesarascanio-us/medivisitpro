@@ -181,7 +181,7 @@ export function DoctorScheduleDialog({
                         </Select>
                     </div>
 
-                    <Separator className="bg-slate-100" />
+                    <Separator className="bg-slate-100 text-slate-900" />
 
                     {/* Dirección Manual */}
                     <div className="space-y-4">
@@ -221,7 +221,7 @@ export function DoctorScheduleDialog({
                     </div>
 
                     {/* Geocoding Section */}
-                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 shadow-inner">
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 shadow-inner text-slate-900">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Navigation className="h-4 w-4 text-blue-600" />
@@ -262,7 +262,7 @@ export function DoctorScheduleDialog({
                         </div>
                     </div>
 
-                    <Separator className="bg-slate-100" />
+                    <Separator className="bg-slate-100 text-slate-900" />
 
                     {/* Horarios */}
                     <div className="space-y-4">
@@ -330,7 +330,7 @@ export function DoctorScheduleDialog({
                         />
                     </div>
 
-                    <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-3">
+                    <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-3 text-slate-900">
                         <Checkbox
                             id="activo"
                             checked={formData.activo}

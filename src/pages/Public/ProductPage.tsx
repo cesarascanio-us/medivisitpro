@@ -18,7 +18,7 @@ export default function PublicProductPage() {
     if (!id) return <div>ID inválido</div>;
 
     return (
-        <div className="min-h-screen bg-slate-100">
+        <div className="min-h-screen bg-slate-100 text-slate-900">
             {/* Public Header */}
             <header className="bg-card border-b py-3 px-6 flex justify-between items-center sticky top-0 z-50">
                 <div className="font-bold text-xl text-blue-600 flex items-center gap-2">

@@ -190,7 +190,7 @@ export function POPDeliveryManager({ onUpdate, initialItems = [], specialty, isM
                             Materiales a Entregar
                         </Label>
                         {selectedItems.map(item => (
-                            <div key={item.id} className="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700 shadow-sm">
+                            <div key={item.id} className="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700 shadow-sm text-white">
                                 <span className="text-sm font-medium text-slate-200">{item.product_name}</span>
                                 <div className="flex items-center gap-2">
                                     <Badge variant="secondary" className="bg-orange-500/20 text-orange-300 border border-orange-500/30">x{item.quantity}</Badge>

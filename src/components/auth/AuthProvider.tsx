@@ -155,9 +155,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .eq('id', orgId)
                 .single();
 
-            const orgFeatures = (orgData?.settings as any)?.features || {};
-            setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
-            setOrganizationName(orgData?.name || null);
+            if (orgData) {
+                const orgFeatures = (orgData as any).settings?.features || {};
+                setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                setOrganizationName((orgData as any).name);
+            }
         } catch (error) {
             console.error("Error loading features for Audit Mode:", error);
         }
@@ -237,15 +239,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.log('Datos de rol obtenidos:', roleData);
 
             // [INDUSTRIAL] Secure Master Verification via Database RPC
-            const { data: isOwnerResult } = await (supabase.rpc as any)('is_system_master', { 
-                p_email: email 
+            const { data: isOwnerResult } = await (supabase.rpc as any)('is_system_master', {
+                p_email: email
             });
-            
+
             const isOwnerCheck = !!isOwnerResult;
             setIsOwner(isOwnerCheck);
 
-            let finalRole = (roleData?.role as UserRole) || (isOwnerCheck ? 'master' : 'representative');
-            let finalOrgId = roleData?.organization_id || profileData?.organization_id || null;
+            let finalRole: UserRole = 'representative';
+            let finalOrgId: string | null = null;
+
+            if (roleData) {
+                finalRole = ((roleData as any).role as UserRole);
+                finalOrgId = (roleData as any).organization_id;
+            } else if (isOwnerCheck) {
+                finalRole = 'master';
+            }
+
+            if (!finalOrgId && profileData) {
+                finalOrgId = (profileData as any).organization_id;
+            }
 
             // [STRICT] Tenant 0 Isolation for Global Master
             const isTenantZero = finalOrgId === '00000000-0000-0000-0000-000000000000';
@@ -265,12 +278,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
-                role: finalRole as UserRole,
+                role: finalRole,
                 organization_id: finalOrgId,
-                company_id: roleData?.company_id || profileData?.company_id || null,
-                zone_id: roleData?.zone_id || null,
-                state: roleData?.state || null,
-                region: roleData?.region || null,
+                company_id: (roleData as any)?.company_id || (profileData as any)?.company_id || null,
+                zone_id: (roleData as any)?.zone_id || null,
+                state: (roleData as any)?.state || null,
+                region: (roleData as any)?.region || null,
                 is_master: finalRole === 'master'
             };
 
@@ -284,7 +297,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .select('permission_code')
                 .eq('role_slug', finalRole);
 
-            setPermissions(permsData?.map(p => p.permission_code) || []);
+            setPermissions((permsData as any[])?.map(p => p.permission_code) || []);
 
             // Load Organization Features and Name
             if (finalOrgId) {
@@ -294,9 +307,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     .eq('id', finalOrgId)
                     .single();
 
-                setOrganizationName(orgData?.name || null);
-                const orgFeatures = (orgData?.settings as any)?.features || {};
-                setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                if (orgData) {
+                    setOrganizationName((orgData as any).name);
+                    const orgFeatures = (orgData as any).settings?.features || {};
+                    setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                }
             } else {
                 setOrganizationName(null);
                 setFeatures(DEFAULT_FEATURES);

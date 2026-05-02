@@ -151,7 +151,7 @@ export function ClinicalShowcase({
                         {/* Media Content */}
                         {activeAsset ? (
                             activeAsset.type === 'video' ? (
-                                <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                                <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white">
                                     <div className="text-center">
                                         <div className="w-20 h-20 rounded-full bg-background/20 flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-background/30 transition-colors">
                                             <PlayCircle className="h-12 w-12 text-white" />

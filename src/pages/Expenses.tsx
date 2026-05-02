@@ -300,7 +300,7 @@ export default function Expenses() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter text-slate-900">Gastos y Presupuestos</h1>
+                    <h1 className="text-3xl font-black tracking-tighter text-foreground">Gastos y Presupuestos</h1>
                     <p className="text-slate-500 font-medium ">Gestión inteligente de recursos operativos de Biofarco</p>
                 </div>
             </div>
@@ -324,7 +324,7 @@ export default function Expenses() {
                     </DialogTrigger>
                     <DialogContent className="max-w-md border-none shadow-2xl">
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-black tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Registrar Gasto</DialogTitle>
+                            <DialogTitle className="text-2xl font-black tracking-tight text-foreground border-l-4 border-slate-900 pl-4">Registrar Gasto</DialogTitle>
                             <DialogDescription className="text-slate-500 pl-4 ">
                                 Ingrese los detalles del comprobante para su validación administrativa.
                             </DialogDescription>
@@ -384,8 +384,8 @@ export default function Expenses() {
 
                             {/* Biofarco Specialized Transport Fields */}
                             {formData.category === 'trans' && (
-                                <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 space-y-4 animate-in zoom-in-95 duration-300">
-                                    <div className="flex items-center gap-2 text-slate-900 mb-2">
+                                <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 space-y-4 animate-in zoom-in-95 duration-300 text-slate-900">
+                                    <div className="flex items-center gap-2 text-foreground mb-2">
                                         <TrendingUp className="h-4 w-4" />
                                         <h4 className="text-xs font-black uppercase tracking-widest">Control de Kilometraje</h4>
                                     </div>
@@ -440,7 +440,7 @@ export default function Expenses() {
                                     <Label className="text-[10px] font-bold uppercase text-slate-500 mb-1 block">Adjuntar Factura / Comprobante</Label>
                                     <Input
                                         type="file"
-                                        className="h-10 text-xs border-slate-100 bg-slate-50"
+                                        className="h-10 text-xs border-slate-100 bg-slate-50 text-slate-900"
                                         onChange={(e) => setFiles({ ...files, receipt: e.target.files?.[0] })}
                                     />
                                 </div>
@@ -498,7 +498,7 @@ export default function Expenses() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Histórico</p>
-                                <p className="text-3xl font-black text-slate-900">${totalExpenses.toFixed(2)}</p>
+                                <p className="text-3xl font-black text-foreground">${totalExpenses.toFixed(2)}</p>
                             </div>
                             <DollarSign className="h-10 w-10 text-slate-200" />
                         </div>
@@ -509,7 +509,7 @@ export default function Expenses() {
             {/* Filter & Table Area */}
             <Card className="border-none shadow-xl shadow-slate-100/50 overflow-hidden">
                 <div className="p-4 border-b border-slate-50 bg-slate-50/50 flex flex-wrap gap-4 items-center justify-between">
-                    <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                    <h3 className="font-bold text-foreground flex items-center gap-2">
                         <Receipt className="h-4 w-4" /> Detalle de Movimientos
                     </h3>
                     <Select value={filterCategory} onValueChange={setFilterCategory}>
@@ -534,7 +534,7 @@ export default function Expenses() {
                     ) : filteredExpenses.length === 0 ? (
                         <div className="text-center py-20">
                             <Receipt className="mx-auto h-16 w-16 text-slate-100 mb-4" />
-                            <h3 className="text-slate-900 font-black text-xl mb-1">Sin Registros</h3>
+                            <h3 className="text-foreground font-black text-xl mb-1">Sin Registros</h3>
                             <p className="text-slate-400 mb-6 max-w-xs mx-auto">No se han encontrado gastos que coincidan con los criterios actuales.</p>
                             <Button variant="outline" onClick={() => setFilterCategory('all')} className="border-slate-200">Limpiar Filtros</Button>
                         </div>

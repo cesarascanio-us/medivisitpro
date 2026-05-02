@@ -181,7 +181,7 @@ export default function ManualPaymentApprover() {
     };
 
     return (
-        <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden">
+        <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden text-white">
             <CardHeader className="border-b border-slate-800 bg-slate-800/20">
                 <div className="flex justify-between items-center">
                     <div>

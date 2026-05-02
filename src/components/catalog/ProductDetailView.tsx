@@ -136,7 +136,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
             </div>
 
             {/* Premium Tab Navigation */}
-            <div className="px-6 py-4 bg-slate-50 border-b">
+            <div className="px-6 py-4 bg-slate-50 border-b text-slate-900">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-3 max-w-lg h-12 p-1 bg-card rounded-xl shadow-sm border">
                         <TabsTrigger

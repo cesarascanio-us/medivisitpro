@@ -9,6 +9,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { VisitExecution } from "@/types/visits";
+import { enqueuePendingOperation } from "@/lib/offlineSync";
 
 export const visitService = {
     async getVisitById(id: string) {
@@ -27,15 +28,23 @@ export const visitService = {
     },
 
     async checkIn(id: string, lat: number, lng: number, outOfRange: boolean) {
+        const updateData = {
+            id,
+            checkin_at: new Date().toISOString(),
+            status: 'in_progress',
+            location_lat: lat,
+            location_lng: lng,
+            out_of_range: outOfRange
+        };
+
+        if (!navigator.onLine) {
+            await enqueuePendingOperation('visit', 'update', 'visits', updateData);
+            return true;
+        }
+
         const { error } = await supabase
             .from('visits')
-            .update({
-                checkin_at: new Date().toISOString(),
-                status: 'in_progress',
-                location_lat: lat,
-                location_lng: lng,
-                out_of_range: outOfRange
-            } as any) // Type casting needed until types are fully regenerated
+            .update(updateData as any)
             .eq('id', id);
 
         if (error) throw error;
@@ -49,13 +58,21 @@ export const visitService = {
         notes: string;
         interview_data: any;
     }) {
+        const updateData = {
+            id,
+            checkout_at: new Date().toISOString(),
+            status: 'completed',
+            ...data
+        };
+
+        if (!navigator.onLine) {
+            await enqueuePendingOperation('visit', 'update', 'visits', updateData);
+            return true;
+        }
+
         const { error } = await supabase
             .from('visits')
-            .update({
-                checkout_at: new Date().toISOString(),
-                status: 'completed',
-                ...data
-            } as any)
+            .update(updateData as any)
             .eq('id', id);
 
         if (error) throw error;

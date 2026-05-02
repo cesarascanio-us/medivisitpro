@@ -83,6 +83,7 @@ export default function Doctors() {
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState('all');
     const [importing, setImporting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -246,8 +247,13 @@ export default function Doctors() {
         return <Badge className={`${styles[priority || 'medium']} border-none font-black text-[9px] tracking-widest`}>{labels[priority || 'medium']}</Badge>;
     };
 
-    const filteredDoctors = doctors.filter(d => d.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    
+    const filteredDoctors = doctors.filter(d => {
+        const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase());
+        let matchesFilter = true;
+        if (statusFilter === 'high') matchesFilter = d.priority === 'high';
+        else if (statusFilter === 'visited') matchesFilter = !!d.last_visit;
+        return matchesSearch && matchesFilter;
+    });
     return (
         <div className="space-y-10 pb-10 font-display animate-in fade-in duration-700">
             <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx,.xls,.csv" className="hidden" />
@@ -261,10 +267,10 @@ export default function Doctors() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <Download className="h-5 w-5 mr-3 text-primary" /> Exportar
                         </Button>
-                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             {importing ? <RefreshCw className="animate-spin h-5 w-5 mr-3 text-primary" /> : <Upload className="h-5 w-5 mr-3 text-primary" />} Importar
                         </Button>
                         <Button onClick={() => setDialogOpen(true)} className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
@@ -276,10 +282,10 @@ export default function Doctors() {
 
             {/* KPI STRIP - Estatus del Fichero */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <EliteKPICard title="Total Médicos" value={doctors.length} icon={UserRound} color="blue" />
-                <EliteKPICard title="Alta Prioridad" value={doctors.filter(d => d.priority === 'high').length} icon={AlertCircle} color="rose" />
-                <EliteKPICard title="Zonas Activas" value={new Set(doctors.map(d => d.state)).size} icon={MapPin} color="indigo" />
-                <EliteKPICard title="Visitas Mes" value={doctors.filter(d => d.last_visit).length} icon={ClipboardCheck} color="emerald" />
+                <EliteKPICard title="Total Médicos" value={doctors.length} icon={UserRound} color="blue" onClick={() => setStatusFilter('all')} isActive={statusFilter === 'all'} />
+                <EliteKPICard title="Alta Prioridad" value={doctors.filter(d => d.priority === 'high').length} icon={AlertCircle} color="rose" onClick={() => setStatusFilter('high')} isActive={statusFilter === 'high'} />
+                <EliteKPICard title="Zonas Activas" value={new Set(doctors.map(d => d.state).filter(Boolean)).size} icon={MapPin} color="indigo" />
+                <EliteKPICard title="Visitas Mes" value={doctors.filter(d => d.last_visit).length} icon={ClipboardCheck} color="emerald" onClick={() => setStatusFilter('visited')} isActive={statusFilter === 'visited'} />
             </div>
 
             <AdminDataFilter onFilterChange={(f) => setAdminFilters(f)} moduleType="doctors" />
@@ -309,62 +315,88 @@ export default function Doctors() {
                     <div className="w-24 h-24 rounded-full bg-card flex items-center justify-center shadow-soft mb-6">
                         <Search className="h-10 w-10 text-slate-200" />
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2">Sin Resultados Digitales</h3>
+                    <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2">Sin Resultados Digitales</h3>
                     <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest">Ajusta los parámetros de búsqueda o filtros territoriales</p>
                 </div>
             ) : (
-                <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-                    {filteredDoctors.map((doc) => (
-                        <Card key={doc.id} className="bg-card border-border/40 rounded-[3rem] overflow-hidden hover:border-primary/30 transition-all duration-700 group relative shadow-premium-sm hover:shadow-premium-xl cursor-pointer" onClick={() => { setSelectedDoctor(doc); setProfileOpen(true); }}>
-                            <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-50 overflow-hidden">
-                                <div className={cn("h-full transition-all duration-1000", doc.priority === 'high' ? 'bg-rose-500 w-full' : doc.priority === 'medium' ? 'bg-amber-500 w-2/3' : 'bg-emerald-500 w-1/3')} />
-                            </div>
-                            <CardHeader className="p-10 pb-4">
-                                <div className="flex justify-between items-start gap-4">
-                                    <div className="space-y-3 flex-1">
-                                        <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors leading-none font-display">{doc.name}</CardTitle>
-                                        <div className="flex items-center gap-2">
-                                            <Badge className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">{doc.specialties?.name || doc.specialty || 'GENERAL'}</Badge>
-                                            {getPriorityBadge(doc.priority)}
-                                        </div>
-                                    </div>
-                                    <div className="w-14 h-14 rounded-2xl bg-muted/30 flex items-center justify-center shadow-inner group-hover:bg-primary transition-all group-hover:rotate-6">
-                                        <Stethoscope className="h-6 w-6 text-slate-300 group-hover:text-white" />
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="p-10 pt-4 space-y-6">
-                                <div className="space-y-4">
-                                    <div className="flex items-center text-[11px] text-slate-400 font-black uppercase tracking-widest group/item">
-                                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors">
-                                            <MapPin className="h-4 w-4 text-primary opacity-60" />
-                                        </div>
-                                        <span className="truncate">{doc.address || doc.city || 'UBICACIÓN S.O.'}</span>
-                                    </div>
-                                    <div className="flex items-center text-[11px] text-slate-400 font-black uppercase tracking-widest group/item">
-                                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors">
-                                            <Phone className="h-4 w-4 text-primary opacity-60" />
-                                        </div>
-                                        <span>{doc.mobile || doc.phone || 'SIN CONTACTO'}</span>
-                                    </div>
-                                    <div className="flex items-center text-[11px] text-slate-400 font-black uppercase tracking-widest group/item">
-                                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors">
-                                            <ClipboardCheck className="h-4 w-4 text-primary opacity-60" />
-                                        </div>
-                                        <span className={cn(doc.last_visit ? "text-emerald-600" : "text-slate-300")}>ÚLTIMA VISITA: {doc.last_visit || 'PENDIENTE'}</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="p-6 bg-slate-50/50 flex items-center gap-3 border-t border-slate-50">
-                                <Button onClick={(e) => { e.stopPropagation(); navigate(`/agenda?doctorId=${doc.id}&doctorName=${encodeURIComponent(doc.name)}`); }} className="flex-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 shadow-premium-md h-12">
-                                    <Calendar className="h-4 w-4 mr-2" /> AGENDAR
-                                </Button>
-                                <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleEdit(doc); }} className="w-12 h-12 rounded-xl border border-slate-200 bg-card hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
-                                    <Pencil className="h-4 w-4" />
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                <div className="bg-card rounded-[2.5rem] border border-border/40 shadow-premium-sm overflow-hidden p-6">
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="border-b border-border/40 hover:bg-transparent">
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Especialista</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Ubicación / Zona</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Contacto</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Estatus</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6 text-right">Acciones</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredDoctors.map((doc) => (
+                                    <TableRow key={doc.id} className="border-b border-border/20 hover:bg-muted/50 cursor-pointer group transition-colors" onClick={() => { setSelectedDoctor(doc); setProfileOpen(true); }}>
+                                        <TableCell className="py-4 align-top">
+                                            <div className="flex items-start gap-4">
+                                                <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shadow-inner border border-primary/10">
+                                                    <Stethoscope className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{doc.name}</p>
+                                                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">{doc.specialties?.name || doc.specialty || 'GENERAL'}</p>
+                                                    <div className="mt-2">
+                                                        {getPriorityBadge(doc.priority)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="py-4 align-top">
+                                            <div className="flex flex-col gap-2 text-xs">
+                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
+                                                    <Building className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                    <span className="truncate max-w-[200px]">{doc.health_center || 'CLÍNICA / HOSPITAL N/A'}</span>
+                                                </div>
+                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
+                                                    <MapPin className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                    <span className="truncate max-w-[200px]">{doc.city || 'CIUDAD N/A'}</span>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="py-4 align-top">
+                                            <div className="flex flex-col gap-2 text-xs">
+                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
+                                                    <Phone className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                    {doc.mobile || doc.phone || 'SIN NÚMERO'}
+                                                </div>
+                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
+                                                    <Mail className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                    <span className="truncate max-w-[150px]">{doc.email || 'SIN CORREO'}</span>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="py-4 align-top">
+                                            <div className="flex flex-col gap-2 text-xs">
+                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
+                                                    <ClipboardCheck className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                    <span className={cn(doc.last_visit ? "text-emerald-600" : "")}>
+                                                        ÚLTIMA VISITA: {doc.last_visit || 'PENDIENTE'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="py-4 align-top text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/agenda?doctorId=${doc.id}&doctorName=${encodeURIComponent(doc.name)}`); }} className="h-10 rounded-xl font-black text-[10px] uppercase tracking-widest text-primary border-primary/20 hover:bg-primary hover:text-white">
+                                                    <Calendar className="h-4 w-4 mr-2" /> Agendar
+                                                </Button>
+                                                <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); handleEdit(doc); }} className="h-10 w-10 p-0 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-primary transition-colors">
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
             )}
 

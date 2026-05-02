@@ -116,7 +116,7 @@ export function HealthCenterDialog({ trigger, centerData, onCenterSaved, open: c
         <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 bg-muted/10/30 max-h-[70vh] overflow-y-auto custom-scrollbar">
           <section className="space-y-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-6 bg-primary rounded-full" />
+              <div className="w-1.5 h-6 bg-primary rounded-full text-white" />
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Perfil Institucional</h3>
             </div>
 

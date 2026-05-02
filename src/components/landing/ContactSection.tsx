@@ -75,7 +75,7 @@ export function ContactSection() {
                     <div className="w-24 h-24 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
                         <CheckCircle2 className="w-12 h-12 text-emerald-600" />
                     </div>
-                    <h2 className="text-4xl font-bold text-slate-900 tracking-tighter">¡Conexión Exitosa!</h2>
+                    <h2 className="text-4xl font-bold text-foreground tracking-tighter">¡Conexión Exitosa!</h2>
                     <p className="text-xl text-slate-500 font-medium leading-relaxed">
                         Tu información ha sido capturada por el sistema **Sentinel**. <br />
                         Uno de nuestros directores técnicos revisará tu caso en breve.
@@ -93,7 +93,7 @@ export function ContactSection() {
     }
 
     return (
-        <section id="contacto" className="py-24 px-4 bg-slate-50 relative overflow-hidden">
+        <section id="contacto" className="py-24 px-4 bg-slate-50 relative overflow-hidden text-slate-900">
             {/* Design Ornaments */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full -z-10 -translate-x-1/2 translate-y-1/2"></div>
@@ -104,7 +104,7 @@ export function ContactSection() {
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary-dark text-[10px] font-black uppercase tracking-widest">
                         Contacto Mission Control
                     </div>
-                    <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-[1.1] tracking-tighter">
+                    <h2 className="text-4xl sm:text-5xl font-bold text-foreground leading-[1.1] tracking-tighter">
                         ¿Listo para <span className="text-primary">Orquestar</span> tu Crecimiento?
                     </h2>
                     <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-lg">
@@ -122,7 +122,7 @@ export function ContactSection() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
-                                    <p className="font-bold text-slate-900">{item.text}</p>
+                                    <p className="font-bold text-foreground">{item.text}</p>
                                 </div>
                             </div>
                         ))}
@@ -144,7 +144,7 @@ export function ContactSection() {
                                             value={formData.name}
                                             onChange={e => setFormData({ ...formData, name: e.target.value })}
                                             placeholder="Tu nombre completo"
-                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium"
+                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium text-slate-900"
                                         />
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@ export function ContactSection() {
                                             value={formData.email}
                                             onChange={e => setFormData({ ...formData, email: e.target.value })}
                                             placeholder="ejemplo@pharma.com"
-                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium"
+                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium text-slate-900"
                                         />
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@ export function ContactSection() {
                                         value={formData.company}
                                         onChange={e => setFormData({ ...formData, company: e.target.value })}
                                         placeholder="Nombre de tu laboratorio o empresa"
-                                        className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium"
+                                        className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium text-slate-900"
                                     />
                                 </div>
                             </div>
@@ -187,7 +187,7 @@ export function ContactSection() {
                                         value={formData.message}
                                         onChange={e => setFormData({ ...formData, message: e.target.value })}
                                         placeholder="¿Cómo podemos potenciar tu gestión médica?"
-                                        className="min-h-[140px] pl-12 pt-4 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium resize-none"
+                                        className="min-h-[140px] pl-12 pt-4 rounded-xl bg-slate-50 border-slate-200 focus:bg-card transition-all font-medium resize-none text-slate-900"
                                     />
                                 </div>
                             </div>

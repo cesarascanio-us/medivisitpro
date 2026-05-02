@@ -172,6 +172,35 @@ OBJETIVO: ${objective}
 ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
 `.trim();
 
+            if (demoData) {
+                // Simulación en entorno Demo para evitar errores de UUID en supabase
+                const tempId = `demo-visit-${Date.now()}`;
+                const newVisit = {
+                    id: tempId,
+                    contact_id: contactId,
+                    scheduled_date: scheduledDateTime.toISOString(),
+                    visit_type: visitType,
+                    objective: fullObjective,
+                    products_presented: selectedProducts,
+                    promotional_materials: selectedMaterials.join(', '),
+                    status: 'scheduled',
+                    unified_contacts: {
+                        name: selectedContact?.name || 'Entidad Demo',
+                        specialty: selectedContact?.specialty || visitType,
+                        address: selectedContact?.address || 'Dirección de prueba'
+                    }
+                };
+                
+                // Mutar la data en memoria del demo
+                if (!demoData.visits) demoData.visits = [];
+                demoData.visits.unshift(newVisit);
+
+                toast({ title: '✅ Misión Agendada (Entorno Demo)', description: 'Simulación exitosa y agregada a tu agenda local.' });
+                onOpenChange(false);
+                onSuccess?.();
+                return;
+            }
+
             const { error } = await supabase.from('visits').insert([{
                 user_id: user.id, organization_id: profile?.organization_id,
                 contact_id: contactId, scheduled_date: scheduledDateTime.toISOString(),
@@ -196,7 +225,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] shadow-3xl bg-slate-950 font-outfit max-h-[90vh]">
+            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] shadow-3xl bg-slate-950 font-outfit max-h-[90vh] flex flex-col text-white">
                 {/* Header Elite Industrial */}
                 <div className="bg-slate-900 px-10 py-8 text-white relative">
                     <div className="flex items-center gap-6 relative z-10">
@@ -210,7 +239,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                     </div>
                 </div>
 
-                <div className="px-10 py-10 space-y-12 bg-slate-950 text-white overflow-y-auto custom-scrollbar">
+                <div className="flex-1 px-10 py-10 space-y-12 bg-slate-950 text-white overflow-y-auto custom-scrollbar min-h-0">
                     <WizardProgress currentStep={currentStep} totalSteps={5} steps={WIZARD_STEPS} />
 
                     {/* Step 1: Identidad Digital */}
@@ -249,7 +278,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                             <ChevronsUpDown className="ml-2 h-5 w-5 opacity-40 shrink-0" />
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-slate-900 border-white/10 rounded-[2rem] shadow-3xl overflow-hidden mt-2">
+                                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-slate-900 border-white/10 rounded-[2rem] shadow-3xl overflow-hidden mt-2 text-white">
                                         <Command className="bg-slate-900 text-white">
                                             <CommandInput placeholder="FILTRAR REGISTROS..." className="h-16  font-black uppercase" />
                                             <CommandList className="max-h-64 custom-scrollbar">
@@ -401,7 +430,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                             ))}
                                         </div>
                                     </div>
-                                    <Card className="bg-slate-900 border-white/5 rounded-[2.5rem] border-dashed flex flex-col justify-center items-center p-10 text-center space-y-6">
+                                    <Card className="bg-slate-900 border-white/5 rounded-[2.5rem] border-dashed flex flex-col justify-center items-center p-10 text-center space-y-6 text-white">
                                         <div className="p-8 bg-emerald-500/10 rounded-full">
                                             <Target className="w-12 h-12 text-emerald-500 animate-pulse" />
                                         </div>
@@ -419,7 +448,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                     {currentStep === 5 && (
                         <div className="space-y-8 animate-in zoom-in-95 duration-700">
                             <div className="bg-card text-foreground p-12 rounded-[3.5rem] shadow-3xl text-center space-y-8 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-full h-2 bg-primary" />
+                                <div className="absolute top-0 left-0 w-full h-2 bg-primary text-white" />
                                 <div className="flex flex-col items-center gap-6">
                                     <div className="w-24 h-24 rounded-full bg-slate-950 flex items-center justify-center text-white"><CheckCircle2 className="w-12 h-12 text-primary" /></div>
                                     <div>
@@ -428,16 +457,16 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4 pt-6">
-                                    <div className="p-6 bg-slate-50 rounded-3xl text-left">
+                                    <div className="p-6 bg-slate-50 rounded-3xl text-left text-slate-900">
                                         <p className="text-[10px] font-black uppercase text-slate-400 mb-2 ">Canal Operativo</p>
-                                        <p className="font-black uppercase  text-sm">{visitType}</p>
+                                        <p className="font-black uppercase text-foreground text-sm">{visitType}</p>
                                     </div>
-                                    <div className="p-6 bg-slate-50 rounded-3xl text-left">
+                                    <div className="p-6 bg-slate-50 rounded-3xl text-left text-slate-900">
                                         <p className="text-[10px] font-black uppercase text-slate-400 mb-2 ">Objetivo Maestro</p>
-                                        <p className="font-black uppercase  text-sm truncate">{objective}</p>
+                                        <p className="font-black uppercase text-foreground text-sm truncate">{objective}</p>
                                     </div>
                                 </div>
-                                <div className="p-6 bg-slate-900 rounded-3xl text-left border border-white/5 mt-4">
+                                <div className="p-6 bg-slate-900 rounded-3xl text-left border border-white/5 mt-4 text-white">
                                     <p className="text-[10px] font-black uppercase text-slate-500 mb-4 ">Estrategia de Ejecución</p>
                                     <div className="flex flex-wrap gap-2">
                                         {[
@@ -455,7 +484,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                     )}
                 </div>
 
-                <div className="bg-slate-900 border-t border-white/5 px-10 py-8 flex items-center justify-between gap-6">
+                <div className="bg-slate-900 border-t border-white/5 px-10 py-6 flex items-center justify-between gap-6 shrink-0 z-20 relative text-white">
                     <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1} className="h-14 px-8 font-black uppercase text-slate-500 hover:text-white rounded-2xl text-[10px] tracking-widest gap-3 "><ChevronLeft className="w-4 h-4" /> REGRESAR</Button>
                     <Button onClick={handleNext} disabled={loading} className="h-16 px-16 bg-card text-foreground rounded-[1.5rem] font-black uppercase  text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-3xl">
                         {loading ? <Sparkles className="animate-spin w-5 h-5 mr-3" /> : currentStep === 5 ? 'SINCRONIZAR MISIÓN MAESTRA' : 'CONTINUAR'}

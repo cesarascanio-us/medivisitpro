@@ -123,7 +123,7 @@ export default function Billing() {
                             <Building2 className="w-10 h-10 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-slate-900 mb-1 font-display tracking-tighter uppercase">{organization.name}</h1>
+                            <h1 className="text-3xl font-black text-foreground mb-1 font-display tracking-tighter uppercase">{organization.name}</h1>
                             <div className="flex items-center gap-3">
                                 <Badge variant="outline" className="border-primary/30 text-primary bg-primary/5 font-black text-[10px] tracking-widest uppercase ">
                                     Plan {planTier?.toUpperCase()}
@@ -136,17 +136,17 @@ export default function Billing() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner">
+                    <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner text-slate-900">
                         <div className="text-right">
                             <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Próximo Pago</p>
-                            <p className="font-black text-slate-900 tabular-nums ">
+                            <p className="font-black text-foreground tabular-nums ">
                                 {subscription?.current_period_end
                                     ? new Date(subscription.current_period_end).toLocaleDateString()
                                     : trialEndsAt ? new Date(trialEndsAt).toLocaleDateString() : 'N/A'
                                 }
                             </p>
                         </div>
-                        <Separator orientation="vertical" className="h-10 bg-slate-200" />
+                        <Separator orientation="vertical" className="h-10 bg-slate-200 text-slate-900" />
                         <Button variant="ghost" className="text-primary font-black uppercase text-[10px] tracking-widest hover:text-primary/70 hover:bg-primary/5">
                             Gestionar <ExternalLink className="ml-2 w-4 h-4" />
                         </Button>
@@ -156,7 +156,7 @@ export default function Billing() {
 
             {/* Navigation Tabs */}
             <div className="flex justify-center mb-4">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="p-1 bg-slate-50 border border-slate-100 rounded-full shadow-soft">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="p-1 bg-slate-50 border border-slate-100 rounded-full shadow-soft text-slate-900">
                     <TabsList className="bg-transparent border-0 h-11">
                         <TabsTrigger
                             value="plans"
@@ -178,7 +178,7 @@ export default function Billing() {
                 <TabsContent value="plans" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Pricing Section Title */}
                     <div className="text-center space-y-4 py-10">
-                        <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Planes Flexibles para tu Equipo</h2>
+                        <h2 className="text-4xl font-black text-foreground uppercase tracking-tighter font-display leading-tight">Planes Flexibles para tu Equipo</h2>
                         <p className="text-slate-400 max-w-2xl mx-auto font-medium text-sm ">
                             Escoge el plan que mejor se adapte a tu escala corporativa. Todos los planes incluyen 14 días de prueba gratuita "Full-Access".
                         </p>
@@ -200,16 +200,16 @@ export default function Billing() {
                                     )}
 
                                     <CardHeader className="p-10 pb-6">
-                                        <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display group-hover:text-primary transition-colors">{plan.name}</CardTitle>
+                                        <CardTitle className="text-2xl font-black text-foreground uppercase tracking-tighter font-display group-hover:text-primary transition-colors">{plan.name}</CardTitle>
                                         <CardDescription className="text-slate-400 font-medium text-xs leading-relaxed">{plan.description}</CardDescription>
                                         <div className="mt-8 flex items-baseline gap-2">
-                                            <span className="text-5xl font-black text-slate-900 tracking-tighter tabular-nums ">${price?.amount || 0}</span>
+                                            <span className="text-5xl font-black text-foreground tracking-tighter tabular-nums ">${price?.amount || 0}</span>
                                             <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">/mes</span>
                                         </div>
                                     </CardHeader>
 
                                     <CardContent className="px-10 py-6 flex-1">
-                                        <Separator className="mb-8 bg-slate-100" />
+                                        <Separator className="mb-8 bg-slate-100 text-slate-900" />
                                         <ul className="space-y-4">
                                             {plan.features.map((feature, i) => (
                                                 <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
@@ -247,9 +247,9 @@ export default function Billing() {
             {/* Payment Modal */}
             <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
                 <DialogContent className="sm:max-w-[500px] bg-card border border-slate-100 rounded-[2.5rem] shadow-premium-2xl overflow-hidden p-0">
-                    <div className="bg-slate-50 p-10 border-b border-slate-100">
+                    <div className="bg-slate-50 p-10 border-b border-slate-100 text-slate-900">
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Método de Pago Seguro</DialogTitle>
+                            <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter font-display leading-tight">Método de Pago Seguro</DialogTitle>
                             <DialogDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">
                                 Procesamiento Encriptado de Grado Bancario
                             </DialogDescription>
@@ -273,11 +273,11 @@ export default function Billing() {
                                 className="h-20 justify-start gap-4 border-slate-100 bg-card hover:border-primary hover:bg-primary/5 transition-all text-slate-400 group rounded-[1.5rem] shadow-soft"
                                 onClick={() => handleProviderSelect('stripe')}
                             >
-                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors text-slate-900">
                                     <CreditCard className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-black text-slate-900 uppercase tracking-tighter">Tarjeta / Google Pay</p>
+                                    <p className="font-black text-foreground uppercase tracking-tighter">Tarjeta / Google Pay</p>
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Powered by Stripe Security</p>
                                 </div>
                             </Button>
@@ -291,7 +291,7 @@ export default function Billing() {
                                     <Globe className="w-6 h-6 text-indigo-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-black text-slate-900 uppercase tracking-tighter">PayPal Global</p>
+                                    <p className="font-black text-foreground uppercase tracking-tighter">PayPal Global</p>
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Balance o Cuentas Externas</p>
                                 </div>
                             </Button>
@@ -305,12 +305,12 @@ export default function Billing() {
                                     <Wallet className="w-6 h-6 text-yellow-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-black text-slate-900 uppercase tracking-tighter">Binance Pay (Crypto)</p>
+                                    <p className="font-black text-foreground uppercase tracking-tighter">Binance Pay (Crypto)</p>
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">USDT, BTC & Zero Fees</p>
                                 </div>
                             </Button>
 
-                            <Separator className="bg-slate-100 my-4" />
+                            <Separator className="bg-slate-100 my-4 text-slate-900" />
 
                             <Button
                                 variant="outline"
@@ -320,11 +320,11 @@ export default function Billing() {
                                     setShowManualPaymentDialog(true);
                                 }}
                             >
-                                <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                                <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors text-slate-900">
                                     <Smartphone className="w-6 h-6 text-emerald-600" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-black text-slate-900 uppercase tracking-tighter">Pago Móvil / Transferencia</p>
+                                    <p className="font-black text-foreground uppercase tracking-tighter">Pago Móvil / Transferencia</p>
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Gestión Local en Bolívares</p>
                                 </div>
                             </Button>
@@ -348,11 +348,11 @@ export default function Billing() {
             <div className="pt-20 pb-10 border-t border-slate-100">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60 hover:opacity-100 transition-opacity">
                     <div className="flex flex-col items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                        <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-slate-900">
                             <ShieldCheck className="w-8 h-8 text-emerald-600" />
                         </div>
                         <div className="text-center">
-                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">PAGO SEGURO</p>
+                            <p className="text-foreground font-black text-[10px] uppercase tracking-widest">PAGO SEGURO</p>
                             <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">256-BIT SSL ENCRYPTION</p>
                         </div>
                     </div>
@@ -361,7 +361,7 @@ export default function Billing() {
                             <Zap className="w-8 h-8 text-primary" />
                         </div>
                         <div className="text-center">
-                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">ENTREGA INSTANTÁNEA</p>
+                            <p className="text-foreground font-black text-[10px] uppercase tracking-widest">ENTREGA INSTANTÁNEA</p>
                             <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">ACTIVACIÓN AUTOMÁTICA</p>
                         </div>
                     </div>
@@ -370,7 +370,7 @@ export default function Billing() {
                             <Globe className="w-8 h-8 text-indigo-600" />
                         </div>
                         <div className="text-center">
-                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">MULTI-MONEDA</p>
+                            <p className="text-foreground font-black text-[10px] uppercase tracking-widest">MULTI-MONEDA</p>
                             <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">USD, EUR, USDT & MÁS</p>
                         </div>
                     </div>
@@ -379,7 +379,7 @@ export default function Billing() {
                             <MessageCircle className="w-8 h-8 text-cyan-600" />
                         </div>
                         <div className="text-center">
-                            <p className="text-slate-900 font-black text-[10px] uppercase tracking-widest">SOPORTE 24/7</p>
+                            <p className="text-foreground font-black text-[10px] uppercase tracking-widest">SOPORTE 24/7</p>
                             <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight">ASISTENCIA PRIORITARIA</p>
                         </div>
                     </div>

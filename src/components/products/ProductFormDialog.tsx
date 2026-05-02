@@ -357,7 +357,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                 <div className="flex flex-col md:flex-row h-[650px]">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
                         {/* Sidebar */}
-                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
+                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1 text-slate-900">
                             <TabsTrigger
                                 value="basic"
                                 className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
@@ -401,7 +401,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                 <TabsContent value="basic" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                     <section className="space-y-6">
                                         <div className="flex items-center gap-2 mb-4">
-                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
+                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full text-white" />
                                             <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Identificación de Mercado</h3>
                                         </div>
                                         <div className="space-y-2">
@@ -453,7 +453,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                 <TabsContent value="medical" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                     <section className="space-y-6">
                                         <div className="flex items-center gap-2 mb-4">
-                                            <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                            <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                             <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Dossier Científico</h3>
                                         </div>
                                         <div className="space-y-2">
@@ -492,7 +492,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                 <TabsContent value="commercial" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                     <section className="space-y-6">
                                         <div className="flex items-center gap-2 mb-4">
-                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
+                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full text-white" />
                                             <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Estrategia Comercial</h3>
                                         </div>
                                         <div className="space-y-2">
@@ -553,7 +553,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
 
                                         <div className="space-y-6">
                                             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Literatura Médica (PDF)</h3>
-                                            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
+                                            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4 text-slate-900">
                                                 <div className="w-12 h-12 bg-muted rounded-2xl shadow-sm flex items-center justify-center text-orange-500"><FileText className="h-6 w-6" /></div>
                                                 <div className="space-y-1">
                                                     <p className="font-bold text-slate-700">Dossier de Producto</p>
@@ -579,7 +579,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                     </Tabs>
                 </div>
 
-                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4 text-slate-900">
                     <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-500 rounded-xl">Cerrar</Button>
                     <Button type="submit" form="product-form" disabled={loading} className="h-12 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02]">
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

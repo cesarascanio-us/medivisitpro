@@ -63,7 +63,7 @@ export function CommerceFormDialog({
                     {/* Section 1: Business Profile */}
                     <div className="space-y-8">
                         <div className="flex items-center gap-3">
-                            <div className="w-2 h-10 bg-emerald-600 rounded-full" />
+                            <div className="w-2 h-10 bg-emerald-600 rounded-full text-white" />
                             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Identidad del Establecimiento</h3>
                         </div>
 

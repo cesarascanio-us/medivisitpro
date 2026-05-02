@@ -290,7 +290,7 @@ export default function Planner() {
                                 <Badge variant="outline">{completedCount} / {items.length} tareas</Badge>
                                 <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-primary transition-all"
+                                        className="h-full bg-primary transition-all text-white"
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>

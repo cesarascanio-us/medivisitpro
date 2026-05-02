@@ -300,10 +300,10 @@ export default function RoleManager() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900">Perfiles y Niveles de Acceso</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground">Perfiles y Niveles de Acceso</h2>
                     <p className="text-slate-500">Configure los roles de usuario y sus permisos dentro de la plataforma.</p>
                 </div>
-                <Button onClick={handleCreateClick} className="bg-slate-900 hover:bg-slate-800">
+                <Button onClick={handleCreateClick} className="bg-slate-900 hover:bg-slate-800 text-white">
                     <Plus className="mr-2 h-4 w-4" />
                     Crear Nuevo Perfil
                 </Button>
@@ -340,7 +340,7 @@ export default function RoleManager() {
                                                 {role.is_system && <Lock className="h-3 w-3 text-slate-400" title="Rol de Sistema" />}
                                             </div>
                                         </TableCell>
-                                        <TableCell><code className="text-xs bg-slate-100 px-1 py-0.5 rounded">{role.slug}</code></TableCell>
+                                        <TableCell><code className="text-xs bg-slate-100 px-1 py-0.5 rounded text-slate-900">{role.slug}</code></TableCell>
                                         <TableCell className="text-sm text-slate-600">{role.description}</TableCell>
                                         <TableCell>
                                             <Badge variant="secondary" className="text-xs">
@@ -422,7 +422,7 @@ export default function RoleManager() {
                             <h3 className="font-semibold mb-3">Permisos y Accesos</h3>
                             <div className="space-y-6">
                                 {Object.entries(groupedPermissions).map(([module, perms]) => (
-                                    <div key={module} className="bg-slate-50 p-4 rounded-lg border">
+                                    <div key={module} className="bg-slate-50 p-4 rounded-lg border text-slate-900">
                                         <h4 className="font-medium text-slate-800 mb-3 border-b pb-2">{module}</h4>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                             {perms.map(perm => (

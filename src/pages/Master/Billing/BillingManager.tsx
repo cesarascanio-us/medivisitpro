@@ -128,7 +128,7 @@ export default function BillingManager() {
             <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-slate-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-slate-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="flex items-center gap-6">
@@ -161,7 +161,7 @@ export default function BillingManager() {
                                     <div className="space-y-2">
                                         <label className="text-xs font-black uppercase tracking-widest text-slate-400">Cliente / Organización</label>
                                         <Select value={selectedOrg} onValueChange={setSelectedOrg}>
-                                            <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-slate-200">
+                                            <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-slate-200 text-slate-900">
                                                 <SelectValue placeholder="Seleccionar organización..." />
                                             </SelectTrigger>
                                             <SelectContent className="rounded-xl border-slate-100 shadow-xl">
@@ -177,7 +177,7 @@ export default function BillingManager() {
                                             <Input
                                                 value={invoiceNumber}
                                                 onChange={e => setInvoiceNumber(e.target.value)}
-                                                className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500"
+                                                className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 text-slate-900"
                                                 placeholder="INV-001"
                                             />
                                         </div>
@@ -187,7 +187,7 @@ export default function BillingManager() {
                                                 type="number"
                                                 value={amount}
                                                 onChange={e => setAmount(e.target.value)}
-                                                className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500"
+                                                className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 text-slate-900"
                                                 placeholder="0.00"
                                             />
                                         </div>

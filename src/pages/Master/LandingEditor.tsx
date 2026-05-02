@@ -255,16 +255,16 @@ export default function LandingEditor() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-3">
                                         <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Badge Superior</Label>
-                                        <Input value={content.hero.badge} onChange={e => updateHero('badge', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6" />
+                                        <Input value={content.hero.badge} onChange={e => updateHero('badge', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6 text-slate-900" />
                                     </div>
                                     <div className="space-y-3">
                                         <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Texto Gradiente</Label>
-                                        <Input value={content.hero.title_highlight} onChange={e => updateHero('title_highlight', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6" />
+                                        <Input value={content.hero.title_highlight} onChange={e => updateHero('title_highlight', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6 text-slate-900" />
                                     </div>
                                 </div>
                                 <div className="space-y-3">
                                     <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Título Principal (Fijo)</Label>
-                                    <Input value={content.hero.title_part1} onChange={e => updateHero('title_part1', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6 text-lg" />
+                                    <Input value={content.hero.title_part1} onChange={e => updateHero('title_part1', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6 text-lg text-slate-900" />
                                 </div>
                                 <div className="space-y-3">
                                     <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Subtítulo Descriptivo</Label>
@@ -273,11 +273,11 @@ export default function LandingEditor() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-3">
                                         <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">CTA Principal</Label>
-                                        <Input value={content.hero.cta_primary} onChange={e => updateHero('cta_primary', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6" />
+                                        <Input value={content.hero.cta_primary} onChange={e => updateHero('cta_primary', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6 text-slate-900" />
                                     </div>
                                     <div className="space-y-3">
                                         <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Nota bajo botones</Label>
-                                        <Input value={content.hero.cta_secondary} onChange={e => updateHero('cta_secondary', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6" />
+                                        <Input value={content.hero.cta_secondary} onChange={e => updateHero('cta_secondary', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 transition-all px-6 text-slate-900" />
                                     </div>
                                 </div>
                                 <div className="pt-6 border-t border-border">
@@ -297,14 +297,14 @@ export default function LandingEditor() {
                             </CardHeader>
                             <CardContent className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-white text-white">
                                 {content.stats.map((stat, i) => (
-                                    <div key={i} className="p-8 bg-slate-900 rounded-[2.5rem] space-y-4 border border-slate-800 transform transition-transform hover:scale-[1.02]">
+                                    <div key={i} className="p-8 bg-slate-900 rounded-[2.5rem] space-y-4 border border-slate-800 transform transition-transform hover:scale-[1.02] text-white">
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400">Valor</Label>
-                                            <Input value={stat.value} onChange={e => updateStats(i, 'value', e.target.value)} className="bg-slate-800 border-slate-700 font-black text-2xl h-14 rounded-xl" />
+                                            <Input value={stat.value} onChange={e => updateStats(i, 'value', e.target.value)} className="bg-slate-800 border-slate-700 font-black text-2xl h-14 rounded-xl text-white" />
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Etiqueta</Label>
-                                            <Input value={stat.label} onChange={e => updateStats(i, 'label', e.target.value)} className="bg-slate-800 border-slate-700 font-bold h-12 rounded-xl" />
+                                            <Input value={stat.label} onChange={e => updateStats(i, 'label', e.target.value)} className="bg-slate-800 border-slate-700 font-bold h-12 rounded-xl text-white" />
                                         </div>
                                     </div>
                                 ))}
@@ -323,11 +323,11 @@ export default function LandingEditor() {
                             <CardContent className="p-10 space-y-8">
                                 <div className="space-y-3">
                                     <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Encabezado</Label>
-                                    <Input value={content.intelligence.title} onChange={e => updateIntelligence('title', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold px-6" />
+                                    <Input value={content.intelligence.title} onChange={e => updateIntelligence('title', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold px-6 text-slate-900" />
                                 </div>
                                 <div className="space-y-3">
                                     <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Subtítulo</Label>
-                                    <Textarea value={content.intelligence.subtitle} onChange={e => updateIntelligence('subtitle', e.target.value)} className="min-h-[100px] rounded-[2rem] border-slate-100 bg-slate-50 font-medium p-8" />
+                                    <Textarea value={content.intelligence.subtitle} onChange={e => updateIntelligence('subtitle', e.target.value)} className="min-h-[100px] rounded-[2rem] border-slate-100 bg-slate-50 font-medium p-8 text-slate-900" />
                                 </div>
                                 <div className="space-y-4 pt-4">
                                     <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Puntos Clave</Label>
@@ -335,7 +335,7 @@ export default function LandingEditor() {
                                         {content.intelligence.features.map((feat, i) => (
                                             <div key={i} className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center font-black text-indigo-600 text-xs">{i + 1}</div>
-                                                <Input value={feat} onChange={e => updateIntelFeature(i, e.target.value)} className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold flex-1" />
+                                                <Input value={feat} onChange={e => updateIntelFeature(i, e.target.value)} className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold flex-1 text-slate-900" />
                                             </div>
                                         ))}
                                     </div>
@@ -360,11 +360,11 @@ export default function LandingEditor() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-10 border-b border-slate-50">
                                     <div className="space-y-3">
                                         <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Título Sección</Label>
-                                        <Input value={content.features.title} onChange={e => updateFeatures('title', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold px-6" />
+                                        <Input value={content.features.title} onChange={e => updateFeatures('title', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold px-6 text-slate-900" />
                                     </div>
                                     <div className="space-y-3">
                                         <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Subtítulo</Label>
-                                        <Input value={content.features.subtitle} onChange={e => updateFeatures('subtitle', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold px-6" />
+                                        <Input value={content.features.subtitle} onChange={e => updateFeatures('subtitle', e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold px-6 text-slate-900" />
                                     </div>
                                 </div>
 
@@ -380,15 +380,15 @@ export default function LandingEditor() {
                                             <div className="space-y-4">
                                                 <div className="space-y-2">
                                                     <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Icono (Lucide ID)</Label>
-                                                    <Input value={item.icon} onChange={e => updateFeatureItem(i, 'icon', e.target.value)} className="bg-white border-slate-100 h-10 rounded-lg text-xs" />
+                                                    <Input value={item.icon} onChange={e => updateFeatureItem(i, 'icon', e.target.value)} className="bg-white border-slate-100 h-10 rounded-lg text-xs text-slate-900" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Título</Label>
-                                                    <Input value={item.title} onChange={e => updateFeatureItem(i, 'title', e.target.value)} className="bg-white border-slate-100 font-bold h-12 rounded-xl text-lg" />
+                                                    <Input value={item.title} onChange={e => updateFeatureItem(i, 'title', e.target.value)} className="bg-white border-slate-100 font-bold h-12 rounded-xl text-lg text-slate-900" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Descripción</Label>
-                                                    <Textarea className="bg-white border-slate-100 min-h-[100px] rounded-xl font-medium leading-relaxed" value={item.description} onChange={e => updateFeatureItem(i, 'description', e.target.value)} />
+                                                    <Textarea className="bg-white border-slate-100 min-h-[100px] rounded-xl font-medium leading-relaxed text-slate-900" value={item.description} onChange={e => updateFeatureItem(i, 'description', e.target.value)} />
                                                 </div>
                                             </div>
                                         </div>

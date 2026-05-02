@@ -179,7 +179,7 @@ export default function ExpenseReport() {
         <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter text-slate-900">Reporte Logístico</h1>
+                    <h1 className="text-3xl font-black tracking-tighter text-foreground">Reporte Logístico</h1>
                     <p className="text-slate-500 font-medium">Gestión de gastos e indemnización de combustible</p>
                 </div>
                 <Button 
@@ -193,7 +193,7 @@ export default function ExpenseReport() {
             {/* Formulario Estilo Elite */}
             {isAdding && (
                 <Card className="border-none shadow-xl overflow-hidden animate-in slide-in-from-top-4">
-                    <CardHeader className="bg-slate-50 border-b border-slate-100">
+                    <CardHeader className="bg-slate-50 border-b border-slate-100 text-slate-900">
                         <CardTitle className="text-lg flex items-center gap-2">
                             <FileText className="h-5 w-5 text-primary" />
                             Nuevo Registro Operativo Biofarco
@@ -331,7 +331,7 @@ export default function ExpenseReport() {
                                         type="file"
                                         accept="image/*,application/pdf"
                                         onChange={e => handleFileChange(e, 'receipt')}
-                                        className="h-11 border-slate-200 bg-slate-50"
+                                        className="h-11 border-slate-200 bg-slate-50 text-slate-900"
                                     />
                                 </div>
                             </div>
@@ -353,7 +353,7 @@ export default function ExpenseReport() {
 
             {/* Resumen de KPI */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-none shadow-sm bg-slate-50">
+                <Card className="border-none shadow-sm bg-slate-50 text-slate-900">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-xs font-black uppercase text-slate-400 tracking-wider">Acumulado Mes ($)</CardTitle>
                     </CardHeader>
@@ -406,7 +406,7 @@ export default function ExpenseReport() {
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="font-black text-2xl text-slate-900">${expense.amount.toFixed(2)}</div>
+                                    <div className="font-black text-2xl text-foreground">${expense.amount.toFixed(2)}</div>
                                     <Badge variant={(expense.status === 'approved' ? 'success' : 'warning') as any} className="mt-1 font-black uppercase text-[10px] tracking-tighter">
                                         {expense.status}
                                     </Badge>

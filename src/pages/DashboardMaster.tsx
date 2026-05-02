@@ -226,7 +226,7 @@ export default function DashboardMaster() {
             <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
                 <RefreshCw className="h-10 w-10 text-primary animate-spin" />
             </div>
-            <div className="text-slate-900 font-black uppercase tracking-[0.4em] animate-pulse font-display">Sincronizando Centro de Mando</div>
+            <div className="text-foreground font-black uppercase tracking-[0.4em] animate-pulse font-display">Sincronizando Centro de Mando</div>
         </div>
     );
 
@@ -256,7 +256,7 @@ export default function DashboardMaster() {
 
             <Tabs defaultValue="dashboard" className="w-full space-y-6" onValueChange={setActiveTab}>
                 <div className="flex justify-start px-2">
-                    <TabsList className="bg-slate-50 border border-slate-100 p-1.5 rounded-2xl h-auto flex flex-nowrap gap-2 shadow-inner">
+                    <TabsList className="bg-slate-50 border border-slate-100 p-1.5 rounded-2xl h-auto flex flex-nowrap gap-2 shadow-inner text-slate-900">
                         <TabsTrigger 
                             value="dashboard" 
                             className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none group"
@@ -322,7 +322,7 @@ export default function DashboardMaster() {
                 <TabsContent value="pedidos" className="space-y-4 animate-in slide-in-from-right-10 duration-500">
                     <Card className="border border-slate-100 bg-card shadow-premium-sm rounded-[2.5rem] overflow-hidden">
                         <Table>
-                            <TableHeader className="bg-slate-50">
+                            <TableHeader className="bg-slate-50 text-slate-900">
                                 <TableRow className="border-slate-100">
                                     <TableHead className="py-6 pl-10 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Orden de Manifiesto</TableHead>
                                     <TableHead className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Entrada / Punto de Venta</TableHead>
@@ -332,9 +332,9 @@ export default function DashboardMaster() {
                             <TableBody>
                                 {pendingOrders.map(order => (
                                     <TableRow key={order.id} className="hover:bg-slate-50 transition-all border-slate-50">
-                                        <TableCell className="pl-10 py-6 font-black text-slate-900 font-display text-base tracking-tight uppercase">{order.order_number}</TableCell>
+                                        <TableCell className="pl-10 py-6 font-black text-foreground font-display text-base tracking-tight uppercase">{order.order_number}</TableCell>
                                         <TableCell className="font-bold text-slate-500 uppercase text-[10px] tracking-tight">{order.pharmacy_name}</TableCell>
-                                        <TableCell className="text-right pr-10 font-black text-slate-900 font-display text-lg">${order.total?.toLocaleString()}</TableCell>
+                                        <TableCell className="text-right pr-10 font-black text-foreground font-display text-lg">${order.total?.toLocaleString()}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -347,12 +347,12 @@ export default function DashboardMaster() {
                         {repData.map(rep => (
                             <Card key={rep.id} className="border border-slate-100 bg-card shadow-premium-sm p-8 rounded-[2.5rem] group hover:shadow-premium-md transition-all duration-300">
                                 <div className="flex justify-between items-start mb-6">
-                                     <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100 transition-transform group-hover:scale-110">
+                                     <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100 transition-transform group-hover:scale-110 text-slate-900">
                                          <Users className="text-amber-500 h-8 w-8" />
                                      </div>
                                      <Badge className={cn("px-4 py-1.5 font-black text-[9px] uppercase border tracking-widest rounded-full", ROLE_COLORS[rep.role || 'representative'])}>{ROLE_LABELS[rep.role || 'representative']}</Badge>
                                 </div>
-                                <h3 className="font-black text-slate-900 text-lg uppercase mb-1 font-display tracking-tight group-hover:text-primary transition-colors">{rep.name}</h3>
+                                <h3 className="font-black text-foreground text-lg uppercase mb-1 font-display tracking-tight group-hover:text-primary transition-colors">{rep.name}</h3>
                                 <p className="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">{rep.email}</p>
                                 <div className="pt-6 border-t border-slate-50 flex justify-between items-center">
                                     <div className="flex flex-col">
@@ -360,7 +360,7 @@ export default function DashboardMaster() {
                                          <p className="text-xl font-black text-emerald-500 font-display tracking-tighter">${rep.sales.toLocaleString()}</p>
                                     </div>
                                     <div className="text-right">
-                                         <p className="text-lg font-black text-slate-900 font-display tracking-tighter">{rep.effectiveness.toFixed(0)}%</p>
+                                         <p className="text-lg font-black text-foreground font-display tracking-tighter">{rep.effectiveness.toFixed(0)}%</p>
                                          <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Eficacia</p>
                                     </div>
                                 </div>
@@ -388,7 +388,7 @@ function KPICard({ title, value, icon, color }: any) {
                 </div>
                 <div className="relative z-10">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 font-display">{title}</p>
-                    <p className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums font-display leading-none">{value}</p>
+                    <p className="text-4xl font-black text-foreground tracking-tighter tabular-nums font-display leading-none">{value}</p>
                 </div>
                 <div className={cn("h-14 w-14 flex items-center justify-center shrink-0 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner group-hover:bg-card transition-all relative z-10", colors[color])}>
                     {cloneElement(icon, { size: 28, strokeWidth: 2.5 })}

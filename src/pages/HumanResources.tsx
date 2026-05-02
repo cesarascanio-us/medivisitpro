@@ -86,7 +86,7 @@ export default function HumanResources() {
             {/* HEADER NATURISTA ELITE - TALENTO HUMANO */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-8 animate-in fade-in slide-in-from-top duration-700">
                 <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-[2rem] bg-indigo-600 shadow-xl shadow-indigo-500/30 flex items-center justify-center rotate-3 hover:rotate-0 transition-transform">
+                    <div className="w-16 h-16 rounded-[2rem] bg-indigo-600 shadow-xl shadow-indigo-500/30 flex items-center justify-center rotate-3 hover:rotate-0 transition-transform text-white">
                         <ShieldCheck className="h-8 w-8 text-white" />
                     </div>
                     <div>
@@ -272,7 +272,7 @@ export default function HumanResources() {
                                     <Input type="number" className="h-12 rounded-xl border-slate-100 bg-muted/10 font-bold text-foreground" defaultValue="1500" />
                                 </div>
                             </div>
-                            <div className="bg-indigo-600 p-8 rounded-2xl border border-indigo-400 shadow-xl shadow-indigo-500/20 relative overflow-hidden text-center">
+                            <div className="bg-indigo-600 p-8 rounded-2xl border border-indigo-400 shadow-xl shadow-indigo-500/20 relative overflow-hidden text-center text-white">
                                 <div className="text-white/60 font-black uppercase text-[9px] tracking-widest mb-1">Pasivo Laboral Estimado</div>
                                 <div className="text-5xl font-black text-white tracking-tighter  leading-none">$2,250.00</div>
                             </div>

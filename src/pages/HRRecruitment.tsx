@@ -117,12 +117,12 @@ export default function HRRecruitment() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8 space-y-8 font-display overflow-x-hidden animate-in fade-in duration-700">
+        <div className="min-h-screen bg-slate-50 p-4 md:p-8 space-y-8 font-display overflow-x-hidden animate-in fade-in duration-700 text-slate-900">
             {/* Header SaaS Style */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-8 rounded-[2rem] border border-slate-100 shadow-premium-md">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter text-slate-900 flex items-center gap-4 uppercase font-display">
-                        <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
+                    <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-4 uppercase font-display">
+                        <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20 text-white">
                             <Briefcase className="h-6 w-6 text-white" />
                         </div>
                         Búsqueda & Selección
@@ -162,7 +162,7 @@ export default function HRRecruitment() {
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
                             <stat.icon className={cn("h-5 w-5", stat.color)} />
                         </div>
-                        <p className="text-4xl font-black text-slate-900 mt-3 tabular-nums tracking-tighter">{stat.value}</p>
+                        <p className="text-4xl font-black text-foreground mt-3 tabular-nums tracking-tighter">{stat.value}</p>
                     </m.div>
                 ))}
             </div>
@@ -173,7 +173,7 @@ export default function HRRecruitment() {
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
                         placeholder="BUSCAR CANDIDATOS POR NOMBRE, HABILIDAD O CARGO..."
-                        className="pl-16 h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner"
+                        className="pl-16 h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -186,8 +186,8 @@ export default function HRRecruitment() {
 
             {/* Dynamic Feed SaaS Style */}
             <div className="space-y-6">
-                <h2 className="text-xl font-black text-slate-900 flex items-center gap-3 px-4 uppercase tracking-tighter font-display">
-                    <div className="w-1.5 h-6 bg-primary rounded-full" />
+                <h2 className="text-xl font-black text-foreground flex items-center gap-3 px-4 uppercase tracking-tighter font-display">
+                    <div className="w-1.5 h-6 bg-primary rounded-full text-white" />
                     Feed de Candidatos en Tiempo Real
                     <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse shadow-glow shadow-emerald-500/50" />
                 </h2>
@@ -232,7 +232,7 @@ export default function HRRecruitment() {
                                                                 )}
                                                             />
                                                         </svg>
-                                                        <span className="absolute text-2xl font-black text-slate-900 tabular-nums ">{lead.score}</span>
+                                                        <span className="absolute text-2xl font-black text-foreground tabular-nums ">{lead.score}</span>
                                                     </div>
                                                     <p className="text-[10px] font-black text-slate-400 mt-4 uppercase tracking-widest text-center leading-none">Match Score</p>
                                                 </div>
@@ -245,7 +245,7 @@ export default function HRRecruitment() {
                                                                 {lead.avatar}
                                                             </div>
                                                             <div>
-                                                                <h3 className="text-2xl font-black text-slate-900 group-hover:text-primary transition-colors tracking-tighter uppercase font-display">{lead.name}</h3>
+                                                                <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors tracking-tighter uppercase font-display">{lead.name}</h3>
                                                                 <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest mt-1 ">{lead.role}</p>
                                                                 <div className="flex flex-wrap gap-2 mt-4">
                                                                     {lead.tags.map(tag => (
@@ -258,7 +258,7 @@ export default function HRRecruitment() {
                                                         </div>
 
                                                         <div className="flex flex-col gap-3 items-end">
-                                                            <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+                                                            <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 text-slate-900">
                                                                 <div className={cn("h-2 w-2 rounded-full", STATUS_COLORS[lead.status] || "bg-slate-400")} />
                                                                 <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{lead.status}</span>
                                                             </div>

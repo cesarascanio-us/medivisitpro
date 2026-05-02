@@ -252,7 +252,7 @@ export default function RoleManager() {
             <header className="bg-card px-8 py-10 rounded-[3rem] shadow-premium-sm border border-slate-100 relative overflow-hidden">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-80 h-80 bg-blue-50/50 rounded-full blur-3xl opacity-40" />
-                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-slate-50 rounded-full blur-3xl opacity-40" />
+                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-slate-50 rounded-full blur-3xl opacity-40 text-slate-900" />
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="flex items-center gap-8">
@@ -261,12 +261,12 @@ export default function RoleManager() {
                         </div>
                         <div>
                             <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">Administración de Seguridad</p>
-                            <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none">
+                            <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">
                                 Roles & Permisos
                             </h1>
                             <div className="flex items-center gap-3 mt-4">
                                 <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">RBAC Protocol V6.0</Badge>
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100">
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-900">
                                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                                     <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-none">{roles.length} Roles Activos</span>
                                 </div>
@@ -300,10 +300,10 @@ export default function RoleManager() {
                         <div className={cn("absolute top-0 left-0 w-2 h-full opacity-10", role.color.split(' ')[0] || 'bg-slate-200')} />
                         <CardHeader className="p-8 pb-4">
                             <div className="flex justify-between items-start">
-                                <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display flex items-center gap-3">
+                                <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display flex items-center gap-3">
                                     {role.name}
                                     {role.is_system && (
-                                        <div className="w-6 h-6 rounded-lg bg-amber-50 flex items-center justify-center">
+                                        <div className="w-6 h-6 rounded-lg bg-amber-50 flex items-center justify-center text-slate-900">
                                             <Lock className="h-3 w-3 text-amber-500" />
                                         </div>
                                     )}
@@ -346,7 +346,7 @@ export default function RoleManager() {
                 <DialogContent className="max-w-3xl max-h-[90vh] rounded-[3.5rem] border-none shadow-premium-lg p-0 overflow-hidden flex flex-col font-sans">
                     <DialogHeader className="bg-card p-12 pb-8 border-b border-slate-100 relative">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
-                        <DialogTitle className="text-3xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none relative z-10">
+                        <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase font-display leading-none relative z-10">
                             {editingRole ? 'Configurar Privilegios' : 'Nueva Entidad de Acceso'}
                         </DialogTitle>
                         <DialogDescription className="text-slate-400 font-bold text-xs mt-4 uppercase tracking-widest relative z-10">
@@ -364,7 +364,7 @@ export default function RoleManager() {
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="Ej: AUDITOR MAESTRO"
-                                        className="h-16 rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm"
+                                        className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
                                     />
                                 </div>
                                 <div className="space-y-3">
@@ -382,7 +382,7 @@ export default function RoleManager() {
                                     <Textarea
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                        className="rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm min-h-[100px]"
+                                        className="rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm min-h-[100px]"
                                         placeholder="Describa el alcance de este rol..."
                                     />
                                 </div>
@@ -393,7 +393,7 @@ export default function RoleManager() {
                                             value={formData.color}
                                             onChange={e => setFormData({ ...formData, color: e.target.value })}
                                             placeholder="ej: bg-blue-50 text-blue-600"
-                                            className="h-16 rounded-2xl border-transparent bg-card font-bold text-slate-900 shadow-sm flex-1"
+                                            className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground shadow-sm flex-1"
                                         />
                                         <div className="flex items-center px-6 rounded-2xl bg-card shadow-sm border border-slate-100">
                                             <Badge className={cn("px-4 py-2 rounded-full border-none font-black text-[10px] uppercase tracking-widest", formData.color)}>Vista Previa</Badge>
@@ -410,7 +410,7 @@ export default function RoleManager() {
                                 {Object.entries(permissionsByModule).map(([module, perms]) => (
                                     <div key={module} className="bg-card rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden transform transition-all hover:shadow-md">
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] bg-slate-50 text-slate-400 border-b border-slate-100 px-8 py-4 font-display flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary text-white" />
                                             {module}
                                         </h4>
                                         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">

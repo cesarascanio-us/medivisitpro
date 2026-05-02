@@ -394,7 +394,7 @@ export default function WeeklyScheduler() {
                         </CardHeader>
                         <CardContent className="flex-1 p-2 space-y-2 overflow-y-auto">
                             {TURNS.map((turn) => (
-                                <div key={turn} className="flex flex-col gap-2 p-2 rounded-lg bg-slate-50 border h-1/2">
+                                <div key={turn} className="flex flex-col gap-2 p-2 rounded-lg bg-slate-50 border h-1/2 text-slate-900">
                                     <div className="flex justify-between items-center">
                                         <Badge variant="secondary" className="text-xs">{turn}</Badge>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openAddDialog(day.key, turn as 'AM' | 'PM')}>

@@ -76,7 +76,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#ffffff] font-display text-slate-900 selection:bg-primary selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#ffffff] font-display text-foreground selection:bg-primary selection:text-white overflow-x-hidden">
       <SEO
         title="MediVisit Pro - El Sistema Inteligentepara Visitadores Médicos"
         description="Transforma tu gestión de visita médica con IA, calidad alineados a los estándares ISO 9000 y analíticas de alto impacto. La plataforma #1 en LATAM."
@@ -93,10 +93,10 @@ export default function LandingPage() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 transform transition-transform group-hover:scale-110 duration-500">
+              <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 transform transition-transform group-hover:scale-110 duration-500 text-white">
                 <Stethoscope className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase">MediVisit<span className="text-primary">Pro</span></span>
+              <span className="text-2xl font-black text-foreground tracking-tighter uppercase">MediVisit<span className="text-primary">Pro</span></span>
             </div>
 
             {/* Desktop Navigation */}
@@ -117,7 +117,7 @@ export default function LandingPage() {
               <Button
                 variant="ghost"
                 onClick={handleAuthNavigation}
-                className="text-slate-900 hover:text-primary font-black uppercase text-[10px] tracking-widest"
+                className="text-foreground hover:text-primary font-black uppercase text-[10px] tracking-widest"
               >
                 {user ? 'Ir al Dashboard' : 'Acceso'}
               </Button>
@@ -156,7 +156,7 @@ export default function LandingPage() {
               <Button onClick={handleAuthNavigation} variant="outline" className="w-full justify-center h-12 rounded-xl border-slate-200">
                 Iniciar Sesión
               </Button>
-              <Button onClick={() => navigate('/demo')} className="w-full justify-center bg-primary h-12 rounded-xl shadow-lg">
+              <Button onClick={() => navigate('/demo')} className="w-full justify-center bg-primary h-12 rounded-xl shadow-lg text-white">
                 Comenzar Gratis
               </Button>
             </div>
@@ -176,7 +176,7 @@ export default function LandingPage() {
             <div className="lg:col-span-7 text-center lg:text-left space-y-10">
 
 
-              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.95] tracking-tight">
+              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-foreground leading-[0.95] tracking-tight">
                 Orquestación de <br />
                 <span className="text-primary ">Visita Médica</span>
               </h1>
@@ -204,14 +204,14 @@ export default function LandingPage() {
               <div className="pt-10 flex items-center justify-center lg:justify-start gap-10">
                 <div className="flex -space-x-3">
                   {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden shadow-sm">
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden shadow-sm text-slate-900">
                       <img src={`https://i.pravatar.cc/100?u=${i}`} alt="user" />
                     </div>
                   ))}
                   <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] font-bold text-white shadow-sm">+150</div>
                 </div>
                 <div className="text-sm font-bold text-slate-500">
-                  <span className="text-slate-900">+1,200</span> Visitadores activos hoy
+                  <span className="text-foreground">+1,200</span> Visitadores activos hoy
                 </div>
               </div>
             </div>
@@ -244,7 +244,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 text-center md:text-left">
             <div className="max-w-2xl">
-              <h2 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Capacidades del Grado Maestro</h2>
+              <h2 className="text-4xl font-bold text-foreground mb-6 tracking-tight">Capacidades del Grado Maestro</h2>
               <p className="text-slate-500 text-xl font-medium">
                 Diseñamos herramientas que no solo gestionan, sino que elevan tu estatus profesional frente al gremio médico y farmacéutico.
               </p>
@@ -263,7 +263,7 @@ export default function LandingPage() {
                   <div className="w-16 h-16 bg-card rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-primary transition-all">
                     <Icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">{feature.title}</h3>
                   <p className="text-slate-500 leading-relaxed text-lg font-medium">
                     {feature.description}
                   </p>
@@ -275,7 +275,7 @@ export default function LandingPage() {
       </section>
 
       {/* Security Banner - PREMIUM LIGHT MODE */}
-      <section className="py-20 bg-slate-50 relative overflow-hidden">
+      <section className="py-20 bg-slate-50 relative overflow-hidden text-slate-900">
         <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(0,86,179,0.03),transparent_50%)]"></div>
         <div className="max-w-7xl mx-auto px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="flex items-center gap-8">
@@ -283,7 +283,7 @@ export default function LandingPage() {
               <ShieldCheck className="w-10 h-10 text-primary" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Resiliencia Sentinel</h3>
+              <h3 className="text-2xl font-black text-foreground tracking-tighter uppercase">Resiliencia Sentinel</h3>
               <p className="text-slate-400 font-bold text-[10px] mt-1 uppercase tracking-widest">Cifrado de grado elite y redundancia global biométrica</p>
             </div>
           </div>
@@ -305,10 +305,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-12 gap-12 mb-20">
             <div className="col-span-2 md:col-span-5 space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
                   <Stethoscope className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-2xl font-bold text-slate-900 tracking-tighter">MediVisitPro</span>
+                <span className="text-2xl font-bold text-foreground tracking-tighter">MediVisitPro</span>
               </div>
               <p className="text-lg max-w-sm font-medium">Liderando la transformación digital de la visita médica con tecnología de grado operativo.</p>
               <div className="flex items-center gap-4">
@@ -317,7 +317,7 @@ export default function LandingPage() {
             </div>
 
             <div className="md:col-span-2 space-y-6">
-              <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Plataforma</h4>
+              <h4 className="font-bold text-foreground uppercase text-xs tracking-widest">Plataforma</h4>
               <ul className="space-y-4 font-medium ">
                 <li><a href="#" className="hover:text-primary transition-colors">Sentinel AI</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Offline PWA</a></li>
@@ -326,7 +326,7 @@ export default function LandingPage() {
             </div>
 
             <div className="md:col-span-2 space-y-6">
-              <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest">Compañía</h4>
+              <h4 className="font-bold text-foreground uppercase text-xs tracking-widest">Compañía</h4>
               <ul className="space-y-4 font-medium ">
                 <li><a href="#" className="hover:text-primary transition-colors">Sobre CA Labs</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Carreras</a></li>
@@ -335,9 +335,9 @@ export default function LandingPage() {
             </div>
 
             <div className="md:col-span-3 space-y-6">
-              <h4 className="font-black text-slate-900 uppercase text-[10px] tracking-[0.3em]">Soporte Mission Control</h4>
-              <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-inner">
-                <p className="text-[11px] font-black text-slate-900 mb-3 uppercase tracking-widest">¿Necesitas ayuda técnica?</p>
+              <h4 className="font-black text-foreground uppercase text-[10px] tracking-[0.3em]">Soporte Mission Control</h4>
+              <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-inner text-slate-900">
+                <p className="text-[11px] font-black text-foreground mb-3 uppercase tracking-widest">¿Necesitas ayuda técnica?</p>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mb-6 leading-relaxed">Nuestro equipo orquestador está disponible 24/7 para garantizar tu éxito operativo.</p>
                 <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black uppercase text-[10px] tracking-widest shadow-premium-md">Inicia Ticket</Button>
               </div>

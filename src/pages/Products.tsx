@@ -274,13 +274,13 @@ export default function Products() {
       <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-8 bg-card p-10 rounded-[3rem] border border-slate-100 shadow-premium-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-1000 group-hover:bg-primary/10" />
         <div className="relative z-10 flex items-center gap-8">
-          <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-lg group-hover:scale-105 transition-transform duration-500">
+          <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-lg group-hover:scale-105 transition-transform duration-500 text-white">
             <Package className="h-10 w-10 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none">Catálogo Maestro</h1>
+            <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">Catálogo Maestro</h1>
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse text-white" />
               Arsenal de Soluciones & Inteligencia Científica
             </p>
           </div>
@@ -289,7 +289,7 @@ export default function Products() {
           <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-14 h-14 rounded-2xl hover:bg-yellow-50 text-yellow-500 transition-all">
             <Lightbulb className="h-7 w-7" />
           </Button>
-          <div className="h-10 w-[1px] bg-slate-100 mx-2 hidden xl:block" />
+          <div className="h-10 w-[1px] bg-slate-100 mx-2 hidden xl:block text-slate-900" />
           <ProductFormDialog
             onSuccess={loadProducts}
             trigger={
@@ -322,7 +322,7 @@ export default function Products() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total SKU Global</p>
-                <p className="text-3xl font-black text-slate-900 font-display tracking-tighter">{productStats.total}</p>
+                <p className="text-3xl font-black text-foreground font-display tracking-tighter">{productStats.total}</p>
               </div>
               <div className="p-4 rounded-2xl bg-primary/5 shadow-inner group-hover:scale-110 transition-transform duration-500">
                 <Package className="h-6 w-6 text-primary" />
@@ -337,9 +337,9 @@ export default function Products() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 truncate max-w-[150px]">{category}</p>
-                  <p className="text-3xl font-black text-slate-900 font-display tracking-tighter">{count as number}</p>
+                  <p className="text-3xl font-black text-foreground font-display tracking-tighter">{count as number}</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-slate-50 shadow-inner group-hover:rotate-12 transition-all duration-500">
+                <div className="p-4 rounded-2xl bg-slate-50 shadow-inner group-hover:rotate-12 transition-all duration-500 text-slate-900">
                    <div className={cn("w-3 h-3 rounded-full shadow-sm", i % 2 === 0 ? "bg-blue-400" : "bg-emerald-400")} />
                 </div>
               </div>
@@ -358,13 +358,13 @@ export default function Products() {
                 placeholder="Buscar por nombre, principio activo o indicación operativa..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="h-16 pl-14 bg-slate-50 border-none focus-visible:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-300"
+                className="h-16 pl-14 bg-slate-50 border-none focus-visible:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-500 text-slate-900"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="h-16 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner">
+                <SelectTrigger className="h-16 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                   <SelectValue placeholder="Categoría Maestría" />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
@@ -375,7 +375,7 @@ export default function Products() {
                 </SelectContent>
               </Select>
 
-              <div className="h-10 w-[1px] bg-slate-100 mx-2 hidden xl:block" />
+              <div className="h-10 w-[1px] bg-slate-100 mx-2 hidden xl:block text-slate-900" />
 
               <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-16 px-8 border-slate-200 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all flex items-center gap-3">
                 {importing ? <FileSpreadsheet className="h-5 w-5 animate-pulse" /> : <Upload className="h-5 w-5 text-primary" />}
@@ -397,17 +397,17 @@ export default function Products() {
 
       <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
         <DialogContent className="max-w-2xl bg-card rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
-          <div className="bg-slate-50 p-8 border-b border-slate-100">
-            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Estructura de Manifiesto</h3>
+          <div className="bg-slate-50 p-8 border-b border-slate-100 text-slate-900">
+            <h3 className="text-xl font-black text-foreground uppercase tracking-tighter">Estructura de Manifiesto</h3>
             <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Sincronización de Inventario Científico</p>
           </div>
           <div className="p-10">
             <div className="rounded-2xl border border-slate-100 overflow-hidden shadow-soft">
               <Table>
-                <TableHeader className="bg-slate-50">
+                <TableHeader className="bg-slate-50 text-slate-900">
                   <TableRow>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Columna</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Descripción</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-foreground py-4 px-6">Columna</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-foreground py-4 px-6">Descripción</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -434,7 +434,7 @@ export default function Products() {
 
       {/* Products Display - MASTER VIEWSET */}
       <Tabs defaultValue="grid" className="w-full space-y-8">
-        <TabsList className="flex w-full md:w-[450px] p-1 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+        <TabsList className="flex w-full md:w-[450px] p-1 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner text-slate-900">
           <TabsTrigger value="grid" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Galería Maestro</TabsTrigger>
           <TabsTrigger value="list" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Lista Operativa</TabsTrigger>
           <TabsTrigger value="favorites" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-rose-500 data-[state=active]:shadow-premium-sm transition-all h-10">Favoritos</TabsTrigger>
@@ -446,7 +446,7 @@ export default function Products() {
               <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-card rounded-[2.5rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
                 <CardContent className="p-6">
                   {/* Product Image */}
-                  <div className="relative mb-6 rounded-[1.5rem] overflow-hidden bg-slate-50 border border-slate-100 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+                  <div className="relative mb-6 rounded-[1.5rem] overflow-hidden bg-slate-50 border border-slate-100 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500 text-slate-900">
                     {product.image_url ? (
                       <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                     ) : (
@@ -473,13 +473,13 @@ export default function Products() {
                       <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[8px] h-4 px-2 uppercase tracking-widest mb-2">
                         {product.category || 'General'}
                       </Badge>
-                      <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase font-display line-clamp-2 min-h-[40px] leading-tight group-hover:text-primary transition-colors">
+                      <h3 className="text-sm font-black text-foreground tracking-tight uppercase font-display line-clamp-2 min-h-[40px] leading-tight group-hover:text-primary transition-colors">
                         {product.name}
                       </h3>
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                       <p className="text-lg font-black text-slate-900 font-display tracking-tighter">${product.price || '0.00'}</p>
+                       <p className="text-lg font-black text-foreground font-display tracking-tighter">${product.price || '0.00'}</p>
                        <div className="flex gap-2">
                           <Dialog>
                             <DialogTrigger asChild>
@@ -513,7 +513,7 @@ export default function Products() {
               <Card key={product.id} className="border-slate-100 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
                 <CardContent className="p-8">
                   <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center">
-                    <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+                    <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors text-slate-900">
                       {product.image_url ? (
                         <img src={product.image_url} alt={product.name} className="w-full h-full object-cover rounded-2xl" />
                       ) : (
@@ -522,13 +522,13 @@ export default function Products() {
                     </div>
                     <div className="flex-1 space-y-2">
                        <div className="flex items-center gap-3">
-                         <h3 className="text-lg font-black text-slate-900 tracking-tighter uppercase font-display group-hover:text-primary transition-colors">{product.name}</h3>
+                         <h3 className="text-lg font-black text-foreground tracking-tighter uppercase font-display group-hover:text-primary transition-colors">{product.name}</h3>
                          <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[8px] h-4 px-2 uppercase tracking-widest">{product.category || 'General'}</Badge>
                        </div>
                        <p className="text-xs text-slate-500 font-bold uppercase tracking-tight line-clamp-1">{product.description || "Sin descripción científica disponible"}</p>
                     </div>
                     <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-50">
-                       <p className="text-xl font-black text-slate-900 font-display tracking-tighter">${product.price || '0.00'}</p>
+                       <p className="text-xl font-black text-foreground font-display tracking-tighter">${product.price || '0.00'}</p>
                        <div className="flex gap-2">
                           <ProductSamplesDialog
                             trigger={
@@ -578,9 +578,9 @@ export default function Products() {
                         </Button>
                       </div>
                       <div className="space-y-4">
-                        <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase font-display line-clamp-2 min-h-[40px] leading-tight">{product.name}</h3>
+                        <h3 className="text-sm font-black text-foreground tracking-tight uppercase font-display line-clamp-2 min-h-[40px] leading-tight">{product.name}</h3>
                         <div className="flex items-center justify-between pt-4 border-t border-red-50">
-                           <p className="text-lg font-black text-slate-900 font-display tracking-tighter">${product.price || '0.00'}</p>
+                           <p className="text-lg font-black text-foreground font-display tracking-tighter">${product.price || '0.00'}</p>
                            <ProductSamplesDialog
                               trigger={
                                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50">

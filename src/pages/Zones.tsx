@@ -178,15 +178,15 @@ export default function Zones() {
             {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE ZONAS */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-12 animate-in fade-in slide-in-from-top duration-700">
                 <div className="flex items-center gap-8">
-                    <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-md rotate-3 hover:rotate-0 transition-transform">
+                    <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-md rotate-3 hover:rotate-0 transition-transform text-white">
                         <MapPin className="h-10 w-10 text-white" />
                     </div>
                     <div>
                         <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">Infraestructura Geográfica</p>
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none">Gestión de Zonas</h1>
+                        <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">Gestión de Zonas</h1>
                         <div className="flex items-center gap-3 mt-4">
                             <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">Base Operativa V6.0</Badge>
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100">
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-900">
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-none">Sincronización Regional OK</span>
                             </div>
@@ -261,7 +261,7 @@ export default function Zones() {
                                     Array(6).fill(0).map((_, i) => (
                                         <TableRow key={i} className="animate-pulse border-slate-50">
                                             <TableCell colSpan={5} className="py-8 pl-10 border-none">
-                                                <div className="h-6 bg-slate-50 rounded-lg w-48 mb-2" />
+                                                <div className="h-6 bg-slate-50 rounded-lg w-48 mb-2 text-slate-900" />
                                                 <div className="h-4 bg-muted/30 rounded-lg w-32" />
                                             </TableCell>
                                         </TableRow>
@@ -280,7 +280,7 @@ export default function Zones() {
                                         <TableRow key={zone.id} className="hover:bg-muted/30 transition-all border-slate-50 group">
                                             <TableCell className="pl-10 py-8">
                                                 <div className="flex flex-col">
-                                                    <span className="font-black text-base text-slate-900 group-hover:text-primary transition-colors uppercase tracking-tight font-display leading-tight">{zone.name}</span>
+                                                    <span className="font-black text-base text-foreground group-hover:text-primary transition-colors uppercase tracking-tight font-display leading-tight">{zone.name}</span>
                                                     <div className="flex items-center gap-2 mt-2">
                                                        <Globe className="h-3 w-3 text-primary/40" /> 
                                                        <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{zone.region} • {zone.state}</span>
@@ -372,7 +372,7 @@ export default function Zones() {
                             <Input
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="h-16 rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm"
+                                className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
                                 placeholder="EJ: ZONA METROPOLITANA SUR"
                             />
                         </div>
@@ -402,7 +402,7 @@ export default function Zones() {
                                 type="number"
                                 value={formData.sales_threshold}
                                 onChange={(e) => setFormData({ ...formData, sales_threshold: Number(e.target.value) })}
-                                className="h-16 rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm"
+                                className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
                                 placeholder="2000"
                             />
                         </div>
@@ -411,7 +411,7 @@ export default function Zones() {
                             <Textarea
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                className="rounded-2xl border-transparent bg-card font-bold text-slate-900 focus:ring-primary/20 shadow-sm min-h-[100px]"
+                                className="rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm min-h-[100px]"
                                 placeholder="Detalles de cobertura estratégica..."
                             />
                         </div>

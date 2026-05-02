@@ -74,7 +74,7 @@ export default function AssetList() {
         <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
+                    <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
                         <Box className="h-8 w-8 text-blue-600" /> Mis Activos
                     </h1>
                     <p className="text-slate-500">Equipos y materiales asignados a tu cargo</p>
@@ -126,7 +126,7 @@ export default function AssetList() {
 
             <Card className="overflow-hidden border-slate-200">
                 <Table>
-                    <TableHeader className="bg-slate-50">
+                    <TableHeader className="bg-slate-50 text-slate-900">
                         <TableRow>
                             <TableHead>Código</TableHead>
                             <TableHead>Descripción</TableHead>
@@ -148,7 +148,7 @@ export default function AssetList() {
                                 <TableRow key={asset.id} className="hover:bg-slate-50">
                                     <TableCell className="font-mono text-xs">{asset.code}</TableCell>
                                     <TableCell>
-                                        <div className="font-medium text-slate-900">{asset.name}</div>
+                                        <div className="font-medium text-foreground">{asset.name}</div>
                                         {asset.description && <div className="text-xs text-slate-500">{asset.description}</div>}
                                     </TableCell>
                                     <TableCell>{getConditionBadge(asset.condition)}</TableCell>

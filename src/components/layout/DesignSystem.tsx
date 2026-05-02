@@ -61,6 +61,8 @@ interface EliteKPICardProps {
     color?: 'primary' | 'secondary' | 'accent' | 'emerald' | 'rose' | 'amber' | 'blue' | 'indigo';
     variant?: 'glass' | 'solid';
     delay?: number;
+    onClick?: () => void;
+    isActive?: boolean;
 }
 
 export function EliteKPICard({ 
@@ -71,7 +73,9 @@ export function EliteKPICard({
     trend, 
     color = 'primary', 
     variant = 'glass',
-    delay = 0 
+    delay = 0,
+    onClick,
+    isActive
 }: EliteKPICardProps) {
     
     const colorConfigs = {
@@ -89,8 +93,12 @@ export function EliteKPICard({
 
     return (
         <Card 
+            onClick={onClick}
             className={cn(
-                "border border-border/50 shadow-soft rounded-3xl overflow-hidden group transition-all duration-500 hover:shadow-card hover:-translate-y-1 animate-in fade-in slide-in-from-bottom duration-700",
+                "border shadow-soft rounded-3xl overflow-hidden group transition-all duration-500",
+                onClick ? "cursor-pointer hover:shadow-card hover:-translate-y-1" : "",
+                isActive ? "border-primary ring-2 ring-primary/20 shadow-premium-md scale-[1.02]" : "border-border/50",
+                "animate-in fade-in slide-in-from-bottom duration-700",
                 variant === 'glass' ? "bg-card/80 backdrop-blur-xl" : "bg-card"
             )}
             style={{ animationDelay: `${delay}ms` }}

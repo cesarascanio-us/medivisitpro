@@ -67,7 +67,7 @@ function MultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" className="w-full justify-between h-auto min-h-[48px] px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl hover:bg-slate-100 transition-all">
+        <Button variant="outline" role="combobox" className="w-full justify-between h-auto min-h-[48px] px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl hover:bg-slate-100 transition-all text-slate-900">
           <div className="flex flex-wrap gap-2">
             {selected.length === 0 && <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest ">{placeholder}</span>}
             {selected.map((item) => (
@@ -216,7 +216,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 <FileText className="w-8 h-8" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-black uppercase tracking-tighter font-display text-slate-900">
+                <DialogTitle className="text-2xl font-black uppercase tracking-tighter font-display text-foreground">
                   {visitData ? 'Control de Misión Realizada' : 'Planificación de Misión Táctica'}
                 </DialogTitle>
                 <div className="flex items-center gap-3 mt-2">
@@ -227,7 +227,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
             </div>
             {selectedContact && (
               <div className="text-right hidden md:block">
-                <p className="text-slate-900 font-black uppercase text-lg leading-none font-display">{selectedContact.name}</p>
+                <p className="text-foreground font-black uppercase text-lg leading-none font-display">{selectedContact.name}</p>
                 <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-2">{selectedContact.specialty} | {selectedContact.city}</p>
               </div>
             )}
@@ -308,7 +308,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
 
                   <div className="space-y-3">
                     <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Objetivo Estratégico (Planificación)</Label>
-                    <Textarea value={formData.visit_objective} onChange={(e) => setFormData(p => ({ ...p, visit_objective: e.target.value }))} placeholder="REDACTE EL OBJETIVO SMART DE LA VISITA..." rows={2} className="bg-slate-50 border-slate-100 rounded-[1.5rem] text-slate-900 font-black uppercase px-6 py-4 placeholder:text-slate-300" />
+                    <Textarea value={formData.visit_objective} onChange={(e) => setFormData(p => ({ ...p, visit_objective: e.target.value }))} placeholder="REDACTE EL OBJETIVO SMART DE LA VISITA..." rows={2} className="bg-slate-50 border-slate-100 rounded-[1.5rem] text-slate-900 font-black uppercase px-6 py-4 placeholder:text-slate-500" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-8">
@@ -347,7 +347,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
 
                     {productSellingPoints.length > 0 && (
                       <div className="p-8 bg-indigo-500/5 rounded-[2.5rem] border border-indigo-100 space-y-6">
-                        <h4 className="text-slate-900 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><Sparkles className="w-5 h-5 text-indigo-500" /> Inteligencia de Producto Activa</h4>
+                        <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><Sparkles className="w-5 h-5 text-indigo-500" /> Inteligencia de Producto Activa</h4>
                         <div className="grid grid-cols-1 gap-4">
                           {productSellingPoints.map(prod => (
                             <div key={prod.id} className="border-l-2 border-indigo-500/30 pl-5">
@@ -390,7 +390,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                           <Package2 className="w-40 h-40 text-indigo-400" />
                         </div>
                         <div className="relative z-10">
-                          <h4 className="text-slate-900 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><Package2 className="w-5 h-5 text-indigo-600" /> Suministro Institucional CA</h4>
+                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><Package2 className="w-5 h-5 text-indigo-600" /> Suministro Institucional CA</h4>
                           <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-10">Control de Reposición y Stock en Banco de Muestras Hospitalario</p>
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
@@ -420,7 +420,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                           <GraduationCap className="w-40 h-40 text-emerald-400" />
                         </div>
                         <div className="relative z-10">
-                          <h4 className="text-slate-900 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><GraduationCap className="w-5 h-5 text-emerald-600" /> Actividad Académica Corporativa</h4>
+                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><GraduationCap className="w-5 h-5 text-emerald-600" /> Actividad Académica Corporativa</h4>
                           <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-10">Despliegue de Charlas Científicas y Apoyo a Actividades en Sede</p>
                           
                           <div className="space-y-8">
@@ -461,7 +461,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                       </div>
                       <div className="space-y-3">
                         <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Siguiente Hito Táctico</Label>
-                        <Input value={formData.next_step} onChange={(e) => setFormData(p => ({ ...p, next_step: e.target.value }))} placeholder="PRÓXIMA ACCIÓN..." className="h-14 bg-slate-900 border-white/5 rounded-2xl font-black  uppercase px-6" />
+                        <Input value={formData.next_step} onChange={(e) => setFormData(p => ({ ...p, next_step: e.target.value }))} placeholder="PRÓXIMA ACCIÓN..." className="h-14 bg-slate-900 border-white/5 rounded-2xl font-black uppercase px-6 text-white" />
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -476,11 +476,11 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 </TabsContent>
 
                 <TabsContent value="geo" className="mt-0 space-y-10 animate-in zoom-in-95 duration-500">
-                  <div className="flex flex-col items-center justify-center p-20 bg-slate-50 rounded-[3rem] border border-slate-100 border-dashed space-y-8 relative overflow-hidden">
+                  <div className="flex flex-col items-center justify-center p-20 bg-slate-50 rounded-[3rem] border border-slate-100 border-dashed space-y-8 relative overflow-hidden text-slate-900">
                     <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:20px_20px]" />
                     <div className="w-24 h-24 rounded-full bg-blue-500/5 flex items-center justify-center animate-pulse shadow-glow shadow-blue-500/5"><MapPin className="w-12 h-12 text-blue-500" /></div>
                     <div className="text-center relative z-10">
-                      <h4 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2 font-display">Validación Geográfica de César Ascanio CA</h4>
+                      <h4 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Validación Geográfica de César Ascanio CA</h4>
                       <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">{formData.geolocation || "Buscando coordenadas de mando..."}</p>
                     </div>
                     <Button type="button" onClick={() => { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { setFormData(p => ({ ...p, geolocation: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` })); toast({ title: "Geo-Sincronización Exitosa ✅" }); }); } }} className="h-16 px-12 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase  rounded-2xl shadow-2xl scale-105 active:scale-95 transition-all">CAPTURA GPS DE SEGURIDAD</Button>
@@ -491,7 +491,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
           </Tabs>
         </div>
 
-        <div className="bg-slate-50 border-t border-slate-100 px-10 py-8 flex items-center justify-between gap-6">
+        <div className="bg-slate-50 border-t border-slate-100 px-10 py-8 flex items-center justify-between gap-6 text-slate-900">
           <Button variant="ghost" onClick={() => setOpen(false)} className="h-14 px-8 font-black uppercase text-rose-500 hover:text-rose-400 hover:bg-rose-500/5 rounded-2xl text-[10px] tracking-widest hidden sm:flex ">DESCARTAR SESIÓN</Button>
           <div className="flex items-center gap-4 flex-1 sm:flex-none">
             <Button type="button" onClick={() => { const tabs = ["basic", isDoctorVisit ? "medical" : null, isSalesVisit ? "sales" : null, "strategy", "geo"].filter(t => t !== null); const currentIdx = tabs.indexOf(activeTab); setActiveTab(tabs[currentIdx < tabs.length - 1 ? currentIdx + 1 : 0] as string); }} variant="outline" className="flex-1 sm:flex-none h-14 px-8 border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-slate-900 hover:bg-slate-100 ">Navegación Táctica <ChevronRight className="w-4 h-4 ml-3" /></Button>

@@ -124,7 +124,7 @@ export default function PayoutDashboard() {
         <div className="p-20 text-center flex flex-col items-center gap-6">
             <Loader2 className="h-12 w-12 animate-spin text-primary opacity-20" />
             <div className="space-y-2">
-                <p className="text-xl font-black text-slate-900 tracking-tighter">Sincronizando Métricas...</p>
+                <p className="text-xl font-black text-foreground tracking-tighter">Sincronizando Métricas...</p>
                 <p className="text-sm text-slate-500 max-w-xs mx-auto">Calculando bonificaciones estratégicas y normalización de unidades Biofarco.</p>
             </div>
         </div>
@@ -134,7 +134,7 @@ export default function PayoutDashboard() {
         <div className="p-20 text-center flex flex-col items-center gap-6">
             <Info className="h-12 w-12 text-amber-500" />
             <div className="space-y-2">
-                <p className="text-xl font-black text-slate-900 tracking-tighter">Sin Política Activa</p>
+                <p className="text-xl font-black text-foreground tracking-tighter">Sin Política Activa</p>
                 <p className="text-sm text-slate-500 max-w-xs mx-auto">No se ha encontrado una política de compensación activa para tu organización. Contacta a un administrador.</p>
             </div>
             <Button variant="outline" onClick={() => window.location.reload()}>Reintentar</Button>
@@ -149,7 +149,7 @@ export default function PayoutDashboard() {
             {/* Header / Month Selector */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter text-slate-900 flex items-center gap-3">
+                    <h1 className="text-4xl font-black tracking-tighter text-foreground flex items-center gap-3">
                         <Trophy className="h-10 w-10 text-amber-500" />
                         Mi Compensación
                     </h1>
@@ -216,7 +216,7 @@ export default function PayoutDashboard() {
                                 </span>
                                 <span>{progressPercent.toFixed(1)}%</span>
                             </div>
-                            <Progress value={progressPercent} className="h-4 bg-slate-100" />
+                            <Progress value={progressPercent} className="h-4 bg-slate-100 text-slate-900" />
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-50">
                             <div>
@@ -256,14 +256,14 @@ export default function PayoutDashboard() {
                         ].map((item) => (
                             <div key={item.label} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-slate-100 rounded-lg"><item.icon className="h-4 w-4 text-slate-600" /></div>
+                                    <div className="p-2 bg-slate-100 rounded-lg text-slate-900"><item.icon className="h-4 w-4 text-slate-600" /></div>
                                     <span className="text-sm font-semibold text-slate-700">{item.label}</span>
                                 </div>
                                 <span className="font-bold text-slate-800">${item.amount.toFixed(2)}</span>
                             </div>
                         ))}
                         <div className="pt-4 border-t border-slate-100 flex justify-between items-center px-3">
-                            <span className="text-sm font-black uppercase text-slate-900 tracking-wider">Total Ingreso Fijo</span>
+                            <span className="text-sm font-black uppercase text-foreground tracking-wider">Total Ingreso Fijo</span>
                             <span className="text-xl font-black text-primary">${stats.monthlyFixed.toFixed(2)}</span>
                         </div>
                     </CardContent>
@@ -290,7 +290,7 @@ export default function PayoutDashboard() {
                                 <p className="text-[10px] font-bold text-blue-400 mt-1">Factor {policy?.fuel_autonomy_factor}km/L</p>
                             </div>
                         </div>
-                        <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between">
+                        <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between text-slate-900">
                             <div>
                                 <p className="text-[10px] font-black text-emerald-600 uppercase">Viáticos (Alim/Hosp)</p>
                                 <p className="text-2xl font-black text-emerald-700">${stats.viaticos.toFixed(2)}</p>

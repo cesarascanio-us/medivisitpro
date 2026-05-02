@@ -73,7 +73,7 @@ export const AppShowcaseCarousel: React.FC = () => {
 
             {/* Main Container */}
             <div
-                className="relative aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] bg-slate-800 border-4 border-slate-700/50 overflow-hidden shadow-2xl backdrop-blur-xl cursor-pointer"
+                className="relative aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] bg-slate-800 border-4 border-slate-700/50 overflow-hidden shadow-2xl backdrop-blur-xl cursor-pointer text-white"
                 onClick={() => navigate('/demo')}
             >
                 {/* Images */}

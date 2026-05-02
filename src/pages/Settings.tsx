@@ -309,9 +309,9 @@ export default function Settings() {
           <div className="flex items-center gap-6">
             <div className="hidden md:flex flex-col items-end">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Última Sincronización</span>
-              <span className="text-sm font-black text-slate-900 tracking-tight uppercase  mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span className="text-sm font-black text-foreground tracking-tight uppercase mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
-            <div className="h-12 w-[1px] bg-slate-100 mx-2" />
+            <div className="h-12 w-[1px] bg-slate-100 mx-2 text-slate-900" />
             <Avatar className="h-14 w-14 rounded-2xl shadow-premium-sm border-2 border-white">
               <AvatarFallback className="text-sm font-black bg-primary text-white uppercase tracking-tighter">{userInitials}</AvatarFallback>
             </Avatar>
@@ -349,7 +349,7 @@ export default function Settings() {
         <TabsContent value="profile" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-border p-8">
-              <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Identidad del Colaborador</CardTitle>
+              <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Identidad del Colaborador</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Sincronización de credenciales y datos de contacto</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8 p-10">
@@ -363,13 +363,13 @@ export default function Settings() {
                 </div>
                 <div className="space-y-3">
                   <Button variant="outline" size="sm" className="h-10 rounded-xl border-slate-200 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all">
-                    <Camera className="h-4 w-4 mr-3 text-slate-900" />
+                    <Camera className="h-4 w-4 mr-3 text-foreground" />
                     Actualizar Imagen
                   </Button>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest ml-1">Formatos admitidos: ISO-standard (JPG / PNG)</p>
                 </div>
               </div>
-              <Separator className="bg-slate-100" />
+              <Separator className="bg-slate-100 text-slate-900" />
 
               {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -379,7 +379,7 @@ export default function Settings() {
                     id="firstName"
                     value={profile.first_name}
                     onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
-                    className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner"
+                    className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
                     placeholder="INTRODUZCA NOMBRE..."
                   />
                 </div>
@@ -389,7 +389,7 @@ export default function Settings() {
                     id="lastName"
                     value={profile.last_name}
                     onChange={(e) => setProfile({ ...profile, last_name: e.target.value })}
-                    className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner"
+                    className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
                     placeholder="INTRODUZCA APELLIDO..."
                   />
                 </div>
@@ -410,7 +410,7 @@ export default function Settings() {
                       id="phone"
                       value={profile.phone}
                       onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                      className="h-14 pl-12 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner"
+                      className="h-14 pl-12 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
                       placeholder="+58 412..."
                     />
                   </div>
@@ -423,25 +423,25 @@ export default function Settings() {
                   id="position"
                   value={profile.position}
                   onChange={(e) => setProfile({ ...profile, position: e.target.value })}
-                  className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner"
+                  className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
                   placeholder="EJ. COMERCIAL ELITE..."
                 />
               </div>
 
               {/* Territories Multi-Select */}
-              <div className="space-y-4 bg-slate-50 pt-8 pb-8 px-8 rounded-3xl border border-border shadow-inner">
+              <div className="space-y-4 bg-slate-50 pt-8 pb-8 px-8 rounded-3xl border border-border shadow-inner text-slate-900">
                 <div className="flex items-center justify-between">
                   <Label className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                     <div className="p-2 bg-card rounded-lg shadow-sm">
-                      <MapPin className="h-4 w-4 text-slate-900" />
+                      <MapPin className="h-4 w-4 text-foreground" />
                     </div>
                     Cobertura Geográfica Operativa
                   </Label>
                   <div className="flex gap-2">
-                    <Button type="button" variant="ghost" size="sm" onClick={selectAllTerritories} className="text-[9px] font-black uppercase tracking-widest hover:bg-slate-100 text-slate-900">
+                    <Button type="button" variant="ghost" size="sm" onClick={selectAllTerritories} className="text-[9px] font-black uppercase tracking-widest hover:bg-slate-100 text-foreground">
                       Marcar Todo
                     </Button>
-                    <Separator orientation="vertical" className="h-4 bg-slate-200" />
+                    <Separator orientation="vertical" className="h-4 bg-slate-200 text-slate-900" />
                     <Button type="button" variant="ghost" size="sm" onClick={clearAllTerritories} className="text-[9px] font-black uppercase tracking-widest hover:bg-red-50 text-red-400">
                       Limpiar
                     </Button>
@@ -466,8 +466,8 @@ export default function Settings() {
                   ))}
                 </div>
                 {profile.territories.length > 0 && (
-                  <p className="text-[9px] text-slate-900 font-black uppercase tracking-widest mt-2 flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse" />
+                  <p className="text-[9px] text-foreground font-black uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse text-white" />
                     {profile.territories.length} Zonas asignadas al radar de usuario
                   </p>
                 )}
@@ -499,7 +499,7 @@ export default function Settings() {
         <TabsContent value="notifications" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-border p-8">
-              <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Alertas & Comunicaciones</CardTitle>
+              <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Alertas & Comunicaciones</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Configuración del radar de notificaciones en tiempo real</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8 p-10">
@@ -517,7 +517,7 @@ export default function Settings() {
                           <item.icon className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest">{item.label}</p>
+                          <p className="text-[11px] font-black text-foreground uppercase tracking-widest">{item.label}</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">{item.desc}</p>
                         </div>
                       </div>
@@ -530,7 +530,7 @@ export default function Settings() {
                   </div>
                 ))}
 
-                <Separator className="bg-slate-100" />
+                <Separator className="bg-slate-100 text-slate-900" />
 
                 <div className="space-y-4">
                   <Label htmlFor="reminder-time" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Umbral de Pre-Aviso Operativo</Label>
@@ -538,7 +538,7 @@ export default function Settings() {
                     value={notifications.reminder_time}
                     onValueChange={(v) => setNotifications({ ...notifications, reminder_time: v })}
                   >
-                    <SelectTrigger id="reminder-time" className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72">
+                    <SelectTrigger id="reminder-time" className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72 text-slate-900">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -569,7 +569,7 @@ export default function Settings() {
         <TabsContent value="appearance" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-border p-8">
-              <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Identidad de Marca CA</CardTitle>
+              <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Identidad de Marca CA</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Soberanía visual y refinamiento de interfaz</CardDescription>
             </CardHeader>
             <CardContent className="space-y-10 p-10">
@@ -601,7 +601,7 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Separator className="bg-slate-100" />
+                <Separator className="bg-slate-100 text-slate-900" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
@@ -613,7 +613,7 @@ export default function Settings() {
                       value={appearance.language}
                       onValueChange={(v) => setAppearance({ ...appearance, language: v })}
                     >
-                      <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                      <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -633,7 +633,7 @@ export default function Settings() {
                       value={appearance.font_size}
                       onValueChange={(v) => setAppearance({ ...appearance, font_size: v as any })}
                     >
-                      <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                      <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -645,15 +645,15 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Separator className="bg-slate-100" />
+                <Separator className="bg-slate-100 text-slate-900" />
 
-                <div className="flex items-center justify-between bg-slate-50 p-6 rounded-2xl border border-border">
+                <div className="flex items-center justify-between bg-slate-50 p-6 rounded-2xl border border-border text-slate-900">
                   <div className="flex items-center gap-5">
                     <div className="p-3 bg-card rounded-xl shadow-soft">
                       <LayoutGrid className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Modo Compacto de Alta Densidad</p>
+                      <p className="text-[11px] font-black text-foreground uppercase tracking-widest">Modo Compacto de Alta Densidad</p>
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">Maximiza el espacio operativo útil</p>
                     </div>
                   </div>
@@ -683,7 +683,7 @@ export default function Settings() {
         <TabsContent value="system" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-border p-8">
-              <CardTitle className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display">Arquitectura de Infraestructura</CardTitle>
+              <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Arquitectura de Infraestructura</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Ajustes avanzados de sincronización y datos</CardDescription>
             </CardHeader>
             <CardContent className="p-10 space-y-10">
@@ -700,7 +700,7 @@ export default function Settings() {
                           <item.icon className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest">{item.label}</p>
+                          <p className="text-[11px] font-black text-foreground uppercase tracking-widest">{item.label}</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">{item.desc}</p>
                         </div>
                       </div>
@@ -713,7 +713,7 @@ export default function Settings() {
                   </div>
                 ))}
 
-                <Separator className="bg-slate-100" />
+                <Separator className="bg-slate-100 text-slate-900" />
 
                 <div className="space-y-4">
                   <Label htmlFor="sync-frequency" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-3">
@@ -724,7 +724,7 @@ export default function Settings() {
                     value={system.sync_frequency}
                     onValueChange={(v) => setSystem({ ...system, sync_frequency: v })}
                   >
-                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72">
+                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72 text-slate-900">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -801,7 +801,7 @@ export default function Settings() {
                 <Trash2 className="h-8 w-8 text-red-600" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Validación de Destrucción</h3>
+                <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter">Validación de Destrucción</h3>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
                   Para confirmar la eliminación permanente de la infraestructura de <br/>
                   <span className="text-red-900">"{organizationName}"</span>, escriba el nombre a continuación.
@@ -814,7 +814,7 @@ export default function Settings() {
                 placeholder="ESCRIBA NOMBRE DE LA EMPRESA..."
                 value={confirmName}
                 onChange={(e) => setConfirmName(e.target.value)}
-                className="h-16 bg-slate-50 border-none focus-visible:ring-red-500 rounded-2xl text-center font-black uppercase text-xs tracking-widest shadow-inner placeholder:text-slate-300"
+                className="h-16 bg-slate-50 border-none focus-visible:ring-red-500 rounded-2xl text-center font-black uppercase text-xs tracking-widest shadow-inner placeholder:text-slate-500 text-slate-900"
               />
             </div>
 

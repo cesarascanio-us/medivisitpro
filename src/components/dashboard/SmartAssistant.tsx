@@ -216,7 +216,7 @@ export function SmartAssistant() {
                                             </span>
                                         )}
                                         <div className="flex items-center gap-2">
-                                            <div className="h-1 w-12 bg-slate-100 dark:bg-muted/20 rounded-full overflow-hidden">
+                                            <div className="h-1 w-12 bg-slate-100 dark:bg-muted/20 rounded-full overflow-hidden text-slate-900">
                                                 <div
                                                     className={cn("h-full", config.color)}
                                                     style={{ width: `${mission.score * 100}%` }}

@@ -125,7 +125,7 @@ export default function FractioningTool() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                     {/* SOURCE SECTION */}
                     <div className="space-y-6">
-                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-slate-900">
                             <h3 className="text-sm font-black text-slate-500 uppercase mb-4 flex items-center gap-2">
                                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-[10px]">1</span>
                                 Origen (Unidad Mayor)
@@ -231,7 +231,7 @@ export default function FractioningTool() {
                             </div>
                         </div>
 
-                        <div className="bg-amber-50 rounded-lg p-4 border border-amber-200 flex items-start gap-3">
+                        <div className="bg-amber-50 rounded-lg p-4 border border-amber-200 flex items-start gap-3 text-slate-900">
                             <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
                             <div className="text-[11px] text-amber-800 leading-tight">
                                 <b>Importante:</b> Esta operación es irreversible. Se creará un nuevo lote con el sufijo <span className="font-mono text-amber-900 font-bold">-DET</span> para facilitar su identificación en el Kardex.

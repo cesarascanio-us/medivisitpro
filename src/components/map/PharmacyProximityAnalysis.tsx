@@ -201,7 +201,7 @@ export function PharmacyProximityAnalysis({
                         )}
 
                         {/* Info */}
-                        <div className="flex items-start gap-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                        <div className="flex items-start gap-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg text-slate-900">
                             <AlertCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
                             <p className="text-xs text-muted-foreground">
                                 Las farmacias cerca de 2+ hospitales son <strong>oportunidades estratégicas</strong> para

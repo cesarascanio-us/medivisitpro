@@ -45,7 +45,7 @@ export const CommissionCalculator = () => {
                         <Calculator className="h-3.5 w-3.5" />
                         Simulador de Rentabilidad Maestro
                     </div>
-                    <h2 className="text-4xl sm:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+                    <h2 className="text-4xl sm:text-6xl font-black text-foreground mb-6 tracking-tight">
                         Tu tiempo es <span className="text-primary ">Capital.</span>
                     </h2>
                     <p className="text-slate-500 text-lg max-w-2xl mx-auto font-medium">
@@ -56,13 +56,13 @@ export const CommissionCalculator = () => {
                 <div className="grid lg:grid-cols-12 gap-8 items-start">
                     {/* Control Panel */}
                     <div className="lg:col-span-7 space-y-6">
-                        <div className="bg-slate-50 p-8 sm:p-10 rounded-[3rem] border border-slate-200 shadow-sm space-y-10">
+                        <div className="bg-slate-50 p-8 sm:p-10 rounded-[3rem] border border-slate-200 shadow-sm space-y-10 text-slate-900">
                             
                             {/* Input 1: Activities */}
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <Label className="text-slate-900 font-black text-xs uppercase tracking-widest">Actividad Diaria</Label>
+                                        <Label className="text-foreground font-black text-xs uppercase tracking-widest">Actividad Diaria</Label>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase ">Promedio de visitas médicas efectivas</p>
                                     </div>
                                     <span className="text-4xl font-black text-primary">{visitsPerDay} <span className="text-xs text-slate-400">Visitas</span></span>
@@ -81,7 +81,7 @@ export const CommissionCalculator = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <Label className="text-slate-900 font-black text-xs uppercase tracking-widest">Tasa de Conversión</Label>
+                                        <Label className="text-foreground font-black text-xs uppercase tracking-widest">Tasa de Conversión</Label>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase ">% de visitas que se traducen en venta/receta</p>
                                     </div>
                                     <span className="text-4xl font-black text-primary">{conversionRate}%</span>
@@ -100,7 +100,7 @@ export const CommissionCalculator = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <Label className="text-slate-900 font-black text-xs uppercase tracking-widest">Comisión por Venta</Label>
+                                        <Label className="text-foreground font-black text-xs uppercase tracking-widest">Comisión por Venta</Label>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase ">Incentivo promedio por unidad/vial colocado</p>
                                     </div>
                                     <span className="text-4xl font-black text-primary">${commissionPerSale} <span className="text-xs text-slate-400">USD</span></span>

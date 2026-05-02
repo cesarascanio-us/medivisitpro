@@ -223,9 +223,9 @@ export default function Dashboard() {
           <div className="flex items-center gap-6">
             <div className="hidden md:flex flex-col items-end">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status Operativo</span>
-              <span className="text-sm font-black text-slate-900 tracking-tight uppercase  mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span className="text-sm font-black text-foreground tracking-tight uppercase mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
-            <div className="h-12 w-[1px] bg-slate-100 mx-2" />
+            <div className="h-12 w-[1px] bg-slate-100 mx-2 text-slate-900" />
             <div className="flex items-center gap-4 bg-card p-2 pr-6 rounded-2xl shadow-premium-sm border border-slate-100 group hover:shadow-premium-md transition-all">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 overflow-hidden group-hover:rotate-6 transition-transform">
                 <span className="text-lg font-black text-primary uppercase">
@@ -234,7 +234,7 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Comandante</span>
-                <span className="text-xs font-black text-slate-900 tracking-tight uppercase mt-1">{getWelcomeName()}</span>
+                <span className="text-xs font-black text-foreground tracking-tight uppercase mt-1">{getWelcomeName()}</span>
               </div>
             </div>
           </div>
@@ -287,7 +287,7 @@ export default function Dashboard() {
                     <Clock className="h-6 w-6" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Misiones Programadas</h2>
+                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tighter font-display leading-tight">Misiones Programadas</h2>
                     <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Despliegue táctico para las próximas horas</p>
                   </div>
                </div>
@@ -305,11 +305,11 @@ export default function Dashboard() {
                     <CardContent className="p-8">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-6">
-                          <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:bg-primary group-hover:text-white transition-all duration-700">
+                          <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:bg-primary group-hover:text-white transition-all duration-700 text-slate-900">
                             <MapPin className="h-8 w-8 opacity-40 group-hover:opacity-100" />
                           </div>
                           <div className="space-y-1">
-                            <h4 className="text-lg font-black text-slate-900 uppercase tracking-tighter font-display group-hover:text-primary transition-colors">
+                            <h4 className="text-lg font-black text-foreground uppercase tracking-tighter font-display group-hover:text-primary transition-colors">
                               {visit.contacts?.full_name || 'OBJETIVO SIN IDENTIFICAR'}
                             </h4>
                             <div className="flex items-center gap-3">
@@ -334,10 +334,10 @@ export default function Dashboard() {
                 ))
               ) : (
                 <div className="bg-card border border-slate-100 rounded-[3rem] p-24 text-center shadow-premium-sm">
-                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner text-slate-900">
                       <Calendar className="h-10 w-10 text-slate-200" />
                    </div>
-                   <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2 font-display">Zona Despejada</h3>
+                   <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Zona Despejada</h3>
                    <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest">No existen misiones programadas para el ciclo actual</p>
                 </div>
               )}
@@ -350,7 +350,7 @@ export default function Dashboard() {
                   <Activity className="h-6 w-6" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter font-display leading-tight">Monitor de Actividad</h2>
+                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tighter font-display leading-tight">Monitor de Actividad</h2>
                     <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Telemetría de campo en tiempo real</p>
                 </div>
             </div>
@@ -361,18 +361,18 @@ export default function Dashboard() {
                    {recentActivity.map((activity, idx) => (
                      <div key={activity.id} className="flex gap-8 relative group">
                         {idx !== recentActivity.length - 1 && (
-                          <div className="absolute left-4 top-10 bottom-[-2.5rem] w-[2px] bg-slate-100" />
+                          <div className="absolute left-4 top-10 bottom-[-2.5rem] w-[2px] bg-slate-100 text-slate-900" />
                         )}
                         <div className="h-8 w-8 rounded-full bg-card border-2 border-emerald-500 flex items-center justify-center relative z-10 transition-transform group-hover:scale-125 shadow-sm">
                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
                         <div className="flex-1 space-y-1">
-                           <p className="text-sm text-slate-900 font-black uppercase tracking-tight font-display">
+                           <p className="text-sm text-foreground font-black uppercase tracking-tight font-display">
                              MISIÓN COMPLETADA: <span className="text-emerald-600">{activity.contacts?.full_name}</span>
                            </p>
                            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black flex items-center gap-3">
                              {new Date(activity.actual_start_time || activity.created_at).toLocaleString()} 
-                             <span className="w-1 h-1 bg-slate-200 rounded-full" />
+                             <span className="w-1 h-1 bg-slate-200 rounded-full text-slate-900" />
                              <Badge variant="outline" className="text-[8px] border-emerald-200 text-emerald-500 bg-emerald-50 font-black px-2 py-0">TELEMETRÍA_OK</Badge>
                            </p>
                         </div>

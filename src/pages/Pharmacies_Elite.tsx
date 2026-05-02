@@ -193,7 +193,7 @@ export default function PharmaciesElite() {
                 statusColor="bg-primary"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <Download className="mr-3 h-5 w-5 text-primary" /> Exportar
                         </Button>
                         <Button
@@ -263,84 +263,90 @@ export default function PharmaciesElite() {
                                     placeholder="FILTRAR POR NOMBRE O RIF..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-16 h-16 bg-slate-50 border-none focus-visible:ring-primary/20 font-black rounded-2xl text-slate-900 placeholder:text-slate-200 transition-all text-xs tracking-widest shadow-inner uppercase"
+                                    className="pl-16 h-16 bg-slate-50 border-none focus-visible:ring-primary/20 font-black rounded-2xl text-slate-900 placeholder:text-slate-500 transition-all text-xs tracking-widest shadow-inner uppercase"
                                 />
                             </div>
                         </Card>
                     </div>
 
-                    <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3">
-                        {loading ? (
-                            Array(6).fill(0).map((_, i) => <div key={i} className="h-80 bg-card rounded-[3rem] animate-pulse border border-slate-100 shadow-premium-sm" />)
-                        ) : filteredPharmacies.length === 0 ? (
-                            <div className="col-span-full flex flex-col items-center justify-center py-24 bg-slate-50/50 rounded-[4rem] border border-dashed border-slate-200">
-                                <div className="w-24 h-24 rounded-full bg-card flex items-center justify-center shadow-soft mb-6">
-                                    <Store className="h-10 w-10 text-slate-200" />
-                                </div>
-                                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2 font-display">Sin Activos Registrados</h3>
-                                <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest">Inicie el despliegue dando de alta una nueva farmacia</p>
+                    {loading ? (
+                        <div className="py-20 text-center text-muted-foreground">Cargando farmacias...</div>
+                    ) : filteredPharmacies.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-24 bg-muted/20 rounded-[4rem] border border-dashed border-border/40">
+                            <Store className="h-10 w-10 text-muted-foreground mb-4" />
+                            <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Sin Activos Registrados</h3>
+                            <p className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest">Inicie el despliegue dando de alta una nueva farmacia</p>
+                        </div>
+                    ) : (
+                        <div className="bg-card rounded-[2.5rem] border border-border/40 shadow-premium-sm overflow-hidden p-6">
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="border-b border-border/40 hover:bg-transparent">
+                                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Farmacia</TableHead>
+                                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Ubicación</TableHead>
+                                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Contacto</TableHead>
+                                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Última Visita</TableHead>
+                                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6 text-right">Acciones</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {filteredPharmacies.map(pharma => (
+                                            <TableRow key={pharma.id} className="border-b border-border/20 hover:bg-muted/50 cursor-pointer group transition-colors" onClick={() => { setSelectedPharmacyView(pharma); setViewPharmacyDialogOpen(true); }}>
+                                                <TableCell className="py-4 align-top">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shadow-inner border border-primary/10">
+                                                            <Store className="h-5 w-5 text-primary" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{pharma.name}</p>
+                                                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">RIF: {pharma.rif || 'S/N'}</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-4 align-top">
+                                                    <div className="flex items-center text-xs text-muted-foreground font-bold uppercase tracking-wide">
+                                                        <MapPin className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                        <span className="truncate max-w-[200px]">{pharma.address || pharma.city || 'N/A'}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-4 align-top">
+                                                    <div className="flex items-center text-xs text-muted-foreground font-bold uppercase tracking-wide">
+                                                        <Phone className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
+                                                        {pharma.phone || 'SIN CONTACTO'}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-4 align-top">
+                                                    <span className={cn("text-xs font-bold uppercase tracking-wide", pharma.last_visit ? "text-emerald-500" : "text-muted-foreground")}>
+                                                        {pharma.last_visit ? new Date(pharma.last_visit).toLocaleDateString() : 'PENDIENTE'}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="py-4 align-top text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/agenda?pharmacyId=${pharma.id}`); }} className="h-10 rounded-xl font-black text-[10px] uppercase tracking-widest text-primary border-primary/20 hover:bg-primary hover:text-white">
+                                                            <Calendar className="h-4 w-4 mr-2" /> Agendar
+                                                        </Button>
+                                                        <PharmacyInventoryDialog pharmacyId={pharma.id} pharmacyName={pharma.name} trigger={
+                                                            <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()} className="h-10 w-10 p-0 rounded-xl hover:bg-muted text-muted-foreground hover:text-primary transition-colors">
+                                                                <Package className="h-4 w-4" />
+                                                            </Button>
+                                                        } />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </div>
-                        ) : (
-                            filteredPharmacies.map(pharma => (
-                                <Card key={pharma.id} className="bg-card border-slate-100 rounded-[3rem] overflow-hidden hover:border-primary/30 transition-all duration-700 group relative shadow-premium-sm hover:shadow-premium-xl cursor-pointer" onClick={() => { setSelectedPharmacyView(pharma); setViewPharmacyDialogOpen(true); }}>
-                                    <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-50 overflow-hidden">
-                                        <div className="h-full bg-primary/20 w-1/4 transition-all duration-1000 group-hover:w-full group-hover:bg-primary" />
-                                    </div>
-                                    <CardHeader className="p-10 pb-4">
-                                        <div className="flex justify-between items-start gap-4">
-                                            <div className="space-y-3 flex-1">
-                                                <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors leading-none font-display">{pharma.name}</CardTitle>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">RIF: {pharma.rif || 'S/N'}</Badge>
-                                                    <Badge className="bg-slate-50 text-slate-400 border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">{pharma.city || 'GLOBAL'}</Badge>
-                                                </div>
-                                            </div>
-                                            <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center shadow-inner group-hover:bg-primary transition-all group-hover:rotate-6">
-                                                <Store className="h-6 w-6 text-slate-300 group-hover:text-white" />
-                                            </div>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="p-10 pt-4 space-y-6">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center text-[11px] text-slate-400 font-black uppercase tracking-widest group/item">
-                                                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors">
-                                                    <Phone className="h-4 w-4 text-primary opacity-60" />
-                                                </div>
-                                                <span className="truncate">{pharma.phone || 'SIN CONTACTO'}</span>
-                                            </div>
-                                            <div className="flex items-center text-[11px] text-slate-400 font-black uppercase tracking-widest group/item">
-                                                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors">
-                                                    <Calendar className="h-4 w-4 text-primary opacity-60" />
-                                                </div>
-                                                <span className={cn(pharma.last_visit ? "text-emerald-600" : "text-slate-300")}>ÚLTIMA VISITA: {pharma.last_visit ? new Date(pharma.last_visit).toLocaleDateString() : 'PENDIENTE'}</span>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="p-6 bg-slate-50/50 flex items-center gap-3 border-t border-slate-50">
-                                        <Button onClick={(e) => { e.stopPropagation(); navigate(`/agenda?pharmacyId=${pharma.id}`); }} className="flex-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 shadow-premium-md h-12">
-                                            <Calendar className="h-4 w-4 mr-2" /> AGENDAR
-                                        </Button>
-                                        <PharmacyInventoryDialog
-                                            pharmacyId={pharma.id}
-                                            pharmacyName={pharma.name}
-                                            trigger={
-                                                <Button onClick={(e) => e.stopPropagation()} variant="ghost" className="w-12 h-12 rounded-xl border border-slate-200 bg-card hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
-                                                    <Package className="h-5 w-5" />
-                                                </Button>
-                                            }
-                                        />
-                                    </CardFooter>
-                                </Card>
-                            ))
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="transfers" className="animate-in slide-in-from-bottom-5 duration-700">
                     <Card className="bg-card border border-slate-100 rounded-[3rem] shadow-premium-lg p-10">
                          <div className="flex items-center justify-between mb-10">
                             <div>
-                                <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter font-display leading-none">Logística de Transferencia</h2>
+                                <h2 className="text-3xl font-black text-foreground uppercase tracking-tighter font-display leading-none">Logística de Transferencia</h2>
                                 <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-2">Historial de movimientos tácticos de inventario</p>
                             </div>
                             <Button className="h-14 px-8 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-premium-md transition-all active:scale-95">
@@ -370,10 +376,10 @@ export default function PharmaciesElite() {
                                         transfers.map(order => (
                                             <TableRow key={order.id} className="border-slate-50 hover:bg-primary/5 transition-all group">
                                                 <TableCell className="pl-10 font-mono text-primary font-black text-xs uppercase tracking-tighter">#{order.order_number}</TableCell>
-                                                <TableCell className="text-slate-900 font-black uppercase text-xs font-display tracking-tight">{order.pharmacy_name}</TableCell>
+                                                <TableCell className="text-foreground font-black uppercase text-xs font-display tracking-tight">{order.pharmacy_name}</TableCell>
                                                 <TableCell className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">{order.drugstore_name || 'CENTRAL'}</TableCell>
                                                 <TableCell className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{new Date(order.order_date).toLocaleDateString()}</TableCell>
-                                                <TableCell className="text-slate-900 font-black text-base uppercase tracking-tighter">${order.total?.toFixed(2)}</TableCell>
+                                                <TableCell className="text-foreground font-black text-base uppercase tracking-tighter">${order.total?.toFixed(2)}</TableCell>
                                                 <TableCell>
                                                     <Badge className={cn("text-[8px] font-black uppercase px-4 py-1 rounded-full border tracking-widest", order.status === 'delivered' ? "bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-500/10" : "bg-primary/5 text-primary border-primary/20 shadow-sm shadow-primary/10")}>
                                                         {order.status.toUpperCase()}

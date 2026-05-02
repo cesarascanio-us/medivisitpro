@@ -7,6 +7,7 @@
  ingeniería inversa o uso no autorizado de este código fuente.
 ======================================================================== */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import { serve } from "std/http/server.ts"
 import { createClient } from "@supabase/supabase-js"

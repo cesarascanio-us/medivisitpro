@@ -126,7 +126,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             <TabsContent value="basico" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Datos Legales</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -257,7 +257,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             <TabsContent value="contacto" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Canales de Comunicación</h3>
                                     </div>
 
@@ -308,10 +308,10 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                         </div>
                                     </div>
 
-                                    <Separator className="bg-slate-100" />
+                                    <Separator className="bg-slate-100 text-slate-900" />
 
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Responsables</h3>
                                     </div>
 
@@ -360,7 +360,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             <TabsContent value="segmentacion" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-8">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Perfil Estratégico</h3>
                                     </div>
 
@@ -368,7 +368,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nivel de Segmentación</Label>
                                             <Select value={formData.segmentation} onValueChange={(v) => setFormData({ ...formData, segmentation: v })}>
-                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner group transition-all">
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner group transition-all text-slate-900">
                                                     <SelectValue placeholder="Categorizar..." />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
@@ -382,7 +382,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Potencial de Venta</Label>
                                             <Select value={formData.potential} onValueChange={(v) => setFormData({ ...formData, potential: v })}>
-                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner">
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner text-slate-900">
                                                     <SelectValue placeholder="Potencial..." />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
@@ -436,7 +436,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             <TabsContent value="seguimiento" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Control & Status</h3>
                                     </div>
 
@@ -447,13 +447,13 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                                 type="date"
                                                 value={formData.last_visit}
                                                 onChange={(e) => setFormData({ ...formData, last_visit: e.target.value })}
-                                                className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50"
+                                                className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 text-slate-900"
                                             />
                                         </div>
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estado de la Cuenta</Label>
                                             <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50">
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 text-slate-900">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">

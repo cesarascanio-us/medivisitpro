@@ -216,7 +216,7 @@ export function CompetitivenessMonitor() {
                         {warnings.length > 0 ? (
                             <div className="space-y-2">
                                 {warnings.map((w, i) => (
-                                    <div key={i} className="p-2 bg-slate-50 border border-slate-100 rounded-lg flex items-start gap-2 animate-in slide-in-from-right duration-300" style={{ animationDelay: `${i * 100}ms` }}>
+                                    <div key={i} className="p-2 bg-slate-50 border border-slate-100 rounded-lg flex items-start gap-2 animate-in slide-in-from-right duration-300 text-slate-900" style={{ animationDelay: `${i * 100}ms` }}>
                                         <AlertTriangle className={`h-4 w-4 mt-0.5 ${i === 0 && w.includes('Share') ? 'text-emerald-500' : 'text-amber-500'}`} />
                                         <span className="text-[11px] font-medium text-slate-600 leading-tight">{w}</span>
                                     </div>

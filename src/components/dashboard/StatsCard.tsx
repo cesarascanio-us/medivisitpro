@@ -52,7 +52,7 @@ export const StatsCard = ({ title, value, subtitle, icon: Icon, trending, varian
             {title}
           </p>
           <div className="flex items-baseline gap-2">
-            <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums drop-shadow-sm">
+            <h3 className="text-3xl font-extrabold text-foreground tracking-tight tabular-nums drop-shadow-sm">
               {value}
             </h3>
           </div>

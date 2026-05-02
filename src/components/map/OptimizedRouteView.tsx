@@ -258,7 +258,7 @@ export function OptimizedRouteView({
                     <div className="space-y-2">
                         {/* Start location */}
                         {userLocation && (
-                            <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800 text-slate-900">
                                 <div className="relative">
                                     <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
                                         <Navigation className="h-4 w-4" />

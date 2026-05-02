@@ -118,7 +118,7 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
                     <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
                         {fields.map((field, index) => (
-                            <Card key={field.id} className="bg-slate-900 border-white/5 rounded-3xl overflow-hidden group hover:border-primary/20 transition-all duration-500 shadow-2xl">
+                            <Card key={field.id} className="bg-slate-900 border-white/5 rounded-3xl overflow-hidden group hover:border-primary/20 transition-all duration-500 shadow-2xl text-white">
                                 <CardContent className="p-8">
                                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                                         <div className="flex items-center gap-6">
@@ -169,7 +169,7 @@ export function ShelfAuditForm({ visitId, pharmacyId, pharmacyName, onSuccess }:
                         ))}
                     </div>
 
-                    <Card className="bg-slate-900 border-white/5 rounded-[3rem] shadow-3xl overflow-hidden">
+                    <Card className="bg-slate-900 border-white/5 rounded-[3rem] shadow-3xl overflow-hidden text-white">
                         <CardHeader className="bg-slate-950/50 p-8 border-b border-white/5">
                             <CardTitle className="text-xl font-black text-white  uppercase tracking-tighter flex items-center gap-4">
                                 <TrendingUp className="h-6 w-6 text-indigo-500" /> Inteligencia de Exhibición & Competencia

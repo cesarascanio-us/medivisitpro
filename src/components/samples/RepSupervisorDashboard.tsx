@@ -202,7 +202,7 @@ export function RepSupervisorDashboard() {
                                     <TableCell className="font-medium">{rep.first_name} {rep.last_name}</TableCell>
                                     <TableCell>{rep.email}</TableCell>
                                     <TableCell className="text-center">
-                                        <Badge variant="outline" className={rep.inventory_items > 0 ? "bg-blue-50 text-blue-700" : ""}>
+                                        <Badge variant="outline" className={rep.inventory_items > 0 ? "bg-blue-500/10 text-blue-400" : ""}>
                                             {rep.inventory_items} Productos
                                         </Badge>
                                     </TableCell>
@@ -248,7 +248,7 @@ export function RepSupervisorDashboard() {
                                                 {item.quantity < 10 ? (
                                                     <Badge variant="destructive" className="text-xs">Bajo</Badge>
                                                 ) : (
-                                                    <Badge variant="outline" className="text-green-600 bg-green-50 text-xs">OK</Badge>
+                                                    <Badge variant="outline" className="text-green-400 bg-green-500/10 border-green-500/20 text-xs">OK</Badge>
                                                 )}
                                             </TableCell>
                                         </TableRow>

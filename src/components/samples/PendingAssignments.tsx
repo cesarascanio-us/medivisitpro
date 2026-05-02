@@ -318,7 +318,7 @@ export function PendingAssignments() {
                                         {format(new Date(assignment.created_at), "PPP 'a las' p", { locale: es })}
                                     </CardDescription>
                                 </div>
-                                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
                                     Pendiente de Aceptación
                                 </Badge>
                             </div>
@@ -349,8 +349,8 @@ export function PendingAssignments() {
                                 </Table>
                             </div>
                             {assignment.notes && (
-                                <div className="mt-3 p-3 bg-blue-50 rounded-md">
-                                    <p className="text-sm text-blue-800">
+                                <div className="mt-3 p-3 bg-blue-500/10 rounded-md">
+                                    <p className="text-sm text-blue-400">
                                         <AlertCircle className="h-4 w-4 inline mr-1" />
                                         Nota: {assignment.notes}
                                     </p>

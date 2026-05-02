@@ -314,7 +314,7 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                                             </Alert>
                                         )}
 
-                                        <div className="bg-slate-50 p-4 rounded-md border text-sm space-y-2">
+                                        <div className="bg-slate-50 p-4 rounded-md border text-sm space-y-2 text-slate-900">
                                             <div className="flex justify-between">
                                                 <span className="text-muted-foreground">Evento:</span>
                                                 <span className="font-medium">{form.getValues("title")}</span>

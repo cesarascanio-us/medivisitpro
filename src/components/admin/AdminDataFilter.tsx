@@ -219,7 +219,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                         <Filter className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-500" />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter font-display leading-[0.8]">
+                        <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter font-display leading-[0.8]">
                             Mando de<br />Territorio
                         </h3>
                         <div className="flex items-center gap-4 mt-4">
@@ -266,7 +266,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             <SelectContent className="bg-card border-border shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todas las regiones</SelectItem>
                                 {Array.from(new Set(Object.values(REGION_MAPPING))).map(r => (
-                                    <SelectItem key={r} value={r} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{r}</SelectItem>
+                                    <SelectItem key={r} value={r} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{r}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -298,7 +298,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todos los estados</SelectItem>
                                 {visibleStates.map(s => (
-                                    <SelectItem key={s} value={s} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{s}</SelectItem>
+                                    <SelectItem key={s} value={s} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{s}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -330,13 +330,13 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todas las zonas</SelectItem>
                                 {visibleZones.map(z => (
-                                    <SelectItem key={z.id} value={z.id} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{z.name}</SelectItem>
+                                    <SelectItem key={z.id} value={z.id} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{z.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {isZoneLocked && (
                             <div className="flex items-center gap-3 px-3 py-2 bg-primary/5 rounded-xl border border-primary/10">
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse text-white" />
                                 <span className="text-[9px] font-black text-primary uppercase tracking-widest font-display">Segmentación Industrial</span>
                             </div>
                         )}
@@ -362,13 +362,13 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
                                 <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todos los colaboradores</SelectItem>
                                 {visibleMembers.map(m => (
-                                    <SelectItem key={m.id} value={m.id} className="font-black text-slate-900 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{m.name}</SelectItem>
+                                    <SelectItem key={m.id} value={m.id} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{m.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {isUserLocked && (
                             <div className="flex items-center gap-3 px-3 py-2 bg-primary/5 rounded-xl border border-primary/10">
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse text-white" />
                                 <span className="text-[9px] font-black text-primary uppercase tracking-widest font-display">Perfil Individual Activo</span>
                             </div>
                         )}
@@ -378,10 +378,10 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                 {/* Active Filter Summary Elite */}
                 <div className="mt-16 pt-12 border-t border-slate-100 flex flex-wrap items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-1000">
                     <div className="flex items-center gap-4 mr-8">
-                        <div className="w-3 h-12 bg-primary rounded-full shadow-premium-sm shadow-primary/20" />
+                        <div className="w-3 h-12 bg-primary rounded-full shadow-premium-sm shadow-primary/20 text-white" />
                         <div>
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] font-display block">Análisis</span>
-                            <span className="text-[14px] font-black text-slate-900 uppercase tracking-tighter font-display block -mt-1">Criterios Activos</span>
+                            <span className="text-[14px] font-black text-foreground uppercase tracking-tighter font-display block -mt-1">Criterios Activos</span>
                         </div>
                     </div>
                     

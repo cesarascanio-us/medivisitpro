@@ -155,7 +155,7 @@ export function StrategicOnboarding360() {
                                     Siguiente <ChevronRight className="ml-2 h-4 w-4" />
                                 </Button>
                             ) : (
-                                <Button className="bg-primary hover:bg-primary/90" onClick={handleFinish}>
+                                <Button className="bg-primary hover:bg-primary/90 text-white" onClick={handleFinish}>
                                     ¡Empezar mi día 360! <Sparkles className="ml-2 h-4 w-4" />
                                 </Button>
                             )}

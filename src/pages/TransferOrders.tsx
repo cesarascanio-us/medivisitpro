@@ -36,12 +36,12 @@ export default function TransferOrders() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-10 font-outfit text-slate-900 overflow-y-auto custom-scrollbar animate-in fade-in duration-700">
+        <div className="min-h-screen p-10 font-display overflow-y-auto custom-scrollbar animate-in fade-in duration-700">
             
             {/* HEADER ELITE INDUSTRIAL */}
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 mb-12">
                 <div className="flex items-center gap-8">
-                    <div className="w-20 h-20 rounded-[2.5rem] bg-indigo-600 shadow-2xl shadow-indigo-500/20 flex items-center justify-center rotate-3 border border-indigo-400/30 scale-105">
+                    <div className="w-20 h-20 rounded-[2.5rem] bg-indigo-600 shadow-2xl shadow-indigo-500/20 flex items-center justify-center rotate-3 border border-indigo-400/30 scale-105 text-white">
                         <Truck className="h-10 w-10 text-white" />
                     </div>
                     <div>
@@ -66,17 +66,17 @@ export default function TransferOrders() {
             {/* KPI GRID - ELITE DARK STYLE */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 mb-12">
                 {[
-                    { label: 'Órdenes Activas', val: '12', sub: 'Transacciones', icon: <Package />, color: 'text-indigo-600', bg: 'bg-indigo-50/50' },
-                    { label: 'En Cola de Proceso', val: '04', sub: 'Pendientes', icon: <Clock />, color: 'text-amber-600', bg: 'bg-amber-50/50' },
-                    { label: 'Ciclo Completado', val: '48', sub: 'Entregadas', icon: <CheckCircle2 />, color: 'text-emerald-600', bg: 'bg-emerald-50/50' },
-                    { label: 'Facturación SINK', val: '$14.2K', sub: 'Proyección', icon: <TrendingUp />, color: 'text-blue-600', bg: 'bg-blue-50/50' }
+                    { label: 'Órdenes Activas', val: '12', sub: 'Transacciones', icon: <Package />, color: 'text-indigo-500', bg: '' },
+                    { label: 'En Cola de Proceso', val: '04', sub: 'Pendientes', icon: <Clock />, color: 'text-amber-500', bg: '' },
+                    { label: 'Ciclo Completado', val: '48', sub: 'Entregadas', icon: <CheckCircle2 />, color: 'text-emerald-500', bg: '' },
+                    { label: 'Facturación SINK', val: '$14.2K', sub: 'Proyección', icon: <TrendingUp />, color: 'text-blue-500', bg: '' }
                 ].map((kpi, i) => (
                     <Card key={i} className={cn("bg-card border-border/40 rounded-[2.5rem] p-8 shadow-premium-sm group relative overflow-hidden transition-all hover:border-primary/20", kpi.bg)}>
-                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform text-slate-400">
+                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform text-muted-foreground">
                             {kpi.icon}
                         </div>
                         <div className={cn("text-4xl font-black mb-3 tabular-nums ", kpi.color)}>{kpi.val}</div>
-                        <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]  flex items-center gap-3">
+                        <div className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em] flex items-center gap-3">
                            {kpi.label}
                         </div>
                     </Card>
@@ -93,10 +93,10 @@ export default function TransferOrders() {
                             placeholder="FILTRAR POR FARMACIA, DROGUERÍA O TOKEN DE ORDEN..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-16 h-16 bg-slate-50/50 border-border/40 shadow-premium-sm font-black  uppercase text-slate-900 shadow-inner focus:ring-indigo-500/20"
+                            className="pl-16 h-16 bg-muted/30 border-border/40 shadow-premium-sm font-black uppercase text-foreground shadow-inner focus:ring-indigo-500/20"
                         />
                     </div>
-                    <Button variant="outline" className="h-16 px-10 border-border/40 bg-card rounded-3xl font-black  uppercase text-slate-500 flex items-center gap-4 hover:bg-slate-50 transition-all">
+                    <Button variant="outline" className="h-16 px-10 border-border/40 bg-card rounded-3xl font-black uppercase text-muted-foreground flex items-center gap-4 hover:bg-muted/50 transition-all">
                         <Filter className="h-5 w-5" /> REGLAS DE FILTRADO
                     </Button>
                 </div>
@@ -106,20 +106,20 @@ export default function TransferOrders() {
             <Card className="bg-card border-border/40 rounded-[3rem] shadow-premium-lg overflow-hidden flex flex-col mb-10">
                 <ScrollArea className="flex-1">
                     <Table>
-                        <TableHeader className="bg-slate-50/50">
+                        <TableHeader>
                             <TableRow className="hover:bg-transparent border-border/40 h-20">
-                                <TableHead className="pl-10 text-[10px] font-black uppercase tracking-widest text-slate-600 ">ID DE ORDEN</TableHead>
-                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-600 ">PUNTO DE ENTREGA</TableHead>
-                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-600 ">SUMINISTRO MAESTRO</TableHead>
-                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-600  text-center">ITEMS</TableHead>
-                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-600  text-right">VALOR TÁCTICO</TableHead>
-                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-600  text-center">ESTATUS</TableHead>
-                                <TableHead className="text-right pr-10 text-[10px] font-black uppercase tracking-widest text-slate-600 ">ACCIÓN</TableHead>
+                                <TableHead className="pl-10 text-[10px] font-black uppercase tracking-widest text-muted-foreground">ID DE ORDEN</TableHead>
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">PUNTO DE ENTREGA</TableHead>
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">SUMINISTRO MAESTRO</TableHead>
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">ITEMS</TableHead>
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">VALOR TÁCTICO</TableHead>
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">ESTATUS</TableHead>
+                                <TableHead className="text-right pr-10 text-[10px] font-black uppercase tracking-widest text-muted-foreground">ACCIÓN</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {TRANSFER_ORDERS.map((order) => (
-                                <TableRow key={order.id} className="hover:bg-slate-50 transition-all border-border/40 group h-24">
+                                <TableRow key={order.id} className="hover:bg-muted/50 transition-all border-border/40 group h-24">
                                     <TableCell className="pl-10">
                                         <div className="flex items-center gap-3">
                                             <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
@@ -128,19 +128,19 @@ export default function TransferOrders() {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="font-black text-xs text-slate-900 uppercase  leading-none mb-2">{order.pharmacy}</span>
-                                            <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest">Sede Autorizada CA</span>
+                                            <span className="font-black text-xs text-foreground uppercase leading-none mb-2">{order.pharmacy}</span>
+                                            <span className="text-[8px] text-muted-foreground font-bold uppercase tracking-widest">Sede Autorizada CA</span>
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter border-border/40 bg-slate-50 text-slate-500 px-3 py-1.5  group-hover:bg-card transition-all">{order.drugstore}</Badge>
+                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter border-border/40 bg-muted/30 text-muted-foreground px-3 py-1.5 group-hover:bg-card transition-all">{order.drugstore}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-center font-black  text-xs tabular-nums text-slate-400">{order.items} UNI</TableCell>
-                                    <TableCell className="text-right font-black text-slate-900  tabular-nums text-sm">${order.total.toLocaleString()}</TableCell>
+                                    <TableCell className="text-center font-black text-xs tabular-nums text-muted-foreground">{order.items} UNI</TableCell>
+                                    <TableCell className="text-right font-black text-foreground tabular-nums text-sm">${order.total.toLocaleString()}</TableCell>
                                     <TableCell className="text-center">{getStatusBadge(order.status)}</TableCell>
                                     <TableCell className="text-right pr-10">
-                                        <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-slate-100 rounded-2xl transition-all">
-                                            <ExternalLink className="h-5 w-5 text-slate-400 group-hover:text-primary" />
+                                        <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-muted rounded-2xl transition-all">
+                                            <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-primary" />
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -155,12 +155,12 @@ export default function TransferOrders() {
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-3">
                         <Activity className="h-4 w-4 text-indigo-500" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-600 ">Sincronización Logística SINK - César Ascanio CA</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Sincronización Logística SINK - César Ascanio CA</span>
                     </div>
                 </div>
                 <div className="flex gap-6">
-                    <span className="text-[9px] font-black text-slate-700  uppercase tracking-widest">BUILD V6.5.2 INDUSTRIALE</span>
-                    <span className="text-[9px] font-black text-indigo-500  uppercase tracking-widest">SUPPLY WEB SECURE</span>
+                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">BUILD V6.5.2 INDUSTRIALE</span>
+                    <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">SUPPLY WEB SECURE</span>
                 </div>
             </div>
         </div>

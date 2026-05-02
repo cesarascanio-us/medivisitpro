@@ -189,8 +189,8 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
               <div className="text-3xl font-black text-indigo-600 tracking-tighter mb-1">{inventory}</div>
               <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">Stock Disponible</div>
             </div>
-            <div className="text-center p-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] group hover:bg-card transition-all">
-              <div className="text-3xl font-black text-slate-900 tracking-tighter mb-1">{movements.length}</div>
+            <div className="text-center p-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] group hover:bg-card transition-all text-slate-900">
+              <div className="text-3xl font-black text-foreground tracking-tighter mb-1">{movements.length}</div>
               <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">Operaciones Mes</div>
             </div>
           </div>

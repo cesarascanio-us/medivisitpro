@@ -277,7 +277,7 @@ export default function CompensationConfig() {
                                 <CardDescription>Montos fijos según desplazamiento.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100 text-slate-900">
                                     <div>
                                         <p className="text-sm font-bold text-slate-700">Monto Diario (Sin Pernocta)</p>
                                         <p className="text-xs text-slate-500">Almuerzos en campo regional.</p>
@@ -292,7 +292,7 @@ export default function CompensationConfig() {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100 font-bold border-l-4 border-l-primary">
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100 font-bold border-l-4 border-l-primary text-slate-900">
                                     <div>
                                         <p className="text-sm font-bold text-slate-700">Monto Diario (CON Pernocta)</p>
                                         <p className="text-xs text-slate-500">Cenas y Hotelería en zonas foráneas.</p>
@@ -328,13 +328,13 @@ export default function CompensationConfig() {
                                             className="h-12 border-slate-200 font-bold"
                                             onChange={(e) => setPolicy({...policy, fuel_autonomy_factor: Number(e.target.value)})}
                                         />
-                                        <div className="bg-slate-100 p-3 rounded-lg flex-1 border border-slate-200">
+                                        <div className="bg-slate-100 p-3 rounded-lg flex-1 border border-slate-200 text-slate-900">
                                             <p className="text-[10px] uppercase font-bold text-slate-400">Ejemplo de Cálculo</p>
                                             <p className="text-xs text-slate-600 mt-1 ">600km / {policy.fuel_autonomy_factor} = {Math.round(600 / (policy.fuel_autonomy_factor || 1))} Litros</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="p-4 bg-amber-50 border border-amber-100 rounded-lg flex gap-3">
+                                <div className="p-4 bg-amber-50 border border-amber-100 rounded-lg flex gap-3 text-slate-900">
                                     <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
                                     <p className="text-[10px] text-amber-800 leading-normal">
                                         <strong>Recuerde:</strong> Solo se procesan reportes que adjunten evidencia fotográfica del kilometraje inicial y final.

@@ -232,7 +232,7 @@ export function POPCatalog() {
                 {loading ? (
                     <div className="text-center py-20 text-slate-300 font-black uppercase tracking-[0.4em] animate-pulse">Cargando Datastream...</div>
                 ) : filteredMaterials.length === 0 ? (
-                    <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100 flex flex-col items-center gap-4 opacity-50">
+                    <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100 flex flex-col items-center gap-4 opacity-50 text-slate-900">
                         <Package className="h-20 w-20 text-slate-300" />
                         <p className="font-black text-slate-400 uppercase tracking-widest">No hay materiales industriales registrados.</p>
                     </div>

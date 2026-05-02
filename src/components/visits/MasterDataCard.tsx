@@ -49,7 +49,7 @@ export function MasterDataCard({
     if (!needsEmail && !needsPhone) return null;
 
     return (
-        <Card className="bg-amber-50 border-amber-200 border-2">
+        <Card className="bg-amber-50 border-amber-200 border-2 text-slate-900">
             <CardContent className="pt-4">
                 <div className="flex items-start gap-3">
                     <div className="p-2 bg-amber-100 rounded-full">

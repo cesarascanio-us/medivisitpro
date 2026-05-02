@@ -87,7 +87,7 @@ export function StaffTrainer() {
                             <h3 className="font-bold text-lg text-indigo-900">Registro de Capacitación</h3>
                             <p className="text-sm text-indigo-600/80">Marcar visita como entrenamiento al personal</p>
                         </div>
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700" onClick={handleRegisterTraining}>
+                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleRegisterTraining}>
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Confirmar Entrenamiento
                         </Button>

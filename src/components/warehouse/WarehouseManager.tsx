@@ -73,7 +73,7 @@ export default function WarehouseManager() {
         <div className="space-y-6 p-4">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900">Gestión de Almacenes Centrales</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Gestión de Almacenes Centrales</h2>
                     <p className="text-sm text-slate-500">Administra ubicaciones, normas de cumplimiento y responsables.</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -148,7 +148,7 @@ export default function WarehouseManager() {
                             <div className="flex items-center gap-2 text-sm text-slate-600">
                                 <ShieldCheck className="h-4 w-4 text-green-500" />
                                 <span className="font-medium">Normas:</span>
-                                <span className="text-xs bg-slate-100 px-2 py-0.5 rounded">{w.compliance_standards}</span>
+                                <span className="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-900">{w.compliance_standards}</span>
                             </div>
                             <div className="pt-2 flex justify-between items-center border-t border-slate-50">
                                 <div className="flex items-center gap-1 text-[10px] text-slate-400">
@@ -163,7 +163,7 @@ export default function WarehouseManager() {
             </div>
 
             {warehouses.length === 0 && !loading && (
-                <div className="text-center py-12 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200">
+                <div className="text-center py-12 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 text-slate-900">
                     <p className="text-slate-500">No hay almacenes registrados. Comienza creando uno nuevo.</p>
                 </div>
             )}

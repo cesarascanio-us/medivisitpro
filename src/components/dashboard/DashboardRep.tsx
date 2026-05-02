@@ -311,7 +311,7 @@ export default function DashboardRep() {
           </div>
           <div className="h-3 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(0,86,179,0.3)]"
+              className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(0,86,179,0.3)] text-white"
               style={{ width: `${metrics.totalPlanned > 0 ? (metrics.visitedToday / metrics.totalPlanned) * 100 : 0}%` }}
             />
           </div>
@@ -473,7 +473,7 @@ export default function DashboardRep() {
       {/* Floating Action Button (Matches Demo Screenshot) */}
       <div className="fixed bottom-8 right-8 z-50">
         <Button
-          className="w-16 h-16 rounded-full bg-primary hover:bg-primary-dark shadow-2xl shadow-primary/30 p-0 flex items-center justify-center transition-all hover:scale-110 active:scale-90 border-4 border-white"
+          className="w-16 h-16 rounded-full bg-primary hover:bg-primary-dark shadow-2xl shadow-primary/30 p-0 flex items-center justify-center transition-all hover:scale-110 active:scale-90 border-4 border-white text-white"
           onClick={() => setIsWizardOpen(true)}
         >
           <Plus className="h-8 w-8 text-white" />

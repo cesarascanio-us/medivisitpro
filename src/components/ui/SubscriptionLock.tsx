@@ -28,7 +28,7 @@ export function SubscriptionLock({ featureName, requiredPlan, description }: Sub
             <CardContent className="flex flex-col items-center justify-center py-12 px-6 text-center space-y-6">
                 <div className="relative">
                     <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-150 animate-pulse"></div>
-                    <div className="relative p-4 bg-slate-900 rounded-2xl border border-primary/30 shadow-2xl">
+                    <div className="relative p-4 bg-slate-900 rounded-2xl border border-primary/30 shadow-2xl text-white">
                         <Lock className="h-10 w-10 text-primary" />
                     </div>
                 </div>

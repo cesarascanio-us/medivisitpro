@@ -78,7 +78,7 @@ export function SPINGuideAlert({ productId, entityType }: SPINGuideAlertProps) {
     };
 
     return (
-        <Alert className="bg-blue-50 border-blue-200 relative">
+        <Alert className="bg-blue-50 border-blue-200 relative text-slate-900">
             <button
                 onClick={() => setDismissed(true)}
                 className="absolute top-2 right-2 text-blue-400 hover:text-blue-600"

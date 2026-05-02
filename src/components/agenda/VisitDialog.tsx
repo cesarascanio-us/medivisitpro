@@ -174,7 +174,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
               </div>
             </div>
 
-            <Separator className="bg-slate-100" />
+            <Separator className="bg-slate-100 text-slate-900" />
 
             {/* Fecha y Hora */}
             <div className="grid grid-cols-2 gap-6">
@@ -206,7 +206,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
               </div>
             </div>
 
-            <Separator className="bg-slate-100" />
+            <Separator className="bg-slate-100 text-slate-900" />
 
             {/* Objetivo */}
             <div className="space-y-3">
@@ -256,7 +256,7 @@ export function VisitDialog({ trigger, visitData, onVisitSaved }: VisitDialogPro
             </div>
           </form>
 
-          <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+          <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4 text-slate-900">
             <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-400 hover:text-slate-600">Descartar</Button>
             <Button onClick={handleSubmit} disabled={loading} className="h-12 px-10 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-blue-500/20 transition-all hover:scale-[1.02]">
               {loading ? "Sincronizando..." : (visitData?.id ? "Actualizar Gestión" : "Confirmar Agenda")}

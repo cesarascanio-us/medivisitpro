@@ -192,7 +192,7 @@ export default function MasterPanel() {
             <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
                 <Zap className="h-12 w-12 text-primary animate-pulse" />
             </div>
-            <div className="text-slate-900 font-black uppercase tracking-[0.5em] animate-pulse font-display">Sincronizando Matriz Master</div>
+            <div className="text-foreground font-black uppercase tracking-[0.5em] animate-pulse font-display">Sincronizando Matriz Master</div>
         </div>
     );
 
@@ -202,7 +202,7 @@ export default function MasterPanel() {
             key: "email",
             render: (u) => (
                 <div className="flex flex-col">
-                    <span className="font-black text-slate-900 text-base tracking-tight uppercase font-display">{u.email}</span>
+                    <span className="font-black text-foreground text-base tracking-tight uppercase font-display">{u.email}</span>
                     <span className="text-[10px] text-slate-400 font-bold tracking-widest">UID: {u.user_id.slice(0, 16)}...</span>
                 </div>
             )
@@ -266,7 +266,7 @@ export default function MasterPanel() {
                         <Building2 className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-black text-slate-900 text-base uppercase font-display tracking-tight">{o.name}</span>
+                        <span className="font-black text-foreground text-base uppercase font-display tracking-tight">{o.name}</span>
                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">TENANT: {o.slug}</span>
                     </div>
                 </div>
@@ -401,11 +401,11 @@ export default function MasterPanel() {
                 </TabsContent>
 
                 <TabsContent value="system" className="mt-6">
-                    <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[3rem] p-24 text-center">
+                    <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[3rem] p-24 text-center text-slate-900">
                         <div className="w-20 h-20 rounded-[2rem] bg-card shadow-soft border border-slate-100 flex items-center justify-center mx-auto mb-8">
                              <Database className="h-10 w-10 text-slate-300" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-3 font-display">Auditoría del Núcleo</h3>
+                        <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-3 font-display">Auditoría del Núcleo</h3>
                         <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest max-w-sm mx-auto leading-relaxed">
                             Esta sección está actualmente encriptada. Solo disponible en auditorías de nivel Sentinel Alpha con protocolos de seguridad Biométricos.
                         </p>
@@ -416,13 +416,13 @@ export default function MasterPanel() {
             {/* EDIT USER DIALOG */}
             <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
                 <DialogContent className="max-w-lg bg-card rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-slate-50 p-10 border-b border-slate-100">
+                    <div className="bg-slate-50 p-10 border-b border-slate-100 text-slate-900">
                          <div className="flex items-center gap-4">
                              <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
                                  <RefreshCw className="h-6 w-6 text-primary" />
                              </div>
                              <div>
-                                 <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Refactorizar Acceso</DialogTitle>
+                                 <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Refactorizar Acceso</DialogTitle>
                                  <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Modificando parámetros de seguridad de rango</DialogDescription>
                              </div>
                          </div>
@@ -431,7 +431,7 @@ export default function MasterPanel() {
                         <div className="space-y-4">
                             <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nivel de Rango Sentinel</Label>
                             <Select value={newRole} onValueChange={(v) => setNewRole(v as UserRole)}>
-                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner">
+                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
@@ -444,7 +444,7 @@ export default function MasterPanel() {
                         <div className="space-y-4">
                             <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Enlace SaaS Tenant</Label>
                             <Select value={newUserOrgIdEdit} onValueChange={setNewUserOrgIdEdit}>
-                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner">
+                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
@@ -466,13 +466,13 @@ export default function MasterPanel() {
             {/* NEW USER DIALOG */}
             <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
                 <DialogContent className="max-w-xl bg-card rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-slate-50 p-10 border-b border-slate-100">
+                    <div className="bg-slate-50 p-10 border-b border-slate-100 text-slate-900">
                          <div className="flex items-center gap-4">
                              <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
                                  <Plus className="h-6 w-6 text-primary" />
                              </div>
                              <div>
-                                 <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Nuevo Enlace Maestro</DialogTitle>
+                                 <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Nuevo Enlace Maestro</DialogTitle>
                                  <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Generando credenciales de acceso Sentinel Alpha</DialogDescription>
                              </div>
                          </div>
@@ -481,20 +481,20 @@ export default function MasterPanel() {
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-3">
                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nombre</Label>
-                                <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner" />
+                                <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-slate-900" />
                             </div>
                             <div className="space-y-3">
                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Apellido</Label>
-                                <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner" />
+                                <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-slate-900" />
                             </div>
                             <div className="col-span-2 space-y-3">
                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Terminal Email Corporativo</Label>
-                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner" />
+                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-slate-900" />
                             </div>
                             <div className="space-y-3">
                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rango Sentinel</Label>
                                 <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
-                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
@@ -507,7 +507,7 @@ export default function MasterPanel() {
                             <div className="space-y-3">
                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tenant SaaS</Label>
                                 <Select value={newUserOrgId} onValueChange={setNewUserOrgId}>
-                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">

@@ -436,28 +436,28 @@ export default function Users() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 space-y-6 font-display animate-in fade-in duration-700">
+        <div className="flex flex-col h-full bg-slate-50 space-y-6 font-display animate-in fade-in duration-700 text-slate-900">
             {/* Premium Header Container */}
             <header className="bg-card px-8 py-10 rounded-[2rem] shadow-premium-md border border-border/40 relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-60 text-slate-900"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 transform transition-transform hover:scale-105 active:scale-95 duration-500">
+                        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 transform transition-transform hover:scale-105 active:scale-95 duration-500 text-white">
                             <UsersIcon className="text-white h-8 w-8" />
                         </div>
                         <div>
                             <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-2">Soberanía de Identidad</p>
-                            <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">
+                            <h1 className="text-3xl font-black text-foreground tracking-tighter uppercase">
                                 Gestión de Usuarios
                             </h1>
                             <div className="flex items-center gap-3 mt-3">
                                 <Badge variant="secondary" className="bg-primary/5 text-primary border border-primary/20 font-black text-[10px] px-3 py-1 uppercase tracking-widest rounded-lg">
                                     {isMaster ? 'Modo Master Global' : (ROLE_LABELS[profile?.role as UserRole] || 'Admin')}
                                 </Badge>
-                                <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-50 border border-border/40 shadow-inner">
+                                <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-50 border border-border/40 shadow-inner text-slate-900">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-glow"></div>
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{users.length} Colaboradores en línea</span>
                                 </div>
@@ -490,7 +490,7 @@ export default function Users() {
                                 placeholder="BUSCAR COLABORADOR POR NOMBRE O EMAIL..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-12 h-12 bg-slate-50 border-none rounded-xl focus-visible:ring-primary font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-slate-300"
+                                className="pl-12 h-12 bg-slate-50 border-none rounded-xl focus-visible:ring-primary font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-slate-500"
                             />
                         </div>
                     </div>
@@ -525,7 +525,7 @@ export default function Users() {
                                             <TableRow key={user.id} className="hover:bg-slate-50 transition-colors border-slate-50">
                                                 <TableCell className="pl-8 py-6">
                                                     <div className="flex flex-col gap-1">
-                                                        <span className="font-black text-slate-900 uppercase tracking-tight">
+                                                        <span className="font-black text-foreground uppercase tracking-tight">
                                                             {user.first_name} {user.last_name}
                                                         </span>
                                                         <span className="text-[10px] text-slate-400 font-bold tracking-widest">

@@ -267,7 +267,7 @@ const MasterDashboard = () => {
                             <div className="flex -space-x-3">
                                 {[1, 2, 3, 4].map(i => (
                                     <div key={i} className="w-8 h-8 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center">
-                                        <div className="w-2 h-2 rounded-full bg-primary"></div>
+                                        <div className="w-2 h-2 rounded-full bg-primary text-white"></div>
                                     </div>
                                 ))}
                             </div>
@@ -285,7 +285,7 @@ const MasterDashboard = () => {
                             </div>
                             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="bg-primary hover:bg-primary-dark shadow-lg shadow-primary/20 font-black text-xs uppercase tracking-widest px-6 rounded-full h-11">
+                                    <Button className="bg-primary hover:bg-primary-dark shadow-lg shadow-primary/20 font-black text-xs uppercase tracking-widest px-6 rounded-full h-11 text-white">
                                         <Plus className="w-4 h-4 mr-2" />
                                         Nueva Organización
                                     </Button>

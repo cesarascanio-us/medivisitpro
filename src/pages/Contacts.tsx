@@ -351,7 +351,7 @@ export default function Contacts() {
                     </div>
                     {contact.phone && (
                       <div className="flex items-center text-sm font-bold text-slate-600 group-hover:text-slate-800 transition-colors">
-                        <div className="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center mr-4 flex-shrink-0 group-hover:bg-emerald-100 transition-colors">
+                        <div className="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center mr-4 flex-shrink-0 group-hover:bg-emerald-100 transition-colors text-slate-900">
                           <Phone className="h-5 w-5 text-emerald-500" />
                         </div>
                         <span className="truncate">{contact.phone}</span>

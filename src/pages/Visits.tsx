@@ -467,6 +467,8 @@ export default function Visits() {
               subtitle="Carga operativa total"
               icon={FileText}
               color="indigo"
+              onClick={() => setStatusFilter("all")}
+              isActive={statusFilter === "all"}
           />
           <EliteKPICard 
               title="Completadas" 
@@ -475,6 +477,8 @@ export default function Visits() {
               icon={CheckCircle}
               trend={visitsByStatus.total > 0 ? (visitsByStatus.completed / visitsByStatus.total) * 100 : 0}
               color="emerald"
+              onClick={() => setStatusFilter("completed")}
+              isActive={statusFilter === "completed"}
           />
           <EliteKPICard 
               title="Programadas" 
@@ -482,6 +486,8 @@ export default function Visits() {
               subtitle="Despliegues en radar"
               icon={Calendar}
               color="amber"
+              onClick={() => setStatusFilter("scheduled")}
+              isActive={statusFilter === "scheduled"}
           />
           <EliteKPICard 
               title="Canceladas" 
@@ -489,6 +495,8 @@ export default function Visits() {
               subtitle="Objetivos no alcanzados"
               icon={XCircle}
               color="rose"
+              onClick={() => setStatusFilter("cancelled")}
+              isActive={statusFilter === "cancelled"}
           />
       </div>
 
@@ -503,11 +511,11 @@ export default function Visits() {
                 placeholder="Buscar por médico, especialidad u objetivo operativo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-300"
+                className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-500 text-slate-900"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-14 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner">
+              <SelectTrigger className="h-14 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
                 <SelectValue placeholder="Estado de Misión" />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-border/40 font-black uppercase text-[10px] tracking-widest">
@@ -523,7 +531,7 @@ export default function Visits() {
 
       {/* Visits List - OPERATIONAL VIEWPORT */}
       <Tabs defaultValue="list" className="w-full space-y-8">
-        <TabsList className="flex w-full md:w-96 p-1 bg-slate-50 rounded-2xl border border-border/40 shadow-inner">
+        <TabsList className="flex w-full md:w-96 p-1 bg-slate-50 rounded-2xl border border-border/40 shadow-inner text-slate-900">
           <TabsTrigger value="list" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Vista Operativa</TabsTrigger>
           <TabsTrigger value="calendar" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-sm transition-all h-10">Vista Calendario</TabsTrigger>
         </TabsList>
@@ -537,11 +545,11 @@ export default function Visits() {
                   <div className="flex-1 space-y-6">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center border border-border/40 group-hover:bg-primary/5 group-hover:border-primary/10 transition-colors">
+                        <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center border border-border/40 group-hover:bg-primary/5 group-hover:border-primary/10 transition-colors text-slate-900">
                           <User className="h-6 w-6 text-slate-400 group-hover:text-primary transition-colors" />
                         </div>
                         <div>
-                          <h3 className="text-xl font-black text-slate-900 tracking-tighter uppercase font-display group-hover:text-primary transition-colors">
+                          <h3 className="text-xl font-black text-foreground tracking-tighter uppercase font-display group-hover:text-primary transition-colors">
                             {visit.unified_contacts?.name || "Contacto no disponible"}
                           </h3>
                           <div className="flex items-center gap-3 mt-1">
@@ -590,7 +598,7 @@ export default function Visits() {
                     {visit.objective && (
                       <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
                         <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Misión Operativa</p>
-                        <p className="text-xs text-slate-600 font-bold leading-relaxed">{visit.objective}</p>
+                        <p className="text-xs text-foreground/70 font-bold leading-relaxed">{visit.objective}</p>
                       </div>
                     )}
                   </div>
@@ -630,7 +638,7 @@ export default function Visits() {
                         </AlertDialogTrigger>
                         <AlertDialogContent className="rounded-[2rem] border-none shadow-premium-2xl font-display">
                           <AlertDialogHeader>
-                            <AlertDialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter">¿Abortar Registro?</AlertDialogTitle>
+                            <AlertDialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">¿Abortar Registro?</AlertDialogTitle>
                             <AlertDialogDescription className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">
                               Esta acción eliminará permanentemente el registro de visita del sistema.
                             </AlertDialogDescription>
@@ -670,9 +678,9 @@ export default function Visits() {
               <div className="flex flex-col xl:flex-row gap-12">
                 {/* Calendar Component - MASTER VIEW */}
                 <div className="flex-1">
-                  <div className="bg-slate-50 p-8 rounded-[2rem] border border-border/40 shadow-inner">
+                  <div className="bg-slate-50 p-8 rounded-[2rem] border border-border/40 shadow-inner text-slate-900">
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter font-display">Radar de Tiempos</h3>
+                      <h3 className="text-xl font-black text-foreground uppercase tracking-tighter font-display">Radar de Tiempos</h3>
                       <Badge className="bg-primary text-white border-none font-black text-[9px] px-3 py-1 uppercase tracking-widest shadow-premium-sm">Visión Mensual</Badge>
                     </div>
                     <div className="grid grid-cols-7 gap-2 text-center font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-6">
@@ -685,21 +693,21 @@ export default function Visits() {
                 {/* Side Panel: Summary - COMMAND SUMMARY */}
                 <div className="w-full xl:w-96 space-y-8">
                   <div>
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter font-display mb-6">Consolidado del Ciclo</h3>
+                    <h3 className="text-lg font-black text-foreground uppercase tracking-tighter font-display mb-6">Consolidado del Ciclo</h3>
                     <div className="grid grid-cols-1 gap-4">
-                      <div className="p-6 bg-emerald-50/50 rounded-2xl border border-emerald-100 shadow-soft flex items-center justify-between">
+                      <div className="p-6 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 shadow-soft flex items-center justify-between">
                         <div>
-                          <p className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-1">Misiones Exitosas</p>
-                          <p className="text-3xl font-black text-emerald-700 font-display">{visitsByStatus.completed}</p>
+                          <p className="text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-1">Misiones Exitosas</p>
+                          <p className="text-3xl font-black text-emerald-700 dark:text-emerald-400 font-display">{visitsByStatus.completed}</p>
                         </div>
-                        <CheckCircle className="h-10 w-10 text-emerald-200" />
+                        <CheckCircle className="h-10 w-10 text-emerald-500/50" />
                       </div>
-                      <div className="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 shadow-soft flex items-center justify-between">
+                      <div className="p-6 bg-blue-500/10 rounded-2xl border border-blue-500/20 shadow-soft flex items-center justify-between">
                         <div>
-                          <p className="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">Misiones en Radar</p>
-                          <p className="text-3xl font-black text-blue-700 font-display">{visitsByStatus.scheduled}</p>
+                          <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mb-1">Misiones en Radar</p>
+                          <p className="text-3xl font-black text-blue-700 dark:text-blue-400 font-display">{visitsByStatus.scheduled}</p>
                         </div>
-                        <Calendar className="h-10 w-10 text-blue-200" />
+                        <Calendar className="h-10 w-10 text-blue-500/50" />
                       </div>
                     </div>
                   </div>
@@ -712,11 +720,11 @@ export default function Visits() {
                         .sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime())
                         .slice(0, 5)
                         .map(v => (
-                          <div key={v.id} className="flex items-center justify-between p-4 bg-slate-50 hover:bg-card hover:shadow-premium-sm border border-transparent hover:border-border/40 rounded-2xl transition-all group">
+                          <div key={v.id} className="flex items-center justify-between p-4 bg-slate-50 hover:bg-card hover:shadow-premium-sm border border-transparent hover:border-border/40 rounded-2xl transition-all group text-slate-900">
                             <div className="flex items-center gap-4">
-                               <div className="w-2 h-2 rounded-full bg-primary" />
+                               <div className="w-2 h-2 rounded-full bg-primary text-white" />
                                <div>
-                                 <p className="text-[11px] font-black text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors">{v.unified_contacts?.name || v.contacts?.name}</p>
+                                 <p className="text-[11px] font-black text-foreground uppercase tracking-tighter group-hover:text-primary transition-colors">{v.unified_contacts?.name || v.contacts?.name}</p>
                                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
                                    {new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} • {new Date(v.scheduled_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                                  </p>
@@ -743,13 +751,13 @@ export default function Visits() {
       </Tabs>
       <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
         <DialogContent className="max-w-[700px] bg-card rounded-[2.5rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
-          <div className="bg-slate-50 p-8 border-b border-border/40">
+          <div className="bg-slate-50 p-8 border-b border-border/40 text-slate-900">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
                  <FileSpreadsheet className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <DialogTitle className="text-xl font-black text-slate-900 uppercase tracking-tighter">Protocolo de Importación</DialogTitle>
+                <DialogTitle className="text-xl font-black text-foreground uppercase tracking-tighter">Protocolo de Importación</DialogTitle>
                 <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Sincronización masiva de inteligencia operativa</DialogDescription>
               </div>
             </div>
@@ -766,10 +774,10 @@ export default function Visits() {
               <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Estructura del Manifiesto (Excel/CSV)</h4>
               <div className="rounded-[1.5rem] border border-border/40 overflow-hidden shadow-soft">
                 <Table>
-                  <TableHeader className="bg-slate-50">
+                  <TableHeader className="bg-slate-50 text-slate-900">
                     <TableRow className="border-border/40">
-                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Columna Maestra</TableHead>
-                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-900 py-4 px-6">Propósito Operativo</TableHead>
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-foreground py-4 px-6">Columna Maestra</TableHead>
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-foreground py-4 px-6">Propósito Operativo</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -836,7 +844,7 @@ function SimpleCalendarPreview({ visits }: { visits: any[] }) {
             `}>
         {i}
         {hasVisit && !isToday && (
-          <span className="absolute bottom-1 w-1 h-1 rounded-full bg-primary"></span>
+          <span className="absolute bottom-1 w-1 h-1 rounded-full bg-primary text-white"></span>
         )}
       </div>
     );

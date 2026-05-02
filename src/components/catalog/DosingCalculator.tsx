@@ -30,7 +30,7 @@ export function DosingCalculator({ productName, standardDoseMgPerKg = 10, concen
     const doseMl = doseMg > 0 ? (doseMg / concentrationMgPerMl).toFixed(1) : 0;
 
     return (
-        <Card className="bg-slate-50 border-slate-200 shadow-sm">
+        <Card className="bg-slate-50 border-slate-200 shadow-sm text-slate-900">
             <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium uppercase tracking-wider text-slate-500 flex items-center gap-2">
                     <Calculator className="h-4 w-4" /> Calculadora de Dosis

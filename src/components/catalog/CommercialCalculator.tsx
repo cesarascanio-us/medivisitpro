@@ -128,7 +128,7 @@ export function CommercialCalculator({
     return (
         <Card className="border-border bg-card shadow-md overflow-hidden animate-in fade-in duration-300">
             {/* Header Financiero */}
-            <div className="bg-slate-50 px-4 py-3 border-b flex flex-col gap-3">
+            <div className="bg-slate-50 px-4 py-3 border-b flex flex-col gap-3 text-slate-900">
 
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     {/* Selector de Canal y Droguería */}
@@ -226,7 +226,7 @@ export function CommercialCalculator({
                                 }
                             </span>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                                <span className="text-3xl font-extrabold text-foreground tracking-tight">
                                     {isWholesale
                                         ? `$${priceDistributor.toFixed(2)}`
                                         : `$${activeBasePrice.toFixed(2)}`
@@ -288,7 +288,7 @@ export function CommercialCalculator({
 
                         {/* Wholesale Safety Catch Toggle */}
                         {isWholesale && (
-                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center gap-3">
+                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center gap-3 text-slate-900">
                                 <div className="flex items-center space-x-2">
                                     <input
                                         type="checkbox"
@@ -306,7 +306,7 @@ export function CommercialCalculator({
                     </div>
 
                     {/* 3. La Matemagia - Resultados */}
-                    <div className="space-y-4 bg-slate-50 p-5 rounded-xl border border-slate-100 flex flex-col justify-center">
+                    <div className="space-y-4 bg-slate-50 p-5 rounded-xl border border-slate-100 flex flex-col justify-center text-slate-900">
                         <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                             <span className="text-sm text-slate-600">Subtotal</span>
                             <span className="font-semibold text-slate-700">${subtotal.toFixed(2)}</span>
@@ -321,7 +321,7 @@ export function CommercialCalculator({
                         <div className="pt-2">
                             <div className="flex justify-between items-end mb-1">
                                 <span className="text-base font-bold text-slate-800">Total a Pagar</span>
-                                <span className="text-3xl font-black text-slate-900 tracking-tight">${totalUSD.toFixed(2)}</span>
+                                <span className="text-3xl font-black text-foreground tracking-tight">${totalUSD.toFixed(2)}</span>
                             </div>
                             <div className="text-right text-sm text-slate-500 font-mono bg-card inline-block px-2 py-1 rounded border border-border float-right">
                                 Bs. {totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -351,7 +351,7 @@ export function CommercialCalculator({
 
             {/* 5. Footer Legal */}
             {/* 5. Footer Legal y Acciones */}
-            <CardFooter className="bg-slate-50 border-t px-6 py-3 flex flex-col gap-3">
+            <CardFooter className="bg-slate-50 border-t px-6 py-3 flex flex-col gap-3 text-slate-900">
                 {onSaveAgreement && (
                     <Button
                         className={`w-full font-bold h-12 shadow-sm animate-in slide-in-from-bottom-2 ${isWholesale && requiresApproval

@@ -135,7 +135,7 @@ export default function CRMDashboard() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-card border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-card border-slate-100 text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <ArrowUpRight className="h-5 w-5 mr-3 text-primary" /> Reporte de Conversión
                         </Button>
                         <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
@@ -255,7 +255,7 @@ export default function CRMDashboard() {
                                                                 {lead.avatar}
                                                             </div>
                                                             <div>
-                                                                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-[#0056b3] transition-colors">{lead.name}</h3>
+                                                                <h3 className="text-xl font-extrabold text-foreground group-hover:text-[#0056b3] transition-colors">{lead.name}</h3>
                                                                 <p className="text-slate-500 font-bold flex items-center gap-2">
                                                                     <Users className="h-3 h-3" />
                                                                     {lead.contact}

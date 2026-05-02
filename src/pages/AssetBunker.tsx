@@ -267,7 +267,7 @@ function AssetCard({ asset }: { asset: Asset }) {
                     <Button variant="outline" className="flex-1 rounded-xl h-9 text-xs font-bold border-border hover:bg-muted/30">
                         <History className="h-3 w-3 mr-2" /> Historial
                     </Button>
-                    <Button className="flex-1 rounded-xl h-9 text-xs font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10">
+                    <Button className="flex-1 rounded-xl h-9 text-xs font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10 text-white">
                         <Download className="h-3 w-3 mr-2" /> Abrir
                     </Button>
                 </div>

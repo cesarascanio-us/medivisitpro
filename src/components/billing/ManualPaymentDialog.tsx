@@ -56,8 +56,8 @@ export function ManualPaymentDialog({ open, onOpenChange, planName, amount }: Ma
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[550px] bg-slate-950 border-white/5 rounded-[2.5rem] p-0 overflow-hidden shadow-3xl font-outfit">
-                <div className="bg-slate-900 px-8 py-6 border-b border-white/5">
+            <DialogContent className="sm:max-w-[550px] bg-slate-950 border-white/5 rounded-[2.5rem] p-0 overflow-hidden shadow-3xl font-outfit text-white">
+                <div className="bg-slate-900 px-8 py-6 border-b border-white/5 text-white">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-black uppercase text-white tracking-tighter">Reporte de Pago Manual</DialogTitle>
                         <DialogDescription className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-2 flex items-center gap-2">
@@ -70,19 +70,19 @@ export function ManualPaymentDialog({ open, onOpenChange, planName, amount }: Ma
                     {step === 1 ? (
                         <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in duration-500">
                             {/* Datos de Transferencia */}
-                            <div className="p-6 bg-slate-900 rounded-[2rem] border border-white/5 space-y-6">
+                            <div className="p-6 bg-slate-900 rounded-[2rem] border border-white/5 space-y-6 text-white">
                                 <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] flex items-center gap-2">
                                     <Landmark className="w-4 h-4" /> Datos de Recepción CA
                                 </h4>
                                 <div className="space-y-3">
-                                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-white/5 group hover:border-emerald-500/30 transition-all">
+                                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-white/5 group hover:border-emerald-500/30 transition-all text-white">
                                         <div>
                                             <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-none">Banco de Destino</p>
                                             <p className="font-black text-white text-xs mt-2">BANCO MERCANTIL</p>
                                         </div>
                                         <Button type="button" variant="ghost" size="icon" onClick={() => copyToClipboard("0105...", "Cuenta")} className="text-slate-600 hover:text-emerald-400"><Copy className="w-4 h-4" /></Button>
                                     </div>
-                                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-white/5 group hover:border-emerald-500/30 transition-all">
+                                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-white/5 group hover:border-emerald-500/30 transition-all text-white">
                                         <div>
                                             <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-none">Pago Móvil</p>
                                             <p className="font-black text-white text-xs mt-2">0414-0000000 • J-0000000-0</p>

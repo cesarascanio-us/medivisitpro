@@ -81,7 +81,7 @@ const STANDARD_OPERATING_PROCEDURE = [
 
 export default function WorkProcesses() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/30 p-8 font-sans transition-colors duration-500 overflow-y-auto">
+    <div className="min-h-screen flex flex-col p-8 font-display transition-colors duration-500 overflow-y-auto">
       
       {/* HEADER INDUSTRIAL ELITE - PROCESOS DE TRABAJO */}
       <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-12 animate-in fade-in slide-in-from-top duration-700">
@@ -91,22 +91,22 @@ export default function WorkProcesses() {
               </div>
               <div>
                   <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">Protocolos Operativos</p>
-                  <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-display leading-none">Procesos de Trabajo</h1>
+                  <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">Procesos de Trabajo</h1>
                   <div className="flex items-center gap-3 mt-4">
                       <Badge className="bg-primary/5 text-primary border border-primary/10 font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">Manual Maestro V6.0</Badge>
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-slate-400" />
-                          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none">Estándar César Ascanio CA</span>
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/30 border border-border/40">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Estándar César Ascanio CA</span>
                       </div>
                   </div>
               </div>
           </div>
 
           <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="w-14 h-14 rounded-2xl bg-card border border-slate-100 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm">
-                  <Activity className="h-6 w-6 text-slate-300" />
+              <Button variant="ghost" size="icon" className="w-14 h-14 rounded-2xl bg-card border border-border/40 hover:bg-muted/50 hover:shadow-premium-sm transition-all shadow-sm">
+                  <Activity className="h-6 w-6 text-muted-foreground" />
               </Button>
-              <Button variant="outline" className="h-14 px-8 border-slate-200 hover:bg-card hover:text-primary hover:shadow-premium-sm bg-transparent rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">
+              <Button variant="outline" className="h-14 px-8 border-border/40 hover:bg-card hover:text-primary hover:shadow-premium-sm bg-transparent rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">
                   <Zap className="mr-3 h-5 w-5 text-amber-500" /> Auditoría SOP
               </Button>
           </div>
@@ -116,7 +116,7 @@ export default function WorkProcesses() {
       <div className="flex-1 min-h-0">
         <Tabs defaultValue="sop" className="h-full flex flex-col">
           {/* Tabs Selector Industrial */}
-          <TabsList className="bg-card p-2 rounded-[1.5rem] w-fit mb-12 border border-slate-100 shadow-premium-sm">
+          <TabsList className="bg-card p-2 rounded-[1.5rem] w-fit mb-12 border border-border/40 shadow-premium-sm">
             <TabsTrigger value="sop" className="rounded-xl px-10 py-3 font-black text-[10px] uppercase tracking-[0.2em] data-[state=active]:bg-primary data-[state=active]:text-white transition-all shadow-none">SOP (Procedimientos)</TabsTrigger>
             <TabsTrigger value="manual" className="rounded-xl px-10 py-3 font-black text-[10px] uppercase tracking-[0.2em] data-[state=active]:bg-primary data-[state=active]:text-white transition-all shadow-none">Manual Estándar</TabsTrigger>
           </TabsList>
@@ -129,7 +129,7 @@ export default function WorkProcesses() {
                       <TabsTrigger 
                         key={idx} 
                         value={`fase${idx+1}`}
-                        className="w-full flex items-center justify-between p-6 rounded-[2rem] bg-card border border-slate-100 shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
+                        className="w-full flex items-center justify-between p-6 rounded-[2rem] bg-card border border-border/40 shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
                       >
                          <div className="flex items-center gap-5">
                             <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3 group-data-[state=active]:rotate-0 transition-transform", phase.color)}>
@@ -155,24 +155,24 @@ export default function WorkProcesses() {
                                  <div className={cn("px-6 py-3 rounded-2xl text-white font-black text-xs uppercase tracking-[0.2em] shadow-lg font-display", phase.color)}>
                                     {phase.phase}: {phase.label}
                                  </div>
-                                 <div className="flex-1 h-[2px] bg-slate-100" />
-                                 <Badge className="bg-slate-50 text-slate-400 border border-slate-100 font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-full">Estatus: Optimizado V26</Badge>
+                                 <div className="flex-1 h-[2px] bg-border/40" />
+                                 <Badge className="bg-muted/30 text-muted-foreground border border-border/40 font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-full">Estatus: Optimizado V26</Badge>
                               </div>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                  {phase.steps.map((step, sIdx) => (
-                                    <Card key={sIdx} className="border border-slate-100 bg-card shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[2.5rem] group/step relative overflow-hidden">
+                                    <Card key={sIdx} className="border border-border/40 bg-card shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[2.5rem] group/step relative overflow-hidden">
                                        <CardContent className="p-10 flex items-start gap-8 relative z-10">
-                                          <div className="h-14 w-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 font-black text-sm font-mono group-hover/step:bg-primary group-hover/step:text-white transition-colors duration-500 shadow-inner">
+                                          <div className="h-14 w-14 rounded-2xl bg-muted/30 flex items-center justify-center text-muted-foreground font-black text-sm font-mono group-hover/step:bg-primary group-hover/step:text-white transition-colors duration-500 shadow-inner">
                                              {step.id}
                                           </div>
                                           <div className="space-y-3 flex-1">
-                                             <h4 className="font-black text-slate-900 text-base uppercase tracking-tight font-display">{step.title}</h4>
-                                             <p className="text-xs text-slate-500 leading-relaxed font-bold font-sans">{step.desc}</p>
+                                             <h4 className="font-black text-foreground text-base uppercase tracking-tight font-display">{step.title}</h4>
+                                             <p className="text-xs text-muted-foreground leading-relaxed font-bold">{step.desc}</p>
                                           </div>
                                        </CardContent>
                                        {/* Ghost background decorator */}
-                                       <div className="absolute -bottom-8 -right-4 text-8xl font-black text-slate-50 select-none pointer-events-none group-hover/step:text-slate-100 transition-colors">
+                                       <div className="absolute -bottom-8 -right-4 text-8xl font-black text-muted/20 select-none pointer-events-none group-hover/step:text-muted/30 transition-colors">
                                           {step.id.split('.')[1]}
                                        </div>
                                     </Card>
@@ -194,7 +194,7 @@ export default function WorkProcesses() {
                               <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                                  <CheckCircle2 className="h-6 w-6" />
                               </div>
-                              <h3 className="text-sm font-black text-slate-900 uppercase tracking-[0.2em] font-display">Garantía Operativa</h3>
+                              <h3 className="text-sm font-black text-foreground uppercase tracking-[0.2em] font-display">Garantía Operativa</h3>
                             </div>
                             <p className="text-slate-400 text-xs font-bold leading-relaxed mb-8">
                                El cumplimiento estricto del protocolo asegura una penetración del <span className="text-primary font-black">+95%</span> en el mercado objetivo.
@@ -205,8 +205,8 @@ export default function WorkProcesses() {
                                 { label: 'Eficiencia CA', val: '+22.5%', color: 'text-emerald-400' },
                                 { label: 'Precisión GPS', val: '99.8%', color: 'text-emerald-400' }
                               ].map((stat, i) => (
-                                 <div key={i} className="flex items-center justify-between p-4 bg-background/5 rounded-2xl border border-white/10 transition-colors hover:bg-background/10">
-                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">{stat.label}</span>
+                                 <div key={i} className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl border border-border/40 transition-colors hover:bg-muted/30">
+                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">{stat.label}</span>
                                     <span className={cn("text-xs font-black tabular-nums ", stat.color)}>{stat.val}</span>
                                  </div>
                               ))}
@@ -214,12 +214,12 @@ export default function WorkProcesses() {
                         </div>
                       </Card>
 
-                      <Card className="bg-card border border-slate-100 rounded-[3rem] shadow-premium-sm p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
-                        <div className="w-16 h-16 rounded-[2rem] bg-slate-50 flex items-center justify-center text-slate-300 mb-8 shadow-inner">
+                      <Card className="bg-card border border-border/40 rounded-[3rem] shadow-premium-sm p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
+                        <div className="w-16 h-16 rounded-[2rem] bg-muted/30 flex items-center justify-center text-muted-foreground mb-8 shadow-inner">
                             <Calendar className="h-8 w-8" />
                         </div>
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4 font-display">Próxima Revisión</h4>
-                        <p className="text-base font-black text-slate-900 uppercase tracking-tighter font-display leading-none">MAYO 2026</p>
+                        <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-4 font-display">Próxima Revisión</h4>
+                        <p className="text-base font-black text-foreground uppercase tracking-tighter font-display leading-none">MAYO 2026</p>
                       </Card>
                    </div>
                 </div>
@@ -227,14 +227,14 @@ export default function WorkProcesses() {
           </TabsContent>
 
           <TabsContent value="manual" className="flex-1 flex items-center justify-center">
-             <div className="text-center p-24 bg-card rounded-[4rem] border border-slate-100 shadow-premium-lg max-w-xl relative overflow-hidden group">
+             <div className="text-center p-24 bg-card rounded-[4rem] border border-border/40 shadow-premium-lg max-w-xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-16 opacity-[0.02]">
                    <ClipboardList className="h-64 w-64" />
                 </div>
-                <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner group-hover:scale-110 transition-transform">
-                   <ShieldCheck className="h-12 w-12 text-slate-200" />
+                <div className="w-24 h-24 bg-muted/30 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner group-hover:scale-110 transition-transform">
+                   <ShieldCheck className="h-12 w-12 text-muted-foreground" />
                 </div>
-                <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-6 font-display">Búnker de Estrategia</h3>
+                <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-6 font-display">Búnker de Estrategia</h3>
                 <p className="text-sm text-slate-400 leading-loose font-bold font-sans">
                    El manual detallado de tácticas de penetración de mercado y contra-inteligencia comercial se encuentra bajo protocolo de seguridad de nivel 5.
                 </p>

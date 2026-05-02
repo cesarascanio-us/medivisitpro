@@ -123,8 +123,8 @@ export default function SystemAlerts() {
             {/* Premium White Header Container */}
             <header className="bg-card px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-amber-50 dark:bg-amber-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-amber-50 dark:bg-amber-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div className="flex items-center gap-5">
@@ -157,7 +157,7 @@ export default function SystemAlerts() {
                                     <Input
                                         value={newTitle}
                                         onChange={e => setNewTitle(e.target.value)}
-                                        className="h-12 rounded-xl border-slate-100 bg-slate-50 text-sm font-bold focus:ring-emerald-500"
+                                        className="h-12 rounded-xl border-slate-100 bg-slate-50 text-sm font-bold focus:ring-emerald-500 text-slate-900"
                                         placeholder="Ej: Mantenimiento Programado"
                                     />
                                 </div>
@@ -166,7 +166,7 @@ export default function SystemAlerts() {
                                     <Textarea
                                         value={newMessage}
                                         onChange={e => setNewMessage(e.target.value)}
-                                        className="rounded-xl border-slate-100 bg-slate-50 min-h-[100px] focus:ring-emerald-500"
+                                        className="rounded-xl border-slate-100 bg-slate-50 min-h-[100px] focus:ring-emerald-500 text-slate-900"
                                         placeholder="Escribe el contenido de la notificación..."
                                     />
                                 </div>

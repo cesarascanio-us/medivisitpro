@@ -177,7 +177,7 @@ export function NotificationBadge() {
                                             </p>
                                         </div>
                                         {!notification.is_read && (
-                                            <div className="w-2 h-2 rounded-full bg-primary" />
+                                            <div className="w-2 h-2 rounded-full bg-primary text-white" />
                                         )}
                                     </div>
                                 </div>

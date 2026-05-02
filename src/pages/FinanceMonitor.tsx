@@ -239,7 +239,7 @@ export default function FinanceMonitor() {
                             </CardTitle>
                             <div className="flex gap-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-primary"></div>
+                                    <div className="w-3 h-3 rounded-full bg-primary text-white"></div>
                                     <span className="text-xs font-bold text-muted-foreground">Ventas</span>
                                 </div>
                                 <div className="flex items-center gap-2">

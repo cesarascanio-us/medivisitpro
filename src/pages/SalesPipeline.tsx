@@ -253,7 +253,7 @@ export default function SalesPipeline() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={loadDeals} className="h-14 px-8 rounded-2xl bg-card border-slate-100 text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                        <Button variant="outline" onClick={loadDeals} className="h-14 px-8 rounded-2xl bg-card border-border/40 text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <BarChart3 className="h-5 w-5 mr-3 text-primary" /> Resumen
                         </Button>
                         <Button
@@ -277,22 +277,22 @@ export default function SalesPipeline() {
 
             {/* SEARCH & SYSTEM FILTERS */}
             <div className="flex flex-col gap-8">
-                <Card className="bg-card border border-slate-100 rounded-3xl shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
+                <Card className="bg-card border border-border/40 rounded-3xl shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         <Input
                             placeholder="Busca por título o contexto comercial..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-16 h-16 bg-slate-50 border-none focus-visible:ring-primary/20 font-bold rounded-2xl text-slate-900 transition-all font-sans shadow-inner"
+                            className="pl-16 h-16 bg-muted/20 border-none focus-visible:ring-primary/20 font-bold rounded-2xl text-foreground transition-all shadow-inner"
                         />
                     </div>
                     <div className="flex items-center gap-4">
                          <Select value={stageFilter} onValueChange={setStageFilter}>
-                            <SelectTrigger className="h-16 w-full md:w-64 rounded-2xl border-slate-100 bg-slate-50 font-black uppercase text-[10px] tracking-widest text-slate-500 shadow-inner px-8">
+                            <SelectTrigger className="h-16 w-full md:w-64 rounded-2xl border-border/40 bg-muted/20 font-black uppercase text-[10px] tracking-widest text-muted-foreground shadow-inner px-8">
                                 <SelectValue placeholder="ETAPA DEL EMBUDO" />
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-slate-100 bg-card">
+                            <SelectContent className="rounded-2xl border-border/40 bg-card">
                                 <SelectItem value="all" className="font-black text-[10px] uppercase tracking-widest">TODAS LAS ETAPAS</SelectItem>
                                 {PIPELINE_STAGES.map((s) => (
                                     <SelectItem key={s.value} value={s.value} className="font-black text-[10px] uppercase tracking-widest">
@@ -305,9 +305,9 @@ export default function SalesPipeline() {
                             variant="ghost"
                             size="icon"
                             onClick={loadDeals}
-                            className="w-16 h-16 rounded-2xl bg-slate-50 shadow-inner hover:bg-card hover:shadow-premium-sm transition-all"
+                            className="w-16 h-16 rounded-2xl bg-muted/20 shadow-inner hover:bg-card hover:shadow-premium-sm transition-all"
                         >
-                            <RefreshCw className={cn("w-6 h-6", loading ? "animate-spin text-primary" : "text-slate-300")} />
+                            <RefreshCw className={cn("w-6 h-6", loading ? "animate-spin text-primary" : "text-muted-foreground")} />
                         </Button>
                     </div>
                 </Card>
@@ -336,13 +336,13 @@ export default function SalesPipeline() {
                         return (
                             <div key={stage.value} className="flex-1 min-w-[320px] flex flex-col gap-6">
                                 {/* Column Header */}
-                                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex items-center justify-between group shadow-sm">
+                                <div className="bg-muted/20 p-6 rounded-[2rem] border border-border/40 flex items-center justify-between group shadow-sm">
                                     <div className="flex items-center gap-4">
                                         <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-premium-sm transition-transform group-hover:scale-105", stage.color, "text-white")}>
                                             <stage.icon className="h-6 w-6" />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 font-display">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground font-display">
                                                 {stage.label}
                                             </span>
                                             <span className="text-xs font-black text-primary font-display tracking-tight">
@@ -350,7 +350,7 @@ export default function SalesPipeline() {
                                             </span>
                                         </div>
                                     </div>
-                                    <Badge variant="outline" className="h-8 min-w-8 p-0 flex items-center justify-center rounded-xl border-slate-200 bg-card shadow-inner text-[10px] font-black text-slate-400">
+                                    <Badge variant="outline" className="h-8 min-w-8 p-0 flex items-center justify-center rounded-xl border-border/40 bg-card shadow-inner text-[10px] font-black text-muted-foreground">
                                         {stageDeals.length}
                                     </Badge>
                                 </div>
@@ -369,11 +369,11 @@ export default function SalesPipeline() {
                                                         setSelectedDeal(deal);
                                                         setDetailOpen(true);
                                                     }}
-                                                    className="bg-card rounded-3xl p-6 border border-slate-100 shadow-premium-sm hover:shadow-premium-md hover:translate-y-[-6px] transition-all duration-300 cursor-pointer group relative overflow-hidden"
+                                                    className="bg-card rounded-3xl p-6 border border-border/40 shadow-premium-sm hover:shadow-premium-md hover:translate-y-[-6px] transition-all duration-300 cursor-pointer group relative overflow-hidden"
                                                 >
                                                     <div className="relative z-10">
                                                         <div className="flex items-start justify-between mb-4 gap-4">
-                                                            <h4 className="text-sm font-black text-slate-900 group-hover:text-primary transition-colors tracking-tight uppercase font-display leading-[1.3]">
+                                                            <h4 className="text-sm font-black text-foreground group-hover:text-primary transition-colors tracking-tight uppercase font-display leading-[1.3]">
                                                                 {deal.title}
                                                             </h4>
                                                             {nextStage && !["won", "lost"].includes(stage.value) && (
@@ -382,7 +382,7 @@ export default function SalesPipeline() {
                                                                         e.stopPropagation();
                                                                         handleQuickMove(deal.id, nextStage.value);
                                                                     }}
-                                                                    className="w-10 h-10 rounded-2xl bg-slate-50 hover:bg-primary text-slate-300 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 shadow-inner"
+                                                                    className="w-10 h-10 rounded-2xl bg-muted/30 hover:bg-primary text-muted-foreground hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 shadow-inner"
                                                                 >
                                                                     <ArrowUpRight className="h-5 w-5" />
                                                                 </button>
@@ -390,23 +390,23 @@ export default function SalesPipeline() {
                                                         </div>
 
                                                         <div className="flex items-center justify-between mb-6">
-                                                            <div className="text-2xl font-black text-slate-900 tracking-tighter font-display">
+                                                            <div className="text-2xl font-black text-foreground tracking-tighter font-display">
                                                                 ${Number(deal.value || 0).toLocaleString()}
                                                             </div>
-                                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-100">
-                                                                <Clock className="h-3.5 w-3.5 text-slate-400" />
-                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest tabular-nums">
+                                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/20 rounded-xl border border-border/40">
+                                                                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                                                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest tabular-nums">
                                                                     {daysSince}D
                                                                 </span>
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex flex-col gap-3 pt-5 border-t border-slate-50">
+                                                        <div className="flex flex-col gap-3 pt-5 border-t border-border/20">
                                                             <div className="flex justify-between items-center">
-                                                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest font-display">Probabilidad de Cierre</span>
+                                                                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest font-display">Probabilidad de Cierre</span>
                                                                 <span className="text-[10px] font-black text-primary font-display">{deal.probability}%</span>
                                                             </div>
-                                                            <div className="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden shadow-inner">
+                                                            <div className="w-full h-1.5 bg-muted/30 rounded-full overflow-hidden shadow-inner">
                                                                 <div
                                                                     className={cn("h-full rounded-full transition-all duration-1000 ease-out", stage.color)}
                                                                     style={{ width: `${deal.probability}%` }}
@@ -421,9 +421,9 @@ export default function SalesPipeline() {
                                             );
                                         })}
                                         {stageDeals.length === 0 && (
-                                            <div className="text-center py-24 opacity-20 border-2 border-dashed border-slate-200 rounded-3xl font-outfit">
-                                                <Target className="h-10 w-10 mx-auto mb-4 text-slate-400" />
-                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] font-outfit text-slate-400">Sin Oportunidades</p>
+                                            <div className="text-center py-24 opacity-20 border-2 border-dashed border-border/40 rounded-3xl">
+                                                <Target className="h-10 w-10 mx-auto mb-4 text-muted-foreground" />
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Sin Oportunidades</p>
                                             </div>
                                         )}
                                     </div>
@@ -436,7 +436,7 @@ export default function SalesPipeline() {
 
             {/* CREATE DIALOG - INDUSTRIAL STYLE */}
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-                <DialogContent className="rounded-[3.5rem] border border-slate-100 shadow-premium-2xl bg-card p-0 overflow-hidden font-sans max-w-lg">
+                <DialogContent className="rounded-[3.5rem] border border-border/40 shadow-premium-2xl bg-card p-0 overflow-hidden max-w-lg">
                     <div className="bg-primary p-12 text-white relative">
                          <div className="absolute top-0 right-0 p-12 opacity-10">
                             <Zap className="w-40 h-40" />
@@ -455,7 +455,7 @@ export default function SalesPipeline() {
                                 value={newDeal.title}
                                 onChange={(e) => setNewDeal((p) => ({ ...p, title: e.target.value }))}
                                 placeholder="EJ: PROPUESTA FARMACIA SAN RAFAEL"
-                                className="h-12 rounded-xl border-slate-100 bg-background font-bold text-foreground focus:ring-primary/20"
+                                className="h-12 rounded-xl border-border/40 bg-background font-bold text-foreground focus:ring-primary/20"
                             />
                         </div>
 
@@ -469,7 +469,7 @@ export default function SalesPipeline() {
                                     value={newDeal.value}
                                     onChange={(e) => setNewDeal((p) => ({ ...p, value: e.target.value }))}
                                     placeholder="0.00"
-                                    className="h-12 rounded-xl border-slate-100 bg-background font-black text-lg text-foreground"
+                                    className="h-12 rounded-xl border-border/40 bg-background font-black text-lg text-foreground"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -480,7 +480,7 @@ export default function SalesPipeline() {
                                     value={newDeal.source}
                                     onValueChange={(v) => setNewDeal((p) => ({ ...p, source: v }))}
                                 >
-                                    <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-background font-bold text-xs uppercase ">
+                                    <SelectTrigger className="h-12 rounded-xl border-border/40 bg-background font-bold text-xs uppercase">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl border-border bg-card">
@@ -525,7 +525,7 @@ export default function SalesPipeline() {
             />
 
             {/* Footer Industrial Elite */}
-            <div className="mt-10 flex items-center justify-between text-slate-300 px-2 shrink-0">
+            <div className="mt-10 flex items-center justify-between text-muted-foreground px-2 shrink-0">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 font-display">
                    <ShieldCheck className="h-4 w-4 text-primary" /> Directiva de Inteligencia Comercial César Ascanio CA
                 </p>

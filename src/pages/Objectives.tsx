@@ -238,7 +238,7 @@ export default function Objectives() {
                                 <div className="space-y-2">
                                     <Label className="text-blue-600 font-semibold">Asignar a (Opcional)</Label>
                                     <Select value={targetUserId} onValueChange={setTargetUserId}>
-                                        <SelectTrigger className="bg-blue-50 border-blue-200">
+                                        <SelectTrigger className="bg-blue-50 border-blue-200 text-slate-900">
                                             <SelectValue placeholder="Seleccionar miembro del equipo..." />
                                         </SelectTrigger>
                                         <SelectContent>

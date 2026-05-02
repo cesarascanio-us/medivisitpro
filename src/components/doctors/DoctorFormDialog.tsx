@@ -203,7 +203,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                             <TabsContent value="personal" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Identificación Básica</h3>
                                     </div>
 
@@ -294,7 +294,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                             <TabsContent value="professional" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-8">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Credenciales Médicas</h3>
                                     </div>
 
@@ -388,13 +388,13 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                             <TabsContent value="location" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Centros de Trabajo</h3>
                                     </div>
                                     <Button
                                         onClick={handleAddSchedule}
                                         disabled={!formData.id}
-                                        className="bg-blue-600 hover:bg-blue-700 h-9 rounded-lg font-bold text-xs uppercase tracking-wider"
+                                        className="bg-blue-600 hover:bg-blue-700 h-9 rounded-lg font-bold text-xs uppercase tracking-wider text-white"
                                     >
                                         <Plus className="mr-2 h-3.5 w-3.5" />
                                         Añadir Sede
@@ -423,7 +423,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                                         {schedules.map((schedule) => (
                                             <div key={schedule.id} className="group flex items-center justify-between p-4 bg-card border border-border rounded-2xl hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5 transition-all">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-slate-900">
                                                         <Building2 className="w-5 h-5 text-blue-600" />
                                                     </div>
                                                     <div>
@@ -472,7 +472,7 @@ export function DoctorFormDialog({ open, onOpenChange, formData, setFormData, on
                             <TabsContent value="tracking" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-8">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Control de Visitas</h3>
                                     </div>
 

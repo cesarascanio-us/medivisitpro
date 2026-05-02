@@ -63,7 +63,7 @@ export function NaturalStoreFormDialog({
                     {/* Section 1: Business Profile */}
                     <div className="space-y-8">
                         <div className="flex items-center gap-4 mb-2">
-                            <div className="w-1 h-8 bg-emerald-600 rounded-full shadow-glow shadow-emerald-500/20" />
+                            <div className="w-1 h-8 bg-emerald-600 rounded-full shadow-glow shadow-emerald-500/20 text-white" />
                             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 ">Identidad Institucional</h3>
                         </div>
 
@@ -118,7 +118,7 @@ export function NaturalStoreFormDialog({
                     {/* Section 2: Contact & Location */}
                     <div className="space-y-8">
                         <div className="flex items-center gap-4 mb-2">
-                            <div className="w-1 h-8 bg-indigo-600 rounded-full shadow-glow shadow-indigo-500/20" />
+                            <div className="w-1 h-8 bg-indigo-600 rounded-full shadow-glow shadow-indigo-500/20 text-white" />
                             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 ">Logística de Despacho</h3>
                         </div>
 

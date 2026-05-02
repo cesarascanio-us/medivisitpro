@@ -117,7 +117,7 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
                         width="100%"
                         height="400"
                         viewBox="0 0 100 100"
-                        className="rounded-2xl bg-slate-50 border border-slate-100 shadow-inner"
+                        className="rounded-2xl bg-slate-50 border border-slate-100 shadow-inner text-slate-900"
                     >
                         {states.map((state) => (
                             <g key={state.name}>

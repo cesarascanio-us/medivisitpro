@@ -127,7 +127,7 @@ export default function Agenda() {
                 <ChevronRight className="h-5 w-5" />
               </Button>
             </div>
-            <div className="w-[1px] h-8 bg-slate-100 mx-2" />
+            <div className="w-[1px] h-8 bg-slate-100 mx-2 text-slate-900" />
             <Button onClick={() => setWizardOpen(true)} className="bg-primary text-white shadow-premium-md h-12 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
               <Plus className="h-4 w-4" /> NUEVA MISIÓN
             </Button>
@@ -159,7 +159,7 @@ export default function Agenda() {
             <div className="grid gap-8">
               {visits.map((v) => (
                 <Card key={v.id} className="group relative overflow-hidden rounded-[3rem] bg-card border-slate-100 hover:border-primary/30 transition-all duration-700 shadow-premium-sm hover:shadow-premium-xl cursor-pointer">
-                  <div className="absolute top-0 left-0 w-2 h-full bg-slate-50 group-hover:bg-primary transition-colors duration-1000" />
+                  <div className="absolute top-0 left-0 w-2 h-full bg-slate-50 group-hover:bg-primary transition-colors duration-1000 text-slate-900" />
                   <CardContent className="p-10">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
                       <div className="flex items-start gap-10">
@@ -174,7 +174,7 @@ export default function Agenda() {
                         <div className="space-y-4">
                           <div>
                             <div className="flex items-center gap-4 mb-2 flex-wrap">
-                              <h3 className="text-3xl font-black text-slate-900 group-hover:text-primary transition-colors tracking-tighter leading-none uppercase font-display">{v.contacts?.name || v.contacts?.full_name || "OBJETIVO_TIER_0"}</h3>
+                              <h3 className="text-3xl font-black text-foreground group-hover:text-primary transition-colors tracking-tighter leading-none uppercase font-display">{v.contacts?.name || v.contacts?.full_name || "OBJETIVO_TIER_0"}</h3>
                               <Badge className={cn("px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border-none shadow-sm", getStatusColor(v.status))}>
                                 {v.status.toUpperCase()}
                               </Badge>
@@ -183,14 +183,14 @@ export default function Agenda() {
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                             <div className="flex items-center text-[11px] font-black text-slate-500 uppercase tracking-widest group/item">
-                              <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors shadow-soft">
+                              <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors shadow-soft text-slate-900">
                                 <Target className="h-4 w-4 text-primary opacity-60" />
                               </div>
                               {v.contacts?.specialty || v.contacts?.city || "SECTOR_GENERAL"}
                             </div>
                             {v.contacts?.address && (
                               <div className="flex items-center text-[11px] font-black text-slate-500 uppercase tracking-widest group/item">
-                                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-emerald-500/10 transition-colors shadow-soft">
+                                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-emerald-500/10 transition-colors shadow-soft text-slate-900">
                                   <MapPin className="h-4 w-4 text-emerald-500 opacity-60" />
                                 </div>
                                 <span className="truncate">{v.contacts.address}</span>
@@ -226,7 +226,7 @@ export default function Agenda() {
                 <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-slate-300 transition-all transform group-hover:scale-110 group-hover:rotate-12 group-hover:bg-primary group-hover:text-white shadow-inner">
                   <Plus className="h-10 w-10" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 uppercase mb-2 tracking-tighter font-display">Visita Espontánea</h3>
+                <h3 className="text-2xl font-black text-foreground uppercase mb-2 tracking-tighter font-display">Visita Espontánea</h3>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] leading-relaxed">LOG INMEDIATO FUERA DE PLAN</p>
               </CardContent>
             </Card>

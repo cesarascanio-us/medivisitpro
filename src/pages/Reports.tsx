@@ -237,7 +237,7 @@ export default function Reports() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter text-slate-900 font-display uppercase leading-none">Next-Gen Reporting Suite</h1>
+          <h1 className="text-3xl font-black tracking-tighter text-foreground font-display uppercase leading-none">Next-Gen Reporting Suite</h1>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Gerencial Dashboard | Business Intelligence en Tiempo Real</p>
         </div>
         <div className="flex items-center space-x-2">
@@ -411,17 +411,17 @@ export default function Reports() {
         <Card className="mt-6 shadow-premium-md overflow-hidden border-slate-100 bg-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 bg-slate-50/50 border-b border-slate-100">
             <div>
-              <CardTitle className="text-xl font-black flex items-center text-slate-900 uppercase tracking-tight font-display">
+              <CardTitle className="text-xl font-black flex items-center text-foreground uppercase tracking-tight font-display">
                 <MapIcon className="mr-2 h-5 w-5 text-primary" />
                 Heatmap Táctico de Cobertura
               </CardTitle>
               <CardDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
             <Select value={heatmapType} onValueChange={(v: any) => setHeatmapType(v)}>
-              <SelectTrigger className="w-[200px] bg-card border-slate-200 text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-xl">
+              <SelectTrigger className="w-[200px] bg-card border-slate-200 text-foreground font-black text-[10px] uppercase tracking-widest rounded-xl">
                 <SelectValue placeholder="Tipo de Punto" />
               </SelectTrigger>
-              <SelectContent className="bg-card border-slate-100 text-slate-900 shadow-xl rounded-xl">
+              <SelectContent className="bg-card border-slate-100 text-foreground shadow-xl rounded-xl">
                 <SelectItem value="doctor" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Stethoscope className="h-3.5 w-3.5" /> Médicos</div></SelectItem>
                 <SelectItem value="pharmacy" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Store className="h-3.5 w-3.5" /> Farmacias</div></SelectItem>
                 <SelectItem value="health_center" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5" /> Centros Salud</div></SelectItem>
@@ -476,7 +476,7 @@ export default function Reports() {
               {correlationData.map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 bg-card rounded-xl border border-emerald-100 shadow-sm">
                   <div className="flex items-center gap-4">
-                    <div className="p-2 bg-emerald-50 rounded-full">
+                    <div className="p-2 bg-emerald-50 rounded-full text-slate-900">
                       <UserRound className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
@@ -501,7 +501,7 @@ export default function Reports() {
                         <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-200">Stock Saludable</Badge>
                       )}
                     </div>
-                    <div className="p-2 bg-slate-50 rounded-full">
+                    <div className="p-2 bg-slate-50 rounded-full text-slate-900">
                       <Store className="h-5 w-5 text-slate-400" />
                     </div>
                   </div>

@@ -67,7 +67,7 @@ export function DrugstoreFormDialog({
                     {/* Section 1: Business Profile */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 mb-2">
-                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
+                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full text-white" />
                             <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Perfil del Distribuidor</h3>
                         </div>
 

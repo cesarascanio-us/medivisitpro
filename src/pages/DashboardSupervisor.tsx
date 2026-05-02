@@ -235,7 +235,7 @@ export default function DashboardSupervisor() {
             {/* Premium White Header Container */}
             <header className="bg-card px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -341,7 +341,7 @@ export default function DashboardSupervisor() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Weekly Trend */}
-                <Card className="bg-white border-slate-200 shadow-sm">
+                <Card className="bg-white border-slate-200 shadow-sm text-slate-900">
                     <CardHeader>
                         <CardTitle className="text-slate-800 flex items-center gap-2">
                             <BarChart3 className="h-5 w-5 text-emerald-500" />
@@ -372,7 +372,7 @@ export default function DashboardSupervisor() {
                 </Card>
 
                 {/* Visits per Representative */}
-                <Card className="bg-white border-slate-200 shadow-sm">
+                <Card className="bg-white border-slate-200 shadow-sm text-slate-900">
                     <CardHeader>
                         <CardTitle className="text-slate-800 flex items-center gap-2">
                             <Users className="h-5 w-5 text-blue-500" />
@@ -404,7 +404,7 @@ export default function DashboardSupervisor() {
             </div>
 
             {/* Representatives Table */}
-            <Card className="bg-white border-slate-200 shadow-sm">
+            <Card className="bg-white border-slate-200 shadow-sm text-slate-900">
                 <CardHeader>
                     <CardTitle className="text-slate-800 flex items-center gap-2">
                         <Award className="h-5 w-5 text-amber-500" />

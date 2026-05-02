@@ -283,7 +283,7 @@ export default function PlanManager() {
             <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="flex items-center gap-6">
@@ -347,7 +347,7 @@ export default function PlanManager() {
                                                 onChange={(e) => setFeatureInput(e.target.value)}
                                                 onKeyDown={(e) => e.key === 'Enter' && addFeature()}
                                             />
-                                            <Button size="icon" onClick={addFeature} className="bg-indigo-600 hover:bg-indigo-500 rounded-xl w-12 h-12">
+                                            <Button size="icon" onClick={addFeature} className="bg-indigo-600 hover:bg-indigo-500 rounded-xl w-12 h-12 text-white">
                                                 <Plus className="w-5 h-5" />
                                             </Button>
                                         </div>
@@ -434,7 +434,7 @@ export default function PlanManager() {
                                     <ul className="space-y-4">
                                         {plan.features?.map((feature, i) => (
                                             <li key={i} className="flex items-start group/li">
-                                                <div className="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mr-3 mt-0.5 shrink-0 group-hover/li:bg-emerald-500 group-hover/li:text-white transition-all">
+                                                <div className="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mr-3 mt-0.5 shrink-0 group-hover/li:bg-emerald-500 group-hover/li:text-white transition-all text-slate-900">
                                                     <Check className="h-3 w-3 text-emerald-500 group-hover/li:text-white transition-all" />
                                                 </div>
                                                 <span className="text-muted-foreground text-sm font-bold leading-tight group-hover/li:text-slate-900 dark:group-hover/li:text-white transition-colors">{feature}</span>

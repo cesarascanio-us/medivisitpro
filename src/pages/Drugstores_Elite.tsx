@@ -244,7 +244,7 @@ export default function DrugstoresElite() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 font-display transition-colors duration-500 overflow-y-auto">
+        <div className="min-h-screen flex flex-col font-display transition-colors duration-500 overflow-y-auto space-y-10">
             <EliteHeader 
                 title="Canal Distribución"
                 subtitle="DIRECTORIO LOGÍSTICO Y OPERATIVO"
@@ -327,7 +327,7 @@ export default function DrugstoresElite() {
                             placeholder="BUSCAR DISTRIBUIDOR POR NOMBRE, RIF O CIUDAD..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-16 pl-16 bg-transparent border-none text-slate-900 font-bold placeholder:text-slate-300 focus-visible:ring-0 text-sm uppercase tracking-widest"
+                            className="h-16 pl-16 bg-transparent border-none text-foreground font-bold placeholder:text-slate-300 focus-visible:ring-0 text-sm uppercase tracking-widest"
                         />
                     </div>
                 </Card>
@@ -338,21 +338,21 @@ export default function DrugstoresElite() {
 
             {/* Table Section Industrial */}
             <Card className="bg-card border border-border rounded-[3rem] shadow-premium-lg overflow-hidden">
-                <CardHeader className="p-10 border-b border-slate-100 bg-slate-50/50">
-                    <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
+                <CardHeader className="p-10 border-b border-border/40">
+                    <CardTitle className="text-2xl font-black text-foreground uppercase tracking-tighter flex items-center gap-4">
                         <Building className="h-6 w-6 text-primary" />
                         Directorio de Distribución Estratégica
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                     <Table>
-                        <TableHeader className="bg-slate-50">
-                            <TableRow className="border-slate-100 hover:bg-transparent">
-                                <TableHead className="pl-10 h-16 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em] ">Distribuidor</TableHead>
-                                <TableHead className="h-16 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em] ">Geolocalización</TableHead>
-                                <TableHead className="h-16 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em] ">Identificación Fiscal</TableHead>
-                                <TableHead className="h-16 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em] ">Estatus Táctico</TableHead>
-                                <TableHead className="pr-10 h-16 text-right text-slate-400 font-black uppercase text-[10px] tracking-[0.2em] ">Mando</TableHead>
+                        <TableHeader>
+                            <TableRow className="border-border/40 hover:bg-transparent">
+                                <TableHead className="pl-10 h-16 text-muted-foreground font-black uppercase text-[10px] tracking-[0.2em]">Distribuidor</TableHead>
+                                <TableHead className="h-16 text-muted-foreground font-black uppercase text-[10px] tracking-[0.2em]">Geolocalización</TableHead>
+                                <TableHead className="h-16 text-muted-foreground font-black uppercase text-[10px] tracking-[0.2em]">Identificación Fiscal</TableHead>
+                                <TableHead className="h-16 text-muted-foreground font-black uppercase text-[10px] tracking-[0.2em]">Estatus Táctico</TableHead>
+                                <TableHead className="pr-10 h-16 text-right text-muted-foreground font-black uppercase text-[10px] tracking-[0.2em]">Mando</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -371,10 +371,10 @@ export default function DrugstoresElite() {
                                 </TableRow>
                             ) : (
                                 drugstores.map(store => (
-                                    <TableRow key={store.id} className="border-white/5 group hover:bg-background/5 transition-all duration-300">
+                                    <TableRow key={store.id} className="border-border/20 group hover:bg-muted/50 transition-all duration-300">
                                         <TableCell className="pl-10 py-6">
                                             <div className="flex flex-col">
-                                                <span className="text-lg font-black text-slate-900 tracking-tighter uppercase">{store.name}</span>
+                                                <span className="text-lg font-black text-foreground tracking-tighter uppercase">{store.name}</span>
                                                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 flex items-center gap-2">
                                                     <Phone className="h-3 w-3 text-primary/50" /> {store.phone || 'S/T'}
                                                 </span>
@@ -419,7 +419,7 @@ export default function DrugstoresElite() {
                                                             <Trash2 className="h-5 w-5" />
                                                         </Button>
                                                     </AlertDialogTrigger>
-                                                    <AlertDialogContent className="bg-slate-900 border-white/5 rounded-[2rem]">
+                                                    <AlertDialogContent className="bg-slate-900 border-white/5 rounded-[2rem] text-white">
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle className="text-white font-black text-2xl tracking-tighter uppercase ">Confirmar Purga</AlertDialogTitle>
                                                             <AlertDialogDescription className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">
@@ -445,13 +445,13 @@ export default function DrugstoresElite() {
             {/* Detail View Dialog */}
             <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-none shadow-premium-2xl rounded-[3rem] p-0 font-display">
-                    <DialogHeader className="p-10 border-b border-slate-100 bg-slate-50/50">
-                        <DialogTitle className="flex items-center gap-6 text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">
+                    <DialogHeader className="p-10 border-b border-border/40">
+                        <DialogTitle className="flex items-center gap-6 text-3xl font-black text-foreground tracking-tighter uppercase leading-none">
                             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-premium-sm">
                                 <Building2 className="h-8 w-8 text-primary" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">{selectedDrugstore?.name}</h2>
+                                <h2 className="text-3xl font-black tracking-tighter text-foreground uppercase">{selectedDrugstore?.name}</h2>
                                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-1 italic">Expediente Comercial V.Industrial</p>
                             </div>
                         </DialogTitle>
@@ -469,7 +469,7 @@ export default function DrugstoresElite() {
                             <TabsContent value="overview" className="space-y-8 animate-in slide-in-from-bottom-5 duration-500">
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <div className="space-y-6">
-                                        <div className="bg-slate-100/50 p-8 rounded-[2rem] border border-slate-200/50 shadow-inner">
+                                        <div className="bg-muted/30 p-8 rounded-[2rem] border border-border/40 shadow-inner">
                                             <h3 className="text-[10px] font-black text-slate-400 mb-6 flex items-center gap-3 uppercase tracking-[0.3em] ">
                                                 <div className="p-2 bg-card rounded-lg shadow-sm">
                                                     <Building className="h-4 w-4 text-primary" />
@@ -477,11 +477,11 @@ export default function DrugstoresElite() {
                                                 Información Comercial
                                             </h3>
                                             <div className="space-y-4">
-                                                <div className="flex justify-between border-b border-slate-200 pb-4">
+                                                <div className="flex justify-between border-b border-border/40 pb-4">
                                                     <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest ">RIF</span>
-                                                    <span className="text-[10px] font-mono font-black text-slate-900 tracking-widest">{selectedDrugstore.rif}</span>
+                                                    <span className="text-[10px] font-mono font-black text-foreground tracking-widest">{selectedDrugstore.rif}</span>
                                                 </div>
-                                                <div className="flex justify-between border-b border-slate-200 pb-4">
+                                                <div className="flex justify-between border-b border-border/40 pb-4">
                                                     <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest ">Encargado</span>
                                                     <span className="text-[10px] font-black text-primary uppercase tracking-widest">{selectedDrugstore.owner_name || 'PENDIENTE'}</span>
                                                 </div>
@@ -494,20 +494,20 @@ export default function DrugstoresElite() {
                                             </div>
                                         </div>
 
-                                        <div className="bg-slate-100/50 p-8 rounded-[2rem] border border-slate-200/50 shadow-inner">
+                                        <div className="bg-muted/30 p-8 rounded-[2rem] border border-border/40 shadow-inner">
                                             <h3 className="text-[10px] font-black text-slate-400 mb-6 flex items-center gap-3 uppercase tracking-[0.3em] ">
                                                 <div className="p-2 bg-card rounded-lg shadow-sm">
                                                     <MapPin className="h-4 w-4 text-primary" />
                                                 </div>
                                                 Geolocalización Táctica
                                             </h3>
-                                            <p className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-none">{selectedDrugstore.city || 'S/C'}</p>
+                                            <p className="text-xl font-black text-foreground uppercase tracking-tighter leading-none">{selectedDrugstore.city || 'S/C'}</p>
                                             <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-3 leading-relaxed">{selectedDrugstore.address || 'Sin direccion registrada'}</p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <div className="bg-primary rounded-[2.5rem] p-10 shadow-premium-lg shadow-primary/20 h-full flex flex-col justify-between group overflow-hidden relative border-4 border-white">
+                                        <div className="bg-primary rounded-[2.5rem] p-10 shadow-premium-lg shadow-primary/20 h-full flex flex-col justify-between group overflow-hidden relative border-4 border-white text-white">
                                             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
                                                 <Navigation className="h-32 w-32 text-white" />
                                             </div>
@@ -533,7 +533,7 @@ export default function DrugstoresElite() {
                                     {historyLoading ? (
                                         <div className="flex justify-center p-12"><RefreshCw className="h-10 w-10 animate-spin text-primary" /></div>
                                     ) : storeVisits.length === 0 ? (
-                                        <div className="text-center py-20 bg-slate-100/50 rounded-[3rem] border border-slate-200/50 border-dashed">
+                                        <div className="text-center py-20 bg-muted/20 rounded-[3rem] border border-border/40 border-dashed">
                                             <Calendar className="h-16 w-16 mx-auto mb-6 opacity-10 text-primary" />
                                             <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Sin historial de gestiones registradas</p>
                                         </div>
@@ -542,11 +542,11 @@ export default function DrugstoresElite() {
                                             {storeVisits.map(v => (
                                                 <div key={v.id} className="p-8 bg-card border border-border rounded-[2rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
                                                     <div className="flex items-center gap-6">
-                                                        <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 shadow-inner">
+                                                        <div className="w-12 h-12 bg-muted/30 rounded-xl flex items-center justify-center border border-border/40 shadow-inner">
                                                             <Calendar className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
                                                         </div>
                                                         <div>
-                                                            <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">{new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                                                            <p className="font-black text-foreground uppercase tracking-tighter text-lg">{new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                                                             <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1 ">{v.visit_objective || 'GESTIÓN GENERAL'}</p>
                                                         </div>
                                                     </div>
@@ -565,7 +565,7 @@ export default function DrugstoresElite() {
                                     {historyLoading ? (
                                         <div className="flex justify-center p-12"><RefreshCw className="h-10 w-10 animate-spin text-primary" /></div>
                                     ) : storeOrders.length === 0 ? (
-                                        <div className="text-center py-20 bg-slate-100/50 rounded-[3rem] border border-slate-200/50 border-dashed">
+                                        <div className="text-center py-20 bg-muted/20 rounded-[3rem] border border-border/40 border-dashed">
                                             <Package className="h-16 w-16 mx-auto mb-6 opacity-10 text-primary" />
                                             <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Sin registros de órdenes directas</p>
                                         </div>
@@ -574,19 +574,19 @@ export default function DrugstoresElite() {
                                             {storeOrders.map(o => (
                                                 <div key={o.id} className="p-10 bg-card border border-border rounded-[2.5rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
                                                     <div className="flex items-center gap-8">
-                                                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 shadow-inner">
+                                                        <div className="w-16 h-16 bg-muted/30 rounded-2xl flex items-center justify-center border border-border/40 shadow-inner">
                                                             <Package className="h-8 w-8 text-slate-400 group-hover:text-primary transition-colors" />
                                                         </div>
                                                         <div className="flex flex-col">
                                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ">Orden de Transferencia</span>
-                                                            <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">#{o.order_number}</span>
+                                                            <span className="text-2xl font-black text-foreground tracking-tighter uppercase leading-none">#{o.order_number}</span>
                                                             <span className="text-[10px] text-primary font-black uppercase tracking-widest mt-2 flex items-center gap-2">
-                                                                <div className="w-1 h-1 rounded-full bg-primary" /> {new Date(o.order_date).toLocaleDateString()}
+                                                                <div className="w-1 h-1 rounded-full bg-primary text-white" /> {new Date(o.order_date).toLocaleDateString()}
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-4xl font-black text-slate-900 tracking-tighter mb-2 tabular-nums">${o.total?.toFixed(2)}</p>
+                                                        <p className="text-4xl font-black text-foreground tracking-tighter mb-2 tabular-nums">${o.total?.toFixed(2)}</p>
                                                         <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full">{o.status}</Badge>
                                                     </div>
                                                 </div>

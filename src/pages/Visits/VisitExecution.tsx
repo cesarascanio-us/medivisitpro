@@ -363,8 +363,8 @@ export default function VisitExecutionPage() {
     };
 
     const handleCheckIn = async () => {
-        // Optimization for Demo Mode: Bypass real GPS to avoid blocks
-        const isDemo = id?.startsWith('detail-');
+        // Optimization for Demo Mode: Bypass real GPS (DISABLED for real data propagation)
+        const isDemo = false; // id?.startsWith('detail-');
         if (isDemo) {
             console.log("🚀 Demo Mode: Bypassing GPS for fast check-in");
             processCheckIn(10.4806, -66.8983);
@@ -580,7 +580,7 @@ export default function VisitExecutionPage() {
                 setIsTimerRunning(false);
 
                 // PROCESS SAMPLE DROPS
-                if (deliveredSamples.length > 0 && !id?.startsWith('detail-')) {
+                if (deliveredSamples.length > 0) {
                     for (const item of deliveredSamples) {
                         await supabase.rpc('register_visit_sample_drop', {
                             p_visit_id: id!,
@@ -592,7 +592,7 @@ export default function VisitExecutionPage() {
                 }
 
                 // PROCESS POP DROPS (360)
-                if (deliveredPOP.length > 0 && !id?.startsWith('detail-')) {
+                if (deliveredPOP.length > 0) {
                     for (const item of deliveredPOP) {
                         await supabase.rpc('register_visit_pop_drop' as any, {
                             p_visit_id: id!,
@@ -665,7 +665,7 @@ export default function VisitExecutionPage() {
         <div className="max-w-4xl mx-auto p-3 md:p-6 pb-24">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-xl font-bold text-slate-900">
+                    <h1 className="text-xl font-bold text-foreground">
                         {directoryItem?.name || "Cliente Desconocido"}
                     </h1>
                     <p className="text-sm text-slate-500 flex items-center gap-1">
@@ -673,7 +673,7 @@ export default function VisitExecutionPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-full border border-slate-200 mr-1">
+                    <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-full border border-slate-200 mr-1 text-slate-900">
                         <Label htmlFor="focus-mode" className="text-[8px] font-black uppercase tracking-widest text-slate-400">Focus</Label>
                         <Switch id="focus-mode" checked={isFocusMode} onCheckedChange={setIsFocusMode} className="data-[state=checked]:bg-emerald-500 scale-[0.65]" />
                     </div>
@@ -703,12 +703,12 @@ export default function VisitExecutionPage() {
                     <p className="text-slate-500 max-w-sm mx-auto mb-6">
                         Comprueba tu ubicación y presiona Check-in.
                     </p>
-                    <Button size="lg" onClick={handleCheckIn} className="bg-blue-600 hover:bg-blue-700 gap-2 shadow-lg shadow-blue-200">
+                    <Button size="lg" onClick={handleCheckIn} className="bg-blue-600 hover:bg-blue-700 gap-2 shadow-lg shadow-blue-200 text-white">
                         <Play className="h-5 w-5" /> INICIAR VISITA
                     </Button>
                 </div>
             ) : visit.status === 'completed' ? (
-                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-8 text-center">
+                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-8 text-center text-slate-900">
                     <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-emerald-900 mb-2">Visita Completada</h3>
                     <Button
@@ -759,7 +759,7 @@ export default function VisitExecutionPage() {
                     <TabsContent value="strategy" className="space-y-6 animate-in fade-in-50 duration-500">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {scenario && !scenarioLoading && (
-                                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 shadow-sm">
+                                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 shadow-sm text-slate-900">
                                     <h3 className="text-base font-bold text-emerald-700 mb-1 flex items-center gap-2">
                                         <Brain className="h-5 w-5 text-emerald-600" /> Brain 360: {scenario.title || 'Sugerencia Estratégica'}
                                     </h3>
@@ -779,14 +779,14 @@ export default function VisitExecutionPage() {
 
 
                             <Card className="border-border bg-card shadow-md rounded-xl overflow-hidden">
-                                <CardHeader className="bg-slate-50 py-3 px-4 border-b border-slate-100">
+                                <CardHeader className="bg-slate-50 py-3 px-4 border-b border-slate-100 text-slate-900">
                                     <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
                                         <FileText className="h-4 w-4 text-emerald-600" /> Preparación y Foco
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4 pt-4 px-4 pb-4">
                                     {scenario?.showMasterDataCard && (
-                                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-slate-900">
                                             <MasterDataCard
                                                 directoryItemId={directoryItemId || ''}
                                                 currentEmail={directoryItem?.email}
@@ -839,14 +839,14 @@ export default function VisitExecutionPage() {
                     {/* TAB 2: DESARROLLO (NEURO VENTAS & ENTREVISTA) */}
                     <TabsContent value="development" className="space-y-4 animate-in fade-in-50">
                         <Card className="border-border bg-card shadow-lg rounded-2xl overflow-hidden">
-                            <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100">
-                                <CardTitle className="flex items-center gap-2 text-xl font-bold text-slate-900">
+                            <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100 text-slate-900">
+                                <CardTitle className="flex items-center gap-2 text-xl font-bold text-foreground">
                                     <Star className="h-5 w-5 text-yellow-500" /> Psicología de Venta & Interés
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-8 pt-6">
                                 {/* Interest Scale */}
-                                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-slate-900">
                                     <label className="text-sm font-bold text-slate-500 uppercase tracking-wider block mb-4 text-center sm:text-left">Nivel de Engagement</label>
                                     <div className="flex items-center justify-center sm:justify-start gap-4 mb-2">
                                         {[1, 2, 3, 4, 5].map((star) => (
@@ -1020,7 +1020,7 @@ export default function VisitExecutionPage() {
                                         <Card key={product.id} className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
                                             <CardContent className="p-4 flex flex-col justify-between h-full gap-4">
                                                 <div>
-                                                    <h4 className="font-bold text-slate-900 text-lg leading-tight">{product.name}</h4>
+                                                    <h4 className="font-bold text-foreground text-lg leading-tight">{product.name}</h4>
                                                     <p className="text-sm text-slate-500 mt-1">{product.active_ingredients || 'Producto Clave'}</p>
                                                     <div className="mt-2 text-emerald-600 font-mono font-bold">
                                                         ${product.price ? product.price.toFixed(2) : '0.00'}
@@ -1087,7 +1087,7 @@ export default function VisitExecutionPage() {
 
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-md">
+                            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-md text-slate-900">
                                 <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
                                     <PenTool className="h-5 w-5 text-emerald-600" /> Evidencia y Firma
                                 </h3>
@@ -1113,7 +1113,7 @@ export default function VisitExecutionPage() {
                             </div>
 
                             <div className="flex flex-col gap-6">
-                                <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100 shadow-md flex-grow">
+                                <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100 shadow-md flex-grow text-slate-900">
                                     <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center gap-2">
                                         <Navigation className="h-5 w-5" /> Próximo Paso
                                     </h3>
@@ -1145,14 +1145,14 @@ export default function VisitExecutionPage() {
 
             {/* CALCULATOR MODAL */}
             <Dialog open={negotiationModalOpen} onOpenChange={setNegotiationModalOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-50 p-0 rounded-2xl border-0">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-50 p-0 rounded-2xl border-0 text-slate-900">
                     <DialogHeader className="p-6 pb-2 bg-card">
                         <DialogTitle className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                             <Calculator className="h-6 w-6 text-blue-600" />
                             Negociación: <span className="text-blue-600">{negotiationProduct?.name}</span>
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="p-6 pt-2 bg-slate-50">
+                    <div className="p-6 pt-2 bg-slate-50 text-slate-900">
                         {negotiationProduct && (
                             <CommercialCalculator
                                 basePrice={negotiationProduct.price || 0}
@@ -1175,7 +1175,7 @@ export default function VisitExecutionPage() {
                     <div className="max-w-4xl mx-auto space-y-8 pb-8">
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">MODO <span className="text-emerald-500">MANOS LIBRES</span></h2>
-                            <Button variant="ghost" size="icon" onClick={() => setIsFocusMode(false)} className="rounded-full bg-slate-100 h-10 w-10">
+                            <Button variant="ghost" size="icon" onClick={() => setIsFocusMode(false)} className="rounded-full bg-slate-100 h-10 w-10 text-slate-900">
                                 <AlertCircle className="h-5 w-5 text-slate-400" />
                             </Button>
                         </div>

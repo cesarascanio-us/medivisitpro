@@ -96,7 +96,7 @@ export default function NaturalStores() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 p-10 font-outfit transition-colors duration-500 overflow-y-auto">
+        <div className="min-h-screen flex flex-col p-10 font-display transition-colors duration-500 overflow-y-auto space-y-10">
             {/* Header Industrial Elite */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-8 mb-10 animate-in fade-in slide-in-from-top duration-1000">
                 <div className="flex items-center gap-5">
@@ -104,7 +104,7 @@ export default function NaturalStores() {
                         <Sprout className="h-8 w-8 text-indigo-500 animate-pulse" />
                     </div>
                     <div>
-                        <h1 className="text-4xl font-black text-slate-900 uppercase  tracking-tighter leading-tight">Canal Naturista de Élite</h1>
+                        <h1 className="text-4xl font-black text-foreground uppercase tracking-tighter leading-tight">Canal Naturista de Élite</h1>
                         <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-3 ">Gestión de Establecimientos y Tiendas Naturistas Estratégicas</p>
                     </div>
                 </div>
@@ -122,7 +122,7 @@ export default function NaturalStores() {
                             setFormData({ name: "", rif: "", owner_name: "", sanitary_permits: false, address: "", city: "", phone: "", email: "", contact_type: "natural_store" });
                             setFormDialogOpen(true);
                         }}
-                        className="bg-card text-slate-900 shadow-2xl font-black uppercase tracking-widest  text-xs h-14 px-10 rounded-2xl transition-all hover:bg-slate-100 hover:scale-105"
+                        className="bg-card text-foreground shadow-2xl font-black uppercase tracking-widest text-xs h-14 px-10 rounded-2xl transition-all hover:bg-slate-100 hover:scale-105"
                     >
                         <Plus className="h-6 w-6 mr-3" /> Alta Comercial
                     </Button>

@@ -86,8 +86,8 @@ const getMockVisitData = (id: string) => {
 };
 
 export function useVisit(id: string) {
-    // Recognize both ID patterns as demo
-    const isDemo = id?.startsWith('detail-') || id?.startsWith('visit-') || id?.startsWith('pd-') || id?.startsWith('vis-');
+    // Recognize both ID patterns as demo (DISABLED for real data propagation)
+    const isDemo = false; // id?.startsWith('detail-') || id?.startsWith('visit-') || id?.startsWith('pd-') || id?.startsWith('vis-');
 
     return useQuery({
         queryKey: ['visit', id],
@@ -108,7 +108,8 @@ export function useStartVisit() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ visitId, location }: { visitId: string, location: { lat: number, lng: number, outOfRange: boolean } }) => {
-            if (visitId?.startsWith('detail-') || visitId?.startsWith('visit-') || visitId?.startsWith('pd-') || visitId?.startsWith('vis-')) {
+            const isDemo = false; // visitId?.startsWith('detail-') || visitId?.startsWith('visit-') || visitId?.startsWith('pd-') || visitId?.startsWith('vis-');
+            if (isDemo) {
                 console.log("Demo Mode: Persisting Check-in for", visitId);
                 setDemoStatus(visitId, 'in_progress', new Date().toISOString());
                 return Promise.resolve(true);
@@ -126,7 +127,8 @@ export function useCompleteVisit() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ visitId, data }: { visitId: string, data: any }) => {
-            if (visitId?.startsWith('detail-') || visitId?.startsWith('visit-') || visitId?.startsWith('pd-') || visitId?.startsWith('vis-')) {
+            const isDemo = false; // visitId?.startsWith('detail-') || visitId?.startsWith('visit-') || visitId?.startsWith('pd-') || visitId?.startsWith('vis-');
+            if (isDemo) {
                 console.log("Demo Mode: Persisting Check-out for", visitId);
                 const current = getDemoStatus(visitId);
                 setDemoStatus(visitId, 'completed', current?.checkin_at, new Date().toISOString());

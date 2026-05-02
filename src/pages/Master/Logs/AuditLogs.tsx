@@ -75,7 +75,7 @@ export default function AuditLogs() {
             {/* Premium White Header Container */}
             <header className="bg-card px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -171,7 +171,7 @@ export default function AuditLogs() {
                                             <TableCell className="py-5">
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-center gap-1.5 font-bold text-xs text-muted-foreground">
-                                                        <div className="w-5 h-5 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                                                        <div className="w-5 h-5 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-slate-900">
                                                             <User className="w-3 h-3 text-blue-500" />
                                                         </div>
                                                         <span className="truncate max-w-[140px]">{log.changed_by || 'Autómata'}</span>
