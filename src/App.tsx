@@ -103,11 +103,6 @@ const RoutesWithRemount = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     console.log('[RoutesWithRemount] Route changed to:', location.pathname);
-    // SEGURIDAD ELITE: Si detectamos un patrón de demo de Sede Central, redirigimos al Terminal Maestro
-    if (location.pathname.startsWith('/demo/CA-72-')) {
-      const demoId = location.pathname.split('/').pop();
-      window.location.href = `https://cesarascanio.com/demo/${demoId}`;
-    }
   }, [location.pathname]);
 
   return <div style={{ display: 'contents' }}>{children}</div>;

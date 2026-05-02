@@ -121,12 +121,12 @@ export default function LandingPage() {
               >
                 {user ? 'Ir al Dashboard' : 'Acceso'}
               </Button>
-              <a
-                href="https://cesarascanio.vercel.app/?demo=medivisit-pro"
+              <button
+                onClick={() => navigate('/demo')}
                 className="bg-primary hover:bg-primary/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all transform hover:-translate-y-1 rounded-2xl px-10 py-3.5 font-black text-[10px] uppercase tracking-[0.2em]"
               >
-                Prueba de 72 Horas
-              </a>
+                Prueba Gratuita
+              </button>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -186,13 +186,13 @@ export default function LandingPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 pt-6">
-                <a
-                  href="https://cesarascanio.vercel.app/?demo=medivisit-pro"
+                <button
+                  onClick={() => navigate('/demo')}
                   className="w-full sm:w-auto px-10 h-16 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-2xl hover:shadow-emerald-500/40 transition-all text-xl font-bold group flex items-center justify-center"
                 >
-                  Prueba de 72 Horas
+                  Acceso Demo Inmediato
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </button>
                 <button
                   className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-slate-700 hover:text-primary font-bold transition-all text-lg group"
                 >
