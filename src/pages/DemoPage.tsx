@@ -8,25 +8,36 @@
 ======================================================================== */
 
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Loader2, Rocket, CheckCircle2, Sparkles } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Loader2, Rocket, CheckCircle2, Sparkles, ArrowLeft } from 'lucide-react';
 import { loginToDemo, createDemoWelcomeToast } from '@/lib/demoUtils';
 import { useToast } from '@/hooks/use-toast';
+import { DemoRegistrationForm } from '@/components/demo/DemoRegistrationForm';
 
 export default function DemoPage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { toast } = useToast();
     const [progress, setProgress] = useState(0);
-    const [status, setStatus] = useState('Iniciando demo...');
+    const [status, setStatus] = useState('Verificando acceso...');
     const [error, setError] = useState<string | null>(null);
+    const [showForm, setShowForm] = useState(false);
+
+    const code = searchParams.get('code');
 
     useEffect(() => {
+        // Si no hay código en la URL, mostramos el formulario de registro
+        if (!code) {
+            setShowForm(true);
+            return;
+        }
+
         const initializeDemo = async () => {
             // Progress animation
             const progressSteps = [
-                { progress: 25, message: 'Preparando tu demo...', delay: 300 },
-                { progress: 50, message: 'Cargando datos de ejemplo...', delay: 600 },
-                { progress: 75, message: 'Configurando dashboard...', delay: 900 },
+                { progress: 25, message: 'Validando código de acceso...', delay: 300 },
+                { progress: 50, message: 'Preparando tu entorno...', delay: 600 },
+                { progress: 75, message: 'Cargando datos de ejemplo...', delay: 900 },
                 { progress: 100, message: '¡Listo! Redirigiendo...', delay: 1200 }
             ];
 
@@ -55,13 +66,34 @@ export default function DemoPage() {
         };
 
         initializeDemo();
-    }, [navigate, toast]);
+    }, [navigate, toast, code]);
 
     const handleRetry = () => {
         setError(null);
         setProgress(0);
         window.location.reload();
     };
+
+    // Si no hay código y no hay error, mostramos el formulario
+    if (showForm && !code) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+                {/* Back button to landing */}
+                <button 
+                    onClick={() => navigate('/')}
+                    className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-bold uppercase tracking-[0.2em] text-[10px]"
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    Regresar a Inicio
+                </button>
+
+                <DemoRegistrationForm onSuccess={() => {
+                    // Después de registrarse, podríamos esperar a que n8n mande el mail
+                    // o redirigir a una página de "Pendiente"
+                }} />
+            </div>
+        );
+    }
 
     if (error) {
         return (

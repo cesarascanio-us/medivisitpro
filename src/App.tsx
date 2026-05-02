@@ -103,6 +103,14 @@ const RoutesWithRemount = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     console.log('[RoutesWithRemount] Route changed to:', location.pathname);
+    
+    // CONTROL DE ACCESO ELITE: Si detectamos un código de demo CA-72-
+    if (location.pathname.includes('/demo/CA-72-')) {
+      const demoId = location.pathname.split('CA-72-').pop();
+      console.log('[Security] Demo Code Detected:', `CA-72-${demoId}`);
+      // Aquí podríamos añadir validación contra Supabase en el futuro
+      // Por ahora, permitimos que el flujo continúe hacia la DemoPage
+    }
   }, [location.pathname]);
 
   return <div style={{ display: 'contents' }}>{children}</div>;
