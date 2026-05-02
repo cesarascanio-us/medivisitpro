@@ -273,23 +273,7 @@ export default function LandingPage() {
                             </div>
                         </div>
 
-                        <div className="md:col-span-2 space-y-6">
-                            <h4 className="font-bold text-white text-sm tracking-wide">Sistemas</h4>
-                            <ul className="space-y-4 text-sm font-medium">
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Sentinel AI</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Offline PWA</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Bóveda ISO</a></li>
-                            </ul>
-                        </div>
 
-                        <div className="md:col-span-2 space-y-6">
-                            <h4 className="font-bold text-white text-sm tracking-wide">Compañía</h4>
-                            <ul className="space-y-4 text-sm font-medium">
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Nosotros</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Soporte</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Contacto</a></li>
-                            </ul>
-                        </div>
 
 
                     </div>
