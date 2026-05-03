@@ -85,6 +85,12 @@ RETURNS BOOLEAN SECURITY DEFINER AS $$
     );
 $$ LANGUAGE sql STABLE SET search_path = public;
 
+-- Alias is_master para compatibilidad con políticas antiguas
+CREATE OR REPLACE FUNCTION public.is_master()
+RETURNS BOOLEAN SECURITY DEFINER AS $$
+    SELECT public.is_system_master();
+$$ LANGUAGE sql STABLE SET search_path = public;
+
 CREATE OR REPLACE FUNCTION public.get_my_role() 
 RETURNS TEXT SECURITY DEFINER AS $$
     SELECT role FROM public.user_roles_plain WHERE user_id = auth.uid() LIMIT 1;
