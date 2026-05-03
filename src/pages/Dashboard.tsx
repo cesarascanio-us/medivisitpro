@@ -39,17 +39,17 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<any>(null);
 
   const getDashboardTitle = () => {
-    if (isMaster || isAdmin) return "Consola de Mando Global";
-    if (isManager) return "Centro de Mando Gerencial";
-    if (isCoordinator || isSupervisor) return "Panel de Mando Estratégico";
-    if (isTelemarketing) return "Central de Operaciones TM";
-    return "Panel de Mando Táctico";
+    if (isMaster || isAdmin) return "Panel de Control Global";
+    if (isManager) return "Resumen Gerencial";
+    if (isCoordinator || isSupervisor) return "Vista Estratégica";
+    if (isTelemarketing) return "Operaciones Telemarketing";
+    return "Mi Actividad Diaria";
   };
 
   const getDashboardBadge = () => {
-    if (isMaster) return "Sovereign Master";
-    if (isAdmin) return "Admin Elite";
-    if (isManager) return "Gerencial CA";
+    if (isMaster) return "Master";
+    if (isAdmin) return "Administrador";
+    if (isManager) return "Gerente";
     if (isCoordinator) return "Coordinador";
     if (isSupervisor) return "Supervisor";
     if (isTelemarketing) return "Telemarketing";
@@ -209,32 +209,31 @@ export default function Dashboard() {
   };
 
     return (
-    <div className="space-y-10 pb-10 font-display animate-in fade-in duration-700">
+    <div className="space-y-6 pb-10 font-display animate-in fade-in duration-700">
       
-      {/* HEADER ELITE - CENTRO DE MANDO ESTRATÉGICO */}
       <EliteHeader 
         title={getDashboardTitle()}
-        subtitle={`Operatividad: ${organizationName || 'MediVisitPro Global'}`}
-        icon={Zap}
+        subtitle={`${organizationName || 'MediVisitPro'}`}
+        icon={Activity}
         badgeText={getDashboardBadge()}
-        statusText={isOnline ? "Sincronización Cloud Activa" : "Modo Offline: Almacén Local"}
+        statusText={isOnline ? "Conectado" : "Modo Offline"}
         statusColor={isOnline ? "bg-emerald-500" : "bg-amber-500"}
         rightContent={
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex flex-col items-end">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status Operativo</span>
-              <span className="text-sm font-black text-foreground tracking-tight uppercase mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <div className="flex items-center gap-2 md:gap-6">
+            <div className="hidden lg:flex flex-col items-end">
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Sincronización</span>
+              <span className="text-xs font-bold text-foreground tracking-tight mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
-            <div className="h-12 w-[1px] bg-slate-100 mx-2 text-slate-900" />
-            <div className="flex items-center gap-4 bg-card p-2 pr-6 rounded-2xl shadow-premium-sm border border-slate-100 group hover:shadow-premium-md transition-all">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 overflow-hidden group-hover:rotate-6 transition-transform">
-                <span className="text-lg font-black text-primary uppercase">
+            <div className="hidden sm:block h-8 w-[1px] bg-slate-200 dark:bg-slate-800 mx-1 md:mx-2" />
+            <div className="flex items-center gap-2 md:gap-3 bg-slate-50 dark:bg-slate-900 p-1.5 md:pr-4 rounded-xl border border-slate-100 dark:border-slate-800 transition-all">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                <span className="text-sm md:text-base font-bold text-primary uppercase">
                   {getWelcomeName().charAt(0)}
                 </span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Comandante</span>
-                <span className="text-xs font-black text-foreground tracking-tight uppercase mt-1">{getWelcomeName()}</span>
+              <div className="hidden xs:flex flex-col">
+                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider leading-none">Perfil</span>
+                <span className="text-[11px] md:text-xs font-bold text-foreground tracking-tight mt-1 truncate max-w-[80px] md:max-w-none">{getWelcomeName()}</span>
               </div>
             </div>
           </div>
@@ -242,33 +241,33 @@ export default function Dashboard() {
       />
 
       {/* KPI GRID ELITE INDUSTRIAL */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <EliteKPICard
-          title={isTelemarketing ? "Citas de Hoy" : "Visitas Hoy"}
+          title={isTelemarketing ? "Citas hoy" : "Visitas hoy"}
           value={stats.visitsToday}
-          subtitle={`${stats.visitsTodayConfirmed} Confirmadas`}
+          subtitle={`${stats.visitsTodayConfirmed} confirmadas`}
           icon={isTelemarketing ? RefreshCcw : Calendar}
           trend={12}
           color="blue"
         />
         <EliteKPICard
-          title={isManager || isCoordinator ? "Cobertura Equipo" : "Contactos Mes"}
+          title={isManager || isCoordinator ? "Equipo" : "Contactos"}
           value={stats.doctorsContactedWeek}
-          subtitle="Objetivo Trimestral"
+          subtitle="Objetivo trim."
           icon={Users}
           trend={8}
           color="indigo"
         />
         <EliteKPICard
-          title={isTelemarketing ? "Conversión TM" : "Reportes OK"}
+          title={isTelemarketing ? "Conv." : "Reportes"}
           value={stats.reportsCompletedMonth}
-          subtitle="Sincronización Cloud"
+          subtitle="Sincronizado"
           icon={isTelemarketing ? Zap : FileCheck}
           trend={-2}
           color="purple"
         />
         <EliteKPICard
-          title="Meta Cumplimiento"
+          title="Cumplimiento"
           value={`${Math.round((stats.reportsCompletedMonth / stats.monthlyGoal) * 100)}%`}
           subtitle={`Meta: ${stats.monthlyGoal}`}
           icon={TrendingUp}
@@ -277,111 +276,111 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Columna Principal - Inteligencia de Campo */}
-        <div className="lg:col-span-2 space-y-10">
+        <div className="lg:col-span-2 space-y-8">
           <section className="animate-in slide-in-from-bottom-5 duration-700">
-            <div className="flex items-center justify-between mb-8 px-2">
+            <div className="flex items-center justify-between mb-6 px-2">
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-[1.2rem] bg-primary/5 flex items-center justify-center text-primary shadow-soft">
-                    <Clock className="h-6 w-6" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                    <Clock className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tighter font-display leading-tight">Misiones Programadas</h2>
-                    <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Despliegue táctico para las próximas horas</p>
+                    <h2 className="text-xl font-bold text-foreground tracking-tight">Próximas Visitas</h2>
+                    <p className="text-slate-400 text-xs font-medium">Planificación para las próximas horas</p>
                   </div>
                </div>
-               <Button variant="ghost" onClick={() => navigate('/visits')} className="text-[10px] font-black text-primary hover:bg-primary/5 rounded-xl px-4 py-6 uppercase flex items-center gap-2 group transition-all">
-                 VER TODOS <ChevronRight className="h-4 w-4 group-hover:translate-x-1" />
+               <Button variant="ghost" onClick={() => navigate('/visits')} className="text-xs font-bold text-primary hover:bg-primary/5 rounded-lg px-3 py-1 flex items-center gap-2 group transition-all">
+                 Ver todas <ChevronRight className="h-4 w-4 group-hover:translate-x-1" />
                </Button>
             </div>
             
-            <div className="grid gap-4">
+            <div className="grid gap-3">
               {loading ? (
-                [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-card rounded-[2.5rem] border border-slate-100 animate-pulse shadow-soft"></div>)
+                [1, 2, 3].map(i => <div key={i} className="h-24 w-full bg-card rounded-2xl border border-slate-100 animate-pulse"></div>)
               ) : upcomingVisits.length > 0 ? (
                 upcomingVisits.map((visit) => (
-                  <Card key={visit.id} className="border border-slate-100 bg-card shadow-premium-sm hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 rounded-[2.5rem] overflow-hidden group cursor-pointer" onClick={() => navigate(`/visits?id=${visit.id}`)}>
-                    <CardContent className="p-8">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-6">
-                          <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:bg-primary group-hover:text-white transition-all duration-700 text-slate-900">
-                            <MapPin className="h-8 w-8 opacity-40 group-hover:opacity-100" />
+                  <Card key={visit.id} className="border border-slate-100 dark:border-slate-800 bg-card shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 rounded-2xl overflow-hidden group cursor-pointer" onClick={() => navigate(`/visits?id=${visit.id}`)}>
+                    <CardContent className="p-4 md:p-6">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border border-slate-100 dark:border-slate-800 group-hover:bg-primary group-hover:text-white transition-all text-slate-400">
+                            <MapPin className="h-5 w-5 md:h-6 md:w-6" />
                           </div>
-                          <div className="space-y-1">
-                            <h4 className="text-lg font-black text-foreground uppercase tracking-tighter font-display group-hover:text-primary transition-colors">
-                              {visit.contacts?.full_name || 'OBJETIVO SIN IDENTIFICAR'}
+                          <div className="space-y-0.5">
+                            <h4 className="text-sm md:text-base font-bold text-foreground tracking-tight group-hover:text-primary transition-colors truncate max-w-[150px] md:max-w-none">
+                              {visit.contacts?.full_name || 'Sin identificar'}
                             </h4>
-                            <div className="flex items-center gap-3">
-                               <Badge className="bg-slate-50 text-slate-400 border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">
+                            <div className="flex items-center gap-2">
+                               <Badge className="bg-slate-50 dark:bg-slate-900 text-slate-500 border-none font-bold text-[9px] md:text-[10px] px-2 py-0.5">
                                  {new Date(visit.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                </Badge>
-                               <Badge className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">
-                                 {visit.contacts?.category || 'TIER-1'}
+                               <Badge className="bg-primary/5 text-primary border-none font-bold text-[9px] md:text-[10px] px-2 py-0.5">
+                                 {visit.contacts?.category || 'General'}
                                </Badge>
                             </div>
                           </div>
                         </div>
                         <Badge className={cn(
-                          "px-6 py-2 rounded-full text-[10px] font-black tracking-widest border border-transparent shadow-sm",
-                          visit.status === 'confirmed' ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-amber-50 text-amber-600 border-amber-100"
+                          "w-fit px-3 md:px-4 py-1 rounded-lg text-[9px] md:text-[10px] font-bold tracking-wide border border-transparent",
+                          visit.status === 'confirmed' ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 border-emerald-100 dark:border-emerald-500/20" : "bg-amber-50 dark:bg-amber-500/10 text-amber-600 border-amber-100 dark:border-amber-500/20"
                         )}>
-                          {visit.status === 'confirmed' ? 'LOG_CONFIRMED' : 'LOG_SCHEDULED'}
+                          {visit.status === 'confirmed' ? 'Confirmada' : 'Programada'}
                         </Badge>
                       </div>
                     </CardContent>
                   </Card>
                 ))
               ) : (
-                <div className="bg-card border border-slate-100 rounded-[3rem] p-24 text-center shadow-premium-sm">
-                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner text-slate-900">
-                      <Calendar className="h-10 w-10 text-slate-200" />
+                <div className="bg-card border border-slate-100 rounded-3xl p-16 text-center shadow-sm">
+                   <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-200">
+                      <Calendar className="h-8 w-8" />
                    </div>
-                   <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Zona Despejada</h3>
-                   <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest">No existen misiones programadas para el ciclo actual</p>
+                   <h3 className="text-lg font-bold text-foreground tracking-tight mb-1">Sin visitas pendientes</h3>
+                   <p className="text-slate-400 text-xs font-medium">No hay misiones programadas para este periodo</p>
                 </div>
               )}
             </div>
           </section>
 
           <section className="animate-in slide-in-from-bottom-10 duration-1000">
-            <div className="flex items-center gap-4 mb-8 px-2">
-                <div className="w-12 h-12 rounded-[1.2rem] bg-emerald-500/5 flex items-center justify-center text-emerald-600 shadow-soft">
-                  <Activity className="h-6 w-6" />
+            <div className="flex items-center gap-4 mb-6 px-2">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/5 flex items-center justify-center text-emerald-600">
+                  <Activity className="h-5 w-5" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tighter font-display leading-tight">Monitor de Actividad</h2>
-                    <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Telemetría de campo en tiempo real</p>
+                    <h2 className="text-xl font-bold text-foreground tracking-tight">Actividad Reciente</h2>
+                    <p className="text-slate-400 text-xs font-medium">Historial de las últimas operaciones</p>
                 </div>
             </div>
-            <Card className="border border-slate-100 bg-card shadow-premium-lg rounded-[3rem] p-10 relative overflow-hidden">
+            <Card className="border border-slate-100 bg-card shadow-lg rounded-3xl p-8 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full -mr-32 -mt-32 blur-3xl" />
                {recentActivity.length > 0 ? (
-                 <div className="space-y-10 relative z-10">
+                 <div className="space-y-8 relative z-10">
                    {recentActivity.map((activity, idx) => (
-                     <div key={activity.id} className="flex gap-8 relative group">
+                     <div key={activity.id} className="flex gap-6 relative group">
                         {idx !== recentActivity.length - 1 && (
-                          <div className="absolute left-4 top-10 bottom-[-2.5rem] w-[2px] bg-slate-100 text-slate-900" />
+                          <div className="absolute left-[15px] top-8 bottom-[-2rem] w-[1px] bg-slate-100" />
                         )}
-                        <div className="h-8 w-8 rounded-full bg-card border-2 border-emerald-500 flex items-center justify-center relative z-10 transition-transform group-hover:scale-125 shadow-sm">
-                           <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <div className="h-8 w-8 rounded-full bg-card border border-emerald-500 flex items-center justify-center relative z-10 shadow-sm">
+                           <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                         </div>
-                        <div className="flex-1 space-y-1">
-                           <p className="text-sm text-foreground font-black uppercase tracking-tight font-display">
-                             MISIÓN COMPLETADA: <span className="text-emerald-600">{activity.contacts?.full_name}</span>
+                        <div className="flex-1 space-y-0.5">
+                           <p className="text-sm text-foreground font-bold tracking-tight">
+                             Visita completada: <span className="text-emerald-600 font-extrabold">{activity.contacts?.full_name}</span>
                            </p>
-                           <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black flex items-center gap-3">
+                           <p className="text-[10px] text-slate-400 font-bold flex items-center gap-2">
                              {new Date(activity.actual_start_time || activity.created_at).toLocaleString()} 
-                             <span className="w-1 h-1 bg-slate-200 rounded-full text-slate-900" />
-                             <Badge variant="outline" className="text-[8px] border-emerald-200 text-emerald-500 bg-emerald-50 font-black px-2 py-0">TELEMETRÍA_OK</Badge>
+                             <span className="w-1 h-1 bg-slate-200 rounded-full" />
+                             <Badge variant="outline" className="text-[8px] border-emerald-100 text-emerald-500 bg-emerald-50 font-bold px-2 py-0">Sincronizado</Badge>
                            </p>
                         </div>
                      </div>
                    ))}
                  </div>
                ) : (
-                 <div className="text-center py-16 opacity-30">
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Sin telemetría reciente en el sector</p>
+                 <div className="text-center py-12 opacity-30">
+                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Sin actividad reciente registrada</p>
                  </div>
                )}
             </Card>
@@ -389,7 +388,7 @@ export default function Dashboard() {
         </div>
 
         {/* Sidebar Élite - Inteligencia Artificial & Alertas */}
-        <div className="space-y-10">
+        <div className="space-y-8">
           <div className="animate-in fade-in slide-in-from-right duration-1000 delay-200">
              <SmartAssistant />
           </div>

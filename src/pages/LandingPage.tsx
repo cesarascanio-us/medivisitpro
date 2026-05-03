@@ -38,6 +38,8 @@ import { useState } from 'react';
 import { SEO } from '@/components/common/SEO';
 import { trackEvent } from '@/lib/analytics';
 import { useLandingContent } from '@/hooks/useLandingContent';
+import { useTheme } from 'next-themes';
+import { HeaderActions } from '@/components/layout/Header';
 
 const IconMap: Record<string, any> = {
     Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Stethoscope
@@ -49,6 +51,8 @@ export default function LandingPage() {
     const { content } = useLandingContent();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
 
     useEffect(() => {
         trackEvent('view_landing');
@@ -77,7 +81,7 @@ export default function LandingPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 font-display text-white selection:bg-blue-600 selection:text-white overflow-x-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-display text-slate-900 dark:text-white selection:bg-blue-600 selection:text-white overflow-x-hidden transition-colors duration-500">
             <SEO
                 title="MediVisit Pro - El Sistema Inteligente para Visitadores Médicos"
                 description="Orquestación de visita médica de alto desempeño. Calidad ISO 9000, analíticas Sentinel y gestión operativa de élite."
@@ -87,17 +91,17 @@ export default function LandingPage() {
 
             {/* Navbar - Elite Glassmorphism */}
             <header
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-slate-950/90 backdrop-blur-2xl border-b border-white/5 py-3' : 'bg-transparent py-8'
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/80 dark:bg-slate-950/90 backdrop-blur-2xl border-b border-slate-200 dark:border-white/5 py-3' : 'bg-transparent py-8'
                     }`}
             >
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
                         <div className="flex items-center gap-4 group cursor-pointer" onClick={() => navigate('/')}>
-                            <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-500/20 group-hover:scale-110 transition-all duration-500">
-                                <Stethoscope className="h-6 w-6 text-white" />
+                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/20 group-hover:scale-110 transition-all duration-500">
+                                <Stethoscope className="h-5 w-5 md:h-6 md:w-6 text-white" />
                             </div>
-                            <span className="text-2xl font-bold text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
+                            <span className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
                         </div>
 
                         {/* Navigation - Professional Case */}
@@ -106,7 +110,7 @@ export default function LandingPage() {
                                 <a
                                     key={item}
                                     href={`#${item.toLowerCase()}`}
-                                    className="text-sm font-semibold text-slate-400 hover:text-blue-400 transition-colors"
+                                    className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                 >
                                     {item}
                                 </a>
@@ -114,20 +118,23 @@ export default function LandingPage() {
                         </nav>
 
                         {/* Action CTA */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 md:gap-4">
+                            <div className="hidden sm:block">
+                                <HeaderActions />
+                            </div>
                             <button
                                 onClick={handleAuthNavigation}
-                                className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                                className="hidden lg:flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-white bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 transition-all"
                             >
                                 <Lock className="w-4 h-4 text-blue-500" />
-                                Acceso Master
+                                Acceso
                             </button>
                             <button
                                 onClick={() => {
                                     trackEvent('click_demo_header');
                                     window.open("https://cesarascanioweb.vercel.app/#demos", "_blank");
                                 }}
-                                className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-500/20 transition-all"
+                                className="px-5 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-500/20 transition-all whitespace-nowrap"
                             >
                                 Probar Demo
                             </button>
@@ -136,12 +143,11 @@ export default function LandingPage() {
                 </div>
             </header>
 
-            {/* Hero Section - Sophisticated Presence */}
-            <section className="relative min-h-[85vh] flex items-center py-20 lg:py-32 overflow-hidden bg-slate-950">
+            <section className="relative min-h-[85vh] flex items-center py-20 lg:py-32 overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
 
                 <div className="absolute top-0 right-0 w-full max-w-[800px] h-full max-h-[800px] bg-blue-600/10 rounded-full blur-[150px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-full max-w-[600px] h-full max-h-[600px] bg-slate-800/20 rounded-full blur-[120px] -z-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-full max-w-[600px] h-full max-h-[600px] bg-slate-200/50 dark:bg-slate-800/20 rounded-full blur-[120px] -z-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 w-full relative z-10">
                     <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -151,12 +157,12 @@ export default function LandingPage() {
                                 <span className="text-xs font-bold tracking-wide text-blue-100">Tecnología de Grado Operativo</span>
                             </div>
 
-                            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
+                            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
                                 Orquestación inteligente de <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-200">Visita Médica de Élite</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Visita Médica de Élite</span>
                             </h1>
 
-                            <p className="text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                            <p className="text-lg lg:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
                                 Transforme su gestión operativa con precisión clínica. Cumplimiento ISO 9000, inteligencia de campo y analíticas de alto impacto en una sola plataforma unificada.
                             </p>
 
@@ -173,7 +179,7 @@ export default function LandingPage() {
                                 </button>
                                 <button
                                     onClick={handleAuthNavigation}
-                                    className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-white hover:bg-white/10 font-bold transition-all text-sm group bg-white/5 border border-white/10 rounded-2xl"
+                                    className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10 font-bold transition-all text-sm group bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl"
                                 >
                                     <PlayCircle className="w-6 h-6 text-blue-500" />
                                     Ver Ecosistema
@@ -185,27 +191,26 @@ export default function LandingPage() {
 
                         {/* Interface Showcase */}
                         <div className="lg:col-span-5 relative mt-16 lg:mt-0">
-                            <div className="relative z-10 bg-slate-900 rounded-[2.5rem] lg:rounded-[3.5rem] shadow-2xl border border-white/10 p-2 transform hover:rotate-1 transition-all duration-1000 overflow-hidden group">
-                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                            <div className="relative z-10 bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3.5rem] shadow-2xl border border-slate-200 dark:border-white/10 p-2 transform hover:rotate-1 transition-all duration-1000 overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                                 <img
                                     src="/img/landing/hero-premium.png"
                                     alt="MediVisitPro Interface"
                                     className="rounded-[2.2rem] lg:rounded-[3.2rem] w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                                 />
                             </div>
-                            <div className="absolute -inset-6 bg-blue-600/10 blur-[80px] rounded-full -z-10 animate-pulse"></div>
+                            <div className="absolute -inset-6 bg-blue-600/5 dark:bg-blue-600/10 blur-[80px] rounded-full -z-10 animate-pulse"></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Features Section - Standard Case */}
-            <section id="capacidades" className="py-20 lg:py-32 px-6 sm:px-8 lg:px-10 bg-slate-950">
+            <section id="capacidades" className="py-20 lg:py-32 px-6 sm:px-8 lg:px-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-6 lg:mb-8 tracking-tight">Capacidades de Grado Maestro</h2>
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 lg:mb-8 tracking-tight">Capacidades de Grado Maestro</h2>
                         <div className="h-1.5 w-24 bg-blue-600 mx-auto mb-6 lg:mb-8" />
-                        <p className="text-slate-400 text-lg lg:text-xl font-medium">
+                        <p className="text-slate-500 dark:text-slate-400 text-lg lg:text-xl font-medium">
                             Diseñado para organizaciones que exigen la perfección operativa y la trazabilidad absoluta en cada visita médica.
                         </p>
                     </div>
@@ -216,13 +221,13 @@ export default function LandingPage() {
                             return (
                                 <div
                                     key={index}
-                                    className="group bg-white/5 p-8 lg:p-12 rounded-[2rem] lg:rounded-[2.5rem] border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-500"
+                                    className="group bg-white dark:bg-white/5 p-8 lg:p-12 rounded-[2rem] lg:rounded-[2.5rem] border border-slate-200 dark:border-white/5 hover:border-blue-500/30 hover:bg-slate-50 dark:hover:bg-white/10 transition-all duration-500 shadow-sm hover:shadow-xl"
                                 >
-                                    <div className="w-14 lg:w-16 h-14 lg:h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center mb-8 lg:mb-10 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-500">
-                                        <Icon className="w-7 lg:w-8 h-7 lg:h-8 text-blue-500 group-hover:text-white transition-colors" />
+                                    <div className="w-14 lg:w-16 h-14 lg:h-16 bg-blue-600/5 dark:bg-blue-600/10 rounded-2xl flex items-center justify-center mb-8 lg:mb-10 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-500">
+                                        <Icon className="w-7 lg:w-8 h-7 lg:h-8 text-blue-600 group-hover:text-white transition-colors" />
                                     </div>
-                                    <h3 className="text-xl lg:text-2xl font-bold text-white mb-4 lg:mb-6 tracking-tight">{feature.title}</h3>
-                                    <p className="text-slate-400 leading-relaxed text-base font-medium">
+                                    <h3 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-4 lg:mb-6 tracking-tight">{feature.title}</h3>
+                                    <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-base font-medium">
                                         {feature.description}
                                     </p>
                                 </div>
@@ -232,8 +237,7 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* Security Section - Sentinel Architecture */}
-            <section id="seguridad" className="py-20 lg:py-32 bg-blue-600/5 border-y border-white/5 relative overflow-hidden">
+            <section id="seguridad" className="py-20 lg:py-32 bg-blue-600/5 border-y border-slate-200 dark:border-white/5 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-8 relative z-10">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
                         <div className="flex items-center gap-8">
@@ -241,13 +245,13 @@ export default function LandingPage() {
                                 <ShieldCheck className="w-10 h-10 text-white" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-bold text-white tracking-tight">Resiliencia Sentinel</h3>
-                                <p className="text-blue-400 font-semibold text-xs mt-1 tracking-wide uppercase">Cifrado Militar & Auditoría ISO 27001</p>
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Resiliencia Sentinel</h3>
+                                <p className="text-blue-600 dark:text-blue-400 font-bold text-[10px] mt-1 tracking-wider uppercase">Cifrado de alta seguridad & Auditoría ISO</p>
                             </div>
                         </div>
                         <div className="flex flex-wrap items-center justify-center gap-4">
                             {['ISO 9001', 'ISO 27001', 'GDPR', 'HIPAA'].map(tag => (
-                                <Badge key={tag} className="bg-white/5 text-blue-400 border border-blue-500/20 font-bold text-[10px] tracking-wider py-2 px-5 rounded-xl">
+                                <Badge key={tag} className="bg-blue-600/5 dark:bg-white/5 text-blue-600 dark:text-blue-400 border border-blue-500/10 dark:border-blue-500/20 font-bold text-[10px] tracking-wider py-2 px-5 rounded-xl">
                                     {tag} Ready
                                 </Badge>
                             ))}
@@ -260,7 +264,7 @@ export default function LandingPage() {
 
             <ContactSection />
 
-            <footer className="bg-slate-950 py-12 text-slate-500 border-t border-white/5">
+            <footer className="bg-white dark:bg-slate-950 py-12 text-slate-400 border-t border-slate-100 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-10">
                         <div className="space-y-4 text-center md:text-left">
@@ -268,7 +272,7 @@ export default function LandingPage() {
                                 <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
                                     <Stethoscope className="h-4 w-4 text-white" />
                                 </div>
-                                <span className="text-xl font-bold text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
+                                <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">MediVisit<span className="text-blue-500 font-black">Pro</span></span>
                             </div>
                             <p className="text-sm max-w-sm font-medium leading-relaxed">
                                 Liderando la orquestación digital de la visita médica con tecnología de grado operativo.

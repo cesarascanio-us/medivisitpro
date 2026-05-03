@@ -9,7 +9,7 @@
 
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Header } from './Header';
+import { Header, HeaderActions } from './Header';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { useAuth } from '@/hooks/useAuth';
@@ -96,16 +96,17 @@ export const Layout = ({ children }: LayoutProps) => {
         {/* Content area - z-0 to ensure it's below sidebar */}
         <div className="flex-1 flex flex-col min-h-0 overflow-visible relative z-0">
           {/* Mobile/Tablet Header with hamburger menu */}
-          <div className="lg:hidden p-3 border-b border-border flex items-center justify-between bg-card/95 backdrop-blur-md sticky top-0 z-40">
+          <div className="lg:hidden p-3 md:p-4 border-b border-border flex items-center justify-between bg-card/95 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <MobileNav />
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-light rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-                  <span className="text-xs font-black text-white">M</span>
+              <MobileNav />
+              <div className="flex items-center gap-2" onClick={() => navigate('/')}>
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/10">
+                  <span className="text-xs font-bold text-white">M</span>
                 </div>
-                <span className="font-black text-base text-primary tracking-tight">MediVisitPro</span>
+                <span className="font-bold text-base text-slate-900 dark:text-white tracking-tight">MediVisitPro</span>
               </div>
             </div>
+            <HeaderActions />
           </div>
 
           {/* Desktop Header - only on lg+ */}
@@ -114,7 +115,7 @@ export const Layout = ({ children }: LayoutProps) => {
           </div>
 
           {/* Main Content - Responsive padding */}
-          <main className="flex-1 overflow-hidden p-4 md:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <main className="flex-1 overflow-x-hidden p-3 md:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {children}
           </main>
         </div>

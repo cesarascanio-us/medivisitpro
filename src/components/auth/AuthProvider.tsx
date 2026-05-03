@@ -227,8 +227,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
 
             const { data: roleData, error: roleError } = await supabase
-                .from('user_roles')
-                .select('role, organization_id, company_id, zone_id, state, region')
+                .from('user_roles_plain')
+                .select('role, organization_id, zone_id, state, region')
                 .eq('user_id', userId)
                 .maybeSingle();
 

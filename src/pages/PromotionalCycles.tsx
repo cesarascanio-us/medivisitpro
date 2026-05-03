@@ -28,6 +28,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 
 interface PromotionalCycle {
     id: string;
@@ -57,10 +58,10 @@ interface Product {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-    draft: { label: 'Borrador', color: 'bg-muted text-gray-800', icon: Clock },
-    active: { label: 'Activo', color: 'bg-green-100 text-green-800', icon: Play },
-    completed: { label: 'Completado', color: 'bg-blue-100 text-blue-800', icon: CheckCircle },
-    cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-800', icon: AlertCircle },
+    draft: { label: 'Borrador', color: 'bg-slate-50 text-slate-500 border-slate-100', icon: Clock },
+    active: { label: 'Activo', color: 'bg-emerald-50 text-emerald-600 border-emerald-100', icon: Play },
+    completed: { label: 'Completado', color: 'bg-blue-50 text-blue-600 border-blue-100', icon: CheckCircle },
+    cancelled: { label: 'Cancelado', color: 'bg-rose-50 text-rose-600 border-rose-100', icon: AlertCircle },
 };
 
 export default function PromotionalCycles() {
@@ -299,232 +300,223 @@ export default function PromotionalCycles() {
     const totalTargetVisits = cycles.filter(c => c.status === 'active').reduce((sum, c) => sum + c.target_visits, 0);
     const totalCurrentVisits = cycles.filter(c => c.status === 'active').reduce((sum, c) => sum + c.current_visits, 0);
 
-    return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground">Ciclos Promocionales</h1>
-                    <p className="text-muted-foreground">Gestiona las campañas y ciclos de promoción de productos</p>
-                </div>
-                {isManager && (
-                    <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) resetForm(); }}>
-                        <DialogTrigger asChild>
-                            <Button className="btn-medical">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Nuevo Ciclo
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                                <DialogTitle>{editingCycle ? 'Editar Ciclo Promocional' : 'Nuevo Ciclo Promocional'}</DialogTitle>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="name">Nombre del Ciclo *</Label>
-                                    <Input
-                                        id="name"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="Ej: Campaña Q1 2025 - Cardiovascular"
-                                    />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="description">Descripción</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={formData.description}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                        placeholder="Descripción breve del ciclo promocional"
-                                        rows={2}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="start_date">Fecha Inicio *</Label>
-                                        <Input
-                                            id="start_date"
-                                            type="date"
-                                            value={formData.start_date}
-                                            onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="end_date">Fecha Fin *</Label>
-                                        <Input
-                                            id="end_date"
-                                            type="date"
-                                            value={formData.end_date}
-                                            onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="objectives">Objetivos</Label>
-                                    <Textarea
-                                        id="objectives"
-                                        value={formData.objectives}
-                                        onChange={(e) => setFormData({ ...formData, objectives: e.target.value })}
-                                        placeholder="Objetivos del ciclo promocional"
-                                        rows={2}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-3 gap-4">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="target_visits">Meta Visitas</Label>
-                                        <Input
-                                            id="target_visits"
-                                            type="number"
-                                            value={formData.target_visits}
-                                            onChange={(e) => setFormData({ ...formData, target_visits: parseInt(e.target.value) || 0 })}
-                                        />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="target_presentations">Meta Presentaciones</Label>
-                                        <Input
-                                            id="target_presentations"
-                                            type="number"
-                                            value={formData.target_presentations}
-                                            onChange={(e) => setFormData({ ...formData, target_presentations: parseInt(e.target.value) || 0 })}
-                                        />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="target_samples">Meta Muestras</Label>
-                                        <Input
-                                            id="target_samples"
-                                            type="number"
-                                            value={formData.target_samples}
-                                            onChange={(e) => setFormData({ ...formData, target_samples: parseInt(e.target.value) || 0 })}
-                                        />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="target_sales">Meta Ventas ($)</Label>
-                                        <Input
-                                            id="target_sales"
-                                            type="number"
-                                            value={formData.target_sales}
-                                            onChange={(e) => setFormData({ ...formData, target_sales: parseInt(e.target.value) || 0 })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label>Productos Asociados</Label>
-                                    <Select onValueChange={(value) => {
-                                        if (!selectedProducts.includes(value)) {
-                                            setSelectedProducts([...selectedProducts, value]);
-                                        }
-                                    }}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccionar producto..." />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {products.filter(p => !selectedProducts.includes(p.id)).map(product => (
-                                                <SelectItem key={product.id} value={product.id}>
-                                                    {product.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <div className="flex flex-wrap gap-2 mt-2">
-                                        {selectedProducts.map(productId => {
-                                            const product = products.find(p => p.id === productId);
-                                            return product ? (
-                                                <Badge key={productId} variant="secondary" className="cursor-pointer" onClick={() => {
-                                                    setSelectedProducts(selectedProducts.filter(id => id !== productId));
-                                                }}>
-                                                    {product.name} ×
-                                                </Badge>
-                                            ) : null;
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button variant="outline" onClick={() => { setIsDialogOpen(false); resetForm(); }}>
-                                    Cancelar
+    re            <EliteHeader
+                title="Campañas y Ciclos"
+                subtitle="Planificación de objetivos, metas de visita y seguimiento de resultados"
+                icon={Target}
+                badgeText="Campañas"
+                statusText={loading ? "Sincronizando..." : "Planificación activa"}
+                statusColor={loading ? "bg-amber-500" : "bg-emerald-500"}
+                rightContent={
+                    isManager && (
+                        <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) resetForm(); }}>
+                            <DialogTrigger asChild>
+                                <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md font-bold text-xs transition-all active:scale-95 flex items-center gap-2">
+                                    <Plus className="h-5 w-5" />
+                                    Nueva Campaña
                                 </Button>
-                                <Button className="btn-medical" onClick={handleSubmit}>
-                                    {editingCycle ? 'Guardar Cambios' : 'Crear Ciclo'}
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                )}
-            </div>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border-none shadow-2xl">
+                                <DialogHeader>
+                                    <DialogTitle className="text-xl font-bold tracking-tight">{editingCycle ? 'Editar campaña' : 'Nueva campaña'}</DialogTitle>
+                                </DialogHeader>
+                                <div className="grid gap-4 py-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="name" className="text-xs font-bold text-slate-500 uppercase">Nombre de la campaña</Label>
+                                        <Input
+                                            id="name"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            placeholder="Ej: Campaña Q1 2025 - Cardiovascular"
+                                            className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                        />
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="description" className="text-xs font-bold text-slate-500 uppercase">Descripción</Label>
+                                        <Textarea
+                                            id="description"
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                            placeholder="Detalles de la campaña"
+                                            rows={2}
+                                            className="rounded-xl bg-slate-50 border-none shadow-inner"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="start_date" className="text-xs font-bold text-slate-500 uppercase">Fecha inicio</Label>
+                                            <Input
+                                                id="start_date"
+                                                type="date"
+                                                value={formData.start_date}
+                                                onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="end_date" className="text-xs font-bold text-slate-500 uppercase">Fecha fin</Label>
+                                            <Input
+                                                id="end_date"
+                                                type="date"
+                                                value={formData.end_date}
+                                                onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="objectives" className="text-xs font-bold text-slate-500 uppercase">Objetivos estratégicos</Label>
+                                        <Textarea
+                                            id="objectives"
+                                            value={formData.objectives}
+                                            onChange={(e) => setFormData({ ...formData, objectives: e.target.value })}
+                                            placeholder="¿Qué buscamos lograr?"
+                                            rows={2}
+                                            className="rounded-xl bg-slate-50 border-none shadow-inner"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="target_visits" className="text-xs font-bold text-slate-500 uppercase">Meta visitas</Label>
+                                            <Input
+                                                id="target_visits"
+                                                type="number"
+                                                value={formData.target_visits}
+                                                onChange={(e) => setFormData({ ...formData, target_visits: parseInt(e.target.value) || 0 })}
+                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="target_presentations" className="text-xs font-bold text-slate-500 uppercase">Meta presentaciones</Label>
+                                            <Input
+                                                id="target_presentations"
+                                                type="number"
+                                                value={formData.target_presentations}
+                                                onChange={(e) => setFormData({ ...formData, target_presentations: parseInt(e.target.value) || 0 })}
+                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="target_samples" className="text-xs font-bold text-slate-500 uppercase">Meta muestras</Label>
+                                            <Input
+                                                id="target_samples"
+                                                type="number"
+                                                value={formData.target_samples}
+                                                onChange={(e) => setFormData({ ...formData, target_samples: parseInt(e.target.value) || 0 })}
+                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="target_sales" className="text-xs font-bold text-slate-500 uppercase">Meta ventas ($)</Label>
+                                            <Input
+                                                id="target_sales"
+                                                type="number"
+                                                value={formData.target_sales}
+                                                onChange={(e) => setFormData({ ...formData, target_sales: parseInt(e.target.value) || 0 })}
+                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label className="text-xs font-bold text-slate-500 uppercase">Productos asociados</Label>
+                                        <Select onValueChange={(value) => {
+                                            if (!selectedProducts.includes(value)) {
+                                                setSelectedProducts([...selectedProducts, value]);
+                                            }
+                                        }}>
+                                            <SelectTrigger className="h-11 rounded-xl bg-slate-50 border-none shadow-inner font-semibold">
+                                                <SelectValue placeholder="Seleccionar producto..." />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-xl">
+                                                {products.filter(p => !selectedProducts.includes(p.id)).map(product => (
+                                                    <SelectItem key={product.id} value={product.id}>
+                                                        {product.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            {selectedProducts.map(productId => {
+                                                const product = products.find(p => p.id === productId);
+                                                return product ? (
+                                                    <Badge key={productId} variant="secondary" className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg px-3 py-1 border-none font-bold" onClick={() => {
+                                                        setSelectedProducts(selectedProducts.filter(id => id !== productId));
+                                                    }}>
+                                                        {product.name} ×
+                                                    </Badge>
+                                                ) : null;
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                                <DialogFooter className="gap-2 sm:gap-0">
+                                    <Button variant="ghost" onClick={() => { setIsDialogOpen(false); resetForm(); }} className="rounded-xl font-bold">
+                                        Cancelar
+                                    </Button>
+                                    <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold shadow-md transition-all active:scale-95" onClick={handleSubmit}>
+                                        {editingCycle ? 'Guardar cambios' : 'Crear campaña'}
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    )
+                }
+            />        </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="medical-card">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Ciclos Activos</p>
-                                <p className="text-2xl font-bold text-foreground">{activeCycles}</p>
-                            </div>
-                            <Play className="h-8 w-8 text-green-500" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Total Ciclos</p>
-                                <p className="text-2xl font-bold text-foreground">{cycles.length}</p>
-                            </div>
-                            <Calendar className="h-8 w-8 text-blue-500" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Visitas Objetivo</p>
-                                <p className="text-2xl font-bold text-foreground">{totalTargetVisits}</p>
-                            </div>
-                            <Target className="h-8 w-8 text-purple-500" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="medical-card">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Progreso General</p>
-                                <p className="text-2xl font-bold text-foreground">
-                                    {totalTargetVisits > 0 ? Math.round((totalCurrentVisits / totalTargetVisits) * 100) : 0}%
-                                </p>
-                            </div>
-                            <BarChart3 className="h-8 w-8 text-orange-500" />
-                        </div>
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <EliteKPICard
+                    title="Ciclos activos"
+                    value={activeCycles}
+                    icon={Play}
+                    color="emerald"
+                />
+                <EliteKPICard
+                    title="Total campañas"
+                    value={cycles.length}
+                    icon={Calendar}
+                    color="blue"
+                />
+                <EliteKPICard
+                    title="Visitas objetivo"
+                    value={totalTargetVisits}
+                    icon={Target}
+                    color="purple"
+                />
+                <EliteKPICard
+                    title="Progreso general"
+                    value={`${totalTargetVisits > 0 ? Math.round((totalCurrentVisits / totalTargetVisits) * 100) : 0}%`}
+                    icon={BarChart3}
+                    color="amber"
+                />
             </div>
 
             {/* Filters */}
-            <Card className="medical-card">
+            <Card className="border-slate-100 shadow-sm bg-card rounded-2xl overflow-hidden">
                 <CardContent className="p-4">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
                             <Input
-                                placeholder="Buscar ciclos..."
+                                placeholder="Buscar campañas..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-9"
+                                className="h-11 pl-10 bg-slate-50 border-none rounded-xl font-semibold text-xs shadow-inner"
                             />
                         </div>
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-48">
-                                <SelectValue placeholder="Filtrar por estado" />
+                            <SelectTrigger className="h-11 w-48 bg-slate-50 border-none rounded-xl font-bold text-xs shadow-inner">
+                                <SelectValue placeholder="Estado" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="rounded-xl border-slate-100">
                                 <SelectItem value="all">Todos los estados</SelectItem>
                                 <SelectItem value="draft">Borrador</SelectItem>
                                 <SelectItem value="active">Activo</SelectItem>
@@ -543,16 +535,16 @@ export default function PromotionalCycles() {
                     const StatusIcon = STATUS_CONFIG[cycle.status].icon;
 
                     return (
-                        <Card key={cycle.id} className="medical-card">
-                            <CardHeader className="pb-2">
+                        <Card key={cycle.id} className="border-slate-100 shadow-sm bg-card rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 group">
+                            <CardHeader className="pb-4 border-b border-slate-50">
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
-                                        <CardTitle className="text-lg">{cycle.name}</CardTitle>
+                                        <CardTitle className="text-base font-bold tracking-tight group-hover:text-primary transition-colors">{cycle.name}</CardTitle>
                                         {cycle.description && (
-                                            <CardDescription className="mt-1">{cycle.description}</CardDescription>
+                                            <p className="text-xs text-slate-400 mt-1 line-clamp-1">{cycle.description}</p>
                                         )}
                                     </div>
-                                    <Badge className={STATUS_CONFIG[cycle.status].color}>
+                                    <Badge variant="outline" className={cn("text-[10px] font-bold px-3 py-0.5 rounded-full border shadow-none", STATUS_CONFIG[cycle.status].color)}>
                                         <StatusIcon className="h-3 w-3 mr-1" />
                                         {STATUS_CONFIG[cycle.status].label}
                                     </Badge>
@@ -572,34 +564,34 @@ export default function PromotionalCycles() {
                                 </div>
 
                                 {/* Progress Bars */}
-                                <div className="space-y-3">
+                                <div className="space-y-4">
                                     <div>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span className="text-muted-foreground">Visitas</span>
-                                            <span className="font-medium">{cycle.current_visits} / {cycle.target_visits}</span>
+                                        <div className="flex justify-between text-[11px] mb-1.5">
+                                            <span className="text-slate-400 font-bold uppercase tracking-wider">Visitas</span>
+                                            <span className="font-bold text-slate-700">{cycle.current_visits} / {cycle.target_visits}</span>
                                         </div>
-                                        <Progress value={getProgress(cycle.current_visits, cycle.target_visits)} className="h-2" />
+                                        <Progress value={getProgress(cycle.current_visits, cycle.target_visits)} className="h-1.5 bg-slate-100" />
                                     </div>
                                     <div>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span className="text-muted-foreground">Presentaciones</span>
-                                            <span className="font-medium">{cycle.current_presentations} / {cycle.target_presentations}</span>
+                                        <div className="flex justify-between text-[11px] mb-1.5">
+                                            <span className="text-slate-400 font-bold uppercase tracking-wider">Presentaciones</span>
+                                            <span className="font-bold text-slate-700">{cycle.current_presentations} / {cycle.target_presentations}</span>
                                         </div>
-                                        <Progress value={getProgress(cycle.current_presentations, cycle.target_presentations)} className="h-2" />
+                                        <Progress value={getProgress(cycle.current_presentations, cycle.target_presentations)} className="h-1.5 bg-slate-100" />
                                     </div>
                                     <div>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span className="text-muted-foreground">Muestras</span>
-                                            <span className="font-medium">{cycle.current_samples} / {cycle.target_samples}</span>
+                                        <div className="flex justify-between text-[11px] mb-1.5">
+                                            <span className="text-slate-400 font-bold uppercase tracking-wider">Muestras</span>
+                                            <span className="font-bold text-slate-700">{cycle.current_samples} / {cycle.target_samples}</span>
                                         </div>
-                                        <Progress value={getProgress(cycle.current_samples, cycle.target_samples)} className="h-2" />
+                                        <Progress value={getProgress(cycle.current_samples, cycle.target_samples)} className="h-1.5 bg-slate-100" />
                                     </div>
                                     <div>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span className="text-muted-foreground">Ventas</span>
-                                            <span className="font-medium">${cycle.current_sales?.toLocaleString() || 0} / ${cycle.target_sales?.toLocaleString()}</span>
+                                        <div className="flex justify-between text-[11px] mb-1.5">
+                                            <span className="text-slate-400 font-bold uppercase tracking-wider">Ventas</span>
+                                            <span className="font-bold text-slate-700">${cycle.current_sales?.toLocaleString() || 0} / ${cycle.target_sales?.toLocaleString()}</span>
                                         </div>
-                                        <Progress value={getProgress(cycle.current_sales || 0, cycle.target_sales)} className="h-2" />
+                                        <Progress value={getProgress(cycle.current_sales || 0, cycle.target_sales)} className="h-1.5 bg-slate-100" />
                                     </div>
                                 </div>
 

@@ -570,20 +570,20 @@ export default function CoverageMap() {
             {/* Elite Header */}
             <EliteHeader
                 title="Mapa de Cobertura"
-                subtitle="Geolocalización Estratégica"
+                subtitle="Visualización de red territorial y rutas"
                 icon={MapPin}
-                badgeText="Inteligencia Territorial"
-                statusText={loading ? "Actualizando Red..." : "Mapa en Línea"}
+                badgeText="Mapa"
+                statusText={loading ? "Sincronizando..." : "Mapa activo"}
                 statusColor={loading ? "bg-amber-500" : "bg-emerald-500"}
                 rightContent={
                     <Button 
                         onClick={loadData} 
                         variant="outline" 
                         disabled={loading}
-                        className="bg-card border-border/50 hover:bg-muted/50 rounded-xl h-12 px-6 font-black text-[10px] uppercase tracking-widest transition-all shadow-sm active:scale-95"
+                        className="bg-card border-slate-200 hover:bg-slate-50 rounded-xl h-12 px-6 font-bold text-xs transition-all shadow-sm active:scale-95"
                     >
                         <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-                        Sincronizar Datos
+                        Sincronizar datos
                     </Button>
                 }
             />
@@ -591,33 +591,33 @@ export default function CoverageMap() {
             {/* Elite Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-1">
                 <EliteKPICard
-                    title="Coadyuvantes Médicos"
+                    title="Médicos"
                     value={stats.doctors}
-                    subtitle="Especialistas Activos"
+                    subtitle="Especialistas registrados"
                     icon={UsersIcon}
                     color="blue"
                     delay={100}
                 />
                 <EliteKPICard
-                    title="Puntos de Venta"
+                    title="Farmacias"
                     value={stats.pharmacies}
-                    subtitle="Sedes Farmacéuticas"
+                    subtitle="Puntos de venta"
                     icon={Building2}
                     color="emerald"
                     delay={200}
                 />
                 <EliteKPICard
-                    title="Red Hospitalaria"
+                    title="Hospitales"
                     value={stats.hospitals}
-                    subtitle="Centros de Salud"
+                    subtitle="Red pública"
                     icon={Hospital}
                     color="rose"
                     delay={300}
                 />
                 <EliteKPICard
-                    title="Clínicas Aliadas"
+                    title="Clínicas"
                     value={stats.clinics}
-                    subtitle="Centros Privados"
+                    subtitle="Red privada"
                     icon={Building}
                     color="amber"
                     delay={400}
@@ -627,11 +627,11 @@ export default function CoverageMap() {
             {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
                 {/* Elite Sidebar - Consola de Control */}
-                <Card className="border border-border/50 shadow-soft rounded-3xl lg:col-span-1 bg-card/80 backdrop-blur-xl transition-all duration-500 hover:shadow-card relative z-20 overflow-hidden">
-                    <CardHeader className="pb-4 bg-muted/20 border-b border-border/10">
-                        <CardTitle className="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                            <Filter className="mr-3 h-4 w-4 premium-icon" />
-                            Consola de Filtros
+                <Card className="border border-slate-200 shadow-sm rounded-2xl lg:col-span-1 bg-card/80 backdrop-blur-xl transition-all duration-500 relative z-20 overflow-hidden">
+                    <CardHeader className="pb-4 bg-slate-50/50 border-b border-slate-100">
+                        <CardTitle className="flex items-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                            <Filter className="mr-2 h-4 w-4" />
+                            Filtros de mapa
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6 pt-6">
@@ -665,16 +665,16 @@ export default function CoverageMap() {
                         {/* Map Configuration */}
                         {googleMapsApiKey && (
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">Configuración de Visualización</label>
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Modo de visualización</label>
                                 <Select value={mapType} onValueChange={(v: any) => setMapType(v)}>
-                                    <SelectTrigger className="rounded-xl border-border/50 h-11 text-xs font-bold uppercase tracking-tight">
-                                        <SelectValue placeholder="Modo Premium" />
+                                    <SelectTrigger className="rounded-xl border-slate-200 h-10 text-xs font-semibold">
+                                        <SelectValue placeholder="Seleccionar modo" />
                                     </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-border shadow-2xl">
-                                        <SelectItem value="roadmap" className="text-xs font-bold uppercase">Mapa Industrial (Elite)</SelectItem>
-                                        <SelectItem value="satellite" className="text-xs font-bold uppercase">Vista Satelital (HQ)</SelectItem>
-                                        <SelectItem value="hybrid" className="text-xs font-bold uppercase">Híbrido Corporativo</SelectItem>
-                                        <SelectItem value="terrain" className="text-xs font-bold uppercase">Relieve Físico</SelectItem>
+                                    <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                                        <SelectItem value="roadmap" className="text-xs font-medium">Mapa estándar</SelectItem>
+                                        <SelectItem value="satellite" className="text-xs font-medium">Vista satelital</SelectItem>
+                                        <SelectItem value="hybrid" className="text-xs font-medium">Vista híbrida</SelectItem>
+                                        <SelectItem value="terrain" className="text-xs font-medium">Relieve físico</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -733,12 +733,12 @@ export default function CoverageMap() {
                                     }}
                                 />
                             </div>
-                            <div className="flex items-center justify-between p-3 rounded-2xl bg-muted/30 border border-border/10">
+                            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                                 <div className="space-y-0.5">
-                                    <label htmlFor="heatmap" className="text-[10px] font-black uppercase tracking-tight cursor-pointer">
-                                        Visualización de Calor
+                                    <label htmlFor="heatmap" className="text-xs font-bold tracking-tight cursor-pointer">
+                                        Mapa de calor
                                     </label>
-                                    <p className="text-[9px] font-medium text-muted-foreground uppercase opacity-70">Densidad de Actividad</p>
+                                    <p className="text-[10px] font-medium text-slate-400">Densidad de actividad</p>
                                 </div>
                                 <Checkbox
                                     id="heatmap"
@@ -755,26 +755,26 @@ export default function CoverageMap() {
                             <ScrollArea className="h-[300px]">
                                 <div className="space-y-2 pr-2">
                                     {filteredContacts.map(contact => (
-                                        <div
+                                            <div
                                             key={contact.id}
                                             onClick={() => focusOnContact(contact)}
-                                            className={`p-3 rounded-2xl cursor-pointer transition-all duration-300 ${selectedContact?.id === contact.id
-                                                ? 'bg-primary/10 border border-primary/20 shadow-inner'
-                                                : 'bg-muted/30 hover:bg-muted/50 border border-transparent hover:border-border/50'
+                                            className={`p-3 rounded-xl cursor-pointer transition-all duration-300 ${selectedContact?.id === contact.id
+                                                ? 'bg-primary/5 border border-primary/20 shadow-inner'
+                                                : 'bg-slate-50/50 hover:bg-slate-100 border border-transparent hover:border-slate-100'
                                                 }`}
                                         >
                                             <div className="flex items-start space-x-3">
                                                 <div
-                                                    className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 shadow-sm"
+                                                    className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0"
                                                     style={{ backgroundColor: MARKER_COLORS[contact.type] }}
                                                 />
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-black text-[11px] uppercase tracking-tight truncate text-foreground">{contact.name}</p>
-                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase opacity-80 truncate">
+                                                    <p className="font-bold text-xs tracking-tight truncate text-foreground">{contact.name}</p>
+                                                    <p className="text-[10px] font-medium text-slate-400 truncate">
                                                         {contact.specialty || getTypeLabel(contact.type)}
                                                     </p>
                                                     {contact.city && (
-                                                        <p className="text-[9px] font-medium text-muted-foreground uppercase opacity-60 truncate mt-0.5">{contact.city}</p>
+                                                        <p className="text-[9px] font-medium text-slate-400/70 truncate mt-0.5">{contact.city}</p>
                                                     )}
                                                 </div>
                                             </div>

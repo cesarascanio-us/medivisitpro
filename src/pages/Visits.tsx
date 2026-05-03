@@ -98,7 +98,7 @@ export default function Visits() {
         .from('visits')
         .select(`
           *,
-          unified_contacts(name, specialty, address, email, phone, priority, potential)
+          unified_contacts(full_name, specialty, address, email, phone, priority, potential)
         `)
         .eq('organization_id', organizationId);
 
@@ -165,7 +165,7 @@ export default function Visits() {
 
     if (searchTerm) {
       filtered = filtered.filter(visit =>
-        visit.unified_contacts?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        visit.unified_contacts?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         visit.unified_contacts?.specialty?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         visit.objective?.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -405,19 +405,19 @@ export default function Visits() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <EliteHeader 
-        title="Gestión de Visitas"
-        subtitle="Centro de Orquestación y Reporte de Campo"
+        title="Agenda de Visitas"
+        subtitle="Seguimiento de actividad comercial y reportes"
         icon={Calendar}
-        badgeText="V6.0 INDUSTRIAL"
-        statusText="Control de Actividad Activo"
+        badgeText="Visitas"
+        statusText="Control de actividad activo"
         statusColor="bg-emerald-500"
         rightContent={
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className={cn("h-14 w-14 rounded-2xl transition-all", showHelp ? "bg-amber-50 text-amber-500 shadow-inner" : "hover:bg-slate-50 text-slate-400")}>
-              <Lightbulb className="h-6 w-6" />
+            <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className={cn("h-12 w-12 rounded-xl transition-all", showHelp ? "bg-amber-50 text-amber-500 shadow-inner" : "hover:bg-slate-50 text-slate-400")}>
+              <Lightbulb className="h-5 w-5" />
             </Button>
-            <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3" onClick={() => setWizardOpen(true)}>
-              <Plus className="h-6 w-6" />
+            <Button className="h-14 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md font-bold text-xs transition-all active:scale-95 flex items-center gap-2" onClick={() => setWizardOpen(true)}>
+              <Plus className="h-5 w-5" />
               Nueva Visita
             </Button>
           </div>
@@ -426,12 +426,12 @@ export default function Visits() {
 
       {showHelp && (
         <InstructionCard
-          title="Manual de Operaciones: Visitas"
-          description="Estandarización de la agenda operativa y reporte de resultados."
+          title="Guía de uso: Visitas"
+          description="Estandarización de la agenda y reporte de resultados comerciales."
           items={[
-            "Mapeo Masivo: Use la herramienta de importación para cargar ciclos completos.",
-            "Ejecución: Inicie la misión desde el panel para registrar geolocalización.",
-            "Reporte: El análisis debe completarse inmediatamente tras el cierre de visita."
+            "Carga masiva: Utiliza la importación para planificar ciclos de trabajo completos.",
+            "Ejecución: Inicia la visita desde el panel para registrar el seguimiento en vivo.",
+            "Reporte: Completa el análisis de resultados inmediatamente al finalizar la visita."
           ]}
         />
       )}
@@ -440,40 +440,40 @@ export default function Visits() {
       {(canViewAllData || isSupervisor) && <AdminDataFilter onFilterChange={setAdminFilters} moduleType="visits" />}
 
       {/* Industrial Tools Area */}
-      <div className="flex flex-wrap items-center gap-4 bg-card/50 backdrop-blur-sm p-6 rounded-[2rem] border border-border/40 shadow-soft">
-        <Button variant="outline" onClick={handlePrint} className="h-12 px-8 border-border/40 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-card hover:shadow-premium-sm transition-all group">
-          <Printer className="mr-3 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
-          Imprimir Registro
+      <div className="flex flex-wrap items-center gap-4 bg-card/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 shadow-sm">
+        <Button variant="outline" onClick={handlePrint} className="h-10 px-6 border-slate-200 rounded-lg font-bold text-xs hover:bg-card transition-all group">
+          <Printer className="mr-2 h-4 w-4 text-slate-400 group-hover:text-primary" />
+          Imprimir reporte
         </Button>
-        <div className="flex items-center h-12 shadow-premium-sm rounded-xl overflow-hidden border border-border/40">
-          <Button variant="ghost" className="h-full bg-card border-r border-border/40 px-8 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all group" onClick={triggerImport} disabled={importing}>
-            {importing ? <FileSpreadsheet className="mr-3 h-5 w-5 animate-pulse text-primary" /> : <Upload className="mr-3 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />}
-            Importar Ciclo
+        <div className="flex items-center h-10 shadow-sm rounded-lg overflow-hidden border border-slate-200">
+          <Button variant="ghost" className="h-full bg-card border-r border-slate-200 px-6 font-bold text-xs hover:bg-slate-50 transition-all group" onClick={triggerImport} disabled={importing}>
+            {importing ? <FileSpreadsheet className="mr-2 h-4 w-4 animate-pulse text-primary" /> : <Upload className="mr-2 h-4 w-4 text-slate-400 group-hover:text-primary" />}
+            Importar ciclo
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => setHelpDialogOpen(true)} className="h-full w-12 bg-card hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
-            <HelpCircle className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={() => setHelpDialogOpen(true)} className="h-full w-10 bg-card hover:bg-blue-50 text-slate-400 hover:text-blue-500">
+            <HelpCircle className="h-4 w-4" />
           </Button>
         </div>
-        <Button variant="outline" onClick={() => exportToCSV(filteredVisits, 'visitas')} className="h-12 px-8 border-border/40 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-card hover:shadow-premium-sm transition-all group">
-          <Download className="mr-3 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
-          Exportar Inteligencia
+        <Button variant="outline" onClick={() => exportToCSV(filteredVisits, 'visitas')} className="h-10 px-6 border-slate-200 rounded-lg font-bold text-xs hover:bg-card transition-all group">
+          <Download className="mr-2 h-4 w-4 text-slate-400 group-hover:text-primary" />
+          Exportar datos
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <EliteKPICard 
-              title="Total Visitas" 
+              title="Total visitas" 
               value={visitsByStatus.total.toString()} 
-              subtitle="Carga operativa total"
+              subtitle="Carga operativa"
               icon={FileText}
-              color="indigo"
+              color="blue"
               onClick={() => setStatusFilter("all")}
               isActive={statusFilter === "all"}
           />
           <EliteKPICard 
               title="Completadas" 
               value={visitsByStatus.completed.toString()} 
-              subtitle="Misiones cerradas con éxito"
+              subtitle="Gestiones cerradas"
               icon={CheckCircle}
               trend={visitsByStatus.total > 0 ? (visitsByStatus.completed / visitsByStatus.total) * 100 : 0}
               color="emerald"
@@ -483,7 +483,7 @@ export default function Visits() {
           <EliteKPICard 
               title="Programadas" 
               value={visitsByStatus.scheduled.toString()} 
-              subtitle="Despliegues en radar"
+              subtitle="Pendientes en agenda"
               icon={Calendar}
               color="amber"
               onClick={() => setStatusFilter("scheduled")}
@@ -492,7 +492,7 @@ export default function Visits() {
           <EliteKPICard 
               title="Canceladas" 
               value={visitsByStatus.cancelled.toString()} 
-              subtitle="Objetivos no alcanzados"
+              subtitle="No realizadas"
               icon={XCircle}
               color="rose"
               onClick={() => setStatusFilter("cancelled")}
@@ -503,23 +503,23 @@ export default function Visits() {
 
 
       {/* Filters - PRECISION TOOLS */}
-      <Card className="border-border/40 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden">
-        <CardContent className="p-10">
-          <div className="flex flex-col md:flex-row gap-6">
+      <Card className="border-slate-100 shadow-sm bg-card rounded-2xl overflow-hidden">
+        <CardContent className="p-8">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Input
-                placeholder="Buscar por médico, especialidad u objetivo operativo..."
+                placeholder="Buscar por médico, especialidad u objetivo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner placeholder:text-slate-500 text-slate-900"
+                className="h-12 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-semibold text-xs shadow-inner placeholder:text-slate-400 text-slate-900"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-14 w-full md:w-64 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
-                <SelectValue placeholder="Estado de Misión" />
+              <SelectTrigger className="h-12 w-full md:w-56 bg-slate-50 border-none focus:ring-primary rounded-xl font-bold text-xs shadow-inner text-slate-900">
+                <SelectValue placeholder="Filtrar por estado" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-border/40 font-black uppercase text-[10px] tracking-widest">
-                <SelectItem value="all">Soberanía Total</SelectItem>
+              <SelectContent className="rounded-xl border-slate-200">
+                <SelectItem value="all">Todas las visitas</SelectItem>
                 <SelectItem value="scheduled">Programadas</SelectItem>
                 <SelectItem value="completed">Completadas</SelectItem>
                 <SelectItem value="cancelled">Canceladas</SelectItem>
@@ -549,8 +549,8 @@ export default function Visits() {
                           <User className="h-6 w-6 text-slate-400 group-hover:text-primary transition-colors" />
                         </div>
                         <div>
-                          <h3 className="text-xl font-black text-foreground tracking-tighter uppercase font-display group-hover:text-primary transition-colors">
-                            {visit.unified_contacts?.name || "Contacto no disponible"}
+                          <h3 className="text-lg font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">
+                            {visit.unified_contacts?.full_name || "Sin identificar"}
                           </h3>
                           <div className="flex items-center gap-3 mt-1">
                             <Badge className="bg-slate-100 text-slate-500 border-none font-black text-[9px] h-5 px-2 uppercase tracking-widest">

@@ -167,25 +167,38 @@ export default function FinanceMonitor() {
     };
 
     if (!isManager && !isMaster) {
-        return <div className="p-8 text-center text-red-500 font-bold">Acceso Denegado. Se requiere nivel Manager o Superior.</div>;
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+                <div className="p-6 bg-rose-50 rounded-full">
+                    <TrendingDown className="h-16 w-16 text-rose-500" />
+                </div>
+                <div className="text-center space-y-2">
+                    <h1 className="text-2xl font-bold text-slate-900">Acceso Restringido</h1>
+                    <p className="text-slate-500 max-w-xs mx-auto">Esta sección requiere permisos de nivel gerencial o superior para visualizar datos financieros sensibles.</p>
+                </div>
+                <Button variant="outline" className="rounded-xl font-bold" onClick={() => window.history.back()}>
+                    Regresar
+                </Button>
+            </div>
+        );
     }
 
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
             <EliteHeader 
-                title="Finance Monitor"
-                subtitle="Análisis de ROI y Eficiencia Operativa"
+                title="Monitor Financiero"
+                subtitle="Análisis de rentabilidad y eficiencia operativa"
                 icon={Scale}
-                badgeText="A0 V6.0"
-                statusText="Auditoría Financiera Activa"
-                statusColor="bg-primary"
+                badgeText="Finanzas"
+                statusText="Auditoría activa"
+                statusColor="bg-emerald-500"
                 rightContent={
-                    <div className="flex items-center gap-4">
-                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-card border-border/40 text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all" onClick={loadFinanceData}>
-                            <RefreshCw className={`h-5 w-5 mr-3 text-primary ${loading ? 'animate-spin' : ''}`} /> Actualizar
+                    <div className="flex items-center gap-3">
+                        <Button variant="outline" className="h-12 px-6 rounded-xl bg-card border-slate-200 text-slate-500 font-bold text-xs hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2" onClick={loadFinanceData}>
+                            <RefreshCw className={`h-4 w-4 text-primary ${loading ? 'animate-spin' : ''}`} /> Actualizar
                         </Button>
-                        <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
-                            <Download className="h-6 w-6" /> Exportar Reporte
+                        <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md font-bold text-xs transition-all active:scale-95 flex items-center gap-2">
+                            <Download className="h-4 w-4" /> Exportar reporte
                         </Button>
                     </div>
                 }
@@ -230,21 +243,21 @@ export default function FinanceMonitor() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Sales vs Expenses Chart */}
-                <Card className="lg:col-span-2 border-border shadow-card rounded-3xl overflow-hidden bg-card">
-                    <CardHeader className="border-b border-border/50 pb-6 pt-8 px-8">
+                <Card className="lg:col-span-2 border-slate-100 shadow-sm rounded-[2rem] overflow-hidden bg-card">
+                    <CardHeader className="border-b border-slate-50 pb-6 pt-8 px-8">
                         <div className="flex justify-between items-center">
-                            <CardTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+                            <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2 tracking-tight">
                                 <BarChart3 className="h-5 w-5 text-primary" />
-                                Histórico Ventas vs. Gastos
+                                Histórico ventas vs. gastos
                             </CardTitle>
                             <div className="flex gap-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-primary text-white"></div>
-                                    <span className="text-xs font-bold text-muted-foreground">Ventas</span>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-primary"></div>
+                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ventas</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-destructive"></div>
-                                    <span className="text-xs font-bold text-muted-foreground">Gastos</span>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Gastos</span>
                                 </div>
                             </div>
                         </div>
@@ -255,46 +268,46 @@ export default function FinanceMonitor() {
                                 <AreaChart data={chartData}>
                                     <defs>
                                         <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
-                                            <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                                         </linearGradient>
                                         <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.1}/>
                                             <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
                                     <XAxis 
                                         dataKey="name" 
                                         axisLine={false} 
                                         tickLine={false} 
-                                        tick={{fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 600}}
+                                        tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 700}}
                                         dy={10}
                                     />
                                     <YAxis 
                                         axisLine={false} 
                                         tickLine={false} 
-                                        tick={{fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 600}}
+                                        tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 700}}
                                         tickFormatter={(value) => `$${value}`}
                                     />
                                     <Tooltip 
-                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '16px', border: '1px solid hsl(var(--border))', boxShadow: 'var(--shadow-card)' }}
-                                        itemStyle={{ fontWeight: 700 }}
-                                        cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
+                                        contentStyle={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                        itemStyle={{ fontWeight: 700, fontSize: '12px' }}
+                                        cursor={{ stroke: '#f1f5f9', strokeWidth: 2 }}
                                     />
                                     <Area 
                                         type="monotone" 
                                         dataKey="ventas" 
-                                        stroke="hsl(var(--primary))" 
-                                        strokeWidth={4}
+                                        stroke="#3b82f6" 
+                                        strokeWidth={3}
                                         fillOpacity={1} 
                                         fill="url(#colorSales)" 
                                     />
                                     <Area 
                                         type="monotone" 
                                         dataKey="gastos" 
-                                        stroke="hsl(var(--destructive))" 
-                                        strokeWidth={4}
+                                        stroke="#f43f5e" 
+                                        strokeWidth={3}
                                         fillOpacity={1} 
                                         fill="url(#colorExpenses)" 
                                     />
@@ -305,35 +318,36 @@ export default function FinanceMonitor() {
                 </Card>
 
                 {/* Investment Efficiency Card */}
-                <Card className="border-border shadow-card rounded-3xl overflow-hidden bg-gradient-to-br from-primary to-primary-dark text-white border-none">
-                    <CardHeader className="pb-2 pt-8 px-8">
-                        <CardTitle className="text-xl font-bold flex items-center gap-2">
-                            <PieChart className="h-5 w-5" /> Eficiencia Neta
+                <Card className="border-none shadow-md rounded-[2rem] overflow-hidden bg-slate-900 text-white relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
+                    <CardHeader className="pb-2 pt-8 px-8 relative z-10">
+                        <CardTitle className="text-lg font-bold flex items-center gap-2 tracking-tight">
+                            <PieChart className="h-5 w-5 text-primary" /> Eficiencia neta
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-8 space-y-8">
+                    <CardContent className="p-8 space-y-8 relative z-10">
                         <div className="text-center py-4">
-                            <h2 className="text-6xl font-black mb-2">{stats.netEfficiency.toFixed(1)}%</h2>
-                            <p className="text-indigo-100 font-medium tracking-wide uppercase text-xs">Expense Ratio</p>
+                            <h2 className="text-6xl font-bold mb-2 tracking-tighter">{stats.netEfficiency.toFixed(1)}%</h2>
+                            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">Ratio de gastos</p>
                         </div>
                         
-                        <div className="space-y-4">
-                            <div className="bg-background/10 p-4 rounded-2xl backdrop-blur-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="text-sm font-bold opacity-80">Salud Financiera</span>
-                                    <Badge className="bg-emerald-400 text-white border-none">Excelente</Badge>
+                        <div className="space-y-5">
+                            <div className="bg-white/5 p-5 rounded-2xl border border-white/5">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-xs font-bold text-slate-300">Salud financiera</span>
+                                    <Badge className="bg-emerald-500 text-white border-none text-[10px] font-bold px-2 py-0">Excelente</Badge>
                                 </div>
-                                <div className="w-full bg-background/20 h-2 rounded-full overflow-hidden">
-                                    <div className="bg-emerald-400 h-full rounded-full" style={{ width: '85%' }}></div>
+                                <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                    <div className="bg-emerald-500 h-full rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]" style={{ width: '85%' }}></div>
                                 </div>
                             </div>
                             
-                            <p className="text-sm text-indigo-100 leading-relaxed  opacity-80">
-                                "La eficiencia por debajo del 15% indica un uso altamente optimizado de los recursos para la generación de ventas."
+                            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                                Una eficiencia por debajo del 15% indica un uso optimizado de recursos para la generación de ventas.
                             </p>
 
-                            <Button className="w-full bg-background text-indigo-700 hover:bg-muted font-bold rounded-xl mt-4">
-                                Ver Detalle por Zona
+                            <Button className="w-full bg-white text-slate-900 hover:bg-slate-100 font-bold rounded-xl mt-2 h-11 text-xs transition-all active:scale-95 shadow-lg">
+                                Ver detalle por zona
                             </Button>
                         </div>
                     </CardContent>

@@ -185,16 +185,16 @@ export default function PharmaciesElite() {
         <div className="space-y-10 pb-10 font-display animate-in fade-in duration-700">
             {/* Header Elite Industrial */}
             <EliteHeader 
-                title="Canal Farmacéutico"
-                subtitle="Gestión de Establecimientos & Órdenes Estratégicas"
+                title="Farmacias"
+                subtitle="Directorio de farmacias y control de transferencias"
                 icon={Store}
-                badgeText="V6.0 ELITE"
-                statusText="Monitor de Transferencias Activo"
-                statusColor="bg-primary"
+                badgeText="Farmacias"
+                statusText="Monitor de actividad activo"
+                statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
-                            <Download className="mr-3 h-5 w-5 text-primary" /> Exportar
+                        <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="h-12 px-6 rounded-xl border-slate-200 bg-card text-foreground font-bold text-xs hover:bg-slate-50 transition-all shadow-sm">
+                            <Download className="mr-2 h-4 w-4 text-primary" /> Exportar
                         </Button>
                         <Button
                             onClick={() => {
@@ -215,9 +215,9 @@ export default function PharmaciesElite() {
                                 });
                                 setDialogOpen(true);
                             }}
-                            className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
+                            className="h-14 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md font-bold text-xs transition-all active:scale-95 flex items-center gap-2"
                         >
-                            <Plus className="h-6 w-6" /> Alta Farmacia
+                            <Plus className="h-5 w-5" /> Nueva Farmacia
                         </Button>
                     </div>
                 }
@@ -225,10 +225,10 @@ export default function PharmaciesElite() {
 
             {/* KPI Section Elite */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <EliteKPICard title="Total Farmacias" value={stats.totalPharmacies} icon={Store} color="primary" />
-                <EliteKPICard title="Visitas Pendientes" value={stats.pendingVisits} icon={Clock} color="amber" />
-                <EliteKPICard title="Pedidos Activos" value={stats.activeOrders} icon={Package} color="emerald" />
-                <EliteKPICard title="Reportes Pendientes" value={stats.pendingReports} icon={AlertCircle} color="rose" />
+                <EliteKPICard title="Total farmacias" value={stats.totalPharmacies} icon={Store} color="blue" />
+                <EliteKPICard title="Visitas pendientes" value={stats.pendingVisits} icon={Clock} color="amber" />
+                <EliteKPICard title="Pedidos activos" value={stats.activeOrders} icon={Package} color="emerald" />
+                <EliteKPICard title="Reportes pendientes" value={stats.pendingReports} icon={AlertCircle} color="rose" />
             </div>
 
             {/* Admin Data Filter - Control de Territorio */}
@@ -255,15 +255,15 @@ export default function PharmaciesElite() {
                 <TabsContent value="pharmacies" className="animate-in slide-in-from-bottom-5 duration-700">
                     {/* SEARCH AREA PREMIUM */}
                     <div className="mb-10">
-                        <Card className="bg-card border border-slate-100 rounded-[2.5rem] shadow-premium-sm p-6 flex-1 flex flex-col md:flex-row gap-6 relative overflow-hidden group/search">
+                        <Card className="bg-card border border-slate-100 rounded-2xl shadow-sm p-4 flex-1 flex flex-col md:flex-row gap-4 relative overflow-hidden group/search">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl opacity-0 group-hover/search:opacity-100 transition-opacity" />
                             <div className="flex-1 relative">
-                                <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-300 group-focus-within/search:text-primary transition-colors" />
+                                <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within/search:text-primary transition-colors" />
                                 <Input
-                                    placeholder="FILTRAR POR NOMBRE O RIF..."
+                                    placeholder="Buscar por nombre o RIF..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-16 h-16 bg-slate-50 border-none focus-visible:ring-primary/20 font-black rounded-2xl text-slate-900 placeholder:text-slate-500 transition-all text-xs tracking-widest shadow-inner uppercase"
+                                    className="pl-14 h-12 bg-slate-50 border-none focus-visible:ring-primary/20 font-semibold rounded-xl text-slate-900 placeholder:text-slate-400 transition-all text-xs shadow-inner"
                                 />
                             </div>
                         </Card>
@@ -299,8 +299,8 @@ export default function PharmaciesElite() {
                                                             <Store className="h-5 w-5 text-primary" />
                                                         </div>
                                                         <div>
-                                                            <p className="font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{pharma.name}</p>
-                                                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">RIF: {pharma.rif || 'S/N'}</p>
+                                                            <p className="font-bold text-sm text-foreground tracking-tight group-hover:text-primary transition-colors">{pharma.name}</p>
+                                                            <p className="text-[10px] text-slate-400 font-bold mt-0.5">RIF: {pharma.rif || 'N/A'}</p>
                                                         </div>
                                                     </div>
                                                 </TableCell>
@@ -317,8 +317,8 @@ export default function PharmaciesElite() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="py-4 align-top">
-                                                    <span className={cn("text-xs font-bold uppercase tracking-wide", pharma.last_visit ? "text-emerald-500" : "text-muted-foreground")}>
-                                                        {pharma.last_visit ? new Date(pharma.last_visit).toLocaleDateString() : 'PENDIENTE'}
+                                                    <span className={cn("text-xs font-bold", pharma.last_visit ? "text-emerald-500" : "text-slate-400")}>
+                                                        {pharma.last_visit ? new Date(pharma.last_visit).toLocaleDateString() : 'Pendiente'}
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="py-4 align-top text-right">
@@ -343,28 +343,28 @@ export default function PharmaciesElite() {
                 </TabsContent>
 
                 <TabsContent value="transfers" className="animate-in slide-in-from-bottom-5 duration-700">
-                    <Card className="bg-card border border-slate-100 rounded-[3rem] shadow-premium-lg p-10">
-                         <div className="flex items-center justify-between mb-10">
+                    <Card className="bg-card border border-slate-100 rounded-2xl shadow-sm p-8">
+                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h2 className="text-3xl font-black text-foreground uppercase tracking-tighter font-display leading-none">Logística de Transferencia</h2>
-                                <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-2">Historial de movimientos tácticos de inventario</p>
+                                <h2 className="text-2xl font-bold text-foreground tracking-tight leading-none">Transferencias</h2>
+                                <p className="text-slate-400 font-medium text-xs mt-1">Historial de movimientos de inventario</p>
                             </div>
-                            <Button className="h-14 px-8 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-premium-md transition-all active:scale-95">
-                                <PlusCircle className="mr-3 h-5 w-5" /> Nueva Orden
+                            <Button className="h-12 px-6 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs shadow-md transition-all active:scale-95">
+                                <PlusCircle className="mr-2 h-4 w-4" /> Nueva Orden
                             </Button>
                          </div>
                          
-                         <div className="rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-soft">
+                         <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm">
                             <Table>
                                 <TableHeader className="bg-slate-50/50">
                                     <TableRow className="border-slate-100 hover:bg-transparent">
-                                        <TableHead className="pl-10 h-20 uppercase font-black text-[10px] tracking-widest text-slate-400 ">ID Orden</TableHead>
-                                        <TableHead className="h-20 uppercase font-black text-[10px] tracking-widest text-slate-400 ">Destino Farmacéutico</TableHead>
-                                        <TableHead className="h-20 uppercase font-black text-[10px] tracking-widest text-slate-400 ">Droguería</TableHead>
-                                        <TableHead className="h-20 uppercase font-black text-[10px] tracking-widest text-slate-400 ">Timestamp</TableHead>
-                                        <TableHead className="h-20 uppercase font-black text-[10px] tracking-widest text-slate-400 ">Monto (USD)</TableHead>
-                                        <TableHead className="h-20 uppercase font-black text-[10px] tracking-widest text-slate-400 ">Estado</TableHead>
-                                        <TableHead className="pr-10 h-20 text-right uppercase font-black text-[10px] tracking-widest text-slate-400 ">Auditoría</TableHead>
+                                        <TableHead className="pl-8 h-14 font-bold text-[11px] uppercase tracking-wider text-slate-400">ID Orden</TableHead>
+                                        <TableHead className="h-14 font-bold text-[11px] uppercase tracking-wider text-slate-400">Farmacia</TableHead>
+                                        <TableHead className="h-14 font-bold text-[11px] uppercase tracking-wider text-slate-400">Droguería</TableHead>
+                                        <TableHead className="h-14 font-bold text-[11px] uppercase tracking-wider text-slate-400">Fecha</TableHead>
+                                        <TableHead className="h-14 font-bold text-[11px] uppercase tracking-wider text-slate-400">Monto (USD)</TableHead>
+                                        <TableHead className="h-14 font-bold text-[11px] uppercase tracking-wider text-slate-400">Estado</TableHead>
+                                        <TableHead className="pr-8 h-14 text-right font-bold text-[11px] uppercase tracking-wider text-slate-400">Acciones</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -375,18 +375,18 @@ export default function PharmaciesElite() {
                                     ) : (
                                         transfers.map(order => (
                                             <TableRow key={order.id} className="border-slate-50 hover:bg-primary/5 transition-all group">
-                                                <TableCell className="pl-10 font-mono text-primary font-black text-xs uppercase tracking-tighter">#{order.order_number}</TableCell>
-                                                <TableCell className="text-foreground font-black uppercase text-xs font-display tracking-tight">{order.pharmacy_name}</TableCell>
-                                                <TableCell className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">{order.drugstore_name || 'CENTRAL'}</TableCell>
-                                                <TableCell className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{new Date(order.order_date).toLocaleDateString()}</TableCell>
-                                                <TableCell className="text-foreground font-black text-base uppercase tracking-tighter">${order.total?.toFixed(2)}</TableCell>
+                                                 <TableCell className="pl-8 font-mono text-primary font-bold text-xs">#{order.order_number}</TableCell>
+                                                <TableCell className="text-foreground font-bold text-xs tracking-tight">{order.pharmacy_name}</TableCell>
+                                                <TableCell className="text-slate-500 font-bold text-[10px] uppercase tracking-wider">{order.drugstore_name || 'Central'}</TableCell>
+                                                <TableCell className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">{new Date(order.order_date).toLocaleDateString()}</TableCell>
+                                                <TableCell className="text-foreground font-bold text-sm tracking-tight">${order.total?.toFixed(2)}</TableCell>
                                                 <TableCell>
-                                                    <Badge className={cn("text-[8px] font-black uppercase px-4 py-1 rounded-full border tracking-widest", order.status === 'delivered' ? "bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-500/10" : "bg-primary/5 text-primary border-primary/20 shadow-sm shadow-primary/10")}>
-                                                        {order.status.toUpperCase()}
+                                                    <Badge className={cn("text-[9px] font-bold uppercase px-3 py-0.5 rounded-full border-none", order.status === 'delivered' ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600")}>
+                                                        {order.status}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="pr-10 text-right">
-                                                    <Button variant="ghost" className="h-10 w-10 bg-card border border-slate-100 text-slate-400 hover:text-primary rounded-xl transition-all shadow-sm">
+                                                <TableCell className="pr-8 text-right">
+                                                    <Button variant="ghost" className="h-9 w-9 bg-slate-50 text-slate-400 hover:text-primary rounded-lg transition-all">
                                                         <Eye className="h-4 w-4" />
                                                     </Button>
                                                 </TableCell>

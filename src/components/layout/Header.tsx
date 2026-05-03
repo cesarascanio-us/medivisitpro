@@ -19,16 +19,36 @@ import { OrganizationSwitcher } from "@/components/organization/OrganizationSwit
 import { Badge } from "@/components/ui/badge";
 import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator";
 
-export function Header() {
-  const navigate = useNavigate();
-  const { user, isSystemAdmin } = useAuth();
+export function HeaderActions() {
   const { theme, setTheme } = useTheme();
+  const isDarkMode = theme === "dark";
 
   const toggleDarkMode = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(isDarkMode ? "light" : "dark");
   };
 
-  const isDarkMode = theme === "dark";
+  return (
+    <div className="flex items-center gap-2 md:gap-4">
+      <OnlineStatusIndicator />
+      
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleDarkMode}
+        className="h-9 w-9 md:h-10 md:w-10 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-300"
+        title={isDarkMode ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
+      >
+        {isDarkMode ? <Sun className="h-4 w-4 md:h-5 md:w-5" /> : <Moon className="h-4 w-4 md:h-5 md:w-5" />}
+      </Button>
+
+      <NotificationBadge />
+    </div>
+  );
+}
+
+export function Header() {
+  const navigate = useNavigate();
+  const { isSystemAdmin } = useAuth();
 
   const today = new Date();
   const todayFormatted = today.toLocaleDateString('es-ES', {
@@ -69,21 +89,7 @@ export function Header() {
         </div>
 
         {/* Right side - Actions */}
-        <div className="flex items-center gap-4">
-          <OnlineStatusIndicator />
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleDarkMode}
-            className="h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-300"
-            title={isDarkMode ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
-          >
-            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
-
-          <NotificationBadge />
-        </div>
+        <HeaderActions />
       </div>
     </header>
   );

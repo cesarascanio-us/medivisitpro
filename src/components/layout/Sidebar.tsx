@@ -77,9 +77,9 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || "Usuario";
   
   const getRoleLabel = (r: string) => {
-    if (isMaster) return 'Sovereign Master';
-    if (isAdmin) return 'Admin Elite';
-    if (isManager) return 'Gerente CA';
+    if (isMaster) return 'Master';
+    if (isAdmin) return 'Administrador';
+    if (isManager) return 'Gerente';
     if (isCoordinator) return 'Coordinador';
     if (isSupervisor) return 'Supervisor';
     return 'Representante';
@@ -91,51 +91,50 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const canSeeAnalytics = isMaster || isAdmin || isManager;
   const canSeeZones = isMaster || isAdmin || isManager;
   const canSeeHR = isMaster || isAdmin || isManager;
-
   const filteredNav = [
     {
-      title: "CORE SYSTEM",
+      title: "Administración",
       items: [
-        { name: "Centro de Mando", href: "/dashboard-master", icon: BarChart3, visible: canSeeMaster },
-        { name: "Dashboard Operativo", href: "/dashboard", icon: Home, visible: true },
-        { name: "Panel Master", href: "/master-panel", icon: Crown, visible: canSeeMaster },
-        { name: "Control Organizaciones", href: "/master-panel?tab=orgs", icon: Building2, visible: canSeeMaster },
-        { name: "SaaS & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
-        { name: "Auditoría de Sistema", href: "/master/logs", icon: Shield, visible: canSeeMaster },
-        { name: "Finance Monitor", href: "/finance-monitor", icon: BarChart3, visible: canSeeAnalytics },
-        { name: "Búnker de Activos", href: "/asset-bunker", icon: ShieldCheck, visible: canSeeMaster },
+        { name: "Panel principal", href: "/dashboard-master", icon: BarChart3, visible: canSeeMaster },
+        { name: "Inicio", href: "/dashboard", icon: Home, visible: true },
+        { name: "Panel master", href: "/master-panel", icon: Crown, visible: canSeeMaster },
+        { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2, visible: canSeeMaster },
+        { name: "SaaS y facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
+        { name: "Auditoría de sistema", href: "/master/logs", icon: Shield, visible: canSeeMaster },
+        { name: "Monitor financiero", href: "/finance-monitor", icon: BarChart3, visible: canSeeAnalytics },
+        { name: "Almacén de activos", href: "/asset-bunker", icon: ShieldCheck, visible: canSeeMaster },
       ]
     },
     {
-      title: "CENTRO MÉDICO & AGENDA",
+      title: "Visita Médica",
       items: [
-        { name: "Mis Médicos", href: "/doctors", icon: Stethoscope, visible: true },
-        { name: "Agenda Táctica", href: "/agenda", icon: Calendar, visible: true },
-        { name: "Planificador Ruta", href: "/planner", icon: MapPin, visible: true },
-        { name: "Visitas de Hoy", href: "/visits", icon: ClipboardList, visible: true },
-        { name: "Muestras Médicas", href: "/muestras", icon: Pill, visible: true },
+        { name: "Directorio médico", href: "/doctors", icon: Stethoscope, visible: true },
+        { name: "Agenda médica", href: "/agenda", icon: Calendar, visible: true },
+        { name: "Planificador de ruta", href: "/planner", icon: MapPin, visible: true },
+        { name: "Visitas del día", href: "/visits", icon: ClipboardList, visible: true },
+        { name: "Muestras médicas", href: "/muestras", icon: Pill, visible: true },
       ]
     },
     {
-      title: "GESTIÓN COMERCIAL & EQUIPO",
+      title: "Gestión Comercial",
       items: [
-        { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users, visible: canSeeManagement },
-        { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield, visible: canSeeHR },
-        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
-        { name: "Zonas y Territorios", href: "/zones", icon: GitBranch, visible: canSeeZones },
-        { name: "Procesos de Trabajo", href: "/work-processes", icon: Layers, visible: true },
+        { name: "Gestión de equipo", href: "/users", icon: Users, visible: canSeeManagement },
+        { name: "Recursos humanos", href: "/hr", icon: Shield, visible: canSeeHR },
+        { name: "Proyección de ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
+        { name: "Zonas y territorios", href: "/zones", icon: GitBranch, visible: canSeeZones },
+        { name: "Procesos operativos", href: "/work-processes", icon: Layers, visible: true },
       ]
     },
     {
-      title: "OPERACIÓN DE CAMPO",
+      title: "Canales y Cobertura",
       items: [
-        { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck, visible: true },
-        { name: "Centros de Salud", href: "/health-centers", icon: Building2, visible: true },
-        { name: "Farmacias & POS", href: "/pharmacies", icon: Store, visible: true },
-        { name: "Tiendas Naturistas", href: "/natural-stores", icon: Sprout, visible: true },
+        { name: "Pedidos y transferencias", href: "/transfer-orders", icon: Truck, visible: true },
+        { name: "Centros de salud", href: "/health-centers", icon: Building2, visible: true },
+        { name: "Farmacias y POS", href: "/pharmacies", icon: Store, visible: true },
+        { name: "Tiendas naturistas", href: "/natural-stores", icon: Sprout, visible: true },
         { name: "Comercios", href: "/commerces", icon: Store, visible: true },
         { name: "Droguerías", href: "/drugstores", icon: FlaskConical, visible: true },
-        { name: "Cobertura Global", href: "/coverage-map", icon: Map, visible: canSeeManagement },
+        { name: "Mapa de cobertura", href: "/coverage-map", icon: Map, visible: canSeeManagement },
       ]
     }
   ].map(group => ({
@@ -159,9 +158,9 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           </div>
           {isExpanded && (
             <div className="animate-in fade-in slide-in-from-left duration-500">
-              <h1 className="text-xl font-black text-foreground tracking-tighter uppercase leading-none">MediVisitPro</h1>
+              <h1 className="text-xl font-bold text-foreground tracking-tight leading-none">MediVisitPro</h1>
               <div className="flex items-center gap-2 mt-1.5">
-                <Badge className="bg-primary/5 text-primary border-none font-black text-[8px] uppercase tracking-widest px-2 py-0.5">
+                <Badge className="bg-primary/5 text-primary border-none font-bold text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full">
                   {getRoleLabel(role)}
                 </Badge>
               </div>
@@ -176,8 +175,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           <div key={group.title} className="space-y-2">
             {isExpanded && (
               <div className="px-3 flex items-center justify-between cursor-pointer mb-2 group/title" onClick={(e) => toggleGroup(group.title, e)}>
-                <div className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]  group-hover/title:text-primary transition-colors">{group.title}</div>
-                <ChevronDown className={cn("h-3 w-3 text-muted-foreground transition-all group-hover/title:text-primary", collapsedGroups[group.title] ? "-rotate-90" : "rotate-0")} />
+                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest group-hover/title:text-primary transition-colors">{group.title}</div>
+                <ChevronDown className={cn("h-3 w-3 text-slate-400 transition-all group-hover/title:text-primary", collapsedGroups[group.title] ? "-rotate-90" : "rotate-0")} />
               </div>
             )}
             {!collapsedGroups[group.title] && (
@@ -189,15 +188,15 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                       key={item.name}
                       to={item.href}
                       className={cn(
-                        "flex items-center px-4 py-3 text-sm font-black rounded-[1.2rem] transition-all group relative overflow-hidden uppercase  tracking-tight",
+                        "flex items-center px-4 py-2 text-[12px] font-medium rounded-xl transition-all group relative overflow-hidden tracking-tight",
                          isActive 
-                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-primary transition-colors"
+                          ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
+                          : "text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors"
                       )}
                     >
-                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-background" />}
-                      <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110 premium-icon", isActive ? "text-primary-foreground premium-icon-active" : "text-muted-foreground premium-icon-hover")} />
-                      {isExpanded && <span className="ml-4 transition-all">{item.name}</span>}
+                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white/20" />}
+                      <item.icon className={cn("h-4 w-4 flex-shrink-0 transition-transform group-hover:scale-110", isActive ? "text-primary-foreground" : "text-slate-400 group-hover:text-primary")} />
+                      {isExpanded && <span className="ml-3 transition-all">{item.name}</span>}
                     </NavLink>
                   );
                 })}
@@ -215,8 +214,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           </div>
           {isExpanded && (
             <div className="min-w-0 flex-1 animate-in fade-in slide-in-from-left duration-500">
-              <p className="text-xs font-black text-foreground truncate uppercase ">{userName}</p>
-              <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{organizationName || 'MediVisitPro Premier'}</p>
+              <p className="text-xs font-bold text-foreground truncate">{userName}</p>
+              <p className="text-[9px] font-medium text-muted-foreground truncate mt-0.5">{organizationName || 'MediVisitPro Premier'}</p>
               <Button 
                 variant="ghost" 
                 size="sm" 
