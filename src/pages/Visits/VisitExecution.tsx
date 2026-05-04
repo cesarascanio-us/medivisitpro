@@ -668,26 +668,26 @@ export default function VisitExecutionPage() {
                     <h1 className="text-xl font-bold text-foreground">
                         {directoryItem?.name || "Cliente Desconocido"}
                     </h1>
-                    <p className="text-sm text-slate-500 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {directoryItem?.address || "Sin dirección"}
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        <MapPin className="h-3 w-3 text-primary" /> {directoryItem?.address || "Sin dirección"}
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-full border border-slate-200 mr-1 text-slate-900">
-                        <Label htmlFor="focus-mode" className="text-[8px] font-black uppercase tracking-widest text-slate-400">Focus</Label>
+                    <div className="flex items-center gap-2 bg-muted/20 px-3 py-1.5 rounded-full border border-border/40 mr-1 text-foreground shadow-inner">
+                        <Label htmlFor="focus-mode" className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Foco Crítico</Label>
                         <Switch id="focus-mode" checked={isFocusMode} onCheckedChange={setIsFocusMode} className="data-[state=checked]:bg-emerald-500 scale-[0.65]" />
                     </div>
                     <Button
                         size="sm"
                         variant="outline"
                         onClick={() => goToTab("negotiation")}
-                        className="bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 font-bold gap-1 shadow-sm"
+                        className="bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white font-black uppercase tracking-widest text-[10px] gap-2 shadow-sm rounded-xl h-11 px-5"
                     >
-                        💲 Venta/Negociación
+                        <BadgeDollarSign className="w-4 h-4" /> Venta / Cierre
                     </Button>
                     {isTimerRunning && (
-                        <Badge variant="outline" className="text-xs font-normal text-slate-400 border-slate-200">
-                            <Clock className="h-3 w-3 mr-1" />
+                        <Badge variant="outline" className="text-[10px] font-black text-primary border-primary/20 bg-primary/5 uppercase tracking-widest px-4 py-1.5 rounded-full h-11">
+                            <Clock className="h-4 w-4 mr-2" />
                             {formatTime(timer)}
                         </Badge>
                     )}
@@ -696,15 +696,15 @@ export default function VisitExecutionPage() {
 
             {!visit.checkin_at ? (
                 <div className="py-12 text-center bg-card rounded-xl border border-dashed border-border">
-                    <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Navigation className="h-8 w-8" />
+                    <div className="w-20 h-20 bg-primary/10 text-primary rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 border border-primary/20 shadow-inner">
+                        <Navigation className="h-10 w-10" />
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Listo para iniciar</h3>
-                    <p className="text-slate-500 max-w-sm mx-auto mb-6">
-                        Comprueba tu ubicación y presiona Check-in.
+                    <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-2">Despliegue Listo</h3>
+                    <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest max-w-sm mx-auto mb-8 opacity-70">
+                        VERIFICA COBERTURA GPS E INICIA INTERCEPTACIÓN COMERCIAL.
                     </p>
-                    <Button size="lg" onClick={handleCheckIn} className="bg-blue-600 hover:bg-blue-700 gap-2 shadow-lg shadow-blue-200 text-white">
-                        <Play className="h-5 w-5" /> INICIAR VISITA
+                    <Button size="lg" onClick={handleCheckIn} className="bg-primary hover:bg-primary/90 gap-3 shadow-premium-lg text-white font-black uppercase tracking-widest text-[10px] h-16 px-10 rounded-2xl active:scale-95 transition-all">
+                        <Play className="h-6 w-6" /> INICIAR MISIÓN
                     </Button>
                 </div>
             ) : visit.status === 'completed' ? (
@@ -720,37 +720,37 @@ export default function VisitExecutionPage() {
                 </div>
             ) : (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 bg-card p-1 h-auto md:h-14 rounded-xl border border-border shadow-md">
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-10 bg-muted/20 p-2 h-auto md:h-20 rounded-[2rem] border border-border/40 shadow-inner">
                         <TabsTrigger
                             value="strategy"
-                            className="rounded-lg text-slate-500 data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-xs md:text-sm gap-2 h-10 md:h-full"
+                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-emerald-400/20"
                         >
-                            <Brain className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">1. Estrategia</span>
+                            <Brain className="w-5 h-5" />
+                            <span className="hidden sm:inline">1. Estrategia Alpha</span>
                             <span className="sm:hidden">Estrat.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="development"
-                            className="rounded-lg text-slate-500 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-xs md:text-sm gap-2 h-10 md:h-full"
+                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <ActivityIcon className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">2. Desarrollo</span>
+                            <ActivityIcon className="w-5 h-5" />
+                            <span className="hidden sm:inline">2. Desarrollo Táctico</span>
                             <span className="sm:hidden">Desarr.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="negotiation"
-                            className="rounded-lg text-slate-500 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-xs md:text-sm gap-2 h-10 md:h-full"
+                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-indigo-400/20"
                         >
-                            <Store className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">3. Negociación</span>
+                            <Store className="w-5 h-5" />
+                            <span className="hidden sm:inline">3. Negociación Elite</span>
                             <span className="sm:hidden">Negoc.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="closing"
-                            className="rounded-lg text-slate-500 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-xs md:text-sm gap-2 h-10 md:h-full"
+                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-rose-500 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-rose-400/20"
                         >
-                            <CheckCircle className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">4. Cierre</span>
+                            <CheckCircle className="w-5 h-5" />
+                            <span className="hidden sm:inline">4. Cierre de Misión</span>
                             <span className="sm:hidden">Cierre</span>
                         </TabsTrigger>
                     </TabsList>
@@ -796,7 +796,7 @@ export default function VisitExecutionPage() {
                                         </div>
                                     )}
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Objetivo Transaccional</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Objetivo Transaccional Alpha</label>
                                         <div className="relative group">
                                             <Input
                                                 value={customObjective || (visit as any).objective || ''}
@@ -847,7 +847,7 @@ export default function VisitExecutionPage() {
                             <CardContent className="space-y-8 pt-6">
                                 {/* Interest Scale */}
                                 <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-slate-900">
-                                    <label className="text-sm font-bold text-slate-500 uppercase tracking-wider block mb-4 text-center sm:text-left">Nivel de Engagement</label>
+                                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] block mb-6 text-center sm:text-left">Nivel de Engagement Detectado</label>
                                     <div className="flex items-center justify-center sm:justify-start gap-4 mb-2">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <button
@@ -872,7 +872,7 @@ export default function VisitExecutionPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Estado Emocional</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Estado Emocional del Especialista</label>
                                         <Select
                                             value={formData.emotional_state}
                                             onValueChange={(v) => setFormData({ ...formData, emotional_state: v })}
@@ -890,7 +890,7 @@ export default function VisitExecutionPage() {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Motivador Detectado</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Motivador de Decisión Detectado</label>
                                         <Select
                                             value={formData.purchase_driver}
                                             onValueChange={(v) => setFormData({ ...formData, purchase_driver: v })}
@@ -1118,7 +1118,7 @@ export default function VisitExecutionPage() {
                                         <Navigation className="h-5 w-5" /> Próximo Paso
                                     </h3>
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Acuerdo Alcanzado</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Acuerdo Operativo Alcanzado</label>
                                         <Textarea
                                             placeholder="¿Cuál es el compromiso para la siguiente visita?"
                                             value={formData.next_commitment}

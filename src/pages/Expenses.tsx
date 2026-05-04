@@ -1,17 +1,7 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
-
 import { useState, useEffect } from "react";
 import { InstructionCard } from "@/components/ui/InstructionCard";
-import { Plus, DollarSign, TrendingUp, Calendar, Receipt, Download, Filter, CheckCircle2, XCircle } from "lucide-react";
-import { Lightbulb, Info } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, DollarSign, TrendingUp, Calendar, Receipt, Download, Filter, CheckCircle2, XCircle, Lightbulb, MapPin, Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
+import { EliteHeader, EliteKPICard, EliteTable } from "@/components/layout/DesignSystem";
+import { cn } from "@/lib/utils";
 
 interface AdminFilterState {
     region?: string;
@@ -52,7 +44,7 @@ const EXPENSE_CATEGORIES = [
 ];
 
 export default function Expenses() {
-    const { user, profile, isAdmin, isManager, isSaaSStaff, organizationId, isSupervisor, canViewAllData, zoneId } = useAuth();
+    const { user, isAdmin, isManager, organizationId, isSupervisor, canViewAllData, zoneId, organizationName } = useAuth();
     const { toast } = useToast();
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
@@ -125,17 +117,8 @@ export default function Expenses() {
     const handleSubmit = async () => {
         if (!user || formData.amount <= 0) {
             toast({
-                title: "Error",
-                description: "Por favor complete los campos obligatorios.",
-                variant: "destructive"
-            });
-            return;
-        }
-
-        if (formData.category === 'custom' && !formData.custom_category) {
-            toast({
-                title: "Campo requerido",
-                description: "Indique el nombre de la nueva categoría.",
+                title: "Inconsistencia de Datos",
+                description: "Por favor verifique los campos obligatorios.",
                 variant: "destructive"
             });
             return;
@@ -144,12 +127,11 @@ export default function Expenses() {
         try {
             const finalCategory = formData.category === 'custom' ? formData.custom_category : formData.category;
 
-            // Biofarco Validation for Transport
             if (formData.category === 'trans') {
                 if (!formData.start_km || !formData.end_km || !files.km_start || !files.km_end) {
                     toast({
-                        title: "Evidencia Obligatoria",
-                        description: "Debe registrar kilometraje y fotos (cluster) para reportes de transporte.",
+                        title: "Protocolo de Evidencia",
+                        description: "El reporte de transporte requiere registro de kilometraje y soporte visual.",
                         variant: "destructive"
                     });
                     return;
@@ -158,7 +140,6 @@ export default function Expenses() {
 
             let receiptUrl = null;
 
-            // Handle file uploads if any
             const uploadFile = async (file: File, bucket: string) => {
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
@@ -198,7 +179,7 @@ export default function Expenses() {
 
             if (error) throw error;
 
-            toast({ title: "Gasto registrado", description: "El gasto ha sido guardado para revisión." });
+            toast({ title: "Gasto Transmitido", description: "El reporte ha sido enviado a la matriz para su validación." });
             setDialogOpen(false);
             setFormData({
                 category: "trans",
@@ -214,7 +195,7 @@ export default function Expenses() {
             setFiles({});
             loadExpenses();
         } catch (error) {
-            toast({ title: "Error", description: "No se pudo registrar el gasto.", variant: "destructive" });
+            toast({ title: "Fallo de Transmisión", description: "No se pudo consolidar el registro de gasto.", variant: "destructive" });
         }
     };
 
@@ -228,15 +209,14 @@ export default function Expenses() {
             if (error) throw error;
 
             toast({
-                title: status === 'approved' ? "Gasto aprobado" : "Gasto rechazado",
-                description: `El estado del gasto ha sido actualizado a ${status === 'approved' ? 'aprobado' : 'rechazado'}.`
+                title: status === 'approved' ? "Validación Positiva" : "Registro Rechazado",
+                description: `El estatus del reporte ha sido actualizado en la base central.`
             });
             loadExpenses();
         } catch (error) {
-            console.error('Error updating expense status:', error);
             toast({
-                title: "Error",
-                description: "No se pudo actualizar el estado del gasto.",
+                title: "Error de Auditoría",
+                description: "No se pudo alterar el estado del registro.",
                 variant: "destructive"
             });
         }
@@ -250,18 +230,18 @@ export default function Expenses() {
 
     const getStatusBadge = (status: string) => {
         const styles: Record<string, string> = {
-            pending: "bg-yellow-100 text-yellow-800",
-            approved: "bg-green-100 text-green-800",
-            rejected: "bg-red-100 text-red-800",
-            reimbursed: "bg-blue-100 text-blue-800"
+            pending: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+            approved: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+            rejected: "bg-rose-500/10 text-rose-500 border-rose-500/20",
+            reimbursed: "bg-blue-500/10 text-blue-500 border-blue-500/20"
         };
         const labels: Record<string, string> = {
-            pending: "Pendiente",
-            approved: "Aprobado",
-            rejected: "Rechazado",
-            reimbursed: "Reembolsado"
+            pending: "PENDIENTE",
+            approved: "VALIDADO",
+            rejected: "RECHAZADO",
+            reimbursed: "REEMBOLSADO"
         };
-        return <Badge className={styles[status] || "bg-muted"}>{labels[status] || status}</Badge>;
+        return <Badge className={cn("font-black text-[9px] uppercase tracking-widest px-3 py-1 border", styles[status] || "bg-muted")}>{labels[status] || status}</Badge>;
     };
 
     const filteredExpenses = filterCategory === "all"
@@ -290,319 +270,314 @@ export default function Expenses() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
-        link.setAttribute("download", `gastos_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute("download", `reporte_gastos_${new Date().toISOString().split('T')[0]}.csv`);
         link.click();
     };
 
     const [showHelp, setShowHelp] = useState(false);
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-black tracking-tighter text-foreground">Gastos y Presupuestos</h1>
-                    <p className="text-slate-500 font-medium ">Gestión inteligente de recursos operativos de Biofarco</p>
-                </div>
-            </div>
+        <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
+            
+            <EliteHeader 
+                title="Gastos Operativos"
+                subtitle={organizationName || "Control de Recursos Biofarco"}
+                icon={Receipt}
+                badgeText="Logística Financiera"
+                statusText="Auditoría Activa"
+                statusColor="bg-primary"
+                rightContent={
+                    <div className="flex items-center gap-4">
+                        <Button variant="outline" onClick={exportToCSV} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            <Download className="mr-3 h-4 w-4" /> Exportar Inteligencia
+                        </Button>
+                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95">
+                                    <Plus className="mr-3 h-4 w-4" /> Registrar Movimiento
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[500px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-hidden bg-card">
+                                <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+                                    <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase mb-2 font-display">Declarar Gasto</DialogTitle>
+                                    <DialogDescription className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-70">
+                                        Transmisión de comprobantes para validación administrativa.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                
+                                <div className="space-y-8 p-10">
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Clasificación de Recurso *</Label>
+                                        <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                                            <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                                {EXPENSE_CATEGORIES.map(cat => (
+                                                    <SelectItem key={cat.value} value={cat.value} className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                        <span className="mr-2">{cat.icon}</span> {cat.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
-            {/* Admin Filters */}
+                                    {formData.category === 'custom' && (
+                                        <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+                                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Identificador de Categoría *</Label>
+                                            <Input
+                                                value={formData.custom_category}
+                                                onChange={(e) => setFormData({ ...formData, custom_category: e.target.value })}
+                                                placeholder="EJ: MANTENIMIENTO, EVENTOS, ETC."
+                                                className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner"
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="grid grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Monto (USD) *</Label>
+                                            <div className="relative">
+                                                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
+                                                <Input
+                                                    type="number"
+                                                    step="0.01"
+                                                    value={formData.amount}
+                                                    onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
+                                                    placeholder="0.00"
+                                                    className="pl-12 h-14 bg-muted/20 border-border/40 rounded-2xl font-black text-base px-6 shadow-inner"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Fecha Operativa *</Label>
+                                            <Input
+                                                type="date"
+                                                value={formData.expense_date}
+                                                onChange={(e) => setFormData({ ...formData, expense_date: e.target.value })}
+                                                className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {formData.category === 'trans' && (
+                                        <div className="p-6 bg-primary/5 rounded-[2.5rem] border border-dashed border-primary/20 space-y-6 animate-in zoom-in-95 duration-300">
+                                            <div className="flex items-center gap-3 text-primary mb-2">
+                                                <TrendingUp className="h-4 w-4" />
+                                                <h4 className="text-[10px] font-black uppercase tracking-widest">Protocolo de Kilometraje</h4>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <div className="space-y-4">
+                                                    <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">KM Inicial</Label>
+                                                    <Input
+                                                        type="number"
+                                                        value={formData.start_km}
+                                                        onChange={(e) => setFormData({ ...formData, start_km: e.target.value })}
+                                                        placeholder="0000"
+                                                        className="h-10 bg-card border-border/40 rounded-xl font-black text-xs shadow-sm"
+                                                    />
+                                                    <Label className="text-[9px] font-black uppercase text-primary/60 cursor-pointer hover:text-primary flex items-center gap-2 px-1">
+                                                        <Receipt className="h-3 w-3" /> Soporte Inicio
+                                                        <Input type="file" className="hidden" onChange={(e) => setFiles({ ...files, km_start: e.target.files?.[0] })} />
+                                                    </Label>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">KM Final</Label>
+                                                    <Input
+                                                        type="number"
+                                                        value={formData.end_km}
+                                                        onChange={(e) => setFormData({ ...formData, end_km: e.target.value })}
+                                                        placeholder="0000"
+                                                        className="h-10 bg-card border-border/40 rounded-xl font-black text-xs shadow-sm"
+                                                    />
+                                                    <Label className="text-[9px] font-black uppercase text-primary/60 cursor-pointer hover:text-primary flex items-center gap-2 px-1">
+                                                        <Receipt className="h-3 w-3" /> Soporte Final
+                                                        <Input type="file" className="hidden" onChange={(e) => setFiles({ ...files, km_end: e.target.files?.[0] })} />
+                                                    </Label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-4">
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Detalles de Operación</Label>
+                                        <Input
+                                            value={formData.vendor}
+                                            onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
+                                            placeholder={formData.category === 'trans' ? "ESTACIÓN DE SERVICIO / RUTA" : "ESTABLECIMIENTO / PROVEEDOR"}
+                                            className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner"
+                                        />
+                                        <Textarea
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                            placeholder="MOTIVO DEL DESPLIEGUE O DETALLES DE LA RUTA..."
+                                            className="bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs p-6 shadow-inner min-h-[100px]"
+                                        />
+                                        <div className="pt-2">
+                                            <Label className="text-[10px] font-black uppercase text-muted-foreground mb-3 block ml-1">Soporte Documental (Factura)</Label>
+                                            <div className="relative group">
+                                                <Input
+                                                    type="file"
+                                                    className="h-14 text-[10px] font-black uppercase border-dashed border-border/40 bg-muted/10 text-foreground file:bg-primary file:text-white file:border-none file:rounded-xl file:px-4 file:h-8 file:mr-4 file:font-black file:uppercase file:text-[9px] cursor-pointer"
+                                                    onChange={(e) => setFiles({ ...files, receipt: e.target.files?.[0] })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4 pt-6">
+                                        <Button variant="outline" onClick={() => setDialogOpen(false)} className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">
+                                            Abortar
+                                        </Button>
+                                        <Button onClick={handleSubmit} className="flex-1 bg-primary hover:bg-primary/90 text-white font-black h-14 rounded-2xl shadow-premium-md transition-all active:scale-95 uppercase text-[10px] tracking-widest">
+                                            Finalizar Transmisión
+                                        </Button>
+                                    </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                }
+            />
+
             <AdminDataFilter onFilterChange={setAdminFilters} moduleType="contacts" />
 
-            <div className="flex gap-2 justify-end">
-                <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} title="Ver Ayuda">
-                    <span className="sr-only">Ayuda</span>
-                    <Lightbulb className="h-5 w-5 text-yellow-500" />
-                </Button>
-                <Button variant="outline" onClick={exportToCSV} className="border-slate-200">
-                    <Download className="mr-2 h-4 w-4" /> Exportar
-                </Button>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200">
-                            <Plus className="mr-2 h-4 w-4" /> Nuevo Gasto
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md border-none shadow-2xl">
-                        <DialogHeader>
-                            <DialogTitle className="text-2xl font-black tracking-tight text-foreground border-l-4 border-slate-900 pl-4">Registrar Gasto</DialogTitle>
-                            <DialogDescription className="text-slate-500 pl-4 ">
-                                Ingrese los detalles del comprobante para su validación administrativa.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label className="text-slate-700 font-bold">Categoría *</Label>
-                                <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
-                                    <SelectTrigger className="border-slate-200 focus:ring-slate-900"><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        {EXPENSE_CATEGORIES.map(cat => (
-                                            <SelectItem key={cat.value} value={cat.value}>
-                                                <span className="mr-2">{cat.icon}</span> {cat.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {formData.category === 'custom' && (
-                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                    <Label className="text-slate-700 font-bold">Nombre de Categoría Personalizada *</Label>
-                                    <Input
-                                        value={formData.custom_category}
-                                        onChange={(e) => setFormData({ ...formData, custom_category: e.target.value })}
-                                        placeholder="Ej: Mantenimiento, Eventos, etc."
-                                        className="border-slate-200 focus:ring-slate-900"
-                                    />
-                                </div>
-                            )}
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-slate-700 font-bold">Monto (USD) *</Label>
-                                    <div className="relative">
-                                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                        <Input
-                                            type="number"
-                                            step="0.01"
-                                            value={formData.amount}
-                                            onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
-                                            placeholder="0.00"
-                                            className="pl-9 border-slate-200 focus:ring-slate-900"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-slate-700 font-bold">Fecha *</Label>
-                                    <Input
-                                        type="date"
-                                        value={formData.expense_date}
-                                        onChange={(e) => setFormData({ ...formData, expense_date: e.target.value })}
-                                        className="border-slate-200 focus:ring-slate-900"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Biofarco Specialized Transport Fields */}
-                            {formData.category === 'trans' && (
-                                <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 space-y-4 animate-in zoom-in-95 duration-300 text-slate-900">
-                                    <div className="flex items-center gap-2 text-foreground mb-2">
-                                        <TrendingUp className="h-4 w-4" />
-                                        <h4 className="text-xs font-black uppercase tracking-widest">Control de Kilometraje</h4>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-[10px] font-bold uppercase text-slate-500">KM Inicial</Label>
-                                            <Input
-                                                type="number"
-                                                value={formData.start_km}
-                                                onChange={(e) => setFormData({ ...formData, start_km: e.target.value })}
-                                                placeholder="0000"
-                                                className="h-10 border-slate-200"
-                                            />
-                                            <Label className="text-[10px] font-bold uppercase text-slate-400 cursor-pointer hover:text-slate-600 flex items-center gap-1">
-                                                <Receipt className="h-3 w-3" /> Foto Inicio
-                                                <Input type="file" className="hidden" onChange={(e) => setFiles({ ...files, km_start: e.target.files?.[0] })} />
-                                            </Label>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-[10px] font-bold uppercase text-slate-500">KM Final</Label>
-                                            <Input
-                                                type="number"
-                                                value={formData.end_km}
-                                                onChange={(e) => setFormData({ ...formData, end_km: e.target.value })}
-                                                placeholder="0000"
-                                                className="h-10 border-slate-200"
-                                            />
-                                            <Label className="text-[10px] font-bold uppercase text-slate-400 cursor-pointer hover:text-slate-600 flex items-center gap-1">
-                                                <Receipt className="h-3 w-3" /> Foto Final
-                                                <Input type="file" className="hidden" onChange={(e) => setFiles({ ...files, km_end: e.target.files?.[0] })} />
-                                            </Label>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="space-y-2">
-                                <Label className="text-slate-700 font-bold text-xs uppercase tracking-wider">Información Adicional</Label>
-                                <Input
-                                    value={formData.vendor}
-                                    onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
-                                    placeholder={formData.category === 'trans' ? "Estación de Servicio / Ruta" : "Establecimiento / Proveedor"}
-                                    className="border-slate-200 focus:ring-slate-900"
-                                />
-                                <Textarea
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="Propósito del gasto o detalles de la ruta..."
-                                    className="border-slate-200 focus:ring-slate-900 min-h-[80px]"
-                                />
-                                <div className="pt-2">
-                                    <Label className="text-[10px] font-bold uppercase text-slate-500 mb-1 block">Adjuntar Factura / Comprobante</Label>
-                                    <Input
-                                        type="file"
-                                        className="h-10 text-xs border-slate-100 bg-slate-50 text-slate-900"
-                                        onChange={(e) => setFiles({ ...files, receipt: e.target.files?.[0] })}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="pt-2">
-                                <Button onClick={handleSubmit} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold h-12 shadow-lg shadow-slate-200 transition-all active:scale-95">
-                                    Continuar con Registro
-                                </Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            </div>
-
-            {showHelp && (
-                <InstructionCard
-                    title="Control de Gastos"
-                    description="Registra y monitorea tus gastos operativos."
-                    items={[
-                        "Registra cada gasto indicando categoría y monto.",
-                        "Seleccione 'Nueva Categoría' si la opción no está listada.",
-                        "Monitorea el estado de aprobación en la tabla inferior.",
-                        "Use los filtros de administrador para ver gastos de otros miembros del equipo u operativos."
-                    ]}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <EliteKPICard
+                    title="Despliegue Mensual"
+                    value={`$${thisMonthExpenses.toFixed(2)}`}
+                    subtitle="Recursos ejecutados (MTD)"
+                    icon={Calendar}
+                    trend={15}
+                    color="blue"
                 />
-            )}
-
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="border-none shadow-sm bg-indigo-50/30">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Gastos Este Mes</p>
-                                <p className="text-3xl font-black text-indigo-950">${thisMonthExpenses.toFixed(2)}</p>
-                            </div>
-                            <Calendar className="h-10 w-10 text-indigo-200" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-none shadow-sm bg-amber-50/30">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-bold text-amber-600 uppercase tracking-widest">En Revisión</p>
-                                <p className="text-3xl font-black text-amber-950">${pendingExpenses.toFixed(2)}</p>
-                            </div>
-                            <Receipt className="h-10 w-10 text-amber-200" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-none shadow-sm bg-slate-50/30">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Histórico</p>
-                                <p className="text-3xl font-black text-foreground">${totalExpenses.toFixed(2)}</p>
-                            </div>
-                            <DollarSign className="h-10 w-10 text-slate-200" />
-                        </div>
-                    </CardContent>
-                </Card>
+                <EliteKPICard
+                    title="En Revisión"
+                    value={`$${pendingExpenses.toFixed(2)}`}
+                    subtitle="Pendientes de validación"
+                    icon={Clock}
+                    trend={-5}
+                    color="indigo"
+                />
+                <EliteKPICard
+                    title="Total Histórico"
+                    value={`$${totalExpenses.toFixed(2)}`}
+                    subtitle="Acumulado operacional"
+                    icon={DollarSign}
+                    trend={8}
+                    color="emerald"
+                />
             </div>
 
-            {/* Filter & Table Area */}
-            <Card className="border-none shadow-xl shadow-slate-100/50 overflow-hidden">
-                <div className="p-4 border-b border-slate-50 bg-slate-50/50 flex flex-wrap gap-4 items-center justify-between">
-                    <h3 className="font-bold text-foreground flex items-center gap-2">
-                        <Receipt className="h-4 w-4" /> Detalle de Movimientos
-                    </h3>
+            <EliteTable 
+                title="Detalle de Movimientos Financieros"
+                description="Listado exhaustivo de gastos operativos reportados por la fuerza de ventas."
+                searchPlaceholder="FILTRAR POR PROVEEDOR O CATEGORÍA..."
+                onSearch={() => {}}
+                rightContent={
                     <Select value={filterCategory} onValueChange={setFilterCategory}>
-                        <SelectTrigger className="w-56 border-slate-200 bg-card shadow-sm">
-                            <Filter className="mr-2 h-4 w-4 text-slate-400" />
-                            <SelectValue placeholder="Filtrar por categoría" />
+                        <SelectTrigger className="w-64 h-12 bg-muted/20 border-border/40 rounded-xl font-black uppercase text-[10px] px-5 shadow-inner">
+                            <div className="flex items-center gap-3">
+                                <Filter className="h-3.5 w-3.5 text-primary" />
+                                <SelectValue placeholder="Filtrar Categoría" />
+                            </div>
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Todas las categorías</SelectItem>
+                        <SelectContent className="rounded-xl border-border/40 bg-card">
+                            <SelectItem value="all" className="font-black uppercase text-[10px] tracking-widest py-3">Todas las categorías</SelectItem>
                             {EXPENSE_CATEGORIES.map(cat => (
-                                <SelectItem key={cat.value} value={cat.value}>
+                                <SelectItem key={cat.value} value={cat.value} className="font-black uppercase text-[10px] tracking-widest py-3">
                                     {cat.icon} {cat.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                </div>
-
-                <div className="overflow-x-auto">
-                    {loading ? (
-                        <div className="text-center py-20 text-slate-400 animate-pulse font-medium">Cargando registros del sistema...</div>
-                    ) : filteredExpenses.length === 0 ? (
-                        <div className="text-center py-20">
-                            <Receipt className="mx-auto h-16 w-16 text-slate-100 mb-4" />
-                            <h3 className="text-foreground font-black text-xl mb-1">Sin Registros</h3>
-                            <p className="text-slate-400 mb-6 max-w-xs mx-auto">No se han encontrado gastos que coincidan con los criterios actuales.</p>
-                            <Button variant="outline" onClick={() => setFilterCategory('all')} className="border-slate-200">Limpiar Filtros</Button>
-                        </div>
-                    ) : (
-                        <Table>
-                            <TableHeader className="bg-slate-50/30">
-                                <TableRow className="hover:bg-transparent border-none">
-                                    <TableHead className="font-bold text-slate-600">Fecha</TableHead>
-                                    <TableHead className="font-bold text-slate-600">Categoría</TableHead>
-                                    <TableHead className="font-bold text-slate-600">Descripción / Motivo</TableHead>
-                                    <TableHead className="font-bold text-slate-600">Proveedor</TableHead>
-                                    <TableHead className="text-right font-bold text-slate-600">Monto</TableHead>
-                                    <TableHead className="font-bold text-slate-600">Estado</TableHead>
-                                    {isManager && <TableHead className="text-right font-bold text-slate-600 pr-6">Auditoría</TableHead>}
+                }
+            >
+                <Table>
+                    <TableHeader>
+                        <TableRow className="hover:bg-transparent border-border/40">
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6 pl-8">Fecha Operativa</TableHead>
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Eje de Recurso</TableHead>
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Propósito / Detalle</TableHead>
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Proveedor</TableHead>
+                            <TableHead className="text-right text-[10px] font-black uppercase tracking-widest py-6">Importe (USD)</TableHead>
+                            <TableHead className="text-center text-[10px] font-black uppercase tracking-widest py-6">Auditoría</TableHead>
+                            {isManager && <TableHead className="text-right text-[10px] font-black uppercase tracking-widest py-6 pr-8">Control</TableHead>}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            [1,2,3,4,5].map(i => (
+                                <TableRow key={i} className="animate-pulse border-border/40">
+                                    <TableCell colSpan={7} className="h-16 py-8">
+                                        <div className="h-4 bg-muted/20 rounded-full w-full"></div>
+                                    </TableCell>
                                 </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredExpenses.map((expense) => {
-                                    const catInfo = getCategoryInfo(expense.category);
-                                    return (
-                                        <TableRow key={expense.id} className="hover:bg-slate-50/50 transition-colors border-slate-50">
-                                            <TableCell className="font-medium text-slate-950">{new Date(expense.expense_date).toLocaleDateString()}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline" className="bg-card border-slate-200 text-slate-700 font-medium px-3 py-1 rounded-full whitespace-nowrap">
-                                                    <span className="mr-2">{catInfo.icon}</span>
-                                                    {catInfo.label}
-                                                </Badge>
+                            ))
+                        ) : filteredExpenses.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={7} className="h-40 text-center text-muted-foreground font-black uppercase text-[10px] tracking-widest">
+                                    No se han detectado movimientos financieros en este cuadrante.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            filteredExpenses.map((expense) => {
+                                const catInfo = getCategoryInfo(expense.category);
+                                return (
+                                    <TableRow key={expense.id} className="hover:bg-muted/5 transition-colors border-border/40 group">
+                                        <TableCell className="pl-8 py-8 font-black text-foreground uppercase tracking-tight text-base">
+                                            {new Date(expense.expense_date).toLocaleDateString()}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className="bg-muted/10 border-border/40 text-foreground font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg shadow-inner">
+                                                <span className="mr-2">{catInfo.icon}</span>
+                                                {catInfo.label}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="max-w-[200px]">
+                                            <div className="truncate text-muted-foreground font-bold text-[11px] uppercase tracking-wide">
+                                                {expense.description || <span className="opacity-20 italic">SIN ESPECIFICACIÓN</span>}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-foreground font-black text-[11px] uppercase tracking-widest">{expense.vendor || '-'}</TableCell>
+                                        <TableCell className="text-right font-black text-foreground text-xl tracking-tighter">
+                                            ${Number(expense.amount).toFixed(2)}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            {getStatusBadge(expense.status)}
+                                        </TableCell>
+                                        {isManager && (
+                                            <TableCell className="text-right pr-8 py-8">
+                                                {expense.status === 'pending' && (
+                                                    <div className="flex justify-end gap-3">
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-12 w-12 text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-2xl border border-transparent hover:border-emerald-500/20 shadow-inner"
+                                                            onClick={() => updateExpenseStatus(expense.id, 'approved')}
+                                                        >
+                                                            <CheckCircle2 className="h-5 w-5" />
+                                                        </Button>
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-12 w-12 text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-2xl border border-transparent hover:border-rose-500/20 shadow-inner"
+                                                            onClick={() => updateExpenseStatus(expense.id, 'rejected')}
+                                                        >
+                                                            <XCircle className="h-5 w-5" />
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </TableCell>
-                                            <TableCell className="max-w-xs">
-                                                <div className="truncate text-slate-600">{expense.description || <span className="text-slate-300 ">Sin descripción</span>}</div>
-                                            </TableCell>
-                                            <TableCell className="text-slate-600 font-medium">{expense.vendor || '-'}</TableCell>
-                                            <TableCell className="text-right font-black text-slate-950 text-lg tracking-tight">${Number(expense.amount).toFixed(2)}</TableCell>
-                                            <TableCell>{getStatusBadge(expense.status)}</TableCell>
-                                            {isManager && (
-                                                <TableCell className="text-right pr-6">
-                                                    {expense.status === 'pending' && (
-                                                        <div className="flex justify-end gap-1">
-                                                            <Button
-                                                                size="sm"
-                                                                variant="ghost"
-                                                                className="h-9 w-9 p-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-full"
-                                                                onClick={() => updateExpenseStatus(expense.id, 'approved')}
-                                                                title="Aprobar Gasto"
-                                                            >
-                                                                <CheckCircle2 className="h-5 w-5" />
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                variant="ghost"
-                                                                className="h-9 w-9 p-0 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-full"
-                                                                onClick={() => updateExpenseStatus(expense.id, 'rejected')}
-                                                                title="Rechazar Gasto"
-                                                            >
-                                                                <XCircle className="h-5 w-5" />
-                                                            </Button>
-                                                        </div>
-                                                    )}
-                                                </TableCell>
-                                            )}
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    )}
-                </div>
-            </Card>
-        </div >
+                                        )}
+                                    </TableRow>
+                                );
+                            })
+                        )}
+                    </TableBody>
+                </Table>
+            </EliteTable>
+        </div>
     );
 }

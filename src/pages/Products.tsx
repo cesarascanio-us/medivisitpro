@@ -278,10 +278,10 @@ export default function Products() {
             <Package className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-foreground tracking-tight leading-none">Catálogo de Productos</h1>
-            <p className="text-xs text-slate-400 font-medium mt-2 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              Gestión de inventario y vademécum farmacéutico
+            <h1 className="text-4xl font-black text-foreground tracking-tighter leading-none uppercase">Vademécum Alpha</h1>
+            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50" />
+              Gestión de Inteligencia de Producto e Inventario Científico
             </p>
           </div>
         </div>
@@ -293,9 +293,9 @@ export default function Products() {
           <ProductFormDialog
             onSuccess={loadProducts}
             trigger={
-              <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-white shadow-md rounded-xl font-bold text-xs transition-all active:scale-95 flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Nuevo Producto
+              <Button className="h-14 px-10 bg-primary hover:bg-primary/90 text-white shadow-premium-md rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all active:scale-95 flex items-center gap-3">
+                <Plus className="h-5 w-5" />
+                Alta de Producto
               </Button>
             }
           />
@@ -321,8 +321,8 @@ export default function Products() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total productos</p>
-                <p className="text-3xl font-bold text-foreground tracking-tight">{productStats.total}</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Total Activos Alpha</p>
+                <p className="text-5xl font-black text-foreground tracking-tighter leading-none tabular-nums">{productStats.total}</p>
               </div>
               <div className="p-3 rounded-xl bg-primary/5 group-hover:scale-110 transition-transform duration-500">
                 <Package className="h-6 w-6 text-primary" />
@@ -336,8 +336,8 @@ export default function Products() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 truncate max-w-[150px]">{category}</p>
-                  <p className="text-3xl font-bold text-foreground tracking-tight">{count as number}</p>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1 truncate max-w-[150px]">{category}</p>
+                  <p className="text-5xl font-black text-foreground tracking-tighter leading-none tabular-nums">{count as number}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-50 group-hover:rotate-12 transition-all duration-500 text-slate-900">
                    <div className={cn("w-3 h-3 rounded-full", i % 2 === 0 ? "bg-blue-400" : "bg-emerald-400")} />
@@ -355,10 +355,10 @@ export default function Products() {
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
               <Input
-                placeholder="Buscar por nombre, principio activo o indicación..."
+                placeholder="LOCALIZAR POR NOMBRE, PRINCIPIO ACTIVO O INDICACIÓN..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="h-12 pl-12 bg-slate-50 border-none focus-visible:ring-primary rounded-xl font-semibold text-xs shadow-inner placeholder:text-slate-400 text-slate-900"
+                className="h-14 pl-12 bg-muted/20 border-none focus-visible:ring-primary rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-muted-foreground/50 text-foreground"
               />
             </div>
 

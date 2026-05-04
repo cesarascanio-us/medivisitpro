@@ -146,7 +146,7 @@ export default function AuthPage() {
                         <span className="text-amber-500 drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">Farmacéutica</span>
                     </h1>
 
-                    <p className="text-base text-slate-400 mb-10 leading-relaxed font-medium max-w-md">
+                    <p className="text-base text-muted-foreground mb-10 leading-relaxed font-medium max-w-md">
                         Gestione su fuerza comercial con la precisión de un cirujano. Datos en tiempo real, rutas optimizadas y control total de muestras médicas.
                     </p>
 
@@ -209,7 +209,7 @@ export default function AuthPage() {
                             <div className="w-full border-t border-white/5" />
                         </div>
                         <div className="relative flex justify-center">
-                            <span className="bg-slate-950 px-4 text-slate-600 font-bold text-xs tracking-wider">Credenciales del Sistema</span>
+                            <span className="bg-slate-950 px-4 text-muted-foreground/60 font-bold text-xs tracking-wider">Credenciales del Sistema</span>
                         </div>
                     </div>
 
@@ -224,30 +224,30 @@ export default function AuthPage() {
                                 <TabsContent value="login" className="mt-0 space-y-8">
                                     <form onSubmit={handleLogin} className="space-y-8">
                                         <div className="space-y-3">
-                                            <Label className="text-slate-300 text-xs font-bold ml-1">Email Corporativo</Label>
+                                            <Label className="text-muted-foreground/80 text-xs font-bold ml-1">Email Corporativo</Label>
                                             <div className="relative group">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within:text-blue-400 transition-colors" />
                                                 <Input
                                                     type="email"
                                                     placeholder="usuario@sistema.com"
                                                     value={loginEmail}
                                                     onChange={(e) => setLoginEmail(e.target.value)}
-                                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-slate-700 rounded-xl text-base transition-all font-medium focus:bg-white/10 focus:border-blue-500/50"
+                                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-muted-foreground/20 rounded-xl text-base transition-all font-medium focus:bg-white/10 focus:border-blue-500/50"
                                                     required
                                                 />
                                             </div>
                                         </div>
 
                                         <div className="space-y-3">
-                                            <Label className="text-slate-300 text-xs font-bold ml-1">Código de Acceso</Label>
+                                            <Label className="text-muted-foreground/80 text-xs font-bold ml-1">Código de Acceso</Label>
                                             <div className="relative group">
-                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within:text-blue-400 transition-colors" />
                                                 <Input
                                                     type="password"
                                                     placeholder="••••••••"
                                                     value={loginPassword}
                                                     onChange={(e) => setLoginPassword(e.target.value)}
-                                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-slate-700 rounded-xl text-base transition-all font-medium focus:bg-white/10 focus:border-blue-500/50"
+                                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-muted-foreground/20 rounded-xl text-base transition-all font-medium focus:bg-white/10 focus:border-blue-500/50"
                                                     required
                                                 />
                                             </div>
@@ -316,7 +316,7 @@ export default function AuthPage() {
                     </div>
 
                     <div className="mt-12 text-center opacity-40 hover:opacity-100 transition-opacity duration-1000">
-                        <p className="text-[10px] text-slate-500 font-bold tracking-wider">
+                        <p className="text-[10px] text-muted-foreground font-bold tracking-wider">
                             © 2026 MediVisitPro Titanium • CA Labs Proprietary
                         </p>
                     </div>

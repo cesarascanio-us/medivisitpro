@@ -85,12 +85,12 @@ export default function AssetBunker() {
     if (!isMaster && !isAdmin && !isManager) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-                <div className="p-6 bg-rose-50 rounded-full">
+                <div className="p-6 bg-rose-500/10 rounded-full">
                     <ShieldAlert className="h-16 w-16 text-rose-500" />
                 </div>
                 <div className="text-center space-y-2">
-                    <h1 className="text-2xl font-bold text-slate-900">Acceso Restringido</h1>
-                    <p className="text-slate-500 max-w-xs mx-auto">Esta sección requiere permisos de nivel gerencial o superior para visualizar documentos sensibles.</p>
+                    <h1 className="text-2xl font-bold text-foreground">Acceso Restringido</h1>
+                    <p className="text-muted-foreground max-w-xs mx-auto">Esta sección requiere permisos de nivel gerencial o superior para visualizar documentos sensibles.</p>
                 </div>
                 <Button variant="outline" className="rounded-xl font-bold" onClick={() => window.history.back()}>
                     Regresar
@@ -129,7 +129,7 @@ export default function AssetBunker() {
             />
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="flex bg-slate-50 p-1 rounded-2xl w-full md:w-auto border border-slate-100">
+                <div className="flex bg-muted/20 p-1 rounded-2xl w-full md:w-auto border border-border/40">
                     <TabButton active={activeTab === 'all'} onClick={() => setActiveTab('all')} label="Todos" />
                     <TabButton active={activeTab === 'legal'} onClick={() => setActiveTab('legal')} label="Legal" icon={<ShieldCheck className="h-4 w-4" />} />
                     <TabButton active={activeTab === 'marketing'} onClick={() => setActiveTab('marketing')} label="Marketing" icon={<Briefcase className="h-4 w-4" />} />
@@ -137,10 +137,10 @@ export default function AssetBunker() {
                 </div>
 
                 <div className="relative w-full md:w-80 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 h-4 w-4 group-focus-within:text-primary transition-colors" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 h-4 w-4 group-focus-within:text-primary transition-colors" />
                     <Input 
                         placeholder="Buscar documentos..." 
-                        className="pl-12 rounded-2xl border-none bg-slate-50 shadow-inner focus:ring-2 focus:ring-primary/20 transition-all h-12 font-semibold text-xs"
+                        className="pl-12 rounded-2xl border-none bg-muted/20 shadow-inner focus:ring-2 focus:ring-primary/20 transition-all h-12 font-semibold text-xs text-foreground"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -148,12 +148,12 @@ export default function AssetBunker() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <Card className="border-2 border-dashed border-slate-200 bg-slate-50/50 hover:bg-white hover:border-primary transition-all cursor-pointer group rounded-[2rem] flex flex-col items-center justify-center p-8 min-h-[220px] shadow-sm">
-                    <div className="p-4 bg-primary/5 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
+                <Card className="border-2 border-dashed border-border/40 bg-muted/5 hover:bg-muted/10 hover:border-primary transition-all cursor-pointer group rounded-[2rem] flex flex-col items-center justify-center p-8 min-h-[220px] shadow-sm">
+                    <div className="p-4 bg-primary/10 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
                         <Plus className="h-8 w-8 text-primary" />
                     </div>
-                    <p className="font-bold text-slate-700">Subir Documento</p>
-                    <p className="text-xs text-slate-400">PDF, XLSX o Imágenes</p>
+                    <p className="font-bold text-foreground">Subir Documento</p>
+                    <p className="text-xs text-muted-foreground">PDF, XLSX o Imágenes</p>
                 </Card>
 
                 {filteredAssets.map(asset => (
@@ -161,10 +161,10 @@ export default function AssetBunker() {
                 ))}
             </div>
 
-            <Card className="border-slate-100 shadow-sm rounded-[2rem] overflow-hidden">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-50 p-6 px-8">
+            <Card className="border-border/40 shadow-sm rounded-[2rem] overflow-hidden bg-card">
+                <CardHeader className="bg-muted/5 border-b border-border/40 p-6 px-8">
                     <div className="flex justify-between items-center">
-                        <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-3 tracking-tight">
+                        <CardTitle className="text-base font-bold text-foreground flex items-center gap-3 tracking-tight">
                             <History className="h-5 w-5 text-primary" />
                             Registro de firmas digitales
                         </CardTitle>
@@ -174,7 +174,7 @@ export default function AssetBunker() {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div className="divide-y divide-slate-50">
+                    <div className="divide-y divide-border/40">
                         <SignatureEntry 
                             name="Firma de Compromiso IP" 
                             entity="Dr. César Ascanio" 
@@ -219,7 +219,7 @@ function TabButton({ active, onClick, label, icon }: any) {
         <button 
             onClick={onClick}
             className={`flex items-center gap-2 px-6 py-2 rounded-xl font-bold text-xs transition-all ${
-                active ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'
+                active ? 'bg-primary text-white shadow-md' : 'text-muted-foreground hover:text-foreground'
             }`}
         >
             {icon}
@@ -237,16 +237,16 @@ function AssetCard({ asset }: { asset: Asset }) {
     };
 
     const categoryColors: any = {
-        legal: "bg-emerald-50 text-emerald-600",
-        marketing: "bg-indigo-50 text-indigo-600",
-        finance: "bg-amber-50 text-amber-600"
+        legal: "bg-emerald-500/10 text-emerald-400",
+        marketing: "bg-indigo-500/10 text-indigo-400",
+        finance: "bg-amber-500/10 text-amber-400"
     };
 
     return (
-        <Card className="border-slate-100 hover:shadow-md transition-all duration-300 rounded-[2rem] overflow-hidden bg-card shadow-sm group">
+        <Card className="border-border/40 hover:shadow-md transition-all duration-300 rounded-[2rem] overflow-hidden bg-card shadow-sm group">
             <CardContent className="p-6 space-y-4">
                 <div className="flex justify-between items-start">
-                    <div className="p-4 bg-slate-50 rounded-2xl group-hover:bg-primary/5 transition-colors">
+                    <div className="p-4 bg-muted/20 rounded-2xl group-hover:bg-primary/10 transition-colors">
                         {getIcon()}
                     </div>
                     {asset.encrypted && (
@@ -256,18 +256,18 @@ function AssetCard({ asset }: { asset: Asset }) {
                     )}
                 </div>
                 <div>
-                    <Badge variant="outline" className={`mb-2 font-bold text-[9px] uppercase tracking-wider rounded-lg border-none ${categoryColors[asset.category] || 'bg-slate-50'}`}>
+                    <Badge variant="outline" className={`mb-2 font-bold text-[9px] uppercase tracking-wider rounded-lg border-none ${categoryColors[asset.category] || 'bg-muted/30'}`}>
                         {asset.category}
                     </Badge>
-                    <h3 className="font-bold text-slate-900 truncate mb-1 text-sm tracking-tight" title={asset.name}>{asset.name}</h3>
-                    <p className="text-[11px] text-slate-400 flex items-center gap-2 font-medium">
+                    <h3 className="font-bold text-foreground truncate mb-1 text-sm tracking-tight" title={asset.name}>{asset.name}</h3>
+                    <p className="text-[11px] text-muted-foreground flex items-center gap-2 font-medium">
                         <span>{asset.size}</span>
-                        <span className="w-1 h-1 rounded-full bg-slate-200"></span>
+                        <span className="w-1 h-1 rounded-full bg-border/40"></span>
                         <span>{asset.updatedAt}</span>
                     </p>
                 </div>
                 <div className="flex gap-2 pt-2">
-                    <Button variant="ghost" className="flex-1 rounded-xl h-9 text-xs font-bold text-slate-500 hover:bg-slate-50">
+                    <Button variant="ghost" className="flex-1 rounded-xl h-9 text-xs font-bold text-muted-foreground hover:bg-muted/20">
                         <History className="h-3 w-3 mr-2 text-primary" /> Historial
                     </Button>
                     <Button className="flex-1 rounded-xl h-9 text-xs font-bold bg-primary hover:bg-primary/90 text-white shadow-sm">
@@ -281,21 +281,21 @@ function AssetCard({ asset }: { asset: Asset }) {
 
 function SignatureEntry({ name, entity, date, status }: any) {
     return (
-        <div className="px-8 py-5 flex items-center justify-between hover:bg-slate-50/80 transition-colors group">
+        <div className="px-8 py-5 flex items-center justify-between hover:bg-muted/10 transition-colors group">
             <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-2xl ${status === 'verified' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
+                <div className={`p-2.5 rounded-2xl ${status === 'verified' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-muted/30 text-muted-foreground'}`}>
                     <FileSignature className="h-5 w-5" />
                 </div>
                 <div>
-                    <p className="font-bold text-slate-900 text-sm tracking-tight">{name}</p>
-                    <p className="text-[11px] text-slate-400 font-medium">Firmante: <span className="text-slate-600 font-bold">{entity}</span></p>
+                    <p className="font-bold text-foreground text-sm tracking-tight">{name}</p>
+                    <p className="text-[11px] text-muted-foreground font-medium">Firmante: <span className="text-foreground font-bold">{entity}</span></p>
                 </div>
             </div>
             <div className="text-right">
-                <p className="text-[11px] font-bold text-slate-400 mb-1.5">{date}</p>
+                <p className="text-[11px] font-bold text-muted-foreground mb-1.5">{date}</p>
                 <div className="flex items-center gap-2 justify-end">
-                    <div className={`w-2 h-2 rounded-full ${status === 'verified' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-slate-300'}`}></div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{status === 'verified' ? 'Verificada' : 'Archivada'}</span>
+                    <div className={`w-2 h-2 rounded-full ${status === 'verified' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-muted/40'}`}></div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{status === 'verified' ? 'Verificada' : 'Archivada'}</span>
                 </div>
             </div>
         </div>

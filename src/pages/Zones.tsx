@@ -173,7 +173,7 @@ export default function Zones() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50/30 p-8 font-sans transition-colors duration-500 overflow-y-auto">
+        <div className="min-h-screen flex flex-col bg-background p-8 font-sans transition-colors duration-500 overflow-y-auto">
             
             {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE ZONAS */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-12 animate-in fade-in slide-in-from-top duration-700">
@@ -185,18 +185,18 @@ export default function Zones() {
                         <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">Infraestructura Geográfica</p>
                         <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">Gestión de Zonas</h1>
                         <div className="flex items-center gap-3 mt-4">
-                            <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">Base Operativa V6.0</Badge>
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-900">
-                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                                <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-none">Sincronización Regional OK</span>
+                            <Badge className="bg-muted/20 text-muted-foreground border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">Base Operativa V6.0</Badge>
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-foreground">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">Sincronización Regional OK</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => loadZones()} className="w-14 h-14 rounded-2xl bg-card border border-border/40 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm">
-                        <RefreshCw className={cn("h-6 w-6 text-slate-300", loading && "animate-spin text-primary")} />
+                    <Button variant="ghost" size="icon" onClick={() => loadZones()} className="w-14 h-14 rounded-2xl bg-card border border-border/40 hover:bg-muted/20 hover:shadow-premium-sm transition-all shadow-sm">
+                        <RefreshCw className={cn("h-6 w-6 text-muted-foreground/50", loading && "animate-spin text-primary")} />
                     </Button>
                     <Button
                         onClick={openCreateDialog}
@@ -220,7 +220,7 @@ export default function Zones() {
                             {kpi.icon && (kpi.icon as any).type ? (kpi.icon as any).type.displayName === 'MapPin' ? <MapPin size={100} /> : kpi.icon : null}
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 font-display">{kpi.label}</p>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-4 font-display">{kpi.label}</p>
                             <div className={cn("text-3xl font-black tracking-tighter tabular-nums font-display leading-none", kpi.color)}>{kpi.val}</div>
                         </div>
                     </Card>
@@ -231,12 +231,12 @@ export default function Zones() {
             <div className="flex-1 min-h-0 flex flex-col gap-8">
                 <Card className="bg-card border border-border/40 rounded-[2.5rem] shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" />
                         <Input
                             placeholder="Busca por nombre o descripción de zona..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-16 h-16 bg-slate-50 border-none focus-visible:ring-primary/20 font-bold rounded-2xl text-slate-900 transition-all font-sans shadow-inner"
+                            className="pl-16 h-16 bg-muted/20 border-none focus-visible:ring-primary/20 font-bold rounded-2xl text-foreground transition-all font-sans shadow-inner"
                         />
                     </div>
                     <Button variant="outline" className="h-16 px-8 rounded-2xl border-border/40 hover:bg-card hover:text-primary hover:shadow-premium-sm transition-all font-black text-[10px] uppercase tracking-widest bg-muted/30">
@@ -249,20 +249,20 @@ export default function Zones() {
                         <Table>
                             <TableHeader className="bg-muted/30 sticky top-0 z-10 backdrop-blur-md border-b border-border/40">
                                 <TableRow className="hover:bg-transparent border-none">
-                                    <TableHead className="pl-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 font-display">Identificación de Zona</TableHead>
-                                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 font-display">Descripción Técnica</TableHead>
-                                    <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 font-display">Fuerza de Campo</TableHead>
-                                    <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 font-display">Umbral Comercial</TableHead>
-                                    <TableHead className="text-right pr-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 font-display">Acciones</TableHead>
+                                    <TableHead className="pl-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display">Identificación de Zona</TableHead>
+                                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display">Descripción Técnica</TableHead>
+                                    <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display">Fuerza de Campo</TableHead>
+                                    <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display">Umbral Comercial</TableHead>
+                                    <TableHead className="text-right pr-10 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display">Acciones</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loading && zones.length === 0 ? (
                                     Array(6).fill(0).map((_, i) => (
-                                        <TableRow key={i} className="animate-pulse border-slate-50">
+                                        <TableRow key={i} className="animate-pulse border-border/40">
                                             <TableCell colSpan={5} className="py-8 pl-10 border-none">
-                                                <div className="h-6 bg-slate-50 rounded-lg w-48 mb-2 text-slate-900" />
-                                                <div className="h-4 bg-muted/30 rounded-lg w-32" />
+                                                <div className="h-6 bg-muted/20 rounded-lg w-48 mb-2 text-foreground" />
+                                                <div className="h-4 bg-muted/10 rounded-lg w-32" />
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -270,40 +270,40 @@ export default function Zones() {
                                     <TableRow>
                                         <TableCell colSpan={5} className="h-[400px] text-center border-none">
                                             <div className="flex flex-col items-center gap-6 opacity-20">
-                                                <LayoutTemplate className="h-20 w-20 text-slate-300" />
-                                                <p className="font-black text-slate-400 uppercase tracking-widest text-xs">No se encontraron registros activos</p>
+                                                <LayoutTemplate className="h-20 w-20 text-muted-foreground" />
+                                                <p className="font-black text-muted-foreground uppercase tracking-widest text-xs">No se encontraron registros activos</p>
                                             </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     filteredZones.map(zone => (
-                                        <TableRow key={zone.id} className="hover:bg-muted/30 transition-all border-slate-50 group">
+                                        <TableRow key={zone.id} className="hover:bg-muted/30 transition-all border-border/40 group">
                                             <TableCell className="pl-10 py-8">
                                                 <div className="flex flex-col">
                                                     <span className="font-black text-base text-foreground group-hover:text-primary transition-colors uppercase tracking-tight font-display leading-tight">{zone.name}</span>
                                                     <div className="flex items-center gap-2 mt-2">
                                                        <Globe className="h-3 w-3 text-primary/40" /> 
-                                                       <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{zone.region} • {zone.state}</span>
+                                                       <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{zone.region} • {zone.state}</span>
                                                     </div>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <p className="text-xs font-bold text-slate-500 max-w-sm line-clamp-1 leading-relaxed">{zone.description || "Sin descripción técnica vinculada."}</p>
+                                                <p className="text-xs font-bold text-muted-foreground max-w-sm line-clamp-1 leading-relaxed">{zone.description || "Sin descripción técnica vinculada."}</p>
                                             </TableCell>
                                             <TableCell className="text-center">
-                                                <Badge className="bg-blue-50 text-blue-600 border-none font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full">
+                                                <Badge className="bg-primary/10 text-primary border-none font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full">
                                                     {zone.user_count || 0} Usuarios
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-center">
-                                                <div className="px-4 py-1.5 bg-slate-50 rounded-full text-[10px] font-mono font-black text-slate-400 inline-block border border-border/40">
+                                                <div className="px-4 py-1.5 bg-muted/20 rounded-full text-[10px] font-mono font-black text-muted-foreground inline-block border border-border/40">
                                                     {zone.sales_threshold?.toLocaleString() || '2.000'} Units
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right pr-10">
                                                 <div className="flex justify-end items-center gap-2">
                                                     <Button variant="ghost" size="icon" onClick={() => openEditDialog(zone)} className="w-12 h-12 rounded-2xl hover:bg-primary/5 hover:text-primary transition-all">
-                                                        <Edit className="h-5 w-5 text-slate-300" />
+                                                        <Edit className="h-5 w-5 text-muted-foreground/50" />
                                                     </Button>
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
@@ -311,9 +311,9 @@ export default function Zones() {
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 disabled={(zone.user_count || 0) > 0}
-                                                                className="w-12 h-12 rounded-2xl hover:bg-rose-50 hover:text-rose-600 transition-all"
+                                                                className="w-12 h-12 rounded-2xl hover:bg-rose-500/10 hover:text-rose-600 transition-all"
                                                             >
-                                                                <Trash2 className="h-5 w-5 text-slate-300" />
+                                                                <Trash2 className="h-5 w-5 text-muted-foreground/50" />
                                                             </Button>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent className="rounded-[3rem] border-none shadow-2xl bg-card p-0 overflow-hidden">
@@ -322,12 +322,12 @@ export default function Zones() {
                                                                 <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mt-4">Advertencia Operativa de Nivel 1</p>
                                                             </div>
                                                             <div className="p-10">
-                                                                <AlertDialogDescription className="text-slate-500 font-bold text-base leading-relaxed font-sans">
+                                                                <AlertDialogDescription className="text-muted-foreground font-bold text-base leading-relaxed font-sans">
                                                                     ¿Está seguro que desea purgar la zona <span className="text-rose-600 underline">"{zone.name}"</span>? Esta acción eliminará permanentemente la demarcación geográfica del sistema de César Ascanio CA.
                                                                 </AlertDialogDescription>
                                                             </div>
                                                             <div className="p-10 pt-0 flex gap-4">
-                                                                <AlertDialogCancel className="flex-1 h-16 rounded-2xl border-border/40 bg-slate-50 font-black uppercase text-[10px] tracking-widest text-slate-400">Abortar</AlertDialogCancel>
+                                                                <AlertDialogCancel className="flex-1 h-16 rounded-2xl border-border/40 bg-muted/20 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Abortar</AlertDialogCancel>
                                                                 <AlertDialogAction onClick={() => handleDelete(zone.id)} className="flex-1 h-16 rounded-2xl bg-rose-600 hover:bg-rose-700 font-black uppercase tracking-widest text-[10px] text-white shadow-premium-md shadow-rose-500/20 transition-all">Confirmar Purga</AlertDialogAction>
                                                             </div>
                                                         </AlertDialogContent>
@@ -344,7 +344,7 @@ export default function Zones() {
             </div>
 
             {/* FOOTER AUDITORÍA */}
-            <div className="mt-12 flex items-center justify-between text-slate-400 px-6 shrink-0">
+            <div className="mt-12 flex items-center justify-between text-muted-foreground/50 px-6 shrink-0">
                 <div className="flex items-center gap-4">
                     <ShieldCheck className="h-4 w-4 text-primary/40" />
                     <p className="text-[9px] font-black uppercase tracking-[0.3em] font-display">
@@ -368,7 +368,7 @@ export default function Zones() {
                     </div>
                     <div className="p-12 space-y-8 bg-muted/30">
                         <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Designación de Zona</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Designación de Zona</Label>
                             <Input
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -407,7 +407,7 @@ export default function Zones() {
                             />
                         </div>
                         <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Notas de Despliegue</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Notas de Despliegue</Label>
                             <Textarea
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}

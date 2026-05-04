@@ -1,12 +1,3 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
- ======================================================================== */
-
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -27,14 +18,13 @@ import {
     Package,
     Store,
     FlaskConical,
-    TrendingUp
+    TrendingUp,
+    Star,
+    Mail,
+    ChevronRight,
+    ArrowRight
 } from "lucide-react";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -63,8 +53,6 @@ import {
 import {
     Tabs,
     TabsContent,
-    TabsList,
-    TabsTrigger
 } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -74,7 +62,7 @@ import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { exportToCSV } from "@/utils/exportUtils";
 import { DrugstoreFormDialog } from "@/components/drugstores/DrugstoreFormDialog";
 import { DrugstoreInventoryDialog } from "@/components/drugstores/DrugstoreInventoryDialog";
-import { EliteHeader, EliteKPICard, EliteTabsList, EliteTabsTrigger } from "@/components/layout/DesignSystem";
+import { EliteHeader, EliteKPICard, EliteTabsList, EliteTabsTrigger, EliteTable } from "@/components/layout/DesignSystem";
 
 export default function DrugstoresElite() {
     const [adminFilters, setAdminFilters] = useState<any>({});
@@ -86,10 +74,9 @@ export default function DrugstoresElite() {
     });
 
     const { toast } = useToast();
-    const { user, organizationId } = useAuth();
+    const { user, organizationId, organizationName } = useAuth();
     const navigate = useNavigate();
 
-    // Dialog States
     const [formDialogOpen, setFormDialogOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [selectedDrugstore, setSelectedDrugstore] = useState<any>(null);
@@ -112,62 +99,33 @@ export default function DrugstoresElite() {
 
     const handleFormSubmit = async () => {
         if (!formData.name || !formData.rif) {
-            toast({
-                title: "Campos Requeridos",
-                description: "Nombre y RIF son obligatorios para el Alta Comercial.",
-                variant: "destructive"
-            });
+            toast({ title: "Protocolo Incompleto", description: "Nombre y RIF son obligatorios para el Alta Comercial.", variant: "destructive" });
             return;
         }
 
         try {
             if (isEditing && selectedDrugstore) {
-                const { error } = await (supabase as any)
-                    .from('drugstores')
-                    .update({
-                        ...formData,
-                        contact_type: 'drugstore' as any,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', selectedDrugstore.id);
-
+                const { error } = await (supabase as any).from('drugstores').update({ ...formData, contact_type: 'drugstore' as any, updated_at: new Date().toISOString() }).eq('id', selectedDrugstore.id);
                 if (error) throw error;
-                toast({ title: "Éxito", description: "Droguería actualizada correctamente." });
+                toast({ title: "Sincronización Exitosa", description: "Activo actualizado en el directorio central." });
             } else {
-                const { error } = await (supabase as any)
-                    .from('drugstores')
-                    .insert({
-                        ...formData,
-                        contact_type: 'drugstore' as any,
-                        user_id: user?.id,
-                        organization_id: organizationId
-                    });
-
+                const { error } = await (supabase as any).from('drugstores').insert({ ...formData, contact_type: 'drugstore' as any, user_id: user?.id, organization_id: organizationId });
                 if (error) throw error;
-                toast({ title: "Éxito", description: "Alta Comercial completada. Droguería registrada." });
+                toast({ title: "Alta Comercial Completada", description: "Nueva droguería registrada en red." });
             }
             setFormDialogOpen(false);
             loadDrugstores();
         } catch (error: any) {
-            toast({
-                title: "Error al guardar",
-                description: error.message,
-                variant: "destructive"
-            });
+            toast({ title: "Fallo de Sistema", description: error.message, variant: "destructive" });
         }
     };
 
     const handleEditDrugstore = (drugstore: any) => {
         setSelectedDrugstore(drugstore);
         setFormData({
-            name: drugstore.name || "",
-            rif: drugstore.rif || "",
-            owner_name: drugstore.owner_name || "",
-            sanitary_permits: drugstore.sanitary_permits || false,
-            address: drugstore.address || "",
-            city: drugstore.city || "",
-            phone: drugstore.phone || "",
-            email: drugstore.email || "",
+            name: drugstore.name || "", rif: drugstore.rif || "", owner_name: drugstore.owner_name || "",
+            sanitary_permits: drugstore.sanitary_permits || false, address: drugstore.address || "",
+            city: drugstore.city || "", phone: drugstore.phone || "", email: drugstore.email || "",
             contact_type: "drugstore"
         });
         setIsEditing(true);
@@ -178,10 +136,10 @@ export default function DrugstoresElite() {
         try {
             const { error } = await (supabase as any).from('drugstores').delete().eq('id', id).eq('organization_id', organizationId);
             if (error) throw error;
-            toast({ title: "Eliminado", description: "La droguería ha sido eliminada del directorio." });
+            toast({ title: "Activo Purgado", description: "La droguería ha sido eliminada del directorio operativo." });
             loadDrugstores();
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: "Fallo de Protocolo", description: error.message, variant: "destructive" });
         }
     };
 
@@ -194,22 +152,9 @@ export default function DrugstoresElite() {
     const loadStoreHistory = async (drugstoreId: string) => {
         try {
             setHistoryLoading(true);
-            const { data: visits, error: visitsError } = await (supabase as any)
-                .from('visits')
-                .select('*')
-                .eq('contact_id', drugstoreId)
-                .order('scheduled_date', { ascending: false });
-
-            if (visitsError) throw visitsError;
+            const { data: visits } = await (supabase as any).from('visits').select('*').eq('contact_id', drugstoreId).order('scheduled_date', { ascending: false });
             setStoreVisits(visits || []);
-
-            const { data: orders, error: ordersError } = await (supabase as any)
-                .from('transfer_orders')
-                .select('*')
-                .eq('contact_id', drugstoreId)
-                .order('order_date', { ascending: false });
-
-            if (ordersError) throw ordersError;
+            const { data: orders } = await (supabase as any).from('transfer_orders').select('*').eq('contact_id', drugstoreId).order('order_date', { ascending: false });
             setStoreOrders(orders || []);
         } catch (error: any) {
             console.error("Error loading history:", error);
@@ -221,344 +166,274 @@ export default function DrugstoresElite() {
     const handleRegisterVisit = async () => {
         if (!selectedDrugstore) return;
         try {
-            const { data: visit, error } = await (supabase as any)
-                .from('visits')
-                .insert([{
-                    contact_id: selectedDrugstore.id,
-                    user_id: user?.id,
-                    organization_id: organizationId,
-                    status: 'pending',
-                    scheduled_date: new Date().toISOString(),
-                    visit_type: 'drugstore',
-                    visit_objective: 'Gestión de Cobranza e Inventario'
-                }])
-                .select()
-                .single();
-
+            const { data: visit, error } = await (supabase as any).from('visits').insert([{ contact_id: selectedDrugstore.id, user_id: user?.id, organization_id: organizationId, status: 'pending', scheduled_date: new Date().toISOString(), visit_type: 'drugstore', visit_objective: 'Gestión de Cobranza e Inventario' }]).select().single();
             if (error) throw error;
-            if (!visit) throw new Error("No se pudo crear la visita");
-            
-            toast({ title: "Visita Iniciada", description: "Redirigiendo..." });
+            toast({ title: "Iniciando Despliegue", description: "Redirigiendo a interfaz de ejecución..." });
             navigate(`/visits/execution/${visit.id}`);
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: "Error de Protocolo", description: error.message, variant: "destructive" });
         }
     };
 
     return (
-        <div className="min-h-screen flex flex-col font-display transition-colors duration-500 overflow-y-auto space-y-10">
+        <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
             <EliteHeader 
-                title="Droguerías"
-                subtitle="Directorio de socios comerciales"
-                icon={Building2}
-                badgeText="Red de Distribución"
-                statusText="Canal activo"
+                title="Droguerías Alpha"
+                subtitle={organizationName || "Gestión de Socios Logísticos Biofarco"}
+                icon={FlaskConical}
+                badgeText="Red de Suministro"
+                statusText={`${drugstores.length} Nodos Activos`}
                 statusColor="bg-emerald-500"
                 rightContent={
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-4 w-full sm:w-auto">
-                        <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="h-10 md:h-12 px-4 md:px-6 border-slate-200 dark:border-slate-800 bg-card text-foreground rounded-xl font-bold text-xs hover:bg-slate-50 transition-all shadow-sm">
-                            <Download className="mr-2 h-4 w-4" /> Exportar
+                    <div className="flex items-center gap-4">
+                        <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            <Download className="mr-3 h-4 w-4 text-primary" /> Exportar Inteligencia
                         </Button>
                         <Button
                             onClick={() => {
                                 setIsEditing(false);
-                                setFormData({
-                                    name: "",
-                                    rif: "",
-                                    owner_name: "",
-                                    sanitary_permits: false,
-                                    address: "",
-                                    city: "",
-                                    phone: "",
-                                    email: "",
-                                    contact_type: "drugstore"
-                                });
+                                setFormData({ name: "", rif: "", owner_name: "", sanitary_permits: false, address: "", city: "", phone: "", email: "", contact_type: "drugstore" });
                                 setFormDialogOpen(true);
                             }}
-                            className="bg-primary text-white shadow-md font-bold text-xs h-10 md:h-12 px-6 md:px-8 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
+                            className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95 flex items-center gap-3"
                         >
-                            <Plus className="h-5 w-5 mr-2" /> Nueva Droguería
+                            <Plus className="h-6 w-6" /> Nueva Droguería
                         </Button>
                     </div>
                 }
             />
 
-            {/* KPI Section Elite */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <EliteKPICard 
-                    title="Total droguerías"
-                    value={drugstores.length}
-                    subtitle="Socios registrados"
-                    icon={Building2}
-                    color="blue"
-                    delay={100}
-                />
-                <EliteKPICard 
-                    title="Prioridad alta"
-                    value={drugstores.filter(s => s.priority === 'high' || s.priority === 'urgent').length}
-                    subtitle="Gestión urgente"
-                    icon={Building}
-                    color="amber"
-                    delay={200}
-                />
-                <EliteKPICard 
-                    title="Visitas del mes"
-                    value={drugstores.filter(s => s.lastVisit && new Date(s.lastVisit).getMonth() === new Date().getMonth()).length}
-                    subtitle="Seguimiento activo"
-                    icon={Calendar}
-                    color="emerald"
-                    delay={300}
-                />
-                <EliteKPICard 
-                    title="Calificación"
-                    value={drugstores.length > 0 ? (drugstores.reduce((acc, s) => acc + (s.rating || 0), 0) / drugstores.length).toFixed(1) : "0.0"}
-                    subtitle="Promedio servicio"
-                    icon={TrendingUp}
-                    color="indigo"
-                    delay={400}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <EliteKPICard title="Total Droguerías" value={drugstores.length} icon={Building2} color="blue" subtitle="Socios en red" />
+                <EliteKPICard title="Prioridad Alta" value={drugstores.filter(s => s.priority === 'high' || s.priority === 'urgent').length} icon={Star} color="rose" subtitle="Gestión crítica" />
+                <EliteKPICard title="Visitas Mes" value={drugstores.filter(s => s.lastVisit && new Date(s.lastVisit).getMonth() === new Date().getMonth()).length} icon={Calendar} color="emerald" subtitle="Sincronización activa" />
+                <EliteKPICard title="Calificación" value={drugstores.length > 0 ? (drugstores.reduce((acc, s) => acc + (s.rating || 0), 0) / drugstores.length).toFixed(1) : "0.0"} icon={TrendingUp} color="indigo" subtitle="Performance media" />
             </div>
 
-            {/* Search and Filters Section */}
-            <div className="space-y-6 mb-10">
-                <Card className="bg-card border border-border rounded-[2rem] p-4 shadow-premium-sm">
-                    <div className="relative">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
-                        <Input
-                            type="text"
-                            placeholder="Buscar droguería por nombre, RIF o ciudad..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-14 pl-16 bg-transparent border-none text-foreground font-semibold placeholder:text-slate-400 focus-visible:ring-0 text-sm"
-                        />
-                    </div>
-                </Card>
+            <AdminDataFilter onFilterChange={setAdminFilters} moduleType="contacts" />
 
-                {/* Admin Filters - Control de Territorio */}
-                <AdminDataFilter onFilterChange={setAdminFilters} moduleType="contacts" />
-            </div>
-
-            {/* Table Section Industrial */}
-            <Card className="bg-card border border-border rounded-[3rem] shadow-premium-lg overflow-hidden">
-                <CardHeader className="p-8 border-b border-border/40">
-                    <CardTitle className="text-xl font-bold text-foreground tracking-tight flex items-center gap-3">
-                        <Building className="h-5 w-5 text-primary" />
-                        Listado de Droguerías
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-border/40 hover:bg-transparent">
-                                <TableHead className="pl-8 h-14 text-slate-400 font-bold text-[11px] uppercase tracking-wider">Droguería</TableHead>
-                                <TableHead className="h-14 text-slate-400 font-bold text-[11px] uppercase tracking-wider">Ubicación</TableHead>
-                                <TableHead className="h-14 text-slate-400 font-bold text-[11px] uppercase tracking-wider">RIF</TableHead>
-                                <TableHead className="h-14 text-slate-400 font-bold text-[11px] uppercase tracking-wider">Estado</TableHead>
-                                <TableHead className="pr-8 h-14 text-right text-slate-400 font-bold text-[11px] uppercase tracking-wider">Acciones</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                Array(5).fill(0).map((_, i) => (
-                                    <TableRow key={i} className="border-white/5">
-                                        <TableCell colSpan={5} className="h-24"><div className="w-full h-8 bg-background/5 animate-pulse rounded-xl" /></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : drugstores.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-96 text-center">
-                                        <Building2 className="h-20 w-20 mx-auto mb-6 opacity-10 text-indigo-500" />
-                                        <p className="text-slate-500 font-black uppercase tracking-widest text-sm">No hay registros en el Canal Distribución</p>
+            <EliteTable 
+                title="Consolidado de Socios Logísticos"
+                description="Control maestro de droguerías, geolocalización y performance de suministro."
+                searchPlaceholder="LOCALIZAR POR NOMBRE, RIF O CIUDAD..."
+                onSearch={setSearchTerm}
+            >
+                <Table>
+                    <TableHeader>
+                        <TableRow className="border-b border-border/40 hover:bg-transparent">
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8 pl-8">Droguería Alpha</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8">Geolocalización</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8">Identificador Fiscal</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8">Estatus Operativo</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8 text-right pr-8">Auditoría</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            [1, 2, 3, 4, 5].map(i => (
+                                <TableRow key={i} className="animate-pulse border-border/40">
+                                    <TableCell colSpan={5} className="py-10">
+                                        <div className="h-4 bg-muted/20 rounded-full w-full"></div>
                                     </TableCell>
                                 </TableRow>
-                            ) : (
-                                drugstores.map(store => (
-                                    <TableRow key={store.id} className="border-border/20 group hover:bg-muted/50 transition-all duration-300">
-                                        <TableCell className="pl-8 py-5">
-                                            <div className="flex flex-col">
-                                                <span className="text-base font-bold text-foreground tracking-tight">{store.name}</span>
-                                                <span className="text-[10px] text-slate-400 font-bold mt-0.5 flex items-center gap-1.5">
-                                                    <Phone className="h-3 w-3" /> {store.phone || 'N/A'}
-                                                </span>
+                            ))
+                        ) : drugstores.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="h-40 text-center text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-50">
+                                    Sin socios detectados en los cuadrantes de suministro.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            drugstores.map(store => (
+                                <TableRow key={store.id} className="border-b border-border/20 hover:bg-muted/5 cursor-pointer group transition-colors" onClick={() => handleViewDetails(store)}>
+                                    <TableCell className="py-8 pl-8">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shadow-inner border border-primary/20 group-hover:scale-105 transition-transform duration-500">
+                                                <FlaskConical className="h-7 w-7 text-primary" />
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-slate-600">{store.city || 'N/A'}</span>
-                                                <span className="text-[10px] text-slate-400 truncate max-w-[180px] mt-0.5">{store.address || 'Sin dirección'}</span>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="font-black text-base text-foreground uppercase tracking-tighter group-hover:text-primary transition-colors">{store.name}</p>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge variant="outline" className="text-[9px] text-muted-foreground font-black uppercase tracking-widest px-2 py-0.5 border-border/40">
+                                                        <Phone className="h-3 w-3 mr-2" /> {store.phone || 'N/A'}
+                                                    </Badge>
+                                                </div>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className="bg-slate-50 border-slate-200 text-slate-500 font-mono text-[10px] py-0.5 px-2 rounded-lg">
-                                                {store.rif}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge className={cn(
-                                                "py-0.5 px-3 rounded-full font-bold text-[9px] uppercase tracking-wider",
-                                                store.priority === 'high' || store.priority === 'urgent' 
-                                                    ? "bg-rose-50 text-rose-600 border-none" 
-                                                    : "bg-emerald-50 text-emerald-600 border-none"
-                                            )}>
-                                                {store.priority === 'high' || store.priority === 'urgent' ? "Prioritario" : "Activo"}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="pr-8 text-right">
-                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <DrugstoreInventoryDialog
-                                                    drugstoreId={store.id}
-                                                    drugstoreName={store.name}
-                                                    trigger={
-                                                        <Button variant="ghost" className="h-9 w-9 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-primary transition-all">
-                                                            <Package className="h-4 w-4" />
-                                                        </Button>
-                                                    }
-                                                />
-                                                <Button variant="ghost" onClick={() => handleViewDetails(store)} className="h-9 w-9 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-blue-500 transition-all">
-                                                    <Eye className="h-4 w-4" />
-                                                </Button>
-                                                <Button variant="ghost" onClick={() => handleEditDrugstore(store)} className="h-9 w-9 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-amber-500 transition-all">
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button variant="ghost" className="h-9 w-9 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition-all">
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent className="bg-card border-slate-200 rounded-2xl shadow-xl">
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle className="text-xl font-bold tracking-tight">Confirmar eliminación</AlertDialogTitle>
-                                                            <AlertDialogDescription className="text-slate-500 text-sm">
-                                                                ¿Estás seguro de que deseas eliminar a <strong className="text-foreground">{store.name}</strong>? Esta acción no se puede deshacer.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter className="mt-6 gap-2">
-                                                            <AlertDialogCancel className="bg-slate-50 border-none rounded-lg h-10 font-bold text-xs">Cancelar</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleDeleteDrugstore(store.id)} className="bg-rose-500 hover:bg-rose-600 text-white rounded-lg h-10 font-bold text-xs">Eliminar droguería</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                                                <MapPin className="h-4 w-4 mr-3 text-primary opacity-60" />
+                                                <span className="truncate max-w-[200px]">{store.city || 'S/C'}</span>
                                             </div>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                                            <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-60">
+                                                <span className="truncate max-w-[200px]">{store.address || 'SIN DIRECCIÓN REGISTRADA'}</span>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <Badge className="bg-muted/10 text-muted-foreground border-border/40 font-mono text-[10px] font-black py-1.5 px-3 rounded-xl shadow-inner">
+                                            {store.rif}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <Badge className={cn(
+                                            "font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-full border",
+                                            store.priority === 'high' || store.priority === 'urgent' 
+                                                ? "bg-rose-500/10 text-rose-400 border-rose-500/30" 
+                                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                                        )}>
+                                            {store.priority === 'high' || store.priority === 'urgent' ? "CRÍTICO / ALTO IMPACTO" : "NODO ACTIVO"}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="py-8 text-right pr-8">
+                                        <div className="flex justify-end gap-3">
+                                            <DrugstoreInventoryDialog
+                                                drugstoreId={store.id}
+                                                drugstoreName={store.name}
+                                                trigger={
+                                                    <Button variant="ghost" className="h-12 w-12 p-0 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all border border-transparent hover:border-primary/20 shadow-inner">
+                                                        <Package className="h-5 w-5" />
+                                                    </Button>
+                                                }
+                                            />
+                                            <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleEditDrugstore(store); }} className="h-12 w-12 p-0 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all border border-transparent hover:border-primary/20 shadow-inner">
+                                                <Edit className="h-5 w-5" />
+                                            </Button>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="ghost" onClick={(e) => e.stopPropagation()} className="h-12 w-12 p-0 rounded-2xl hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-all border border-transparent hover:border-rose-500/20 shadow-inner">
+                                                        <Trash2 className="h-5 w-5" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent className="rounded-[3rem] border-border/40 shadow-premium-2xl bg-card font-display p-10">
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Abortar Activo?</AlertDialogTitle>
+                                                        <AlertDialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-70 mt-2">
+                                                            ESTA ACCIÓN ELIMINARÁ PERMANENTEMENTE A <strong className="text-primary">{store.name}</strong> DEL DIRECTORIO OPERATIVO.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter className="mt-10 gap-4">
+                                                        <AlertDialogCancel className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">Ignorar</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => handleDeleteDrugstore(store.id)} className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20">Confirmar Purga</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        )}
+                    </TableBody>
+                </Table>
+            </EliteTable>
 
-            {/* Detail View Dialog */}
             <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-none shadow-premium-2xl rounded-[3rem] p-0 font-display">
-                    <DialogHeader className="p-8 border-b border-border/40">
-                        <DialogTitle className="flex items-center gap-5 text-2xl font-bold text-foreground tracking-tight leading-none">
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                                <Building2 className="h-6 w-6 text-primary" />
+                    <DialogHeader className="p-10 border-b border-border/40 bg-muted/5 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+                        <DialogTitle className="flex items-center gap-6 relative z-10">
+                            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                                <FlaskConical className="h-8 w-8 text-primary" />
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold tracking-tight text-foreground">{selectedDrugstore?.name}</h2>
-                                <p className="text-xs text-slate-400 font-medium mt-1">Expediente comercial</p>
+                            <div className="flex flex-col gap-1">
+                                <h2 className="text-3xl font-black tracking-tighter text-foreground uppercase leading-none">{selectedDrugstore?.name}</h2>
+                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em] opacity-70 mt-1">Expediente de Inteligencia Comercial</p>
                             </div>
                         </DialogTitle>
                     </DialogHeader>
 
                     {selectedDrugstore && (
-                        <div className="p-4 md:p-10">
-                            <Tabs defaultValue="overview" className="space-y-6 md:space-y-8">
-                                <EliteTabsList>
-                                    <EliteTabsTrigger value="overview" label="General" icon={Search} />
-                                    <EliteTabsTrigger value="visits" label="Visitas" icon={Calendar} />
-                                    <EliteTabsTrigger value="orders" label="Pedidos" icon={Package} />
+                        <div className="p-10 space-y-12">
+                            <Tabs defaultValue="overview" className="w-full">
+                                <EliteTabsList className="mb-10">
+                                    <EliteTabsTrigger value="overview" label="General Alpha" icon={Search} />
+                                    <EliteTabsTrigger value="visits" label="Historial Visitas" icon={Calendar} />
+                                    <EliteTabsTrigger value="orders" label="Pedidos Activos" icon={Package} />
                                 </EliteTabsList>
 
-                            <TabsContent value="overview" className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-5 duration-500">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                                    <div className="space-y-6">
-                                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-2xl md:rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-inner">
-                                            <h3 className="text-[9px] md:text-[10px] font-bold text-slate-500 mb-4 md:mb-6 flex items-center gap-3 uppercase tracking-wider">
-                                                <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-                                                    <Building className="h-4 w-4 text-primary" />
-                                                </div>
-                                                Información Comercial
+                            <TabsContent value="overview" className="animate-in slide-in-from-bottom-5 duration-700">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div className="space-y-8">
+                                        <div className="bg-muted/10 p-8 rounded-[2rem] border border-border/40 shadow-inner group">
+                                            <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
+                                                <Building className="h-4 w-4" /> Información de Activo
                                             </h3>
-                                            <div className="space-y-4">
-                                                <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                                                    <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider">RIF</span>
-                                                    <span className="text-[9px] md:text-[10px] font-mono font-bold text-foreground">{selectedDrugstore.rif}</span>
+                                            <div className="space-y-6">
+                                                <div className="flex justify-between border-b border-border/40 pb-4">
+                                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">RIF</span>
+                                                    <span className="text-xs font-black text-foreground font-mono">{selectedDrugstore.rif}</span>
                                                 </div>
-                                                <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                                                    <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider">Encargado</span>
-                                                    <span className="text-[9px] md:text-[10px] font-bold text-primary uppercase">{selectedDrugstore.owner_name || 'PENDIENTE'}</span>
+                                                <div className="flex justify-between border-b border-border/40 pb-4">
+                                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Operador</span>
+                                                    <span className="text-xs font-black text-primary uppercase">{selectedDrugstore.owner_name || 'PENDIENTE'}</span>
                                                 </div>
                                                 <div className="flex justify-between pt-2">
-                                                    <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider">Estatus Legal</span>
-                                                    <Badge className={selectedDrugstore.sanitary_permits ? "bg-emerald-500/10 text-emerald-600 border-none font-bold text-[8px] md:text-[9px] uppercase px-3 py-1 rounded-full" : "bg-amber-500/10 text-amber-600 border-none font-bold text-[8px] md:text-[9px] uppercase px-3 py-1 rounded-full"}>
-                                                        {selectedDrugstore.sanitary_permits ? "PERMISOS OK" : "PENDIENTE"}
+                                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Estatus Sanitario</span>
+                                                    <Badge className={selectedDrugstore.sanitary_permits ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 font-black text-[9px] uppercase px-4 py-1.5 rounded-full" : "bg-amber-500/10 text-amber-400 border-amber-500/30 font-black text-[9px] uppercase px-4 py-1.5 rounded-full"}>
+                                                        {selectedDrugstore.sanitary_permits ? "VERIFICADO" : "EN REVISIÓN"}
                                                     </Badge>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-2xl md:rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-inner">
-                                            <h3 className="text-[9px] md:text-[10px] font-bold text-slate-500 mb-4 md:mb-6 flex items-center gap-3 uppercase tracking-wider">
-                                                <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-                                                    <MapPin className="h-4 w-4 text-primary" />
-                                                </div>
-                                                Ubicación Principal
+                                        <div className="bg-muted/10 p-8 rounded-[2rem] border border-border/40 shadow-inner">
+                                            <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
+                                                <MapPin className="h-4 w-4" /> Nodo Logístico
                                             </h3>
-                                            <p className="text-lg md:text-xl font-bold text-foreground uppercase tracking-tight leading-none">{selectedDrugstore.city || 'S/C'}</p>
-                                            <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-3 leading-relaxed">{selectedDrugstore.address || 'Sin dirección registrada'}</p>
+                                            <p className="text-2xl font-black text-foreground uppercase tracking-tighter leading-none">{selectedDrugstore.city || 'SIN ZONA'}</p>
+                                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-4 leading-relaxed opacity-70">{selectedDrugstore.address || 'DIRECCIÓN NO REGISTRADA'}</p>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <div className="bg-primary rounded-2xl md:rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-primary/20 h-full flex flex-col justify-between group overflow-hidden relative border-4 border-white dark:border-slate-800 text-white">
-                                            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-                                                <Navigation className="h-24 md:h-32 w-24 md:w-32 text-white" />
-                                            </div>
-                                            <div className="relative z-10">
-                                                <h3 className="text-2xl md:text-4xl font-bold text-white tracking-tight uppercase leading-[0.9] mb-4">Gestión<br />Comercial</h3>
-                                                <p className="text-primary-foreground/70 text-[9px] md:text-[10px] font-bold uppercase tracking-wider mb-8">Ejecutar seguimiento de cobranza o inventario.</p>
-                                            </div>
-                                            <div className="space-y-3 md:space-y-4 relative z-10">
-                                                <button onClick={handleRegisterVisit} className="w-full bg-white text-primary shadow-lg font-bold uppercase tracking-wider text-[9px] md:text-[10px] h-12 md:h-14 rounded-xl md:rounded-2xl transition-all hover:bg-slate-50 active:scale-95 flex items-center justify-center">
-                                                    <Navigation className="mr-2 md:mr-3 h-4 md:h-5 w-4 md:w-5" /> Iniciar Visita
-                                                </button>
-                                                <button className="w-full border border-white/30 text-white hover:bg-white/10 h-12 md:h-14 rounded-xl md:rounded-2xl uppercase font-bold tracking-wider text-[9px] md:text-[10px] shadow-sm flex items-center justify-center" onClick={() => handleEditDrugstore(selectedDrugstore)}>
-                                                    <Edit className="mr-2 md:mr-3 h-4 w-4" /> Editar Perfil
-                                                </button>
-                                            </div>
+                                    <div className="bg-primary rounded-[2.5rem] p-10 shadow-premium-2xl shadow-primary/20 flex flex-col justify-between group overflow-hidden relative border-8 border-background text-white">
+                                        <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                                            <Navigation className="h-40 w-40 text-white" />
+                                        </div>
+                                        <div className="relative z-10">
+                                            <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-[0.85] mb-6">Misión de<br />Seguimiento</h3>
+                                            <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-10 opacity-80">Iniciar interceptación para gestión de cobranza y auditoría de inventario.</p>
+                                        </div>
+                                        <div className="space-y-4 relative z-10">
+                                            <Button onClick={handleRegisterVisit} className="w-full bg-white text-primary shadow-xl font-black uppercase tracking-[0.2em] text-[10px] h-16 rounded-[1.5rem] transition-all hover:bg-muted active:scale-95 flex items-center justify-center">
+                                                <Navigation className="mr-3 h-5 w-5" /> Iniciar Despliegue
+                                            </Button>
+                                            <Button variant="ghost" className="w-full border border-white/30 text-white hover:bg-white/10 h-16 rounded-[1.5rem] uppercase font-black tracking-[0.2em] text-[10px] shadow-sm flex items-center justify-center" onClick={() => handleEditDrugstore(selectedDrugstore)}>
+                                                <Edit className="mr-3 h-4 w-4" /> Editar Expediente
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
                             </TabsContent>
 
-                            <TabsContent value="visits" className="animate-in slide-in-from-right-5 duration-500">
-                                <ScrollArea className="h-[450px] pr-4">
+                            <TabsContent value="visits" className="animate-in slide-in-from-right-5 duration-700">
+                                <ScrollArea className="h-[500px] pr-6">
                                     {historyLoading ? (
-                                        <div className="flex justify-center p-12"><RefreshCw className="h-10 w-10 animate-spin text-primary" /></div>
+                                        <div className="flex justify-center p-20"><RefreshCw className="h-12 w-12 animate-spin text-primary opacity-20" /></div>
                                     ) : storeVisits.length === 0 ? (
-                                        <div className="text-center py-20 bg-muted/20 rounded-[3rem] border border-border/40 border-dashed">
-                                            <Calendar className="h-16 w-16 mx-auto mb-6 opacity-10 text-primary" />
-                                            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Sin historial de gestiones registradas</p>
+                                        <div className="text-center py-32 bg-muted/5 rounded-[3rem] border border-border/40 border-dashed">
+                                            <Calendar className="h-20 w-20 mx-auto mb-8 opacity-10 text-primary" />
+                                            <p className="text-muted-foreground font-black uppercase tracking-[0.4em] text-[10px]">Sin misiones registradas en el cuadrante</p>
                                         </div>
                                     ) : (
-                                        <div className="space-y-4">
+                                        <div className="space-y-6">
                                             {storeVisits.map(v => (
-                                                <div key={v.id} className="p-8 bg-card border border-border rounded-[2rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
-                                                    <div className="flex items-center gap-6">
-                                                        <div className="w-12 h-12 bg-muted/30 rounded-xl flex items-center justify-center border border-border/40 shadow-inner">
-                                                            <Calendar className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+                                                <div key={v.id} className="p-8 bg-card border border-border/40 rounded-[2rem] flex justify-between items-center hover:bg-muted/5 transition-all group shadow-premium-sm">
+                                                    <div className="flex items-center gap-8">
+                                                        <div className="w-16 h-16 bg-muted/20 rounded-2xl flex items-center justify-center border border-border/40 shadow-inner">
+                                                            <Calendar className="h-6 w-6 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
                                                         </div>
-                                                        <div>
-                                                            <p className="font-black text-foreground uppercase tracking-tighter text-lg">{new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
-                                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1 ">{v.visit_objective || 'GESTIÓN GENERAL'}</p>
+                                                        <div className="flex flex-col gap-1">
+                                                            <p className="font-black text-foreground uppercase tracking-tighter text-xl">{new Date(v.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase()}</p>
+                                                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-70">{v.visit_objective || 'GESTIÓN DE CANAL'}</p>
                                                         </div>
                                                     </div>
-                                                    <Badge variant={v.status === 'completed' ? 'default' : 'secondary'} className={v.status === 'completed' ? "bg-emerald-500/10 text-emerald-600 border-none font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full" : "bg-slate-100 text-slate-400 border-none font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full"}>
-                                                        {v.status === 'completed' ? 'ÉXITO / CERRADA' : 'OPERACIÓN EN CURSO'}
+                                                    <Badge className={cn(
+                                                        "font-black text-[9px] uppercase tracking-widest px-5 py-2 rounded-full border shadow-sm",
+                                                        v.status === 'completed' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : "bg-muted/10 text-muted-foreground border-border/40"
+                                                    )}>
+                                                        {v.status === 'completed' ? 'ÉXITO OPERATIVO' : 'RADAR / PENDIENTE'}
                                                     </Badge>
                                                 </div>
                                             ))}
@@ -567,34 +442,36 @@ export default function DrugstoresElite() {
                                 </ScrollArea>
                             </TabsContent>
 
-                            <TabsContent value="orders" className="animate-in slide-in-from-right-5 duration-500">
-                                <ScrollArea className="h-[450px] pr-4">
+                            <TabsContent value="orders" className="animate-in slide-in-from-right-5 duration-700">
+                                <ScrollArea className="h-[500px] pr-6">
                                     {historyLoading ? (
-                                        <div className="flex justify-center p-12"><RefreshCw className="h-10 w-10 animate-spin text-primary" /></div>
+                                        <div className="flex justify-center p-20"><RefreshCw className="h-12 w-12 animate-spin text-primary opacity-20" /></div>
                                     ) : storeOrders.length === 0 ? (
-                                        <div className="text-center py-20 bg-muted/20 rounded-[3rem] border border-border/40 border-dashed">
-                                            <Package className="h-16 w-16 mx-auto mb-6 opacity-10 text-primary" />
-                                            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Sin registros de órdenes directas</p>
+                                        <div className="text-center py-32 bg-muted/5 rounded-[3rem] border border-border/40 border-dashed">
+                                            <Package className="h-20 w-20 mx-auto mb-8 opacity-10 text-primary" />
+                                            <p className="text-muted-foreground font-black uppercase tracking-[0.4em] text-[10px]">Sin transferencias en el registro de red</p>
                                         </div>
                                     ) : (
-                                        <div className="space-y-4">
+                                        <div className="space-y-6">
                                             {storeOrders.map(o => (
-                                                <div key={o.id} className="p-10 bg-card border border-border rounded-[2.5rem] flex justify-between items-center hover:shadow-premium-md transition-all group shadow-premium-sm">
-                                                    <div className="flex items-center gap-8">
-                                                        <div className="w-16 h-16 bg-muted/30 rounded-2xl flex items-center justify-center border border-border/40 shadow-inner">
-                                                            <Package className="h-8 w-8 text-slate-400 group-hover:text-primary transition-colors" />
+                                                <div key={o.id} className="p-10 bg-card border border-border/40 rounded-[2.5rem] flex justify-between items-center hover:bg-muted/5 transition-all group shadow-premium-sm">
+                                                    <div className="flex items-center gap-10">
+                                                        <div className="w-20 h-20 bg-muted/20 rounded-[2rem] flex items-center justify-center border border-border/40 shadow-inner">
+                                                            <Package className="h-10 w-10 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
                                                         </div>
-                                                        <div className="flex flex-col">
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ">Orden de Transferencia</span>
-                                                            <span className="text-2xl font-black text-foreground tracking-tighter uppercase leading-none">#{o.order_number}</span>
-                                                            <span className="text-[10px] text-primary font-black uppercase tracking-widest mt-2 flex items-center gap-2">
-                                                                <div className="w-1 h-1 rounded-full bg-primary text-white" /> {new Date(o.order_date).toLocaleDateString()}
-                                                            </span>
+                                                        <div className="flex flex-col gap-2">
+                                                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Orden de Transferencia</span>
+                                                            <span className="text-3xl font-black text-foreground tracking-tighter uppercase leading-none">#{o.order_number}</span>
+                                                            <div className="flex items-center gap-3 mt-1">
+                                                                <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 px-3 py-1">
+                                                                    {new Date(o.order_date).toLocaleDateString()}
+                                                                </Badge>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <p className="text-4xl font-black text-foreground tracking-tighter mb-2 tabular-nums">${o.total?.toFixed(2)}</p>
-                                                        <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full">{o.status}</Badge>
+                                                    <div className="text-right flex flex-col items-end gap-3">
+                                                        <p className="text-5xl font-black text-foreground tracking-tighter tabular-nums leading-none">${o.total?.toFixed(2)}</p>
+                                                        <Badge className="bg-primary/10 text-primary border-primary/20 font-black text-[9px] uppercase tracking-widest px-5 py-1.5 rounded-full shadow-sm">{o.status.toUpperCase()}</Badge>
                                                     </div>
                                                 </div>
                                             ))}

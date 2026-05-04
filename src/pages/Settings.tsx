@@ -320,7 +320,7 @@ export default function Settings() {
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-        <TabsList className="flex items-center gap-2 bg-slate-100/50 p-2 rounded-2xl w-fit border border-border shadow-inner">
+        <TabsList className="flex items-center gap-2 bg-muted/20 p-2 rounded-2xl w-fit border border-border shadow-inner">
           <TabsTrigger value="profile" className="flex items-center gap-3 px-6 h-11 rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-premium-md transition-all font-black uppercase text-[10px] tracking-widest ">
             <User className="h-4 w-4" />
             Perfil
@@ -348,7 +348,7 @@ export default function Settings() {
         {/* Profile Tab */}
         <TabsContent value="profile" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
+            <CardHeader className="bg-muted/10 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Identidad del Colaborador</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Sincronización de credenciales y datos de contacto</CardDescription>
             </CardHeader>
@@ -362,14 +362,14 @@ export default function Settings() {
                   <div className="absolute -bottom-2 -right-2 bg-emerald-500 h-6 w-6 rounded-full border-4 border-white shadow-glow"></div>
                 </div>
                 <div className="space-y-3">
-                  <Button variant="outline" size="sm" className="h-10 rounded-xl border-slate-200 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all">
+                  <Button variant="outline" size="sm" className="h-10 rounded-xl border-border/40 font-black uppercase text-[10px] tracking-widest hover:bg-muted/10 transition-all text-foreground">
                     <Camera className="h-4 w-4 mr-3 text-foreground" />
                     Actualizar Imagen
                   </Button>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest ml-1">Formatos admitidos: ISO-standard (JPG / PNG)</p>
                 </div>
               </div>
-              <Separator className="bg-slate-100 text-slate-900" />
+              <Separator className="bg-border" />
 
               {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -379,7 +379,7 @@ export default function Settings() {
                     id="firstName"
                     value={profile.first_name}
                     onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
-                    className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
+                    className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground"
                     placeholder="INTRODUZCA NOMBRE..."
                   />
                 </div>
@@ -389,7 +389,7 @@ export default function Settings() {
                     id="lastName"
                     value={profile.last_name}
                     onChange={(e) => setProfile({ ...profile, last_name: e.target.value })}
-                    className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
+                    className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground"
                     placeholder="INTRODUZCA APELLIDO..."
                   />
                 </div>
@@ -410,7 +410,7 @@ export default function Settings() {
                       id="phone"
                       value={profile.phone}
                       onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                      className="h-14 pl-12 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
+                      className="h-14 pl-12 bg-muted/20 border-none focus-visible:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground"
                       placeholder="+58 412..."
                     />
                   </div>
@@ -423,13 +423,13 @@ export default function Settings() {
                   id="position"
                   value={profile.position}
                   onChange={(e) => setProfile({ ...profile, position: e.target.value })}
-                  className="h-14 bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900"
+                  className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground"
                   placeholder="EJ. COMERCIAL ELITE..."
                 />
               </div>
 
               {/* Territories Multi-Select */}
-              <div className="space-y-4 bg-slate-50 pt-8 pb-8 px-8 rounded-3xl border border-border shadow-inner text-slate-900">
+              <div className="space-y-4 bg-muted/10 pt-8 pb-8 px-8 rounded-3xl border border-border shadow-inner">
                 <div className="flex items-center justify-between">
                   <Label className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                     <div className="p-2 bg-card rounded-lg shadow-sm">
@@ -479,14 +479,14 @@ export default function Settings() {
                   id="bio"
                   value={profile.bio}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                  className="bg-slate-50 border-none focus-visible:ring-slate-900 rounded-xl font-bold text-slate-600 shadow-inner min-h-[120px] p-6 text-sm"
+                  className="bg-muted/20 border-none focus-visible:ring-primary rounded-xl font-bold text-muted-foreground shadow-inner min-h-[120px] p-6 text-sm"
                   placeholder="DESCRIPCIÓN DE OBJETIVOS Y PERFIL..."
                   rows={4}
                 />
               </div>
 
               <div className="flex justify-end pt-6">
-                <Button onClick={saveProfile} disabled={loading} className="h-14 bg-slate-900 hover:bg-slate-800 text-white shadow-premium-md transition-all rounded-xl px-10 font-black uppercase text-[10px] tracking-widest active:scale-95">
+                <Button onClick={saveProfile} disabled={loading} className="h-14 bg-primary hover:bg-primary/90 text-white shadow-premium-md transition-all rounded-xl px-10 font-black uppercase text-[10px] tracking-widest active:scale-95">
                   <Save className="h-4 w-4 mr-3" />
                   {loading ? 'Sincronizando...' : 'Consolidar Perfil de Élite'}
                 </Button>
@@ -498,7 +498,7 @@ export default function Settings() {
         {/* Notifications Tab */}
         <TabsContent value="notifications" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
+            <CardHeader className="bg-muted/10 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Alertas & Comunicaciones</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Configuración del radar de notificaciones en tiempo real</CardDescription>
             </CardHeader>
@@ -511,7 +511,7 @@ export default function Settings() {
                   { id: 'alerts', icon: AlertTriangle, label: 'Alertas de Objetivos', desc: 'Control de cuotas y desviaciones', checked: notifications.objective_alerts, key: 'objective_alerts' },
                 ].map((item) => (
                   <div key={item.id} className="group transition-all">
-                    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-border transition-all">
+                    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted/10 border border-transparent hover:border-border transition-all">
                       <div className="flex items-center gap-5">
                         <div className="p-3 bg-card rounded-xl shadow-soft group-hover:shadow-md transition-all">
                           <item.icon className="h-5 w-5 text-primary" />
@@ -530,7 +530,7 @@ export default function Settings() {
                   </div>
                 ))}
 
-                <Separator className="bg-slate-100 text-slate-900" />
+                <Separator className="bg-border" />
 
                 <div className="space-y-4">
                   <Label htmlFor="reminder-time" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Umbral de Pre-Aviso Operativo</Label>
@@ -538,7 +538,7 @@ export default function Settings() {
                     value={notifications.reminder_time}
                     onValueChange={(v) => setNotifications({ ...notifications, reminder_time: v })}
                   >
-                    <SelectTrigger id="reminder-time" className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72 text-slate-900">
+                    <SelectTrigger id="reminder-time" className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner w-full md:w-72 text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -552,7 +552,7 @@ export default function Settings() {
               </div>
 
               <div className="flex justify-between pt-8 border-t border-border">
-                <Button variant="ghost" onClick={() => resetToDefaults('notifications')} className="text-[10px] font-black uppercase tracking-widest hover:bg-red-50 text-red-400 px-6 h-12 rounded-xl">
+                <Button variant="ghost" onClick={() => resetToDefaults('notifications')} className="text-[10px] font-black uppercase tracking-widest hover:bg-rose-500/10 text-rose-400 px-6 h-12 rounded-xl">
                   <RotateCcw className="h-4 w-4 mr-3" />
                   Restaurar Bóveda
                 </Button>
@@ -568,7 +568,7 @@ export default function Settings() {
         {/* Appearance Tab */}
         <TabsContent value="appearance" className="animate-in slide-in-from-left-4 duration-500">
           <Card className="border-border shadow-premium-lg bg-card rounded-[2rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-border p-8">
+            <CardHeader className="bg-muted/10 border-b border-border p-8">
               <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display">Identidad de Marca CA</CardTitle>
               <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Soberanía visual y refinamiento de interfaz</CardDescription>
             </CardHeader>
@@ -601,7 +601,7 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Separator className="bg-slate-100 text-slate-900" />
+                <Separator className="bg-border" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
@@ -613,7 +613,7 @@ export default function Settings() {
                       value={appearance.language}
                       onValueChange={(v) => setAppearance({ ...appearance, language: v })}
                     >
-                      <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
+                      <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -633,7 +633,7 @@ export default function Settings() {
                       value={appearance.font_size}
                       onValueChange={(v) => setAppearance({ ...appearance, font_size: v as any })}
                     >
-                      <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
+                      <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
@@ -645,9 +645,9 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Separator className="bg-slate-100 text-slate-900" />
+                <Separator className="bg-border" />
 
-                <div className="flex items-center justify-between bg-slate-50 p-6 rounded-2xl border border-border text-slate-900">
+                <div className="flex items-center justify-between bg-muted/10 p-6 rounded-2xl border border-border">
                   <div className="flex items-center gap-5">
                     <div className="p-3 bg-card rounded-xl shadow-soft">
                       <LayoutGrid className="h-5 w-5 text-primary" />
@@ -666,7 +666,7 @@ export default function Settings() {
               </div>
 
               <div className="flex justify-between pt-8 border-t border-border">
-                <Button variant="ghost" onClick={() => resetToDefaults('appearance')} className="text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 text-slate-400 px-6 h-12 rounded-xl">
+                <Button variant="ghost" onClick={() => resetToDefaults('appearance')} className="text-[10px] font-black uppercase tracking-widest hover:bg-muted/10 text-muted-foreground px-6 h-12 rounded-xl">
                   <RotateCcw className="h-4 w-4 mr-3" />
                   Reset Visual
                 </Button>
@@ -713,7 +713,7 @@ export default function Settings() {
                   </div>
                 ))}
 
-                <Separator className="bg-slate-100 text-slate-900" />
+                <Separator className="bg-border" />
 
                 <div className="space-y-4">
                   <Label htmlFor="sync-frequency" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-3">
@@ -738,7 +738,7 @@ export default function Settings() {
               </div>
 
               <div className="flex justify-between pt-8 border-t border-border">
-                <Button variant="ghost" onClick={() => resetToDefaults('system')} className="text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 text-slate-400 px-6 h-12 rounded-xl">
+                <Button variant="ghost" onClick={() => resetToDefaults('system')} className="text-[10px] font-black uppercase tracking-widest hover:bg-muted/10 text-muted-foreground px-6 h-12 rounded-xl">
                   <RotateCcw className="h-4 w-4 mr-3" />
                   Restaurar Core
                 </Button>

@@ -1,12 +1,3 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
- 
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
- ======================================================================== */
-
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { 
@@ -74,11 +65,11 @@ const ROLE_LABELS: Record<UserRole, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-    master: 'bg-primary/10 text-primary border-primary/20',
-    admin_saas: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
-    admin: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-    manager: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-    representative: 'bg-slate-100 text-slate-500 border-slate-200'
+    master: 'status-active',
+    admin_saas: 'status-destructive',
+    admin: 'status-info',
+    manager: 'status-active',
+    representative: 'status-pending'
 };
 
 export default function MasterPanel() {
@@ -105,7 +96,6 @@ export default function MasterPanel() {
 
     useEffect(() => { 
         loadData(); 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!isMaster) return <Navigate to="/" replace />;
@@ -125,7 +115,7 @@ export default function MasterPanel() {
                 totalUsers: userRoles.length,
                 activeUsers: userRoles.filter(u => u.is_active).length,
                 totalOrganizations: orgs.length,
-                totalVisits: 0 // Fetch from RPC if needed
+                totalVisits: 0 
             });
 
             setOrganizations(orgs);
@@ -188,11 +178,11 @@ export default function MasterPanel() {
     };
 
     if (loading) return (
-        <div className="h-screen flex flex-col items-center justify-center bg-card space-y-8">
-            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
+        <div className="h-screen flex flex-col items-center justify-center bg-background space-y-8">
+            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner animate-pulse">
                 <Zap className="h-12 w-12 text-primary animate-pulse" />
             </div>
-            <div className="text-foreground font-black uppercase tracking-[0.5em] animate-pulse font-display">Sincronizando Matriz Master</div>
+            <div className="text-muted-foreground font-black uppercase tracking-[0.5em] font-display text-[10px]">Sincronizando Matriz Master...</div>
         </div>
     );
 
@@ -203,7 +193,7 @@ export default function MasterPanel() {
             render: (u) => (
                 <div className="flex flex-col">
                     <span className="font-black text-foreground text-base tracking-tight uppercase font-display">{u.email}</span>
-                    <span className="text-[10px] text-slate-400 font-bold tracking-widest">UID: {u.user_id.slice(0, 16)}...</span>
+                    <span className="text-[10px] text-muted-foreground font-black tracking-widest uppercase">UID: {u.user_id.slice(0, 16)}...</span>
                 </div>
             )
         },
@@ -211,7 +201,7 @@ export default function MasterPanel() {
             header: "Nivel de Rango", 
             key: "role",
             render: (u) => (
-                <Badge variant="outline" className={cn("text-[10px] font-black uppercase px-4 py-1.5 rounded-full border tracking-widest  bg-transparent", ROLE_COLORS[u.role] || "border-white/10 text-slate-400")}>
+                <Badge className={cn("text-[10px] font-black uppercase px-4 py-1.5 rounded-full border tracking-widest", ROLE_COLORS[u.role] || "status-pending")}>
                     {ROLE_LABELS[u.role]}
                 </Badge>
             )
@@ -223,8 +213,8 @@ export default function MasterPanel() {
                 const org = organizations.find(o => o.id === u.organization_id);
                 return (
                     <div className="flex items-center gap-3">
-                         <div className={cn("h-2 w-2 rounded-full", u.organization_id ? "bg-primary" : "bg-slate-200")} />
-                         <span className="text-xs font-black text-slate-600 uppercase tracking-tight">{org?.name || 'Sistémico / Global'}</span>
+                         <div className={cn("h-2 w-2 rounded-full", u.organization_id ? "bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" : "bg-muted-foreground/20")} />
+                         <span className="text-[11px] font-black text-foreground uppercase tracking-tight">{org?.name || 'Sistémico / Global'}</span>
                     </div>
                 );
             }
@@ -233,7 +223,7 @@ export default function MasterPanel() {
             header: "Aislamiento Operativo", 
             key: "company_id",
             render: (u) => (
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{u.company_id || 'Global Core'}</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{u.company_id || 'Global Core'}</span>
             ),
             className: "text-right"
         },
@@ -245,7 +235,7 @@ export default function MasterPanel() {
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-10 w-10 rounded-xl text-slate-400 hover:bg-primary/5 hover:text-primary transition-all"
+                        className="h-10 w-10 rounded-xl text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
                         onClick={() => { setEditingUser(u.user_id); setNewRole(u.role); setNewUserOrgIdEdit(u.organization_id || 'none'); }}
                     >
                         <Edit size={18} />
@@ -262,12 +252,12 @@ export default function MasterPanel() {
             key: "name",
             render: (o) => (
                 <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-primary/5 flex items-center justify-center border border-primary/10 transition-transform group-hover:scale-110">
+                    <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 transition-transform group-hover:scale-110 shadow-inner">
                         <Building2 className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex flex-col">
                         <span className="font-black text-foreground text-base uppercase font-display tracking-tight">{o.name}</span>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">TENANT: {o.slug}</span>
+                        <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">TENANT: {o.slug}</span>
                     </div>
                 </div>
             )
@@ -276,7 +266,7 @@ export default function MasterPanel() {
             header: "Plan Maestro",
             key: "plan_tier",
             render: (o) => (
-                <Badge className="bg-indigo-500/10 text-indigo-500 border-none text-[10px] font-black uppercase tracking-widest px-4 py-1.5">
+                <Badge className="status-info text-[10px] font-black uppercase tracking-widest px-4 py-1.5 border-none">
                     {o.plan_tier || 'ENTERPRISE'}
                 </Badge>
             )
@@ -287,7 +277,7 @@ export default function MasterPanel() {
             render: (o) => (
                 <div className="flex items-center gap-2">
                     <Activity size={14} className="text-emerald-500" />
-                    <span className="text-xs font-bold text-emerald-500 uppercase tracking-tight">{o.subscription_status}</span>
+                    <span className="text-xs font-black text-emerald-500 uppercase tracking-tight">{o.subscription_status}</span>
                 </div>
             )
         },
@@ -296,7 +286,7 @@ export default function MasterPanel() {
             key: "actions",
             render: (o) => (
                 <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="gap-2 text-[9px] font-black uppercase tracking-widest border border-slate-100 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-primary transition-all">
+                    <Button variant="ghost" size="sm" className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all">
                         <ExternalLink size={14} /> Inspeccionar
                     </Button>
                 </div>
@@ -306,8 +296,7 @@ export default function MasterPanel() {
     ];
 
     return (
-        <div className="space-y-10 pb-10">
-            {/* ELITE MASTER HEADER */}
+        <div className="space-y-10 pb-10 p-1 animate-in fade-in duration-700">
             <EliteHeader 
                 title="Consola Sentinel"
                 subtitle="Administración Suprema SaaS Matriz"
@@ -319,11 +308,11 @@ export default function MasterPanel() {
                     <div className="flex items-center gap-4">
                         <Button 
                             onClick={loadData} 
+                            size="icon"
                             variant="ghost" 
-                            size="icon" 
-                            className="h-14 w-14 rounded-2xl hover:bg-slate-50 border border-slate-100 transition-all text-slate-400 hover:text-primary"
+                            className="h-14 w-14 rounded-2xl bg-card border border-border text-muted-foreground hover:text-primary transition-all shadow-sm group"
                         >
-                            <RefreshCw size={24} className={cn(loading && "animate-spin text-primary")} />
+                            <RefreshCw size={24} className={cn("group-hover:rotate-180 transition-transform duration-500", loading && "animate-spin text-primary")} />
                         </Button>
                         <Button 
                             onClick={() => setUserDialogOpen(true)} 
@@ -335,8 +324,7 @@ export default function MasterPanel() {
                 }
             />
 
-            {/* ELITE KPI STRIP */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <EliteKPICard 
                     title="Usuarios Totales"
                     value={stats.totalUsers}
@@ -363,8 +351,8 @@ export default function MasterPanel() {
                 />
             </div>
 
-            <Tabs defaultValue="users" className="w-full">
-                <EliteTabsList className="mb-8">
+            <Tabs defaultValue="users" className="w-full space-y-8">
+                <EliteTabsList>
                     <EliteTabsTrigger 
                         value="users" 
                         label="Usuarios Atómicos"
@@ -382,7 +370,7 @@ export default function MasterPanel() {
                     />
                 </EliteTabsList>
 
-                <TabsContent value="users" className="mt-6 animate-in fade-in slide-in-from-bottom-5 duration-500">
+                <TabsContent value="users" className="animate-in fade-in zoom-in-95 duration-500">
                     <EliteTable 
                         data={users} 
                         columns={userColumns} 
@@ -391,7 +379,7 @@ export default function MasterPanel() {
                     />
                 </TabsContent>
 
-                <TabsContent value="organizations" className="mt-6">
+                <TabsContent value="organizations" className="animate-in slide-in-from-right-10 duration-500">
                     <EliteTable 
                         data={organizations} 
                         columns={orgColumns} 
@@ -400,13 +388,13 @@ export default function MasterPanel() {
                     />
                 </TabsContent>
 
-                <TabsContent value="system" className="mt-6">
-                    <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[3rem] p-24 text-center text-slate-900">
-                        <div className="w-20 h-20 rounded-[2rem] bg-card shadow-soft border border-slate-100 flex items-center justify-center mx-auto mb-8">
-                             <Database className="h-10 w-10 text-slate-300" />
+                <TabsContent value="system" className="animate-in slide-in-from-left-10 duration-500">
+                    <div className="bg-muted/10 border border-dashed border-border rounded-[3rem] p-24 text-center">
+                        <div className="w-20 h-20 rounded-[2rem] bg-card shadow-soft border border-border flex items-center justify-center mx-auto mb-8">
+                             <Database className="h-10 w-10 text-muted-foreground/30" />
                         </div>
                         <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-3 font-display">Auditoría del Núcleo</h3>
-                        <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest max-w-sm mx-auto leading-relaxed">
+                        <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest max-w-sm mx-auto leading-relaxed">
                             Esta sección está actualmente encriptada. Solo disponible en auditorías de nivel Sentinel Alpha con protocolos de seguridad Biométricos.
                         </p>
                     </div>
@@ -415,39 +403,39 @@ export default function MasterPanel() {
 
             {/* EDIT USER DIALOG */}
             <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
-                <DialogContent className="max-w-lg bg-card rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-slate-50 p-10 border-b border-slate-100 text-slate-900">
+                <DialogContent className="max-w-lg bg-card rounded-[3rem] border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
+                    <div className="bg-muted/20 p-10 border-b border-border">
                          <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
+                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-border">
                                  <RefreshCw className="h-6 w-6 text-primary" />
                              </div>
                              <div>
                                  <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Refactorizar Acceso</DialogTitle>
-                                 <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Modificando parámetros de seguridad de rango</DialogDescription>
+                                 <DialogDescription className="text-muted-foreground font-black uppercase text-[9px] tracking-widest mt-1">Modificando parámetros de seguridad de rango</DialogDescription>
                              </div>
                          </div>
                     </div>
                     <div className="p-12 space-y-8">
                         <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nivel de Rango Sentinel</Label>
+                            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Nivel de Rango Sentinel</Label>
                             <Select value={newRole} onValueChange={(v) => setNewRole(v as UserRole)}>
-                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
+                                <SelectTrigger className="h-16 bg-muted/20 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                                <SelectContent className="rounded-2xl border-border font-black uppercase text-[10px] tracking-widest">
                                     {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                                        <SelectItem key={val} value={val} className="hover:bg-primary/5">{label}</SelectItem>
+                                        <SelectItem key={val} value={val} className="hover:bg-primary/10">{label}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Enlace SaaS Tenant</Label>
+                            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Enlace SaaS Tenant</Label>
                             <Select value={newUserOrgIdEdit} onValueChange={setNewUserOrgIdEdit}>
-                                <SelectTrigger className="h-16 bg-slate-50 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
+                                <SelectTrigger className="h-16 bg-muted/20 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                                <SelectContent className="rounded-2xl border-border font-black uppercase text-[10px] tracking-widest">
                                     <SelectItem value="none">Sistémico / Global</SelectItem>
                                     {organizations.map(org => (
                                         <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
@@ -455,8 +443,8 @@ export default function MasterPanel() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="flex justify-end gap-3 pt-6">
-                            <Button variant="ghost" onClick={() => setEditingUser(null)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-slate-400 hover:bg-slate-50">Abortar</Button>
+                        <div className="flex justify-end gap-4 pt-6">
+                            <Button variant="ghost" onClick={() => setEditingUser(null)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/30">Abortar</Button>
                             <Button onClick={handleUpdateUser} className="h-14 px-10 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95">Actualizar Matriz</Button>
                         </div>
                     </div>
@@ -465,39 +453,39 @@ export default function MasterPanel() {
 
             {/* NEW USER DIALOG */}
             <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
-                <DialogContent className="max-w-xl bg-card rounded-[3rem] border-none shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-slate-50 p-10 border-b border-slate-100 text-slate-900">
+                <DialogContent className="max-w-xl bg-card rounded-[3rem] border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
+                    <div className="bg-muted/20 p-10 border-b border-border">
                          <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-slate-200">
+                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-border">
                                  <Plus className="h-6 w-6 text-primary" />
                              </div>
                              <div>
                                  <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Nuevo Enlace Maestro</DialogTitle>
-                                 <DialogDescription className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-1">Generando credenciales de acceso Sentinel Alpha</DialogDescription>
+                                 <DialogDescription className="text-muted-foreground font-black uppercase text-[9px] tracking-widest mt-1">Generando credenciales de acceso Sentinel Alpha</DialogDescription>
                              </div>
                          </div>
                     </div>
                     <div className="p-12 space-y-8">
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 gap-8">
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nombre</Label>
-                                <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-slate-900" />
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre</Label>
+                                <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-foreground placeholder:text-muted-foreground/30" />
                             </div>
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Apellido</Label>
-                                <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-slate-900" />
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Apellido</Label>
+                                <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-foreground placeholder:text-muted-foreground/30" />
                             </div>
                             <div className="col-span-2 space-y-3">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Terminal Email Corporativo</Label>
-                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="h-14 bg-slate-50 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-slate-900" />
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Terminal Email Corporativo</Label>
+                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-foreground placeholder:text-muted-foreground/30" />
                             </div>
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rango Sentinel</Label>
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Rango Sentinel</Label>
                                 <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
-                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
+                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                                    <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
                                         {Object.entries(ROLE_LABELS).map(([val, label]) => (
                                             <SelectItem key={val} value={val}>{label}</SelectItem>
                                         ))}
@@ -505,12 +493,12 @@ export default function MasterPanel() {
                                 </Select>
                             </div>
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tenant SaaS</Label>
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Tenant SaaS</Label>
                                 <Select value={newUserOrgId} onValueChange={setNewUserOrgId}>
-                                    <SelectTrigger className="h-14 bg-slate-50 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-slate-900">
+                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-slate-100 font-black uppercase text-[10px] tracking-widest">
+                                    <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
                                         <SelectItem value="none">Sistémico / Global</SelectItem>
                                         {organizations.map(org => (
                                             <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
@@ -519,8 +507,8 @@ export default function MasterPanel() {
                                 </Select>
                             </div>
                         </div>
-                        <div className="flex justify-end gap-3 pt-6 border-t border-slate-100">
-                            <Button variant="ghost" onClick={() => setUserDialogOpen(false)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-slate-400 hover:bg-slate-50">Cancelar</Button>
+                        <div className="flex justify-end gap-4 pt-8 border-t border-border/40">
+                            <Button variant="ghost" onClick={() => setUserDialogOpen(false)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/30">Cancelar</Button>
                             <Button 
                                 onClick={handleInviteUser} 
                                 disabled={isCreatingUser} 
@@ -536,3 +524,4 @@ export default function MasterPanel() {
         </div>
     );
 }
+

@@ -1,39 +1,26 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
- ======================================================================== */
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { 
   Plus, UserRound, Phone, Mail, MapPin, Search, Stethoscope, 
-  Building, Download, Upload, Printer, HelpCircle, FileSpreadsheet, 
-  Trash2, Pencil, Lightbulb, AlertCircle, Calendar, 
-  ChevronRight, ClipboardCheck, RefreshCw
+  Building, Download, Upload, Trash2, Pencil, AlertCircle, Calendar, 
+  ClipboardCheck, RefreshCw, Filter, MoreVertical, Star
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { exportToCSV, handlePrint } from "@/utils/exportUtils";
+import { exportToCSV } from "@/utils/exportUtils";
 import { DoctorFormDialog } from "@/components/doctors/DoctorFormDialog";
 import { DoctorProfileDialog } from "@/components/doctors/DoctorProfileDialog";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { getStatesInRegion } from "@/constants/regions";
 import { useDemoData } from "@/contexts/MockDataProvider";
-import { InstructionCard } from "@/components/ui/InstructionCard";
-import { EliteKPICard, EliteHeader } from "@/components/layout/DesignSystem";
+import { EliteKPICard, EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
 
 interface AdminFilterState {
     region?: string;
@@ -78,7 +65,7 @@ interface Doctor {
 
 export default function Doctors() {
     const navigate = useNavigate();
-    const { user, canViewAllData, isSupervisor, zoneId, organizationId } = useAuth();
+    const { user, canViewAllData, isSupervisor, zoneId, organizationId, organizationName } = useAuth();
     const { toast } = useToast();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
@@ -112,30 +99,19 @@ export default function Doctors() {
                 return;
             }
 
-            // 0. Preparar IDs territoriales para triangulación si es necesario
             let triangulatedUserIds: string[] = [];
             
             if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
                 const { data: userData } = await (supabase as any).from('profiles').select('id').eq('zone_id', adminFilters.zoneId);
                 triangulatedUserIds = userData?.map((u: any) => u.id) || [];
-            } else if (adminFilters.state && adminFilters.state !== 'all') {
-                // El estado es nativo en doctors, no requiere triangulación
-            } else if (adminFilters.region && adminFilters.region !== 'all') {
-                // La región no es nativa, triangulamos por estados de la región
-                const states = getStatesInRegion(adminFilters.region);
-                if (states.length > 0) {
-                   // Usaremos query.in('state', states) más adelante
-                }
             }
 
             let query: any = supabase.from('doctors').select('*, specialties(name)').eq('organization_id', organizationId);
             
             if (isSupervisor && zoneId) {
-                // Lógica de Supervisor: Limitado a su zona de control
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
                 } else {
-                    // Como doctors no tiene zone_id, buscamos los usuarios de la zona del supervisor
                     const { data: zoneUsers } = await supabase.from('profiles').select('id').eq('zone_id', zoneId);
                     const userIds = zoneUsers?.map(u => u.id) || [];
                     if (userIds.length > 0) {
@@ -145,10 +121,8 @@ export default function Doctors() {
                     }
                 }
             } else if (!canViewAllData) {
-                // Lógica de Representante: Datos propios
                 query = query.or(`representative_id.eq.${user?.id},user_id.eq.${user?.id}`);
             } else {
-                // Lógica Master/Admin
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
                 } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
@@ -206,14 +180,10 @@ export default function Doctors() {
             };
             if (formData.id) { await supabase.from('doctors').update(dataToSave).eq('id', formData.id); } 
             else { await supabase.from('doctors').insert(dataToSave); }
-            toast({ title: "Médico guardado" });
+            toast({ title: "Médico Guardado", description: "La base de datos de especialistas ha sido actualizada." });
             setDialogOpen(false);
             loadDoctors();
         } catch (error) { console.error('Error:', error); }
-    };
-
-    const handleDelete = async (id: string) => {
-        try { await supabase.from('doctors').delete().eq('id', id); loadDoctors(); } catch (error) { console.error('Error:', error); }
     };
 
     const triggerImport = () => fileInputRef.current?.click();
@@ -242,9 +212,13 @@ export default function Doctors() {
     };
 
     const getPriorityBadge = (priority: string | null) => {
-        const styles: Record<string, string> = { high: "bg-rose-500/10 text-rose-500", medium: "bg-amber-500/10 text-amber-500", low: "bg-emerald-500/10 text-emerald-500" };
-        const labels: Record<string, string> = { high: "ALTA", medium: "MEDIA", low: "BAJA" };
-        return <Badge className={`${styles[priority || 'medium']} border-none font-black text-[9px] tracking-widest`}>{labels[priority || 'medium']}</Badge>;
+        const styles: Record<string, string> = { 
+            high: "bg-rose-500/10 text-rose-400 border-rose-500/30", 
+            medium: "bg-amber-500/10 text-amber-400 border-amber-500/30", 
+            low: "bg-blue-500/10 text-blue-400 border-blue-500/30" 
+        };
+        const labels: Record<string, string> = { high: "ALTA PRIORIDAD", medium: "MEDIA", low: "BAJA" };
+        return <Badge className={cn(styles[priority || 'medium'], "border font-black text-[9px] tracking-widest px-3 py-1 rounded-full uppercase")}>{labels[priority || 'medium']}</Badge>;
     };
 
     const filteredDoctors = doctors.filter(d => {
@@ -254,151 +228,151 @@ export default function Doctors() {
         else if (statusFilter === 'visited') matchesFilter = !!d.last_visit;
         return matchesSearch && matchesFilter;
     });
+
     return (
-        <div className="space-y-10 pb-10 font-display animate-in fade-in duration-700">
+        <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
             <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx,.xls,.csv" className="hidden" />
 
             <EliteHeader 
-                title="Directorio Médico"
-                subtitle="Gestión de Activos Humanos & Especialidades"
+                title="Directorio Alpha"
+                subtitle={organizationName || "Gestión de Especialistas Biofarco"}
                 icon={Stethoscope}
-                badgeText="V6.0 ALPHA"
-                statusText="Sincronización de Gremio OK"
+                badgeText="Activos Humanos"
+                statusText={`${doctors.length} Especialistas Registrados`}
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
-                            <Download className="h-5 w-5 mr-3 text-primary" /> Exportar
+                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            <Download className="h-4 w-4 mr-3 text-primary" /> Exportar Inteligencia
                         </Button>
-                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 rounded-2xl border-slate-100 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
-                            {importing ? <RefreshCw className="animate-spin h-5 w-5 mr-3 text-primary" /> : <Upload className="h-5 w-5 mr-3 text-primary" />} Importar
+                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            {importing ? <RefreshCw className="animate-spin h-4 w-4 mr-3 text-primary" /> : <Upload className="h-4 w-4 mr-3 text-primary" />} Sincronizar Manifiesto
                         </Button>
-                        <Button onClick={() => setDialogOpen(true)} className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
-                            <Plus className="h-6 w-6" /> Nuevo Médico
+                        <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95 flex items-center gap-3">
+                            <Plus className="h-6 w-6" /> Nuevo Especialista
                         </Button>
                     </div>
                 }
             />
 
-            {/* KPI STRIP - Estatus del Fichero */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <EliteKPICard title="Total Médicos" value={doctors.length} icon={UserRound} color="blue" onClick={() => setStatusFilter('all')} isActive={statusFilter === 'all'} />
-                <EliteKPICard title="Alta Prioridad" value={doctors.filter(d => d.priority === 'high').length} icon={AlertCircle} color="rose" onClick={() => setStatusFilter('high')} isActive={statusFilter === 'high'} />
-                <EliteKPICard title="Zonas Activas" value={new Set(doctors.map(d => d.state).filter(Boolean)).size} icon={MapPin} color="indigo" />
-                <EliteKPICard title="Visitas Mes" value={doctors.filter(d => d.last_visit).length} icon={ClipboardCheck} color="emerald" onClick={() => setStatusFilter('visited')} isActive={statusFilter === 'visited'} />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <EliteKPICard title="Total Gremio" value={doctors.length} icon={UserRound} color="blue" onClick={() => setStatusFilter('all')} isActive={statusFilter === 'all'} subtitle="Activos en red" />
+                <EliteKPICard title="Alta Prioridad" value={doctors.filter(d => d.priority === 'high').length} icon={Star} color="rose" onClick={() => setStatusFilter('high')} isActive={statusFilter === 'high'} subtitle="Segmento Pareto" />
+                <EliteKPICard title="Zonas Activas" value={new Set(doctors.map(d => d.state).filter(Boolean)).size} icon={MapPin} color="indigo" subtitle="Cobertura Territorial" />
+                <EliteKPICard title="Impacto Mes" value={doctors.filter(d => d.last_visit).length} icon={ClipboardCheck} color="emerald" onClick={() => setStatusFilter('visited')} isActive={statusFilter === 'visited'} subtitle="Trazabilidad Positiva" />
             </div>
 
             <AdminDataFilter onFilterChange={(f) => setAdminFilters(f)} moduleType="doctors" />
 
-            {/* SEARCH AREA PREMIUM */}
-            <div className="flex flex-col md:flex-row gap-6">
-                <Card className="bg-card border border-border/40 rounded-[2.5rem] shadow-premium-sm p-6 flex-1 flex flex-col md:flex-row gap-6 relative overflow-hidden group/search">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl opacity-0 group-hover/search:opacity-100 transition-opacity" />
-                    <div className="flex-1 relative">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-300 group-focus-within/search:text-primary transition-colors" />
-                        <Input 
-                            placeholder="LOCALIZAR POR NOMBRE, ESPECIALIDAD O ENTIDAD..." 
-                            value={searchTerm} 
-                            onChange={e => setSearchTerm(e.target.value)} 
-                            className="pl-16 h-16 bg-muted/30 border-border focus-visible:ring-primary/20 font-black rounded-2xl text-foreground placeholder:text-muted-foreground/50 transition-all text-xs tracking-widest shadow-inner uppercase" 
-                        />
-                    </div>
-                </Card>
-            </div>
-
-            {loading ? (
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    {[1, 2, 3].map(i => <div key={i} className="h-80 bg-card rounded-[3rem] animate-pulse border border-border/40 shadow-premium-sm" />)}
-                </div>
-            ) : filteredDoctors.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 bg-slate-50/50 rounded-[4rem] border border-dashed border-slate-200">
-                    <div className="w-24 h-24 rounded-full bg-card flex items-center justify-center shadow-soft mb-6">
-                        <Search className="h-10 w-10 text-slate-200" />
-                    </div>
-                    <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2">Sin Resultados Digitales</h3>
-                    <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest">Ajusta los parámetros de búsqueda o filtros territoriales</p>
-                </div>
-            ) : (
-                <div className="bg-card rounded-[2.5rem] border border-border/40 shadow-premium-sm overflow-hidden p-6">
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="border-b border-border/40 hover:bg-transparent">
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Especialista</TableHead>
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Ubicación / Zona</TableHead>
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Contacto</TableHead>
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Estatus</TableHead>
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6 text-right">Acciones</TableHead>
+            <EliteTable 
+                title="Consolidado de Especialistas"
+                description="Control maestro de médicos, especialidades y geolocalización comercial."
+                searchPlaceholder="LOCALIZAR POR NOMBRE, ESPECIALIDAD O ENTIDAD..."
+                onSearch={setSearchTerm}
+            >
+                <Table>
+                    <TableHeader>
+                        <TableRow className="border-b border-border/40 hover:bg-transparent">
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8 pl-8">Especialista Alpha</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8">Ubicación / Centro</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8">Canal Directo</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8">Estatus Operativo</TableHead>
+                            <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-8 text-right pr-8">Operaciones</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            [1, 2, 3, 4, 5].map(i => (
+                                <TableRow key={i} className="animate-pulse border-border/40">
+                                    <TableCell colSpan={5} className="py-10">
+                                        <div className="h-4 bg-muted/20 rounded-full w-full"></div>
+                                    </TableCell>
                                 </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredDoctors.map((doc) => (
-                                    <TableRow key={doc.id} className="border-b border-border/20 hover:bg-muted/50 cursor-pointer group transition-colors" onClick={() => { setSelectedDoctor(doc); setProfileOpen(true); }}>
-                                        <TableCell className="py-4 align-top">
-                                            <div className="flex items-start gap-4">
-                                                <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shadow-inner border border-primary/10">
-                                                    <Stethoscope className="h-5 w-5 text-primary" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{doc.name}</p>
-                                                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">{doc.specialties?.name || doc.specialty || 'GENERAL'}</p>
-                                                    <div className="mt-2">
-                                                        {getPriorityBadge(doc.priority)}
-                                                    </div>
+                            ))
+                        ) : filteredDoctors.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="h-40 text-center text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-50">
+                                    Sin activos interceptados en los cuadrantes actuales.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            filteredDoctors.map((doc) => (
+                                <TableRow key={doc.id} className="border-b border-border/20 hover:bg-muted/5 cursor-pointer group transition-colors" onClick={() => { setSelectedDoctor(doc); setProfileOpen(true); }}>
+                                    <TableCell className="py-8 pl-8">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shadow-inner border border-primary/20 group-hover:scale-105 transition-transform duration-500">
+                                                <Stethoscope className="h-7 w-7 text-primary" />
+                                            </div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="font-black text-base text-foreground uppercase tracking-tighter group-hover:text-primary transition-colors">{doc.name}</p>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge variant="outline" className="text-[9px] text-muted-foreground font-black uppercase tracking-widest px-2 py-0.5 border-border/40">
+                                                        {doc.specialties?.name || doc.specialty || 'MÉDICO GENERAL'}
+                                                    </Badge>
+                                                    {getPriorityBadge(doc.priority)}
                                                 </div>
                                             </div>
-                                        </TableCell>
-                                        <TableCell className="py-4 align-top">
-                                            <div className="flex flex-col gap-2 text-xs">
-                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
-                                                    <Building className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
-                                                    <span className="truncate max-w-[200px]">{doc.health_center || 'CLÍNICA / HOSPITAL N/A'}</span>
-                                                </div>
-                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
-                                                    <MapPin className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
-                                                    <span className="truncate max-w-[200px]">{doc.city || 'CIUDAD N/A'}</span>
-                                                </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                                                <Building className="h-4 w-4 mr-3 text-primary opacity-60" />
+                                                <span className="truncate max-w-[200px]">{doc.health_center || 'SIN ENTIDAD ASIGNADA'}</span>
                                             </div>
-                                        </TableCell>
-                                        <TableCell className="py-4 align-top">
-                                            <div className="flex flex-col gap-2 text-xs">
-                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
-                                                    <Phone className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
-                                                    {doc.mobile || doc.phone || 'SIN NÚMERO'}
-                                                </div>
-                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
-                                                    <Mail className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
-                                                    <span className="truncate max-w-[150px]">{doc.email || 'SIN CORREO'}</span>
-                                                </div>
+                                            <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                                                <MapPin className="h-4 w-4 mr-3 text-primary opacity-60" />
+                                                <span className="truncate max-w-[200px]">{doc.city || 'UBICACIÓN DESCONOCIDA'}</span>
                                             </div>
-                                        </TableCell>
-                                        <TableCell className="py-4 align-top">
-                                            <div className="flex flex-col gap-2 text-xs">
-                                                <div className="flex items-center text-slate-500 font-bold uppercase tracking-wide">
-                                                    <ClipboardCheck className="h-3.5 w-3.5 mr-2 text-primary opacity-60" />
-                                                    <span className={cn(doc.last_visit ? "text-emerald-600" : "")}>
-                                                        ÚLTIMA VISITA: {doc.last_visit || 'PENDIENTE'}
-                                                    </span>
-                                                </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                                                <Phone className="h-4 w-4 mr-3 text-primary opacity-60" />
+                                                {doc.mobile || doc.phone || 'SIN CONTACTO'}
                                             </div>
-                                        </TableCell>
-                                        <TableCell className="py-4 align-top text-right">
-                                            <div className="flex justify-end gap-2">
-                                                <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/agenda?doctorId=${doc.id}&doctorName=${encodeURIComponent(doc.name)}`); }} className="h-10 rounded-xl font-black text-[10px] uppercase tracking-widest text-primary border-primary/20 hover:bg-primary hover:text-white">
-                                                    <Calendar className="h-4 w-4 mr-2" /> Agendar
-                                                </Button>
-                                                <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); handleEdit(doc); }} className="h-10 w-10 p-0 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-primary transition-colors">
-                                                    <Pencil className="h-4 w-4" />
-                                                </Button>
+                                            <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                                                <Mail className="h-4 w-4 mr-3 text-primary opacity-60" />
+                                                <span className="truncate max-w-[150px]">{doc.email || 'SIN CORREO'}</span>
                                             </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </div>
-            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center text-[10px] font-black uppercase tracking-widest">
+                                                <ClipboardCheck className="h-4 w-4 mr-3 text-emerald-500" />
+                                                <span className={cn(doc.last_visit ? "text-emerald-400" : "text-muted-foreground/50")}>
+                                                    {doc.last_visit ? new Date(doc.last_visit).toLocaleDateString() : 'SIN IMPACTO'}
+                                                </span>
+                                            </div>
+                                            <span className="text-[8px] text-muted-foreground/40 font-black uppercase tracking-[0.2em] ml-7">Sincronización de Visita</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8 text-right pr-8">
+                                        <div className="flex justify-end gap-3">
+                                            <Button 
+                                                variant="outline" 
+                                                onClick={(e) => { e.stopPropagation(); navigate(`/agenda?doctorId=${doc.id}&doctorName=${encodeURIComponent(doc.name)}`); }} 
+                                                className="h-12 px-6 rounded-2xl font-black text-[10px] uppercase tracking-widest border-border/40 hover:bg-primary/10 hover:text-primary transition-all shadow-inner bg-card"
+                                            >
+                                                <Calendar className="h-4 w-4 mr-3" /> Agendar
+                                            </Button>
+                                            <Button 
+                                                variant="ghost" 
+                                                onClick={(e) => { e.stopPropagation(); handleEdit(doc); }} 
+                                                className="h-12 w-12 p-0 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all border border-transparent hover:border-primary/20 shadow-inner"
+                                            >
+                                                <Pencil className="h-5 w-5" />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </EliteTable>
 
             <DoctorFormDialog open={dialogOpen} onOpenChange={setDialogOpen} formData={formData} setFormData={setFormData} onSubmit={handleSubmit} />
             <DoctorProfileDialog open={profileOpen} onOpenChange={setProfileOpen} doctor={selectedDoctor} />

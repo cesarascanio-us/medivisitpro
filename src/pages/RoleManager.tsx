@@ -247,12 +247,12 @@ export default function RoleManager() {
     if (!isMaster) return <div className="p-8 text-center text-red-500">Acceso Denegado</div>;
 
     return (
-        <div className="flex flex-col h-full bg-slate-50/30 space-y-8 p-1">
+        <div className="flex flex-col h-full bg-background space-y-8 p-1">
             {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE SEGURIDAD */}
-            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-premium-sm border border-slate-100 relative overflow-hidden">
+            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-premium-sm border border-border relative overflow-hidden">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-80 h-80 bg-blue-50/50 rounded-full blur-3xl opacity-40" />
-                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-slate-50 rounded-full blur-3xl opacity-40 text-slate-900" />
+                <div className="absolute -top-24 -right-24 w-80 h-80 bg-primary/5 rounded-full blur-3xl opacity-40" />
+                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-muted/10 rounded-full blur-3xl opacity-40" />
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="flex items-center gap-8">
@@ -265,7 +265,7 @@ export default function RoleManager() {
                                 Roles & Permisos
                             </h1>
                             <div className="flex items-center gap-3 mt-4">
-                                <Badge className="bg-slate-100 text-slate-400 border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">RBAC Protocol V6.0</Badge>
+                                <Badge className="bg-muted text-muted-foreground border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">RBAC Protocol V6.0</Badge>
                                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-900">
                                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                                     <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-none">{roles.length} Roles Activos</span>
@@ -279,9 +279,9 @@ export default function RoleManager() {
                             onClick={loadData}
                             size="icon"
                             variant="ghost"
-                            className="w-14 h-14 rounded-2xl bg-card border border-slate-100 hover:bg-slate-50 hover:shadow-premium-sm transition-all shadow-sm group"
+                            className="w-14 h-14 rounded-2xl bg-card border border-border hover:bg-muted/10 hover:shadow-premium-sm transition-all shadow-sm group"
                         >
-                            <RefreshCw className={cn("h-6 w-6 text-slate-300 group-hover:text-primary transition-colors", loading && "animate-spin text-primary")} />
+                            <RefreshCw className={cn("h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors", loading && "animate-spin text-primary")} />
                         </Button>
                         <Button
                             onClick={() => handleOpenDialog()}
@@ -296,8 +296,8 @@ export default function RoleManager() {
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {roles.map(role => (
-                    <Card key={role.slug} className="relative overflow-hidden border border-slate-100 shadow-premium-sm bg-card rounded-[3rem] group hover:shadow-premium-md transition-all duration-500">
-                        <div className={cn("absolute top-0 left-0 w-2 h-full opacity-10", role.color.split(' ')[0] || 'bg-slate-200')} />
+                    <Card key={role.slug} className="relative overflow-hidden border border-border shadow-premium-sm bg-card rounded-[3rem] group hover:shadow-premium-md transition-all duration-500">
+                        <div className={cn("absolute top-0 left-0 w-2 h-full opacity-10", role.color.split(' ')[0] || 'bg-muted')} />
                         <CardHeader className="p-8 pb-4">
                             <div className="flex justify-between items-start">
                                 <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display flex items-center gap-3">
@@ -319,15 +319,15 @@ export default function RoleManager() {
                                     )}
                                 </div>
                             </div>
-                            <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2 font-display leading-relaxed">
+                            <CardDescription className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest mt-2 font-display leading-relaxed">
                                 {role.description || "Sin descripción detallada de privilegios"}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="p-8 pt-0">
-                            <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-4 font-display">Matriz de Acceso ({role.permissions?.length || 0})</p>
+                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-4 font-display">Matriz de Acceso ({role.permissions?.length || 0})</p>
                             <div className="flex flex-wrap gap-2">
                                 {role.permissions?.slice(0, 4).map(code => (
-                                    <Badge key={code} variant="outline" className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border-slate-100 text-slate-400">
+                                    <Badge key={code} variant="outline" className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-muted/20 border-border text-muted-foreground">
                                         {permissions.find(p => p.code === code)?.name || code}
                                     </Badge>
                                 ))}
@@ -349,7 +349,7 @@ export default function RoleManager() {
                         <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase font-display leading-none relative z-10">
                             {editingRole ? 'Configurar Privilegios' : 'Nueva Entidad de Acceso'}
                         </DialogTitle>
-                        <DialogDescription className="text-slate-400 font-bold text-xs mt-4 uppercase tracking-widest relative z-10">
+                        <DialogDescription className="text-muted-foreground font-bold text-xs mt-4 uppercase tracking-widest relative z-10">
                             Protocolo de Definición de Roles Estructurales
                         </DialogDescription>
                     </DialogHeader>
@@ -359,7 +359,7 @@ export default function RoleManager() {
                             {/* Role Details */}
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Designación del Rol</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Designación del Rol</Label>
                                     <Input
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -368,7 +368,7 @@ export default function RoleManager() {
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Identificador Único (Slug)</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Identificador Único (Slug)</Label>
                                     <Input
                                         value={formData.slug}
                                         onChange={e => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
@@ -378,7 +378,7 @@ export default function RoleManager() {
                                     />
                                 </div>
                                 <div className="col-span-2 space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Propósito Técnico</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Propósito Técnico</Label>
                                     <Textarea
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
@@ -387,7 +387,7 @@ export default function RoleManager() {
                                     />
                                 </div>
                                 <div className="col-span-2 space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Token Visual (Tailwind Color)</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Token Visual (Tailwind Color)</Label>
                                     <div className="flex gap-4">
                                         <Input
                                             value={formData.color}
@@ -400,36 +400,34 @@ export default function RoleManager() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            {/* Permissions Grid */}
-                            <div className="space-y-8 pt-8 border-t border-slate-200">
+                                                   {/* Permissions Grid */}
+                            <div className="space-y-8 pt-8 border-t border-border">
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-display flex items-center gap-3">
                                     <Shield className="h-4 w-4" /> Matriz de Permisos Operativos
                                 </h3>
                                 {Object.entries(permissionsByModule).map(([module, perms]) => (
-                                    <div key={module} className="bg-card rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden transform transition-all hover:shadow-md">
-                                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] bg-slate-50 text-slate-400 border-b border-slate-100 px-8 py-4 font-display flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-primary text-white" />
+                                    <div key={module} className="bg-card rounded-[2rem] border border-border shadow-sm overflow-hidden transform transition-all hover:shadow-md">
+                                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] bg-muted/20 text-muted-foreground border-b border-border px-8 py-4 font-display flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                             {module}
                                         </h4>
                                         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                                             {perms.map(p => (
-                                                <div key={p.code} className="flex items-start space-x-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group">
+                                                <div key={p.code} className="flex items-start space-x-4 p-4 rounded-2xl hover:bg-muted/10 transition-colors group">
                                                     <Checkbox
                                                         id={`perm-${p.code}`}
                                                         checked={formData.selectedPermissions.includes(p.code)}
                                                         onCheckedChange={() => togglePermission(p.code)}
-                                                        className="mt-1 w-5 h-5 rounded-lg border-slate-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                                        className="mt-1 w-5 h-5 rounded-lg border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                                     />
                                                     <div className="grid gap-1.5 leading-none">
                                                         <Label
                                                             htmlFor={`perm-${p.code}`}
-                                                            className="text-xs font-black uppercase tracking-tight text-slate-700 cursor-pointer group-hover:text-primary transition-colors font-display"
+                                                            className="text-xs font-black uppercase tracking-tight text-foreground cursor-pointer group-hover:text-primary transition-colors font-display"
                                                         >
                                                             {p.name}
                                                         </Label>
-                                                        <p className="text-[10px] text-slate-400 font-bold leading-relaxed">
+                                                        <p className="text-[10px] text-muted-foreground font-bold leading-relaxed">
                                                             {p.description}
                                                         </p>
                                                     </div>
@@ -438,12 +436,12 @@ export default function RoleManager() {
                                         </div>
                                     </div>
                                 ))}
-                            </div>
+                            </div>          </div>
                         </div>
                     </ScrollArea>
 
                     <DialogFooter className="bg-card p-10 px-12 border-t border-slate-100">
-                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="h-16 rounded-2xl px-8 font-black uppercase text-[10px] tracking-widest text-slate-400 hover:bg-slate-50 transition-all">
+                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="h-16 rounded-2xl px-8 font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/10 transition-all">
                             Abortar Cambios
                         </Button>
                         <Button

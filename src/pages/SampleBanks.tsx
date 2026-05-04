@@ -200,7 +200,7 @@ export default function SampleBanks() {
                     <Button 
                         onClick={loadAllData} 
                         variant="outline"
-                        className="h-12 px-6 rounded-xl border-slate-200 bg-card text-foreground font-bold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+                        className="h-12 px-6 rounded-xl border-border/40 bg-card text-foreground font-bold text-xs hover:bg-muted/10 transition-all shadow-sm active:scale-95"
                     >
                         <RotateCcw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                         Sincronizar
@@ -238,22 +238,22 @@ export default function SampleBanks() {
 
             {/* Main Tabs */}
             <Tabs defaultValue="inventario" className="w-full space-y-6">
-                <TabsList className="flex flex-wrap h-auto p-1 bg-slate-50 rounded-xl border border-slate-100 shadow-inner overflow-x-auto">
-                    <TabsTrigger value="inventario" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Inventario</TabsTrigger>
-                    <TabsTrigger value="entregas" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Entregas</TabsTrigger>
-                    <TabsTrigger value="detalles" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Detalles</TabsTrigger>
-                    <TabsTrigger value="reposiciones" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Reposiciones</TabsTrigger>
-                    <TabsTrigger value="dispensacion" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Dispensación</TabsTrigger>
-                    <TabsTrigger value="pacientes" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Pacientes</TabsTrigger>
-                    <TabsTrigger value="visitas" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Visitas</TabsTrigger>
-                    <TabsTrigger value="materiales" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4">Materiales</TabsTrigger>
+                <TabsList className="flex flex-wrap h-auto p-1 bg-muted/20 rounded-xl border border-border shadow-inner overflow-x-auto">
+                    <TabsTrigger value="inventario" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Inventario</TabsTrigger>
+                    <TabsTrigger value="entregas" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Entregas</TabsTrigger>
+                    <TabsTrigger value="detalles" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Detalles</TabsTrigger>
+                    <TabsTrigger value="reposiciones" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Reposiciones</TabsTrigger>
+                    <TabsTrigger value="dispensacion" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Dispensación</TabsTrigger>
+                    <TabsTrigger value="pacientes" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Pacientes</TabsTrigger>
+                    <TabsTrigger value="visitas" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Visitas</TabsTrigger>
+                    <TabsTrigger value="materiales" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Materiales</TabsTrigger>
                 </TabsList>
 
                 {/* TAB 1: INVENTARIO */}
                 <TabsContent value="inventario" className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden">
-                        <CardHeader className="pb-4 bg-slate-50/50 border-b border-slate-100">
-                            <CardTitle className="flex items-center text-sm font-bold tracking-tight">
+                    <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+                        <CardHeader className="pb-4 bg-muted/10 border-b border-border">
+                            <CardTitle className="flex items-center text-sm font-bold tracking-tight uppercase tracking-widest font-display">
                                 <Package className="mr-2 h-5 w-5 text-primary" />
                                 Inventario de muestras
                             </CardTitle>
@@ -261,12 +261,12 @@ export default function SampleBanks() {
                         <CardContent>
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="flex-1 relative">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         placeholder="Buscar por producto o lote..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="h-11 pl-10 bg-slate-50 border-none rounded-xl font-semibold text-xs shadow-inner"
+                                        className="h-11 pl-10 bg-muted/20 border-none rounded-xl font-semibold text-xs shadow-inner text-foreground"
                                     />
                                 </div>
                                 <Button className="h-11 px-6 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs shadow-md transition-all active:scale-95">
@@ -275,16 +275,16 @@ export default function SampleBanks() {
                                 </Button>
                             </div>
 
-                            <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm">
+                            <div className="rounded-xl border border-border overflow-hidden shadow-sm">
                                 <Table>
-                                    <TableHeader className="bg-slate-50/50">
-                                        <TableRow className="border-slate-100 hover:bg-transparent">
-                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Producto</TableHead>
-                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Lote</TableHead>
-                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Fabricación</TableHead>
-                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Vencimiento</TableHead>
-                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Cantidad</TableHead>
-                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Estado</TableHead>
+                                    <TableHeader className="bg-muted/10">
+                                        <TableRow className="border-border hover:bg-transparent">
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Producto</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Lote</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Fabricación</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Vencimiento</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Cantidad</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Estado</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                 <TableBody>
@@ -315,10 +315,10 @@ export default function SampleBanks() {
 
                 {/* TAB 2: ENTREGAS BANCO */}
                 <TabsContent value="entregas" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Building2 className="mr-2 h-5 w-5" />
+                    <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+                        <CardHeader className="pb-4 bg-muted/10 border-b border-border">
+                            <CardTitle className="flex items-center text-sm font-bold tracking-tight uppercase tracking-widest font-display">
+                                <Building2 className="mr-2 h-5 w-5 text-primary" />
                                 Entregas a Centros de Salud
                             </CardTitle>
                         </CardHeader>
@@ -459,10 +459,10 @@ export default function SampleBanks() {
 
                 {/* TAB 8: MATERIALES PROMOCIONALES */}
                 <TabsContent value="materiales" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Gift className="mr-2 h-5 w-5" />
+                    <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+                        <CardHeader className="pb-4 bg-muted/10 border-b border-border">
+                            <CardTitle className="flex items-center text-sm font-bold tracking-tight uppercase tracking-widest font-display">
+                                <Gift className="mr-2 h-5 w-5 text-primary" />
                                 Materiales Promocionales
                             </CardTitle>
                         </CardHeader>
