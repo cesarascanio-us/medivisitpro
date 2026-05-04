@@ -302,6 +302,7 @@ export default function SampleBanks() {
                                     ))}
                                 </TableBody>
                             </Table>
+                            </div>
 
                             {inventario.length === 0 && (
                                 <div className="text-center py-8 text-muted-foreground">
