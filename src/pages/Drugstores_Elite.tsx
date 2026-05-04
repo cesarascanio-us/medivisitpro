@@ -324,7 +324,7 @@ export default function DrugstoresElite() {
                                     </TableCell>
                                 </TableRow>
                             )
-                        )}
+                        ))}
                     </TableBody>
                 </Table>
             </EliteTable>
