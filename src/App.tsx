@@ -389,7 +389,7 @@ const AppContent = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+      <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
         <AuthProvider>
           <LazyMotion features={loadFeatures} strict>
             <MockDataProvider>
