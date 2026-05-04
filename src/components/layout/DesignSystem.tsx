@@ -10,7 +10,8 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { LucideIcon, TrendingUp, TrendingDown, Search } from "lucide-react";
 
 interface EliteHeaderProps {
     title: string;
@@ -164,5 +165,39 @@ export function EliteTabsTrigger({ value, label, icon: Icon, activeColor = "data
         >
             <Icon size={12} strokeWidth={2.5} className="text-slate-400 group-data-[state=active]:text-inherit" /> {label}
         </TabsTrigger>
+    );
+}
+
+interface EliteTableProps {
+    title: string;
+    description: string;
+    children: React.ReactNode;
+    onSearch?: (value: string) => void;
+    searchPlaceholder?: string;
+}
+
+export function EliteTable({ title, description, children, onSearch, searchPlaceholder = "BUSCAR..." }: EliteTableProps) {
+    return (
+        <Card className="bg-card border border-border shadow-premium-lg rounded-[2.5rem] overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-1000">
+            <div className="p-8 md:p-10 border-b border-border/40 bg-muted/5 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
+                <div className="space-y-1">
+                    <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase font-display">{title}</h2>
+                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">{description}</p>
+                </div>
+                {onSearch && (
+                    <div className="relative w-full xl:w-96 group">
+                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input 
+                            placeholder={searchPlaceholder} 
+                            onChange={(e) => onSearch(e.target.value)}
+                            className="h-14 pl-14 bg-muted/20 border-none focus-visible:ring-primary rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-muted-foreground/50 text-foreground"
+                        />
+                    </div>
+                )}
+            </div>
+            <div className="overflow-x-auto no-scrollbar">
+                {children}
+            </div>
+        </Card>
     );
 }
