@@ -300,7 +300,9 @@ export default function PromotionalCycles() {
     const totalTargetVisits = cycles.filter(c => c.status === 'active').reduce((sum, c) => sum + c.target_visits, 0);
     const totalCurrentVisits = cycles.filter(c => c.status === 'active').reduce((sum, c) => sum + c.current_visits, 0);
 
-    re            <EliteHeader
+    return (
+        <div className="space-y-8 animate-in fade-in duration-700">
+            <EliteHeader
                 title="Campañas y Ciclos"
                 subtitle="Planificación de objetivos, metas de visita y seguimiento de resultados"
                 icon={Target}
@@ -469,7 +471,7 @@ export default function PromotionalCycles() {
                         </Dialog>
                     )
                 }
-            />        </div>
+            />
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
