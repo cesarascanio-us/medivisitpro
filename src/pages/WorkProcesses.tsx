@@ -125,7 +125,8 @@ export default function WorkProcesses() {
              <Tabs defaultValue="fase1" className="flex-1 flex flex-col 2xl:flex-row gap-10 min-h-0">
                 {/* Side Selector - Phases */}
                 <TabsList className="flex flex-col h-fit bg-transparent gap-5 p-0 shrink-0 w-full 2xl:w-80">
-                   {STANDARD_OPERATING                       <TabsTrigger 
+                   {STANDARD_OPERATING_PROCEDURE.map((phase, idx) => (
+                      <TabsTrigger 
                         key={idx} 
                         value={`fase${idx+1}`}
                         className="w-full flex items-center justify-between p-6 rounded-[2rem] bg-card border border-border shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
@@ -140,7 +141,7 @@ export default function WorkProcesses() {
                             </div>
                          </div>
                          <ChevronRight className="h-5 w-5 opacity-0 group-data-[state=active]:opacity-100 transition-opacity" />
-                      </TabsTrigger>                    </TabsTrigger>
+                      </TabsTrigger>
                    ))}
                 </TabsList>
 
@@ -158,7 +159,8 @@ export default function WorkProcesses() {
                                  <Badge className="bg-muted/20 text-muted-foreground border border-border font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-full">Estatus: Optimizado V26</Badge>
                               </div>
 
-                              <div className="grid gr                                  {phase.steps.map((step, sIdx) => (
+                              <div className="grid grid-cols-1 gap-6">
+                                 {phase.steps.map((step, sIdx) => (
                                     <Card key={sIdx} className="border border-border bg-card shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[2.5rem] group/step relative overflow-hidden">
                                        <CardContent className="p-10 flex items-start gap-8 relative z-10">
                                           <div className="h-14 w-14 rounded-2xl bg-muted/20 flex items-center justify-center text-muted-foreground font-black text-sm font-mono group-hover/step:bg-primary group-hover/step:text-white transition-colors duration-500 shadow-inner">
@@ -168,7 +170,7 @@ export default function WorkProcesses() {
                                              <h4 className="font-black text-foreground text-base uppercase tracking-tight font-display">{step.title}</h4>
                                              <p className="text-xs text-muted-foreground leading-relaxed font-bold">{step.desc}</p>
                                           </div>
-                                       </CardContent>                    </CardContent>
+                                       </CardContent>
                                        {/* Ghost background decorator */}
                                        <div className="absolute -bottom-8 -right-4 text-8xl font-black text-muted/20 select-none pointer-events-none group-hover/step:text-muted/30 transition-colors">
                                           {step.id.split('.')[1]}
