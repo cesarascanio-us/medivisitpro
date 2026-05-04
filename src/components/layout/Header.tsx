@@ -35,10 +35,10 @@ export function HeaderActions() {
         variant="ghost"
         size="icon"
         onClick={toggleDarkMode}
-        className="h-9 w-9 md:h-10 md:w-10 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-300"
+        className="h-8 w-8 md:h-9 md:w-9 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300 border border-transparent hover:border-primary/10"
         title={isDarkMode ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
       >
-        {isDarkMode ? <Sun className="h-4 w-4 md:h-5 md:w-5" /> : <Moon className="h-4 w-4 md:h-5 md:w-5" />}
+        {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
       </Button>
 
       <NotificationBadge />
@@ -58,7 +58,7 @@ export function Header() {
   });
 
   return (
-    <header className="bg-background border-b border-border px-6 py-3 shadow-none shrink-0 h-16 z-20 transition-all duration-300">
+    <header className="bg-background/80 backdrop-blur-md border-b border-border px-4 py-2 shadow-none shrink-0 h-14 z-20 transition-all duration-300 sticky top-0">
       <div className="flex items-center justify-between h-full gap-4">
         {/* Left side - Date */}
         <div className="flex items-center gap-3">

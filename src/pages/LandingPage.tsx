@@ -7,7 +7,7 @@
  ingeniería inversa o uso no autorizado de este código fuente.
  ======================================================================== */
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -15,31 +15,11 @@ import { Input } from '@/components/ui/input';
 import { CommissionCalculator } from '@/components/landing/CommissionCalculator';
 import { ContactSection } from '@/components/landing/ContactSection';
 import { Badge } from '@/components/ui/badge';
-import {
-    Stethoscope,
-    Calendar,
-    BarChart3,
-    Users,
-    MapPin,
-    Package,
-    ArrowRight,
-    CheckCircle2,
-    ShieldCheck,
-    Zap,
-    Smartphone,
-    Menu,
-    X,
-    PlayCircle,
-    Globe,
-    Lock,
-    Send
-} from 'lucide-react';
-import { useState } from 'react';
 import { SEO } from '@/components/common/SEO';
 import { trackEvent } from '@/lib/analytics';
 import { useLandingContent } from '@/hooks/useLandingContent';
 import { useTheme } from 'next-themes';
-import { HeaderActions } from '@/components/layout/Header';
+import { Sun, Moon, Lock, Smartphone, Menu, X, PlayCircle, ArrowRight, Stethoscope, Calendar, BarChart3, Package, ShieldCheck, Zap, Globe, Send, CheckCircle2, Users, MapPin } from 'lucide-react';
 
 const IconMap: Record<string, any> = {
     Calendar, Users, BarChart3, Package, ShieldCheck, Smartphone, Zap, MapPin, Stethoscope
@@ -51,7 +31,7 @@ export default function LandingPage() {
     const { content } = useLandingContent();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const { theme } = useTheme();
+    const { theme, setTheme } = useTheme();
     const isDark = theme === 'dark';
 
     useEffect(() => {
@@ -118,23 +98,30 @@ export default function LandingPage() {
                         </nav>
 
                         {/* Action CTA */}
-                        <div className="flex items-center gap-3 md:gap-4">
-                            <div className="hidden sm:block">
-                                <HeaderActions />
-                            </div>
+                        <div className="flex items-center gap-3">
+                            {/* Simple Theme Toggle for Landing */}
+                            <button
+                                onClick={() => setTheme(isDark ? 'light' : 'dark')}
+                                className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-all"
+                                aria-label="Cambiar tema"
+                            >
+                                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                            </button>
+
                             <button
                                 onClick={handleAuthNavigation}
-                                className="hidden lg:flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-white bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 transition-all"
+                                className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10 transition-all border border-transparent"
                             >
                                 <Lock className="w-4 h-4 text-blue-500" />
-                                Acceso
+                                <span>Acceso</span>
                             </button>
+
                             <button
                                 onClick={() => {
                                     trackEvent('click_demo_header');
                                     window.open("https://cesarascanioweb.vercel.app/#demos", "_blank");
                                 }}
-                                className="px-5 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-500/20 transition-all whitespace-nowrap"
+                                className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-0.5 active:scale-95"
                             >
                                 Probar Demo
                             </button>

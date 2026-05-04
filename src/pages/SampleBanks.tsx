@@ -188,6 +188,7 @@ export default function SampleBanks() {
     }
 
     return (
+        <div className="space-y-8 animate-in fade-in duration-700">
             <EliteHeader
                 title="Gestión de Muestras"
                 subtitle="Control de stock de muestras médicas y materiales promocionales"
