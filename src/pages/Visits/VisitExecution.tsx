@@ -701,10 +701,10 @@ export default function VisitExecutionPage() {
                     </div>
                     <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-2">Despliegue Listo</h3>
                     <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest max-w-sm mx-auto mb-8 opacity-70">
-                        VERIFICA COBERTURA GPS E INICIA INTERCEPTACIÓN COMERCIAL.
+                        VERIFICA COBERTURA GPS E INICIA EL REGISTRO DE VISITA.
                     </p>
                     <Button size="lg" onClick={handleCheckIn} className="bg-primary hover:bg-primary/90 gap-3 shadow-premium-lg text-white font-black uppercase tracking-widest text-[10px] h-16 px-10 rounded-2xl active:scale-95 transition-all">
-                        <Play className="h-6 w-6" /> INICIAR MISIÓN
+                        <Play className="h-6 w-6" /> INICIAR VISITA
                     </Button>
                 </div>
             ) : visit.status === 'completed' ? (
@@ -734,7 +734,7 @@ export default function VisitExecutionPage() {
                             className="rounded-2xl text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
                             <ActivityIcon className="w-5 h-5" />
-                            <span className="hidden sm:inline">2. Desarrollo Táctico</span>
+                            <span className="hidden sm:inline">2. Desarrollo Estratégico</span>
                             <span className="sm:hidden">Desarr.</span>
                         </TabsTrigger>
                         <TabsTrigger
@@ -750,7 +750,7 @@ export default function VisitExecutionPage() {
                             className="rounded-2xl text-muted-foreground data-[state=active]:bg-rose-500 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-rose-400/20"
                         >
                             <CheckCircle className="w-5 h-5" />
-                            <span className="hidden sm:inline">4. Cierre de Misión</span>
+                            <span className="hidden sm:inline">4. Cierre de Visita</span>
                             <span className="sm:hidden">Cierre</span>
                         </TabsTrigger>
                     </TabsList>

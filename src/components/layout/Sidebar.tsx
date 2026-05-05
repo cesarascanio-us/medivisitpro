@@ -84,33 +84,33 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   const filteredNav = [
     {
-      title: "Centro de Mando",
+      title: "Panel de Control",
       items: [
         { name: "Panel Principal", href: "/dashboard-master", icon: BarChart3, visible: canSeeMaster },
-        { name: "Resumen Operativo", href: "/dashboard", icon: Home, visible: true },
-        { name: "Panel Elite Master", href: "/master-panel", icon: Crown, visible: canSeeMaster },
+        { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
+        { name: "Consola de Administración", href: "/master-panel", icon: Crown, visible: canSeeMaster },
         { name: "Monitor Financiero", href: "/finance-monitor", icon: DollarSign, visible: canSeeAnalytics },
-        { name: "Almacén de Activos", href: "/asset-bunker", icon: ShieldCheck, visible: canSeeMaster },
+        { name: "Gestión de Seguridad", href: "/asset-bunker", icon: ShieldCheck, visible: canSeeMaster },
       ]
     },
     {
-      title: "Despliegue Médico",
+      title: "Gestión Médica",
       items: [
-        { name: "Directorio Alpha", href: "/doctors", icon: Stethoscope, visible: true },
-        { name: "Agenda de Misiones", href: "/agenda", icon: Calendar, visible: true },
-        { name: "Planificador Ruta", href: "/planner", icon: MapPin, visible: true },
-        { name: "Radar de Visitas", href: "/visits", icon: ClipboardList, visible: true },
+        { name: "Directorio Profesional", href: "/doctors", icon: Stethoscope, visible: true },
+        { name: "Agenda de Visitas", href: "/agenda", icon: Calendar, visible: true },
+        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: true },
+        { name: "Historial de Visitas", href: "/visits", icon: ClipboardList, visible: true },
         { name: "Banco de Muestras", href: "/muestras", icon: Pill, visible: true },
       ]
     },
     {
-      title: "Estrategia Comercial",
+      title: "Gestión Comercial",
       items: [
-        { name: "Gestión de Activos", href: "/users", icon: Users, visible: canSeeManagement },
+        { name: "Gestión de Usuarios", href: "/users", icon: Users, visible: canSeeManagement },
         { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR },
         { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
         { name: "Territorios", href: "/zones", icon: GitBranch, visible: canSeeZones },
-        { name: "Modelado Procesos", href: "/work-processes", icon: Layers, visible: true },
+        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: true },
       ]
     },
     {
@@ -119,7 +119,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         { name: "Transferencias", href: "/transfer-orders", icon: Truck, visible: true },
         { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: true },
         { name: "Farmacias y POS", href: "/pharmacies", icon: Store, visible: true },
-        { name: "Droguerías Alpha", href: "/drugstores", icon: FlaskConical, visible: true },
+        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: true },
         { name: "Mapa de Cobertura", href: "/coverage-map", icon: Map, visible: canSeeManagement },
       ]
     }

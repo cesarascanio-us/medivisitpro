@@ -413,7 +413,7 @@ export default function Reports() {
             <div>
               <CardTitle className="text-xl font-black flex items-center text-foreground uppercase tracking-tight font-display">
                 <MapIcon className="mr-2 h-5 w-5 text-primary" />
-                Heatmap Táctico de Cobertura
+                Mapa de Calor Estratégico de Cobertura
               </CardTitle>
               <CardDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
@@ -434,9 +434,9 @@ export default function Reports() {
           <CardContent className="p-0 relative h-[550px]">
             {!hasGeolocalization && (
               <SubscriptionLock
-                featureName="Heatmap Táctico"
+                featureName="Mapa de Calor Estratégico"
                 requiredPlan="Empresarial"
-                description="Optimiza tus rutas y despliegue táctico visualizando la densidad de tu red comercial en el mapa."
+                description="Optimiza tus rutas y análisis de cobertura visualizando la densidad de tu red comercial en el mapa."
               />
             )}
 

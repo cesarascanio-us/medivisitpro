@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { InstructionCard } from "@/components/ui/InstructionCard";
-import { FileText, Plus, Calendar, MapPin, Clock, User, CheckCircle, XCircle, AlertCircle, Printer, Download, Trash2, Edit, Lightbulb, FileSpreadsheet, HelpCircle, Upload, ArrowRight, Search, Filter } from "lucide-react";
+import { FileText, Plus, Calendar, MapPin, Clock, User, CheckCircle, XCircle, AlertCircle, Printer, Download, Trash2, Edit, Lightbulb, FileSpreadsheet, HelpCircle, Upload, ArrowRight, Search, Filter, RefreshCw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,12 +79,10 @@ export default function Visits() {
           zoneIds = zoneData?.map(z => z.id) || [];
       }
 
+      // Primero cargamos las visitas
       let query: any = supabase
         .from('visits')
-        .select(`
-          *,
-          unified_contacts(full_name, specialty, address, email, phone, priority, potential)
-        `)
+        .select('*')
         .eq('organization_id', organizationId);
 
       if (isSupervisor && zoneId) {
@@ -107,15 +105,40 @@ export default function Visits() {
         }
       }
 
-      const { data, error } = await query.order('scheduled_date', { ascending: false });
+      const { data: visitsData, error: visitsError } = await query.order('scheduled_date', { ascending: false });
 
-      if (error) throw error;
-      setVisits(data || []);
+      if (visitsError) throw visitsError;
+
+      // Si tenemos visitas, cargamos los detalles de los contactos desde la vista unificada
+      if (visitsData && visitsData.length > 0) {
+        const contactIds = Array.from(new Set(visitsData.map(v => v.contact_id).filter(Boolean)));
+        
+        if (contactIds.length > 0) {
+          const { data: contactsData, error: contactsError } = await supabase
+            .from('unified_contacts')
+            .select('*')
+            .in('id', contactIds);
+
+          if (!contactsError && contactsData) {
+            const enrichedVisits = visitsData.map(visit => ({
+              ...visit,
+              unified_contacts: contactsData.find(c => c.id === visit.contact_id) || null
+            }));
+            setVisits(enrichedVisits);
+          } else {
+            setVisits(visitsData);
+          }
+        } else {
+          setVisits(visitsData);
+        }
+      } else {
+        setVisits([]);
+      }
     } catch (error) {
       console.error('Error loading visits:', error);
       toast({
         title: "Error de Protocolo",
-        description: "No se pudieron recuperar las misiones en agenda.",
+        description: "No se pudieron recuperar las visitas programadas.",
         variant: "destructive"
       });
     } finally {
@@ -131,7 +154,7 @@ export default function Visits() {
         .eq('id', id);
 
       if (error) throw error;
-      toast({ title: "Misión Abortada", description: "El registro de visita ha sido purgado del sistema." });
+      toast({ title: "Visita Cancelada", description: "El registro de visita ha sido eliminado del sistema." });
       loadVisits();
     } catch (error) {
       toast({ title: "Fallo de Sistema", description: "No se pudo eliminar el registro de visita.", variant: "destructive" });
@@ -143,7 +166,7 @@ export default function Visits() {
 
     if (searchTerm) {
       filtered = filtered.filter(visit =>
-        visit.unified_contacts?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        visit.unified_contacts?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         visit.unified_contacts?.specialty?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         visit.objective?.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -241,10 +264,10 @@ export default function Visits() {
         if (visitsToInsert.length > 0) {
           const { error } = await supabase.from('visits').insert(visitsToInsert);
           if (error) throw error;
-          toast({ title: "Sincronización Exitosa", description: `Se han importado ${visitsToInsert.length} misiones al radar.` });
+          toast({ title: "Sincronización Exitosa", description: `Se han importado ${visitsToInsert.length} visitas al sistema.` });
           loadVisits();
         } else {
-          toast({ title: "Error de Mapeo", description: "No se detectaron contactos válidos en el manifiesto.", variant: "destructive" });
+          toast({ title: "Error de Mapeo", description: "No se detectaron contactos válidos en el reporte.", variant: "destructive" });
         }
       } catch (error) {
         toast({ title: "Fallo de Importación", description: "Error en la estructura del archivo operativo.", variant: "destructive" });
@@ -259,11 +282,11 @@ export default function Visits() {
   return (
     <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
       <EliteHeader 
-        title="Agenda de Operaciones"
-        subtitle={organizationName || "Control de Despliegue Biofarco"}
+        title="Agenda de Actividades"
+        subtitle={organizationName || "Gestión de Visitas Biofarco"}
         icon={Calendar}
-        badgeText="Vigilancia Activa"
-        statusText={`${visits.length} Misiones Registradas`}
+        badgeText="Seguimiento Activo"
+        statusText={`${visits.length} Visitas Registradas`}
         statusColor="bg-emerald-500"
         rightContent={
           <div className="flex items-center gap-4">
@@ -271,7 +294,7 @@ export default function Visits() {
               <Lightbulb className="h-6 w-6" />
             </Button>
             <Button className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95 flex items-center gap-3" onClick={() => setWizardOpen(true)}>
-              <Plus className="h-6 w-6" /> Nueva Misión
+              <Plus className="h-6 w-6" /> Nueva Visita
             </Button>
           </div>
         }
@@ -279,21 +302,21 @@ export default function Visits() {
 
       {showHelp && (
         <InstructionCard
-          title="Protocolo de Gestión: Visitas"
+          title="Guía de Gestión: Visitas"
           description="Estandarización de la agenda y reporte de resultados comerciales de alto impacto."
           items={[
-            "Importación: Sincronice ciclos de trabajo completos mediante manifiestos Excel/CSV.",
-            "Radar en Vivo: Inicie la misión desde el panel para registro de geolocalización activa.",
-            "Post-Misión: Consolide el análisis de resultados inmediatamente al finalizar el contacto."
+            "Importación: Sincronice ciclos de trabajo completos mediante reportes Excel/CSV.",
+            "Panel en Vivo: Inicie la visita desde el panel para registro de geolocalización activa.",
+            "Post-Visita: Consolide el análisis de resultados inmediatamente al finalizar el contacto."
           ]}
         />
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <EliteKPICard title="Total Misiones" value={visitsByStatus.total} subtitle="Carga operativa total" icon={FileText} color="blue" />
-          <EliteKPICard title="Completadas" value={visitsByStatus.completed} subtitle="Misiones cerradas" icon={CheckCircle} color="emerald" trend={visitsByStatus.total > 0 ? (visitsByStatus.completed / visitsByStatus.total) * 100 : 0} />
-          <EliteKPICard title="En Agenda" value={visitsByStatus.scheduled} subtitle="Próximos despliegues" icon={Calendar} color="amber" />
-          <EliteKPICard title="Abortadas" value={visitsByStatus.cancelled} subtitle="Registros anulados" icon={XCircle} color="rose" />
+          <EliteKPICard title="Total Visitas" value={visitsByStatus.total} subtitle="Carga operativa total" icon={FileText} color="blue" />
+          <EliteKPICard title="Completadas" value={visitsByStatus.completed} subtitle="Visitas cerradas" icon={CheckCircle} color="emerald" trend={visitsByStatus.total > 0 ? (visitsByStatus.completed / visitsByStatus.total) * 100 : 0} />
+          <EliteKPICard title="En Agenda" value={visitsByStatus.scheduled} subtitle="Próximas actividades" icon={Calendar} color="amber" />
+          <EliteKPICard title="Canceladas" value={visitsByStatus.cancelled} subtitle="Registros anulados" icon={XCircle} color="rose" />
       </div>
 
       {(canViewAllData || isSupervisor) && <AdminDataFilter onFilterChange={setAdminFilters} moduleType="visits" />}
@@ -318,8 +341,8 @@ export default function Visits() {
 
       <Tabs defaultValue="list" className="w-full space-y-10">
         <EliteTabsList className="w-96">
-          <EliteTabsTrigger value="list" label="Lista Operativa" icon={FileText} />
-          <EliteTabsTrigger value="calendar" label="Radar de Tiempos" icon={Calendar} />
+          <EliteTabsTrigger value="list" label="Lista de Actividades" icon={FileText} />
+          <EliteTabsTrigger value="calendar" label="Vista de Calendario" icon={Calendar} />
         </EliteTabsList>
 
         <TabsContent value="list" className="space-y-8 animate-in slide-in-from-bottom-4 duration-700">
@@ -328,7 +351,7 @@ export default function Visits() {
               <div className="flex-1 relative group">
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-primary opacity-50 group-focus-within:opacity-100 transition-opacity" />
                 <Input
-                  placeholder="FILTRAR POR MÉDICO, ESPECIALIDAD O MISIÓN..."
+                  placeholder="FILTRAR POR MÉDICO, ESPECIALIDAD O ACTIVIDAD..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="h-16 bg-card border-border/40 rounded-[1.5rem] px-16 font-black uppercase text-xs tracking-widest shadow-premium-sm focus-visible:ring-primary/20"
@@ -365,7 +388,7 @@ export default function Visits() {
                           </div>
                           <div className="flex flex-col gap-1">
                             <h3 className="text-xl font-black text-foreground uppercase tracking-tighter group-hover:text-primary transition-colors">
-                              {visit.unified_contacts?.full_name || "CONTACTO NO IDENTIFICADO"}
+                              {visit.unified_contacts?.name || "CONTACTO NO IDENTIFICADO"}
                             </h3>
                             <div className="flex items-center gap-4 mt-1">
                               <Badge variant="outline" className="bg-muted/10 text-muted-foreground border-border/40 font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg">
@@ -408,7 +431,7 @@ export default function Visits() {
 
                       {visit.objective && (
                         <div className="p-6 bg-primary/5 rounded-[1.5rem] border border-primary/10">
-                          <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2">Misión Operativa</p>
+                          <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2">Objetivo de Visita</p>
                           <p className="text-sm text-foreground/80 font-bold leading-relaxed">{visit.objective}</p>
                         </div>
                       )}
@@ -431,7 +454,7 @@ export default function Visits() {
                           className="w-full h-16 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95"
                           onClick={() => navigate(`/visits/execution/${visit.id}`)}
                         >
-                          Iniciar Despliegue
+                          Iniciar Visita
                         </Button>
                       )}
 
@@ -447,14 +470,14 @@ export default function Visits() {
                           </AlertDialogTrigger>
                           <AlertDialogContent className="rounded-[3rem] border-border/40 shadow-premium-2xl bg-card font-display p-10">
                             <AlertDialogHeader>
-                              <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Abortar Registro?</AlertDialogTitle>
+                              <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Cancelar Registro?</AlertDialogTitle>
                               <AlertDialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-70 mt-2">
-                                Esta acción eliminará permanentemente el registro de misión del sistema central.
+                                Esta acción eliminará permanentemente el registro de visita del sistema central.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter className="mt-10 gap-4">
                               <AlertDialogCancel className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">Ignorar</AlertDialogCancel>
-                              <AlertDialogAction className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20" onClick={() => handleDelete(visit.id)}>Confirmar Purga</AlertDialogAction>
+                              <AlertDialogAction className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20" onClick={() => handleDelete(visit.id)}>Confirmar Eliminación</AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
@@ -468,12 +491,12 @@ export default function Visits() {
             {filteredVisits.length === 0 && (
               <PremiumEmptyState
                 icon={FileText}
-                title={searchTerm || statusFilter !== "all" ? "RADAR DESPEJADO" : "AGENDA DISPONIBLE"}
+                title={searchTerm || statusFilter !== "all" ? "SISTEMA DESPEJADO" : "AGENDA DISPONIBLE"}
                 description={searchTerm || statusFilter !== "all"
-                  ? "AJUSTE LOS FILTROS DE PRECISIÓN PARA INTERCEPTAR REGISTROS."
+                  ? "AJUSTE LOS FILTROS DE PRECISIÓN PARA ENCONTRAR REGISTROS."
                   : "ES UN MOMENTO ÓPTIMO PARA PLANIFICAR EL PRÓXIMO CICLO DE VISITAS."
                 }
-                actionLabel={searchTerm || statusFilter !== "all" ? undefined : "Programar Misión"}
+                actionLabel={searchTerm || statusFilter !== "all" ? undefined : "Planificar Visita"}
                 onAction={searchTerm || statusFilter !== "all" ? undefined : () => setWizardOpen(true)}
               />
             )}
@@ -487,7 +510,7 @@ export default function Visits() {
                 <div className="flex-1">
                   <div className="bg-muted/10 p-10 rounded-[3rem] border border-border/40 shadow-inner">
                     <div className="flex items-center justify-between mb-10">
-                      <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter">Radar de Tiempos</h3>
+                      <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter">Vista de Calendario</h3>
                       <Badge className="bg-primary text-white border-none font-black text-[10px] px-4 py-1.5 rounded-full uppercase tracking-widest shadow-premium-sm">Visión del Ciclo</Badge>
                     </div>
                     <SimpleCalendarPreview visits={visits} />
@@ -496,18 +519,18 @@ export default function Visits() {
 
                 <div className="w-full xl:w-[450px] space-y-12">
                   <div>
-                    <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-8 ml-2">Consolidado del Despliegue</h3>
+                    <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-8 ml-2">Consolidado de Actividades</h3>
                     <div className="grid grid-cols-1 gap-6">
                       <div className="p-8 bg-emerald-500/5 rounded-[2rem] border border-emerald-500/20 shadow-inner flex items-center justify-between">
                         <div>
-                          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] mb-2">Misiones Exitosas</p>
+                          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] mb-2">Visitas Exitosas</p>
                           <p className="text-4xl font-black text-foreground tracking-tighter">{visitsByStatus.completed}</p>
                         </div>
                         <CheckCircle className="h-12 w-12 text-emerald-500/30" />
                       </div>
                       <div className="p-8 bg-blue-500/5 rounded-[2rem] border border-blue-500/20 shadow-inner flex items-center justify-between">
                         <div>
-                          <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-2">Objetivos en Radar</p>
+                          <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-2">Objetivos en Agenda</p>
                           <p className="text-4xl font-black text-foreground tracking-tighter">{visitsByStatus.scheduled}</p>
                         </div>
                         <Calendar className="h-12 w-12 text-blue-500/30" />
@@ -516,7 +539,7 @@ export default function Visits() {
                   </div>
 
                   <div className="pt-10 border-t border-border/40">
-                    <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-8 ml-2">Próximos Despliegues</h4>
+                    <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-8 ml-2">Próximas Visitas</h4>
                     <div className="space-y-4">
                       {visits
                         .filter(v => new Date(v.scheduled_date) >= new Date() && v.status === 'scheduled')
@@ -541,7 +564,7 @@ export default function Visits() {
                       }
                       {visits.filter(v => new Date(v.scheduled_date) >= new Date() && v.status === 'scheduled').length === 0 && (
                         <div className="text-center py-10 opacity-30">
-                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Sin objetivos en el radar inmediato</p>
+                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Sin visitas en el sistema inmediato</p>
                         </div>
                       )}
                     </div>
@@ -553,7 +576,7 @@ export default function Visits() {
         </TabsContent>
       </Tabs>
 
-      <QuickScheduleWizard open={wizardOpen} onOpenChange={setWizardOpen} onScheduled={loadVisits} />
+      <QuickScheduleWizard open={wizardOpen} onOpenChange={setWizardOpen} onSuccess={loadVisits} />
 
       <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
         <DialogContent className="max-w-[750px] bg-card rounded-[3.5rem] border border-border/40 shadow-premium-2xl p-0 overflow-hidden font-display">
@@ -563,8 +586,8 @@ export default function Visits() {
                  <FileSpreadsheet className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Protocolo de Sincronización</DialogTitle>
-                <DialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-[0.3em] mt-2 opacity-70">Despliegue masivo de inteligencia comercial</DialogDescription>
+                <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Reporte de Sincronización</DialogTitle>
+                <DialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-[0.3em] mt-2 opacity-70">Carga masiva de datos comerciales</DialogDescription>
               </div>
             </div>
           </div>
@@ -572,12 +595,12 @@ export default function Visits() {
             <div className="bg-primary/5 p-8 rounded-[2rem] border border-primary/20 flex gap-6">
               <AlertCircle className="h-7 w-7 text-primary shrink-0" />
               <p className="text-xs font-black text-foreground/70 leading-relaxed uppercase tracking-tight">
-                CRÍTICO: LOS ACTIVOS COMERCIALES (MÉDICOS O FARMACIAS) DEBEN HABER SIDO PREVIAMENTE INTERCEPTADOS Y REGISTRADOS EN EL SISTEMA CENTRAL PARA GARANTIZAR LA INTEGRIDAD DEL REPORTE.
+                CRÍTICO: LOS PROFESIONALES (MÉDICOS O FARMACIAS) DEBEN HABER SIDO PREVIAMENTE REGISTRADOS EN EL SISTEMA CENTRAL PARA GARANTIZAR LA INTEGRIDAD DEL REPORTE.
               </p>
             </div>
 
             <div className="space-y-6">
-              <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Estructura del Manifiesto</h4>
+              <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Estructura del Reporte</h4>
               <div className="rounded-[2rem] border border-border/40 overflow-hidden shadow-inner bg-muted/5">
                 <Table>
                   <TableHeader className="bg-muted/20">
@@ -588,11 +611,11 @@ export default function Visits() {
                   </TableHeader>
                   <TableBody>
                     {[
-                      { col: 'Contacto', desc: 'Identificador exacto del activo en red' },
+                      { col: 'Contacto', desc: 'Identificador exacto del profesional en red' },
                       { col: 'Fecha', desc: 'Formato ISO estándar (YYYY-MM-DD)' },
                       { col: 'Hora', desc: 'Sincronización de llegada (HH:MM)' },
                       { col: 'Tipo', desc: '"Medico" o "Farmacia" (Discriminador)' },
-                      { col: 'Objetivo', desc: 'Misión táctica del encuentro' },
+                      { col: 'Objetivo', desc: 'Propósito estratégico del encuentro' },
                     ].map((row, i) => (
                       <TableRow key={i} className="border-border/10 hover:bg-primary/5 transition-colors">
                         <TableCell className="font-mono text-xs font-black text-primary py-5 px-8 uppercase">{row.col}</TableCell>

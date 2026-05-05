@@ -191,7 +191,7 @@ export default function CoverageMap() {
 
                 if (error) throw error;
 
-                // Priority weights for intelligence heatmap
+                // Weighting for activity heatmap based on priority
                 const weights: Record<string, number> = {
                     'urgent': 4,
                     'high': 3,
@@ -570,7 +570,7 @@ export default function CoverageMap() {
             {/* Elite Header */}
             <EliteHeader
                 title="Mapa de Cobertura"
-                subtitle="Visualización de red territorial y rutas"
+                subtitle="Visualización de red territorial y rutas comerciales"
                 icon={MapPin}
                 badgeText="Mapa"
                 statusText={loading ? "Sincronizando..." : "Mapa activo"}
@@ -631,7 +631,7 @@ export default function CoverageMap() {
                     <CardHeader className="pb-4 bg-slate-50/50 border-b border-slate-100">
                         <CardTitle className="flex items-center text-xs font-bold uppercase tracking-wider text-slate-500">
                             <Filter className="mr-2 h-4 w-4" />
-                            Filtros de mapa
+                            Filtros de Análisis
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6 pt-6">
@@ -712,14 +712,14 @@ export default function CoverageMap() {
                         <div className="pt-4 border-t space-y-3">
                             <label className="text-sm font-semibold flex items-center">
                                 <Activity className="mr-2 h-4 w-4 text-emerald-500" />
-                                Herramientas de Análisis
+                                Herramientas de Gestión
                             </label>
                             <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
                                 <div className="space-y-0.5">
                                     <label htmlFor="influence-radios" className="text-xs font-medium cursor-pointer">
-                                        Radios de Influencia (1km)
+                                        Radios de Cobertura (1km)
                                     </label>
-                                    <p className="text-[10px] text-muted-foreground">Ver cobertura de hospitales</p>
+                                    <p className="text-[10px] text-muted-foreground">Ver alcance de centros de salud</p>
                                 </div>
                                 <Checkbox
                                     id="influence-radios"
@@ -736,9 +736,9 @@ export default function CoverageMap() {
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                                 <div className="space-y-0.5">
                                     <label htmlFor="heatmap" className="text-xs font-bold tracking-tight cursor-pointer">
-                                        Mapa de calor
+                                        Mapa de Calor de Actividad
                                     </label>
-                                    <p className="text-[10px] font-medium text-slate-400">Densidad de actividad</p>
+                                    <p className="text-[10px] font-medium text-slate-400">Densidad de visitas recientes</p>
                                 </div>
                                 <Checkbox
                                     id="heatmap"

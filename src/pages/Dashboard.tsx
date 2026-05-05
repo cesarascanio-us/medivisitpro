@@ -28,10 +28,10 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<any>(null);
 
   const getDashboardTitle = () => {
-    if (isMaster || isAdmin) return "Panel de Control Global";
-    if (isManager) return "Resumen Gerencial";
-    if (isCoordinator || isSupervisor) return "Vista Estratégica";
-    if (isTelemarketing) return "Operaciones Telemarketing";
+    if (isMaster || isAdmin) return "Centro de Gestión Global";
+    if (isManager) return "Resumen Ejecutivo";
+    if (isCoordinator || isSupervisor) return "Visión Estratégica";
+    if (isTelemarketing) return "Gestión de Telemarketing";
     return "Mi Actividad Diaria";
   };
 
@@ -201,18 +201,18 @@ export default function Dashboard() {
         rightContent={
           <div className="flex items-center gap-6">
             <div className="hidden lg:flex flex-col items-end">
-              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Reloj de Sistema</span>
+              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Hora Local</span>
               <span className="text-xs font-black text-foreground tracking-tight mt-1">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
-            <div className="hidden sm:block h-8 w-[1px] bg-border mx-2" />
-            <div className="flex items-center gap-3 bg-muted/20 pr-4 pl-1.5 py-1.5 rounded-2xl border border-border transition-all shadow-inner">
+            <div className="hidden sm:block h-8 w-[1px] bg-border/40 mx-2" />
+            <div className="flex items-center gap-3 bg-card/40 backdrop-blur-md pr-4 pl-1.5 py-1.5 rounded-2xl border border-border/40 transition-all shadow-premium-sm hover:shadow-premium-md">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
                 <span className="text-base font-black text-primary uppercase">
                   {getWelcomeName().charAt(0)}
                 </span>
               </div>
               <div className="hidden xs:flex flex-col">
-                <span className="text-[8px] font-black text-muted-foreground uppercase tracking-wider leading-none">Operador Alpha</span>
+                <span className="text-[8px] font-black text-muted-foreground uppercase tracking-wider leading-none">Perfil Activo</span>
                 <span className="text-xs font-black text-foreground tracking-tight mt-1">{getWelcomeName()}</span>
               </div>
             </div>
@@ -260,16 +260,16 @@ export default function Dashboard() {
           <section className="animate-in slide-in-from-bottom-5 duration-700">
             <div className="flex items-center justify-between mb-6 px-2">
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium-sm">
                     <Clock className="h-6 w-6" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase font-display">Misiones Próximas</h2>
-                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Planificación de operaciones tácticas</p>
+                    <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase font-display">Próximas Visitas</h2>
+                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Planificación de agenda comercial</p>
                   </div>
                </div>
                <Button variant="ghost" onClick={() => navigate('/visits')} className="text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 rounded-xl px-5 h-12 flex items-center gap-2 group transition-all">
-                 Desplegar Todo <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                 Ver Agenda Completa <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                </Button>
             </div>
             
@@ -287,7 +287,7 @@ export default function Dashboard() {
                           </div>
                           <div className="space-y-1">
                             <h4 className="text-lg font-black text-foreground tracking-tight group-hover:text-primary transition-colors uppercase font-display">
-                              {visit.contacts?.full_name || 'Protocolo Desconocido'}
+                              {visit.contacts?.full_name || 'Contacto no Identificado'}
                             </h4>
                             <div className="flex items-center gap-3">
                                <Badge className="bg-muted/30 text-muted-foreground border-none font-black text-[9px] px-3 py-1 uppercase tracking-widest">
@@ -314,8 +314,8 @@ export default function Dashboard() {
                    <div className="w-20 h-20 bg-card rounded-[2rem] shadow-soft border border-border flex items-center justify-center mx-auto mb-6 text-muted-foreground/20">
                       <Calendar className="h-10 w-10" />
                    </div>
-                   <h3 className="text-xl font-black text-foreground tracking-tighter uppercase font-display mb-2">Sin misiones activas</h3>
-                   <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">No hay despliegues programados para este periodo</p>
+                   <h3 className="text-xl font-black text-foreground tracking-tighter uppercase font-display mb-2">Sin visitas pendientes</h3>
+                   <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">No hay actividades programadas para este periodo</p>
                 </div>
               )}
             </div>
@@ -323,12 +323,12 @@ export default function Dashboard() {
 
           <section className="animate-in slide-in-from-bottom-10 duration-1000">
             <div className="flex items-center gap-4 mb-6 px-2">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20 shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20 shadow-premium-sm">
                   <Activity className="h-6 w-6" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase font-display">Registro de Operaciones</h2>
-                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Historial de despliegues completados</p>
+                    <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase font-display">Registro de Actividad</h2>
+                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Historial de visitas completadas</p>
                 </div>
             </div>
             <Card className="border border-border bg-card shadow-premium-lg rounded-[3rem] p-10 relative overflow-hidden">
@@ -345,7 +345,7 @@ export default function Dashboard() {
                         </div>
                         <div className="flex-1 space-y-1">
                            <p className="text-base text-foreground font-black tracking-tight uppercase">
-                             Misión Ejecutada: <span className="text-emerald-500 font-black">{activity.contacts?.full_name}</span>
+                             Visita Realizada: <span className="text-emerald-500 font-black">{activity.contacts?.full_name}</span>
                            </p>
                            <div className="flex items-center gap-3">
                              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">
@@ -360,7 +360,7 @@ export default function Dashboard() {
                  </div>
                ) : (
                  <div className="text-center py-16 opacity-30">
-                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Sin registros de actividad en la matriz</p>
+                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Sin registros de actividad reciente</p>
                  </div>
                )}
             </Card>

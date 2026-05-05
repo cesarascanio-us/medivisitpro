@@ -102,9 +102,9 @@ export default function HealthCenters() {
       };
       if (formData.id) { await supabase.from('health_centers').update(payload).eq('id', formData.id); } 
       else { await supabase.from('health_centers').insert([payload]); }
-      toast({ title: "Misión Cumplida", description: "Centro de salud sincronizado." });
+      toast({ title: "Registro Completado", description: "Centro de salud sincronizado." });
       setDialogOpen(false); loadHealthCenters();
-    } catch (error) { toast({ title: "Error Táctico", variant: "destructive" }); }
+    } catch (error) { toast({ title: "Error de Registro", variant: "destructive" }); }
   };
 
   const getPotentialBadge = (potential: string | null) => {
@@ -230,7 +230,7 @@ export default function HealthCenters() {
                 <Building2 className="h-8 w-8 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-black uppercase  tracking-tighter">Alta Institucional CA</DialogTitle>
+                <DialogTitle className="text-2xl font-black uppercase  tracking-tighter">Registro Institucional</DialogTitle>
                 <p className="text-indigo-400 text-[9px] font-black uppercase tracking-[0.3em] mt-2">Sincronización de Infraestructura Maestra</p>
               </div>
             </div>

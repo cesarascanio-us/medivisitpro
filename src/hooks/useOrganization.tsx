@@ -71,7 +71,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
             let isMasterUser = false;
 
-            // Get profile and role data
+            // 1. Get profile and role data
             const [{ data: profile }, { data: userRole }] = await Promise.all([
                 supabase
                     .from('profiles')
@@ -87,45 +87,64 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
             const userRoleName = userRole?.role || 'representative';
             const saasRoles = ['master', 'admin_saas', 'soporte_saas', 'desarrollo_saas'];
+            
+            // SECURITY CHECK: Verify master status via RPC as source of truth
+            const { data: rpcIsMaster } = await supabase.rpc('is_system_master');
+            
+            const isActuallyMaster = userRoleName === 'master' || rpcIsMaster === true;
+            const isActuallySaaSStaff = saasRoles.includes(userRoleName) || rpcIsMaster === true;
 
-            isMasterUser = saasRoles.includes(userRoleName);
-            setIsMaster(userRoleName === 'master'); // Strict master flag from DB role
-            setIsSaaSStaff(isMasterUser); // Internal staff flag (includes master)
+            console.log('[useOrganization] Security Check:', { 
+                roleTable: userRoleName, 
+                rpcCheck: rpcIsMaster, 
+                finalIsMaster: isActuallyMaster 
+            });
+
+            setIsMaster(isActuallyMaster);
+            setIsSaaSStaff(isActuallySaaSStaff);
 
             setIsOrgAdmin(
                 profile?.is_org_admin ||
                 userRoleName === 'admin' ||
                 userRoleName === 'manager' ||
-                isMasterUser
+                isActuallySaaSStaff
             );
 
             let currentOrg: Organization | null = null;
             let currentOrgsList: Organization[] = [];
 
-            if (isMasterUser) {
-                const { data: allOrgs } = await supabase
-                    .from('organizations')
-                    .select('*')
-                    .order('name');
+            if (isActuallySaaSStaff) {
+                try {
+                    const { data: allOrgs, error: orgsError } = await supabase
+                        .from('organizations')
+                        .select('*')
+                        .order('name');
 
-                const orgs = (allOrgs || []).map(o => ({
-                    ...o,
-                    plan_tier: o.plan_tier as PlanTier,
-                    subscription_status: o.subscription_status as SubscriptionStatus,
-                    is_system_owner: !!(o as any).is_system_owner
-                })) as Organization[];
+                    if (orgsError) {
+                        console.error('CRITICAL: RLS Block on organizations table:', orgsError);
+                        // Don't throw here, just log and keep going with empty list
+                        // This prevents the whole hook from breaking
+                    } else if (allOrgs) {
+                        const orgs = allOrgs.map(o => ({
+                            ...o,
+                            plan_tier: o.plan_tier as PlanTier,
+                            subscription_status: o.subscription_status as SubscriptionStatus,
+                            is_system_owner: !!(o as any).is_system_owner
+                        })) as Organization[];
 
-                currentOrgsList = orgs;
+                        currentOrgsList = orgs;
 
-                // 1. Check if there's a manually selected org in localStorage
-                const savedOrgId = localStorage.getItem('medivisit_master_active_org');
-                const assignedOrgId = profile?.organization_id || userRole?.organization_id;
+                        const savedOrgId = localStorage.getItem('medivisit_master_active_org');
+                        const assignedOrgId = profile?.organization_id || userRole?.organization_id;
 
-                // 2. Prioritize saved org, then assigned org, then first available
-                currentOrg = orgs.find(o => o.id === savedOrgId) ||
-                    orgs.find(o => o.id === assignedOrgId) ||
-                    orgs.find(o => o.is_system_owner) ||
-                    orgs[0] || null;
+                        currentOrg = orgs.find(o => o.id === savedOrgId) ||
+                            orgs.find(o => o.id === assignedOrgId) ||
+                            orgs.find(o => o.is_system_owner) ||
+                            orgs[0] || null;
+                    }
+                } catch (orgFetchErr) {
+                    console.error('Failed to fetch organizations list:', orgFetchErr);
+                }
             } else {
                 let organizationId = profile?.organization_id || userRole?.organization_id;
                 if (organizationId) {
@@ -163,11 +182,9 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                     if (planData) {
                         setPlanFeatures((planData.features as unknown as string[]) || []);
                     } else {
-                        // Fallback to basic features if plan not found
                         setPlanFeatures(['basic_visits', 'basic_reports']);
                     }
                 } catch (featureErr) {
-                    console.warn('Non-critical: Could not fetch plan features', featureErr);
                     setPlanFeatures(['basic_visits', 'basic_reports']);
                 }
             } else {
@@ -175,13 +192,11 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             }
 
         } catch (err) {
-            console.error('Error fetching organization:', err);
+            console.error('Error in useOrganization flow:', err);
             setError(err instanceof Error ? err : new Error('Failed to fetch organization'));
-            // Safety fallback to allow access
             setPlanFeatures(['basic_visits', 'basic_reports']);
         } finally {
             setIsLoading(false);
-            console.log('Organization flow completed. Loading set to false.');
         }
     };
 

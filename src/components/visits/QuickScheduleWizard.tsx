@@ -156,7 +156,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess, visitData }
 
     const handleNext = () => {
         if (currentStep === 1 && !contactId) return toast({ title: 'Selecciona una entidad de César Ascanio CA' });
-        if (currentStep === 2 && !scheduledDate) return toast({ title: 'Sincroniza la fecha de misión' });
+        if (currentStep === 2 && !scheduledDate) return toast({ title: 'Sincroniza la fecha de visita' });
         if (currentStep === 3 && !objective) return toast({ title: 'Define el Objetivo SMART' });
         if (currentStep < 5) setCurrentStep(currentStep + 1);
         else handleSubmit();
@@ -195,7 +195,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                 if (!demoData.visits) demoData.visits = [];
                 demoData.visits.unshift(newVisit);
 
-                toast({ title: '✅ Misión Agendada (Entorno Demo)', description: 'Simulación exitosa y agregada a tu agenda local.' });
+                toast({ title: '✅ Visita Programada (Entorno Demo)', description: 'Simulación exitosa y agregada a tu agenda local.' });
                 onOpenChange(false);
                 onSuccess?.();
                 return;
@@ -210,7 +210,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                 status: 'scheduled',
             }]);
             if (error) throw error;
-            toast({ title: '✅ Misión Agendada en el Sistema Maestro' });
+            toast({ title: '✅ Visita Programada en el Sistema Maestro' });
             onOpenChange(false);
             onSuccess?.();
         } catch (error: any) {
@@ -233,7 +233,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                             <Calendar className="h-10 w-10" />
                         </div>
                         <div>
-                            <DialogTitle className="text-3xl font-black uppercase  tracking-tighter leading-none">Agendado Táctico de Élite</DialogTitle>
+                            <DialogTitle className="text-3xl font-black uppercase  tracking-tighter leading-none">Planificación de Visitas Elite</DialogTitle>
                             <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-3 ">Planificador Dinámico César Ascanio CA</p>
                         </div>
                     </div>
@@ -274,16 +274,16 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                 <Popover open={openContactSelector} onOpenChange={setOpenContactSelector}>
                                     <PopoverTrigger asChild>
                                         <Button variant="outline" className="h-16 w-full justify-between bg-slate-900 border-white/5 rounded-3xl px-8 font-black text-white  uppercase tracking-widest text-lg">
-                                            {selectedContact ? selectedContact.name : `BUSCAR ${visitType.toUpperCase()} EN EL PADRÓN...`}
+                                            {selectedContact ? selectedContact.name : `BUSCAR ${visitType.toUpperCase()} EN EL DIRECTORIO...`}
                                             <ChevronsUpDown className="ml-2 h-5 w-5 opacity-40 shrink-0" />
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-slate-900 border-white/10 rounded-[2rem] shadow-3xl overflow-hidden mt-2 text-white">
                                         <Command className="bg-slate-900 text-white">
-                                            <CommandInput placeholder="FILTRAR REGISTROS..." className="h-16  font-black uppercase" />
+                                            <CommandInput placeholder="FILTRAR DIRECTORIO..." className="h-16  font-black uppercase" />
                                             <CommandList className="max-h-64 custom-scrollbar">
                                                 <CommandEmpty className="py-10 text-center flex flex-col items-center gap-4">
-                                                    <p className="text-xs font-bold text-slate-600 uppercase">Sin resultados en el padrón activo</p>
+                                                    <p className="text-xs font-bold text-slate-600 uppercase">Sin resultados en el directorio activo</p>
                                                     <Button 
                                                         variant="outline" 
                                                         size="sm" 
@@ -331,11 +331,11 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                     {currentStep === 2 && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-in fade-in slide-in-from-right-6 duration-700">
                             <div className="space-y-5">
-                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Fecha de la Misión</Label>
+                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Fecha de la Visita</Label>
                                 <Input type="date" value={scheduledDate} onChange={(e) => setScheduledDate(e.target.value)} className="h-16 bg-slate-900 border-white/5 rounded-3xl font-black  text-white uppercase px-8 text-2xl" />
                             </div>
                             <div className="space-y-5">
-                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Horario Táctico</Label>
+                                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Horario Programado</Label>
                                 <Input type="time" value={scheduledTime} onChange={(e) => setScheduledTime(e.target.value)} className="h-16 bg-slate-900 border-white/5 rounded-3xl font-black  text-white text-center text-2xl" />
                             </div>
                         </div>
@@ -344,7 +344,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                     {/* Step 3: Objetivos SMART */}
                     {currentStep === 3 && (
                         <div className="space-y-5 animate-in fade-in slide-in-from-right-6 duration-700">
-                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Definición de Objetivo (Relojería Operativa)</Label>
+                            <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Definición de Objetivo (Planificación Ejecutiva)</Label>
                             <Textarea
                                 value={objective}
                                 onChange={(e) => setObjective(e.target.value)}
@@ -410,14 +410,14 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                         </div>
                                     </div>
                                     <div className="p-8 bg-indigo-500/5 rounded-[2rem] border border-indigo-500/10 flex flex-col justify-center">
-                                        <h4 className="text-sm font-black text-white  uppercase tracking-tighter mb-4">Misión Hospitalaria CA</h4>
+                                        <h4 className="text-sm font-black text-white  uppercase tracking-tighter mb-4">Visita Hospitalaria CA</h4>
                                         <p className="text-xs text-slate-500 font-bold leading-relaxed uppercase tracking-widest">Asegure el suministro centralizado y la formación científica continua en la sede para maximizar la penetración institucional.</p>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
                                     <div className="space-y-5">
-                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Prioridades de Auditoría Táctica</Label>
+                                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Prioridades de Auditoría Comercial</Label>
                                         <div className="space-y-3">
                                             {['Rotación & Stock', 'Exhibición POP', 'Radar de Competencia', 'Capacitación a Dependientes', 'Venta Directa'].map(p => (
                                                 <div key={p} className={cn("p-6 rounded-3xl border transition-all cursor-pointer flex items-center justify-between", auditPriorities.includes(p) ? "bg-emerald-500/10 border-emerald-500" : "bg-slate-900 border-white/5")} onClick={() => setAuditPriorities(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p])}>
@@ -435,8 +435,8 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                             <Target className="w-12 h-12 text-emerald-500 animate-pulse" />
                                         </div>
                                         <div>
-                                            <h4 className="font-black uppercase text-white text-lg mb-3 tracking-tighter">Misión de Ejecución Maestría</h4>
-                                            <p className="text-slate-500 text-[10px] uppercase font-bold tracking-widest leading-relaxed">Se activará automáticamente el panel de Sell-Out en el reporte final para cuantificar el impacto comercial de esta misión.</p>
+                                            <h4 className="font-black uppercase text-white text-lg mb-3 tracking-tighter">Plan de Ejecución Maestro</h4>
+                                            <p className="text-slate-500 text-[10px] uppercase font-bold tracking-widest leading-relaxed">Se activará automáticamente el panel de Sell-Out en el reporte final para cuantificar el impacto comercial de esta visita.</p>
                                         </div>
                                     </Card>
                                 </div>
@@ -452,13 +452,13 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                                 <div className="flex flex-col items-center gap-6">
                                     <div className="w-24 h-24 rounded-full bg-slate-950 flex items-center justify-center text-white"><CheckCircle2 className="w-12 h-12 text-primary" /></div>
                                     <div>
-                                        <h3 className="text-3xl font-black uppercase  tracking-tighter">¿Sincronizar Misión?</h3>
+                                        <h3 className="text-3xl font-black uppercase  tracking-tighter">¿Sincronizar Visita?</h3>
                                         <p className="text-slate-600 text-xs font-black uppercase tracking-[0.2em] mt-3">{selectedContact?.name} | {scheduledDate}</p>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4 pt-6">
                                     <div className="p-6 bg-slate-50 rounded-3xl text-left text-slate-900">
-                                        <p className="text-[10px] font-black uppercase text-slate-400 mb-2 ">Canal Operativo</p>
+                                        <p className="text-[10px] font-black uppercase text-slate-400 mb-2 ">Canal de Gestión</p>
                                         <p className="font-black uppercase text-foreground text-sm">{visitType}</p>
                                     </div>
                                     <div className="p-6 bg-slate-50 rounded-3xl text-left text-slate-900">
@@ -487,7 +487,7 @@ ESTRATEGIA: ${[...institutionalPriorities, ...auditPriorities].join(', ')}
                 <div className="bg-slate-900 border-t border-white/5 px-10 py-6 flex items-center justify-between gap-6 shrink-0 z-20 relative text-white">
                     <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1} className="h-14 px-8 font-black uppercase text-slate-500 hover:text-white rounded-2xl text-[10px] tracking-widest gap-3 "><ChevronLeft className="w-4 h-4" /> REGRESAR</Button>
                     <Button onClick={handleNext} disabled={loading} className="h-16 px-16 bg-card text-foreground rounded-[1.5rem] font-black uppercase  text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-3xl">
-                        {loading ? <Sparkles className="animate-spin w-5 h-5 mr-3" /> : currentStep === 5 ? 'SINCRONIZAR MISIÓN MAESTRA' : 'CONTINUAR'}
+                        {loading ? <Sparkles className="animate-spin w-5 h-5 mr-3" /> : currentStep === 5 ? 'SINCRONIZAR VISITA MAESTRA' : 'CONTINUAR'}
                         {currentStep < 5 && <ChevronRight className="ml-3 w-5 h-5" />}
                     </Button>
                 </div>

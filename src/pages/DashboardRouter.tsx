@@ -12,12 +12,12 @@ import Dashboard from "./Dashboard";
 import MasterPanel from "./MasterPanel";
 
 /**
- * Smart Dashboard Router - NATURISTA ELITE
- * Renders the appropriate tactical console based on user role.
+ * Smart Dashboard Router - MediVisitPro Elite
+ * Renders the appropriate executive console based on user role.
  * 
  * Hierarchy:
  * 1. Master: Full System Console (/master-panel)
- * 2. Everyone Else: Unified Tactical Dashboard personalized by role (Dashboard.tsx)
+ * 2. Everyone Else: Unified Dashboard personalized by role (Dashboard.tsx)
  */
 export default function DashboardRouter() {
     const { isMaster } = useAuth();

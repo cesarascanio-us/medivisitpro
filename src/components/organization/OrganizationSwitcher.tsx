@@ -19,7 +19,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { Badge } from "@/components/ui/badge";
 
 export function OrganizationSwitcher() {
-    const { organization, allOrganizations, switchOrganization, isMaster } = useOrganization();
+    const { organization, allOrganizations, switchOrganization, isMaster, isLoading } = useOrganization();
 
     // Only render for Master users
     if (!isMaster) return null;
@@ -35,11 +35,16 @@ export function OrganizationSwitcher() {
                 <Select
                     value={organization?.id || ''}
                     onValueChange={(value) => switchOrganization(value)}
+                    disabled={isLoading}
                 >
                     <SelectTrigger className="h-9 bg-card border-border text-foreground focus:ring-primary/50 hover:bg-accent transition-colors">
                         <div className="flex items-center gap-2 truncate">
-                            <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
-                            <SelectValue placeholder="Seleccionar Organización" />
+                            {isLoading ? (
+                                <div className="animate-spin h-3 w-3 border-2 border-primary border-t-transparent rounded-full mr-2" />
+                            ) : (
+                                <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                            )}
+                            <SelectValue placeholder={isLoading ? "Cargando..." : "Seleccionar Organización"} />
                         </div>
                     </SelectTrigger>
                     <SelectContent className="bg-popover border-border text-popover-foreground">

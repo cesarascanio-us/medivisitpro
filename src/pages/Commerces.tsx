@@ -62,7 +62,7 @@ export default function Commerces() {
                 await (supabase as any).from('commerces').insert({ ...formData, user_id: user?.id, organization_id: organizationId });
             }
             setFormDialogOpen(false); loadCommerces();
-            toast({ title: "Misión Cumplida", description: "Canal Comercio sincronizado." });
+            toast({ title: "Registro Completado", description: "Canal Comercio sincronizado." });
         } catch (error) { console.error('Error:', error); }
     };
 
@@ -86,7 +86,7 @@ export default function Commerces() {
                             <Download className="h-5 w-5 mr-3 text-primary" /> Exportar
                         </Button>
                         <Button onClick={() => { setIsEditing(false); setFormDialogOpen(true); }} className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
-                            <Plus className="h-6 w-6" /> Alta Comercial
+                            <Plus className="h-6 w-6" /> Registro Comercial
                         </Button>
                     </div>
                 }

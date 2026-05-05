@@ -99,7 +99,7 @@ export default function DrugstoresElite() {
 
     const handleFormSubmit = async () => {
         if (!formData.name || !formData.rif) {
-            toast({ title: "Protocolo Incompleto", description: "Nombre y RIF son obligatorios para el Alta Comercial.", variant: "destructive" });
+            toast({ title: "Información Incompleta", description: "Nombre y RIF son obligatorios para el Registro Comercial.", variant: "destructive" });
             return;
         }
 
@@ -107,11 +107,11 @@ export default function DrugstoresElite() {
             if (isEditing && selectedDrugstore) {
                 const { error } = await (supabase as any).from('drugstores').update({ ...formData, contact_type: 'drugstore' as any, updated_at: new Date().toISOString() }).eq('id', selectedDrugstore.id);
                 if (error) throw error;
-                toast({ title: "Sincronización Exitosa", description: "Activo actualizado en el directorio central." });
+                toast({ title: "Sincronización Exitosa", description: "Registro actualizado en el directorio central." });
             } else {
                 const { error } = await (supabase as any).from('drugstores').insert({ ...formData, contact_type: 'drugstore' as any, user_id: user?.id, organization_id: organizationId });
                 if (error) throw error;
-                toast({ title: "Alta Comercial Completada", description: "Nueva droguería registrada en red." });
+                toast({ title: "Registro Comercial Completado", description: "Nueva droguería registrada en red." });
             }
             setFormDialogOpen(false);
             loadDrugstores();
@@ -136,10 +136,10 @@ export default function DrugstoresElite() {
         try {
             const { error } = await (supabase as any).from('drugstores').delete().eq('id', id).eq('organization_id', organizationId);
             if (error) throw error;
-            toast({ title: "Activo Purgado", description: "La droguería ha sido eliminada del directorio operativo." });
+            toast({ title: "Registro Eliminado", description: "La droguería ha sido eliminada del directorio operativo." });
             loadDrugstores();
         } catch (error: any) {
-            toast({ title: "Fallo de Protocolo", description: error.message, variant: "destructive" });
+            toast({ title: "Error de Sistema", description: error.message, variant: "destructive" });
         }
     };
 
@@ -168,10 +168,10 @@ export default function DrugstoresElite() {
         try {
             const { data: visit, error } = await (supabase as any).from('visits').insert([{ contact_id: selectedDrugstore.id, user_id: user?.id, organization_id: organizationId, status: 'pending', scheduled_date: new Date().toISOString(), visit_type: 'drugstore', visit_objective: 'Gestión de Cobranza e Inventario' }]).select().single();
             if (error) throw error;
-            toast({ title: "Iniciando Despliegue", description: "Redirigiendo a interfaz de ejecución..." });
+            toast({ title: "Iniciando Visita", description: "Redirigiendo a interfaz de ejecución..." });
             navigate(`/visits/execution/${visit.id}`);
         } catch (error: any) {
-            toast({ title: "Error de Protocolo", description: error.message, variant: "destructive" });
+            toast({ title: "Error de Sistema", description: error.message, variant: "destructive" });
         }
     };
 
@@ -309,14 +309,14 @@ export default function DrugstoresElite() {
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent className="rounded-[3rem] border-border/40 shadow-premium-2xl bg-card font-display p-10">
                                                     <AlertDialogHeader>
-                                                        <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Abortar Activo?</AlertDialogTitle>
+                                                        <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Eliminar Registro?</AlertDialogTitle>
                                                         <AlertDialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-70 mt-2">
                                                             ESTA ACCIÓN ELIMINARÁ PERMANENTEMENTE A <strong className="text-primary">{store.name}</strong> DEL DIRECTORIO OPERATIVO.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter className="mt-10 gap-4">
                                                         <AlertDialogCancel className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">Ignorar</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDeleteDrugstore(store.id)} className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20">Confirmar Purga</AlertDialogAction>
+                                                        <AlertDialogAction onClick={() => handleDeleteDrugstore(store.id)} className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20">Confirmar Eliminación</AlertDialogAction>
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
                                             </AlertDialog>
@@ -339,7 +339,7 @@ export default function DrugstoresElite() {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <h2 className="text-3xl font-black tracking-tighter text-foreground uppercase leading-none">{selectedDrugstore?.name}</h2>
-                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em] opacity-70 mt-1">Expediente de Inteligencia Comercial</p>
+                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em] opacity-70 mt-1">Expediente Comercial</p>
                             </div>
                         </DialogTitle>
                     </DialogHeader>
@@ -392,15 +392,15 @@ export default function DrugstoresElite() {
                                             <Navigation className="h-40 w-40 text-white" />
                                         </div>
                                         <div className="relative z-10">
-                                            <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-[0.85] mb-6">Misión de<br />Seguimiento</h3>
-                                            <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-10 opacity-80">Iniciar interceptación para gestión de cobranza y auditoría de inventario.</p>
+                                            <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-[0.85] mb-6">Gestión de<br />Seguimiento</h3>
+                                            <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-10 opacity-80">Iniciar visita para gestión de cobranza y auditoría de inventario.</p>
                                         </div>
                                         <div className="space-y-4 relative z-10">
                                             <Button onClick={handleRegisterVisit} className="w-full bg-white text-primary shadow-xl font-black uppercase tracking-[0.2em] text-[10px] h-16 rounded-[1.5rem] transition-all hover:bg-muted active:scale-95 flex items-center justify-center">
-                                                <Navigation className="mr-3 h-5 w-5" /> Iniciar Despliegue
+                                                <Navigation className="mr-3 h-5 w-5" /> Iniciar Visita
                                             </Button>
                                             <Button variant="ghost" className="w-full border border-white/30 text-white hover:bg-white/10 h-16 rounded-[1.5rem] uppercase font-black tracking-[0.2em] text-[10px] shadow-sm flex items-center justify-center" onClick={() => handleEditDrugstore(selectedDrugstore)}>
-                                                <Edit className="mr-3 h-4 w-4" /> Editar Expediente
+                                                <Edit className="mr-3 h-4 w-4" /> Editar Registro
                                             </Button>
                                         </div>
                                     </div>
@@ -433,7 +433,7 @@ export default function DrugstoresElite() {
                                                         "font-black text-[9px] uppercase tracking-widest px-5 py-2 rounded-full border shadow-sm",
                                                         v.status === 'completed' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : "bg-muted/10 text-muted-foreground border-border/40"
                                                     )}>
-                                                        {v.status === 'completed' ? 'ÉXITO OPERATIVO' : 'RADAR / PENDIENTE'}
+                                                        {v.status === 'completed' ? 'VISITA COMPLETADA' : 'PLANIFICADA / PENDIENTE'}
                                                     </Badge>
                                                 </div>
                                             ))}
