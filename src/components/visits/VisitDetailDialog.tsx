@@ -48,6 +48,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 // Helper MultiSelect Component - Elite Dark Version
+// Helper MultiSelect Component - Elite Dark Version
 function MultiSelect({
   options,
   selected,
@@ -67,11 +68,11 @@ function MultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" className="w-full justify-between h-auto min-h-[48px] px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl hover:bg-slate-100 transition-all text-slate-900">
+        <Button variant="outline" role="combobox" className="w-full justify-between h-auto min-h-[48px] px-4 py-3 bg-muted/5 border-border/40 rounded-2xl hover:bg-muted/10 transition-all text-foreground">
           <div className="flex flex-wrap gap-2">
-            {selected.length === 0 && <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest ">{placeholder}</span>}
+            {selected.length === 0 && <span className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest">{placeholder}</span>}
             {selected.map((item) => (
-              <Badge key={item} className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase tracking-tighter" onClick={(e) => { e.stopPropagation(); handleUnselect(item); }}>
+              <Badge key={item} className="badge-elite-info" onClick={(e) => { e.stopPropagation(); handleUnselect(item); }}>
                 {options.find(opt => opt.value === item)?.label || item}
                 <X className="ml-1 h-3 w-3" />
               </Badge>
@@ -80,16 +81,16 @@ function MultiSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-card border-border rounded-2xl shadow-3xl overflow-hidden">
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-card border-border/40 rounded-2xl shadow-3xl overflow-hidden">
         <Command className="bg-card text-foreground">
-          <CommandInput placeholder="BUSCAR..." className="h-14 font-black  uppercase" />
+          <CommandInput placeholder="BUSCAR..." className="h-14 font-black uppercase tracking-widest" />
           <CommandList className="max-h-60 custom-scrollbar">
-            <CommandEmpty className="py-8 text-center text-[10px] font-black uppercase text-slate-400">{emptyMessage}</CommandEmpty>
+            <CommandEmpty className="py-8 text-center text-elite-xs font-black uppercase text-muted-foreground">{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
-                <CommandItem key={option.value} onSelect={() => onChange(selected.includes(option.value) ? selected.filter(i => i !== option.value) : [...selected, option.value])} className="py-4 px-6 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-none">
+                <CommandItem key={option.value} onSelect={() => onChange(selected.includes(option.value) ? selected.filter(i => i !== option.value) : [...selected, option.value])} className="py-4 px-6 hover:bg-muted/5 cursor-pointer border-b border-border/10 last:border-none">
                   <Check className={cn("mr-3 h-4 w-4 text-primary", selected.includes(option.value) ? "opacity-100" : "opacity-0")} />
-                  <span className="font-bold text-xs uppercase ">{option.label}</span>
+                  <span className="font-bold text-xs uppercase">{option.label}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -111,13 +112,12 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user, profile } = useAuth();
-  const { organization } = useOrganization();
+  const { organizationId } = useOrganization();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic");
 
   // State
   const [contacts, setContacts] = useState<any[]>([]);
-  const [openCombobox, setOpenCombobox] = useState(false);
   const [rawProducts, setRawProducts] = useState<any[]>([]);
   const [productSellingPoints, setProductSellingPoints] = useState<any[]>([]);
 
@@ -144,7 +144,6 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
     geolocation: visitData?.geolocation || "",
     selling_points: visitData?.selling_points || [],
     compromiso_inicio: visitData?.compromiso_inicio || 0,
-    // CAMPOS INSTITUCIONALES CA
     sample_bank_status: visitData?.sample_bank_status || 'ok',
     sample_bank_refill: visitData?.sample_bank_refill || 0,
     academic_topic: visitData?.academic_topic || '',
@@ -207,9 +206,8 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-card shadow-3xl font-display max-h-[95vh]">
-        {/* Header Elite Industrial */}
-        <div className="bg-slate-50 px-10 py-8 text-slate-900 relative border-b border-slate-100">
+      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-card shadow-premium-2xl font-display max-h-[95vh]">
+        <div className="bg-muted/5 px-10 py-8 text-foreground relative border-b border-border/40">
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-6">
               <div className="w-16 h-16 rounded-2xl bg-primary text-white flex items-center justify-center shadow-premium-md border border-primary/20">
@@ -220,15 +218,15 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                   {visitData ? 'Control de Misión Realizada' : 'Planificación de Misión Táctica'}
                 </DialogTitle>
                 <div className="flex items-center gap-3 mt-2">
-                  <Badge className="bg-emerald-500/5 text-emerald-600 border-none font-black text-[9px] uppercase tracking-widest ">{formData.status === 'completed' ? 'FINALIZADA' : 'CICLO ACTIVO'}</Badge>
-                  <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] ">César Ascanio CA Intelligence Hub 💎</p>
+                  <Badge className={cn("badge-elite-success border-none", formData.status !== 'completed' && "badge-elite-info")}>{formData.status === 'completed' ? 'FINALIZADA' : 'CICLO ACTIVO'}</Badge>
+                  <p className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest opacity-60">César Ascanio Intelligence Hub 💎</p>
                 </div>
               </div>
             </div>
             {selectedContact && (
               <div className="text-right hidden md:block">
                 <p className="text-foreground font-black uppercase text-lg leading-none font-display">{selectedContact.name}</p>
-                <p className="text-slate-400 font-bold uppercase text-[9px] tracking-widest mt-2">{selectedContact.specialty} | {selectedContact.city}</p>
+                <p className="text-muted-foreground font-black uppercase text-elite-xs tracking-widest mt-2">{selectedContact.specialty} | {selectedContact.city}</p>
               </div>
             )}
           </div>
@@ -236,38 +234,37 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
 
         <div className="flex flex-col md:flex-row h-[700px] overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
-            <TabsList className="flex flex-row md:flex-col h-auto md:h-full w-full md:w-72 bg-slate-50/50 border-r border-slate-100 p-4 justify-start gap-2 overflow-x-auto custom-scrollbar">
-              <TabsTrigger value="basic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-soft border-none text-slate-400 text-[10px] uppercase tracking-widest ">
+            <TabsList className="flex flex-row md:flex-col h-auto md:h-full w-full md:w-72 bg-muted/5 border-r border-border/40 p-4 justify-start gap-2 overflow-x-auto custom-scrollbar">
+              <TabsTrigger value="basic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-soft border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                 <LayoutGrid className="w-4 h-4" /> PERFIL & AGENDA
               </TabsTrigger>
 
               {isDoctorVisit && (
-                <TabsTrigger value="medical" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-500 data-[state=active]:text-white border-none text-slate-400 text-[10px] uppercase tracking-widest ">
+                <TabsTrigger value="medical" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-primary data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                   <Microscope className="w-4 h-4" /> PROMOCIÓN MÉDICA
                 </TabsTrigger>
               )}
 
               {isSalesVisit && (
-                <TabsTrigger value="sales" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white border-none text-slate-400 text-[10px] uppercase tracking-widest ">
+                <TabsTrigger value="sales" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                   <ShoppingCart className="w-4 h-4" /> EJECUCIÓN COMERCIAL
                 </TabsTrigger>
               )}
 
-              <TabsTrigger value="strategy" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-amber-500 data-[state=active]:text-white border-none text-slate-400 text-[10px] uppercase tracking-widest ">
+              <TabsTrigger value="strategy" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-amber-500 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                 <Target className="w-4 h-4" /> HITOS & CIERRE
               </TabsTrigger>
 
-              <TabsTrigger value="geo" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white border-none text-slate-400 text-[10px] uppercase tracking-widest ">
+              <TabsTrigger value="geo" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                 <MapIcon className="w-4 h-4" /> GEOPOSICIÓN CA
               </TabsTrigger>
 
-
               {isInstitutionVisit && (
                 <>
-                  <TabsTrigger value="sample-bank" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white border-none text-slate-500 text-[10px] uppercase tracking-widest ">
+                  <TabsTrigger value="sample-bank" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                     <Package2 className="w-4 h-4" /> BANCO DE MUESTRAS
                   </TabsTrigger>
-                  <TabsTrigger value="academic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white border-none text-slate-500 text-[10px] uppercase tracking-widest ">
+                  <TabsTrigger value="academic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
                     <GraduationCap className="w-4 h-4" /> ACTIVIDAD ACADÉMICA
                   </TabsTrigger>
                 </>
@@ -279,46 +276,46 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 <TabsContent value="basic" className="mt-0 space-y-8 animate-in fade-in duration-500">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Canal de Misión</Label>
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Canal de Misión</Label>
                       <Select value={formData.visit_type} onValueChange={(val) => setFormData(p => ({ ...p, visit_type: val }))}>
-                        <SelectTrigger className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-black text-slate-900 uppercase tracking-widest"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-card border-border text-foreground font-bold uppercase shadow-xl rounded-xl">
-                          <SelectItem value="doctor" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🩺 FICHERO MÉDICO</SelectItem>
-                          <SelectItem value="hospital" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🏥 CENTRO DE SALUD</SelectItem>
-                          <SelectItem value="pharmacy" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">💊 CANAL FARMACIAS</SelectItem>
-                          <SelectItem value="natural_store" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🌿 TIENDA NATURISTA</SelectItem>
-                          <SelectItem value="commerce" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🛒 CANAL COMERCIO</SelectItem>
-                          <SelectItem value="drugstore" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">🏢 DROGUERÍA</SelectItem>
+                        <SelectTrigger className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground uppercase tracking-widest"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase shadow-xl rounded-xl">
+                          <SelectItem value="doctor">🩺 FICHERO MÉDICO</SelectItem>
+                          <SelectItem value="hospital">🏥 CENTRO DE SALUD</SelectItem>
+                          <SelectItem value="pharmacy">💊 CANAL FARMACIAS</SelectItem>
+                          <SelectItem value="natural_store">🌿 TIENDA NATURISTA</SelectItem>
+                          <SelectItem value="commerce">🛒 CANAL COMERCIO</SelectItem>
+                          <SelectItem value="drugstore">🏢 DROGUERÍA</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Estatus del Ciclo</Label>
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Estatus del Ciclo</Label>
                       <Select value={formData.status} onValueChange={(val) => setFormData(p => ({ ...p, status: val }))}>
-                        <SelectTrigger className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-black text-slate-900 uppercase tracking-widest"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-card border-border text-foreground font-bold uppercase shadow-xl rounded-xl">
-                          <SelectItem value="scheduled" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">📅 PROGRAMADA</SelectItem>
-                          <SelectItem value="in_progress" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">⚡ EN CURSO</SelectItem>
-                          <SelectItem value="completed" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">✅ FINALIZADA</SelectItem>
-                          <SelectItem value="cancelled" className="hover:bg-primary/5 focus:bg-primary/5 cursor-pointer">❌ CANCELADA</SelectItem>
+                        <SelectTrigger className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground uppercase tracking-widest"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase shadow-xl rounded-xl">
+                          <SelectItem value="scheduled">📅 PROGRAMADA</SelectItem>
+                          <SelectItem value="in_progress">⚡ EN CURSO</SelectItem>
+                          <SelectItem value="completed">✅ FINALIZADA</SelectItem>
+                          <SelectItem value="cancelled">❌ CANCELADA</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Objetivo Estratégico (Planificación)</Label>
-                    <Textarea value={formData.visit_objective} onChange={(e) => setFormData(p => ({ ...p, visit_objective: e.target.value }))} placeholder="REDACTE EL OBJETIVO SMART DE LA VISITA..." rows={2} className="bg-slate-50 border-slate-100 rounded-[1.5rem] text-slate-900 font-black uppercase px-6 py-4 placeholder:text-slate-500" />
+                    <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Objetivo Estratégico (Planificación)</Label>
+                    <Textarea value={formData.visit_objective} onChange={(e) => setFormData(p => ({ ...p, visit_objective: e.target.value }))} placeholder="REDACTE EL OBJETIVO SMART DE LA VISITA..." rows={2} className="bg-muted/5 border-border/40 rounded-[1.5rem] text-foreground font-black uppercase px-6 py-4 placeholder:text-muted-foreground/30" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Fecha de Ejecución</Label>
-                      <Input type="date" value={formData.scheduled_date} onChange={(e) => setFormData(p => ({ ...p, scheduled_date: e.target.value }))} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-black text-slate-900 uppercase px-6" />
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Fecha de Ejecución</Label>
+                      <Input type="date" value={formData.scheduled_date} onChange={(e) => setFormData(p => ({ ...p, scheduled_date: e.target.value }))} className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground uppercase px-6" />
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Hora Estimada</Label>
-                      <Input type="time" value={formData.scheduled_time} onChange={(e) => setFormData(p => ({ ...p, scheduled_time: e.target.value }))} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-black text-slate-900 text-center" />
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Hora Estimada</Label>
+                      <Input type="time" value={formData.scheduled_time} onChange={(e) => setFormData(p => ({ ...p, scheduled_time: e.target.value }))} className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground text-center" />
                     </div>
                   </div>
                 </TabsContent>
@@ -326,35 +323,33 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 {isDoctorVisit && (
                   <TabsContent value="medical" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
                     <SPINGuideAlert entityType="doctor" />
-
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       <div className="space-y-8">
                         <div className="space-y-3">
-                          <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Portafolio en Despliegue</Label>
+                          <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Portafolio en Despliegue</Label>
                           <MultiSelect options={rawProducts.map(p => ({ label: p.name, value: p.name }))} selected={formData.products_presented} onChange={(s) => setFormData(p => ({ ...p, products_presented: s }))} />
                         </div>
-                        <div className="p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100 space-y-4">
-                          <h4 className="text-[9px] font-black text-indigo-400 uppercase tracking-widest ">Herramientas de Apoyo</h4>
+                        <div className="p-6 bg-muted/5 rounded-[2rem] border border-border/40 space-y-4">
+                          <h4 className="text-elite-xs font-black text-primary uppercase tracking-[0.4em]">Herramientas de Apoyo</h4>
                           <VisualAidModal />
                         </div>
                       </div>
-
                       <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Gestión de Muestras Biológicas</Label>
+                        <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Gestión de Muestras Biológicas</Label>
                         <SampleDeliveryManager onUpdate={(items) => setFormData(p => ({ ...p, samples_delivered: items }))} specialty={selectedContact?.specialty} isMedicalVisit={true} />
                       </div>
                     </div>
 
                     {productSellingPoints.length > 0 && (
-                      <div className="p-8 bg-indigo-500/5 rounded-[2.5rem] border border-indigo-100 space-y-6">
-                        <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><Sparkles className="w-5 h-5 text-indigo-500" /> Inteligencia de Producto Activa</h4>
+                      <div className="p-8 bg-primary/5 rounded-[2.5rem] border border-primary/20 space-y-6">
+                        <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3"><Sparkles className="w-5 h-5 text-primary" /> Inteligencia de Producto Activa</h4>
                         <div className="grid grid-cols-1 gap-4">
                           {productSellingPoints.map(prod => (
-                            <div key={prod.id} className="border-l-2 border-indigo-500/30 pl-5">
-                              <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest  mb-3">{prod.name}</p>
+                            <div key={prod.id} className="border-l-2 border-primary/30 pl-5">
+                              <p className="text-elite-xs font-black text-primary uppercase tracking-widest mb-3">{prod.name}</p>
                               <div className="flex flex-wrap gap-2">
                                 {prod.selling_points && Object.entries(prod.selling_points).map(([cat, val]: [string, any]) => val && (
-                                  <Badge key={cat} className={cn("px-4 py-2 rounded-xl border border-white/5 cursor-pointer transition-all text-[9px] font-bold  uppercase", formData.selling_points.includes(`${prod.name}: ${val}`) ? "bg-primary text-white" : "bg-background/5 text-slate-500 hover:bg-background/10")} onClick={() => {
+                                  <Badge key={cat} className={cn("px-4 py-2 rounded-xl border border-border/40 cursor-pointer transition-all text-[9px] font-bold uppercase", formData.selling_points.includes(`${prod.name}: ${val}`) ? "bg-primary text-white" : "bg-muted/10 text-muted-foreground hover:bg-muted/20")} onClick={() => {
                                     const tag = `${prod.name}: ${val}`;
                                     setFormData(p => ({ ...p, selling_points: p.selling_points.includes(tag) ? p.selling_points.filter(t => t !== tag) : [...p.selling_points, tag] }));
                                   }}>{cat}: {val}</Badge>
@@ -373,8 +368,8 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                     <div className="grid grid-cols-1 gap-12">
                       <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.4em]  mb-4 flex items-center gap-3"><ClipboardCheck className="w-5 h-5" /> Auditoría de Piso & Anaquel</h4>
-                          <Button type="button" onClick={() => navigate('/transfer-orders', { state: { initialContact: { id: formData.contact_id, name: selectedContact?.name || "" }, orderType: formData.visit_type === 'drugstore' ? 'direct' : 'transfer' } })} className="h-12 px-8 bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase  rounded-2xl shadow-xl transition-all"><ShoppingCart className="mr-3 h-5 w-5" /> GENERAR PEDIDO DE TRANSFERENCIA</Button>
+                          <h4 className="text-elite-xs font-black text-emerald-400 uppercase tracking-[0.4em] mb-4 flex items-center gap-3"><ClipboardCheck className="w-5 h-5" /> Auditoría de Piso & Anaquel</h4>
+                          <EliteButton variant="secondary" onClick={() => navigate('/transfer-orders', { state: { initialContact: { id: formData.contact_id, name: selectedContact?.name || "" }, orderType: formData.visit_type === 'drugstore' ? 'direct' : 'transfer' } })} className="bg-emerald-600 hover:bg-emerald-700 h-12" icon={ShoppingCart}>GENERAR PEDIDO</EliteButton>
                         </div>
                         <ShelfAuditForm visitId={visitData?.id} pharmacyId={formData.contact_id} />
                       </div>
@@ -385,29 +380,22 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                 {isInstitutionVisit && (
                   <>
                     <TabsContent value="sample-bank" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
-                      <div className="p-8 bg-slate-50/50 rounded-[2.5rem] border border-slate-100 space-y-8 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-10 opacity-5">
-                          <Package2 className="w-40 h-40 text-indigo-400" />
-                        </div>
+                      <div className="p-8 bg-muted/5 rounded-[2.5rem] border border-border/40 space-y-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-10 opacity-5"><Package2 className="w-40 h-40 text-primary" /></div>
                         <div className="relative z-10">
-                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><Package2 className="w-5 h-5 text-indigo-600" /> Suministro Institucional CA</h4>
-                          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-10">Control de Reposición y Stock en Banco de Muestras Hospitalario</p>
-                          
+                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3"><Package2 className="w-5 h-5 text-primary" /> Suministro Institucional CA</h4>
+                          <p className="text-muted-foreground text-elite-xs font-bold uppercase tracking-widest mb-10 opacity-60">Control de Reposición y Stock en Banco de Muestras Hospitalario</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
                             <div className="space-y-3">
-                              <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estatus del Banco en Sede</label>
+                              <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Estatus del Banco en Sede</label>
                               <Select value={formData.sample_bank_status || 'ok'} onValueChange={(v) => setFormData(p => ({ ...p, sample_bank_status: v }))}>
-                                <SelectTrigger className="h-14 bg-slate-950 border-white/5 rounded-xl font-black  uppercase text-white"><SelectValue placeholder="EVALUAR..." /></SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10 text-white font-bold  uppercase">
-                                  <SelectItem value="low">⚠️ BAJO (REPOSICIÓN)</SelectItem>
-                                  <SelectItem value="ok">✅ ÓPTIMO</SelectItem>
-                                  <SelectItem value="full">📦 SATURADO</SelectItem>
-                                </SelectContent>
+                                <SelectTrigger className="h-14 bg-muted/10 border-border/40 rounded-xl font-black uppercase text-foreground"><SelectValue placeholder="EVALUAR..." /></SelectTrigger>
+                                <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase"><SelectItem value="low">⚠️ BAJO (REPOSICIÓN)</SelectItem><SelectItem value="ok">✅ ÓPTIMO</SelectItem><SelectItem value="full">📦 SATURADO</SelectItem></SelectContent>
                               </Select>
                             </div>
                             <div className="space-y-3">
-                              <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Unidades Repuestas Hoy</label>
-                              <Input type="number" value={formData.sample_bank_refill || 0} onChange={(e) => setFormData(p => ({ ...p, sample_bank_refill: parseInt(e.target.value) }))} className="h-14 bg-slate-950 border-white/5 rounded-xl font-black text-center text-indigo-400" />
+                              <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Unidades Repuestas Hoy</label>
+                              <Input type="number" value={formData.sample_bank_refill || 0} onChange={(e) => setFormData(p => ({ ...p, sample_bank_refill: parseInt(e.target.value) }))} className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-center text-primary" />
                             </div>
                           </div>
                         </div>
@@ -415,31 +403,28 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                     </TabsContent>
 
                     <TabsContent value="academic" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
-                       <div className="p-8 bg-slate-50/50 rounded-[2.5rem] border border-slate-100 space-y-8 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-10 opacity-5">
-                          <GraduationCap className="w-40 h-40 text-emerald-400" />
-                        </div>
+                       <div className="p-8 bg-muted/5 rounded-[2.5rem] border border-border/40 space-y-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-10 opacity-5"><GraduationCap className="w-40 h-40 text-primary" /></div>
                         <div className="relative z-10">
-                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 "><GraduationCap className="w-5 h-5 text-emerald-600" /> Actividad Académica Corporativa</h4>
-                          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-10">Despliegue de Charlas Científicas y Apoyo a Actividades en Sede</p>
-                          
+                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3"><GraduationCap className="w-5 h-5 text-primary" /> Actividad Académica Corporativa</h4>
+                          <p className="text-muted-foreground text-elite-xs font-bold uppercase tracking-widest mb-10 opacity-60">Despliegue de Charlas Científicas y Apoyo a Actividades en Sede</p>
                           <div className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                               <div className="space-y-3">
-                                <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Tema / Título de la Charla</label>
-                                <Input value={formData.academic_topic || ''} onChange={(e) => setFormData(p => ({ ...p, academic_topic: e.target.value }))} placeholder="EJ: BENEFICIOS TERAPÉUTICOS CA" className="h-14 bg-slate-950 border-white/5 rounded-xl font-black text-white uppercase tracking-tight" />
+                                <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Tema / Título de la Charla</label>
+                                <Input value={formData.academic_topic || ''} onChange={(e) => setFormData(p => ({ ...p, academic_topic: e.target.value }))} placeholder="EJ: BENEFICIOS TERAPÉUTICOS CA" className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-foreground uppercase tracking-tight" />
                               </div>
                               <div className="space-y-3">
-                                <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Asistencia (Asistentes Estimados)</label>
-                                <Input type="number" value={formData.academic_attendance || 0} onChange={(e) => setFormData(p => ({ ...p, academic_attendance: parseInt(e.target.value) }))} className="h-14 bg-slate-950 border-white/5 rounded-xl font-black text-center text-emerald-400" />
+                                <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Asistencia Estimada</label>
+                                <Input type="number" value={formData.academic_attendance || 0} onChange={(e) => setFormData(p => ({ ...p, academic_attendance: parseInt(e.target.value) }))} className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-center text-primary" />
                               </div>
                             </div>
                             <div className="space-y-3">
-                              <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Contexto / Departamento del Centro de Salud</label>
-                              <Input value={formData.academic_context || ''} onChange={(e) => setFormData(p => ({ ...p, academic_context: e.target.value }))} placeholder="EJ: AUDITORIO PRINCIPAL / SERVICIO DE CARDIOLOGÍA" className="h-14 bg-slate-950 border-white/5 rounded-xl font-black text-white uppercase tracking-tight" />
+                              <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Contexto / Departamento</label>
+                              <Input value={formData.academic_context || ''} onChange={(e) => setFormData(p => ({ ...p, academic_context: e.target.value }))} placeholder="EJ: SERVICIO DE CARDIOLOGÍA" className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-foreground uppercase tracking-tight" />
                             </div>
-                            <div className="pt-6 border-t border-white/5">
-                               <label className="text-[10px] font-black uppercase text-indigo-400 ml-1 mb-4 block ">Herramientas de Presentación Científica CA</label>
+                            <div className="pt-6 border-t border-border/40">
+                               <label className="text-elite-xs font-black uppercase text-primary ml-1 mb-4 block">Herramientas de Presentación Científica</label>
                                <VisualAidModal />
                             </div>
                           </div>
@@ -453,37 +438,37 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div className="space-y-8">
                       <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-amber-500 ml-1">Reacción del Activo</Label>
+                        <Label className="text-elite-xs font-black uppercase text-amber-500 ml-1">Reacción del Activo</Label>
                         <Select value={formData.contact_reaction} onValueChange={(v) => setFormData(p => ({ ...p, contact_reaction: v }))}>
-                          <SelectTrigger className="h-14 bg-slate-900 border-white/5 rounded-2xl font-black  uppercase text-white"><SelectValue placeholder="EVALUAR..." /></SelectTrigger>
-                          <SelectContent className="bg-slate-900 border-white/10 text-white font-bold  uppercase"><SelectItem value="Muy Positiva">💎 MUY POSITIVA</SelectItem><SelectItem value="Positiva">✅ POSITIVA</SelectItem><SelectItem value="Neutral">⚖️ NEUTRAL</SelectItem><SelectItem value="Negativa">⚠️ NEGATIVA</SelectItem></SelectContent>
+                          <SelectTrigger className="h-14 bg-muted/10 border-border/40 rounded-2xl font-black uppercase text-foreground"><SelectValue placeholder="EVALUAR..." /></SelectTrigger>
+                          <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase"><SelectItem value="Muy Positiva">💎 MUY POSITIVA</SelectItem><SelectItem value="Positiva">✅ POSITIVA</SelectItem><SelectItem value="Neutral">⚖️ NEUTRAL</SelectItem><SelectItem value="Negativa">⚠️ NEGATIVA</SelectItem></SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Siguiente Hito Táctico</Label>
-                        <Input value={formData.next_step} onChange={(e) => setFormData(p => ({ ...p, next_step: e.target.value }))} placeholder="PRÓXIMA ACCIÓN..." className="h-14 bg-slate-900 border-white/5 rounded-2xl font-black uppercase px-6 text-white" />
+                        <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Siguiente Hito Táctico</Label>
+                        <Input value={formData.next_step} onChange={(e) => setFormData(p => ({ ...p, next_step: e.target.value }))} placeholder="PRÓXIMA ACCIÓN..." className="h-14 bg-muted/10 border-border/40 rounded-2xl font-black uppercase px-6 text-foreground" />
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Hallazgos & Notas de Misión</Label>
-                      <Textarea value={formData.results_notes} onChange={(e) => setFormData(p => ({ ...p, results_notes: e.target.value }))} placeholder="DIAGNOSTIQUE EL IMPACTO DE LA VISITA AQUÍ..." rows={6} className="bg-slate-900 border-white/5 rounded-[2rem] text-white font-black  uppercase p-8 px-8" />
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Hallazgos & Notas de Misión</Label>
+                      <Textarea value={formData.results_notes} onChange={(e) => setFormData(p => ({ ...p, results_notes: e.target.value }))} placeholder="DIAGNOSTIQUE EL IMPACTO AQUÍ..." rows={6} className="bg-muted/10 border-border/40 rounded-[2rem] text-foreground font-black uppercase p-8 px-8" />
                     </div>
                   </div>
-                  <div className="p-8 bg-amber-500/5 rounded-[2.5rem] border border-amber-100 space-y-4">
-                    <Label className="text-[10px] font-black uppercase text-amber-600 ml-1 flex items-center gap-2 "><Award className="w-4 h-4" /> Pacto de Cierre & Compromisos</Label>
-                    <Textarea value={formData.closure_commitment} onChange={(e) => setFormData(p => ({ ...p, closure_commitment: e.target.value }))} placeholder="REDACTE EL ACUERDO FINAL ALCANZADO..." rows={3} className="bg-card border-border rounded-[2rem] text-foreground font-black uppercase p-8 px-8 shadow-inner" />
+                  <div className="p-8 bg-amber-500/5 rounded-[2.5rem] border border-amber-500/20 space-y-4 shadow-inner">
+                    <Label className="text-elite-xs font-black uppercase text-amber-600 ml-1 flex items-center gap-2"><Award className="w-4 h-4" /> Pacto de Cierre & Compromisos</Label>
+                    <Textarea value={formData.closure_commitment} onChange={(e) => setFormData(p => ({ ...p, closure_commitment: e.target.value }))} placeholder="REDACTE EL ACUERDO FINAL..." rows={3} className="bg-card border-border/40 rounded-[2rem] text-foreground font-black uppercase p-8 px-8 shadow-inner" />
                   </div>
                 </TabsContent>
 
                 <TabsContent value="geo" className="mt-0 space-y-10 animate-in zoom-in-95 duration-500">
-                  <div className="flex flex-col items-center justify-center p-20 bg-slate-50 rounded-[3rem] border border-slate-100 border-dashed space-y-8 relative overflow-hidden text-slate-900">
-                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:20px_20px]" />
-                    <div className="w-24 h-24 rounded-full bg-blue-500/5 flex items-center justify-center animate-pulse shadow-glow shadow-blue-500/5"><MapPin className="w-12 h-12 text-blue-500" /></div>
+                  <div className="flex flex-col items-center justify-center p-20 bg-muted/5 rounded-[3rem] border border-border/40 border-dashed space-y-8 relative overflow-hidden text-foreground">
+                    <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]" />
+                    <div className="w-24 h-24 rounded-full bg-blue-500/10 flex items-center justify-center animate-pulse shadow-glow shadow-blue-500/10"><MapPin className="w-12 h-12 text-blue-500" /></div>
                     <div className="text-center relative z-10">
-                      <h4 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Validación Geográfica de César Ascanio CA</h4>
-                      <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">{formData.geolocation || "Buscando coordenadas de mando..."}</p>
+                      <h4 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Validación Geográfica CA</h4>
+                      <p className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest opacity-60">{formData.geolocation || "Buscando coordenadas de mando..."}</p>
                     </div>
-                    <Button type="button" onClick={() => { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { setFormData(p => ({ ...p, geolocation: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` })); toast({ title: "Geo-Sincronización Exitosa ✅" }); }); } }} className="h-16 px-12 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase  rounded-2xl shadow-2xl scale-105 active:scale-95 transition-all">CAPTURA GPS DE SEGURIDAD</Button>
+                    <EliteButton variant="secondary" className="bg-blue-600 hover:bg-blue-700 h-16 px-12 scale-105" icon={MapPin} onClick={() => { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { setFormData(p => ({ ...p, geolocation: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` })); toast({ title: "Geo-Sincronización Exitosa ✅" }); }); } }}>CAPTURA GPS DE SEGURIDAD</EliteButton>
                   </div>
                 </TabsContent>
               </form>
@@ -491,11 +476,11 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
           </Tabs>
         </div>
 
-        <div className="bg-slate-50 border-t border-slate-100 px-10 py-8 flex items-center justify-between gap-6 text-slate-900">
-          <Button variant="ghost" onClick={() => setOpen(false)} className="h-14 px-8 font-black uppercase text-rose-500 hover:text-rose-400 hover:bg-rose-500/5 rounded-2xl text-[10px] tracking-widest hidden sm:flex ">DESCARTAR SESIÓN</Button>
+        <div className="bg-muted/5 border-t border-border/40 px-10 py-8 flex items-center justify-between gap-6">
+          <Button variant="ghost" onClick={() => setOpen(false)} className="h-14 px-8 font-black uppercase text-rose-500 hover:text-rose-400 hover:bg-rose-500/5 rounded-2xl text-elite-xs tracking-widest hidden sm:flex">DESCARTAR</Button>
           <div className="flex items-center gap-4 flex-1 sm:flex-none">
-            <Button type="button" onClick={() => { const tabs = ["basic", isDoctorVisit ? "medical" : null, isSalesVisit ? "sales" : null, "strategy", "geo"].filter(t => t !== null); const currentIdx = tabs.indexOf(activeTab); setActiveTab(tabs[currentIdx < tabs.length - 1 ? currentIdx + 1 : 0] as string); }} variant="outline" className="flex-1 sm:flex-none h-14 px-8 border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-slate-900 hover:bg-slate-100 ">Navegación Táctica <ChevronRight className="w-4 h-4 ml-3" /></Button>
-            <Button type="submit" form="visit-detail-form" disabled={loading} className="flex-1 sm:flex-none h-14 px-12 bg-primary text-white font-black uppercase rounded-2xl shadow-premium-md hover:bg-primary/90">{loading ? <Loader2 className="animate-spin h-5 w-5 mr-3" /> : <CheckCircle className="h-5 w-5 mr-3" />} {visitData?.id ? 'SINCRONIZAR REPORTE' : 'DESPLEGAR MISIÓN'}</Button>
+            <EliteButton variant="secondary" className="h-14 px-8" icon={ChevronRight} onClick={() => { const tabs = ["basic", isDoctorVisit ? "medical" : null, isSalesVisit ? "sales" : null, "strategy", "geo"].filter(t => t !== null); const currentIdx = tabs.indexOf(activeTab); setActiveTab(tabs[currentIdx < tabs.length - 1 ? currentIdx + 1 : 0] as string); }}>SIGUIENTE</EliteButton>
+            <EliteButton type="submit" form="visit-detail-form" disabled={loading} className="h-14 px-12 min-w-[200px]" icon={loading ? Loader2 : CheckCircle}>{visitData?.id ? 'SINCRONIZAR REPORTE' : 'DESPLEGAR MISIÓN'}</EliteButton>
           </div>
         </div>
       </DialogContent>

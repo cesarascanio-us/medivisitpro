@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Users, TrendingUp, Activity, 
-    Globe, LayoutDashboard, ShoppingCart, RefreshCw, ExternalLink
+    Globe, LayoutDashboard, ShoppingCart, RefreshCw, ExternalLink, ChevronRight
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
 import { AdminDataFilter, AdminFilterState } from "@/components/admin/AdminDataFilter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton } from "@/components/layout/DesignSystem";
 
 interface ZoneKPI {
     estate: string;
@@ -55,11 +55,6 @@ interface RepPerformance {
     invitation_status?: 'pending' | 'active';
 }
 
-interface ItemStat {
-    name: string;
-    count: number;
-}
-
 const ROLE_LABELS: Record<string, string> = {
     master: 'System Admin',
     admin: 'Administrador',
@@ -74,16 +69,13 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-    master: 'status-active',
-    admin: 'status-destructive',
-    manager: 'status-info',
-    coordinator: 'status-active',
-    supervisor: 'status-info',
-    representative: 'status-active',
-    doctor: 'status-info',
-    pharmacist: 'status-pending',
-    service_chief: 'status-info',
-    telemarketing: 'status-active'
+    master: 'bg-primary/20 text-primary border-primary/40',
+    admin: 'bg-rose-500/20 text-rose-500 border-rose-500/40',
+    manager: 'bg-indigo-500/20 text-indigo-500 border-indigo-500/40',
+    coordinator: 'bg-emerald-500/20 text-emerald-500 border-emerald-500/40',
+    supervisor: 'bg-blue-500/20 text-blue-500 border-blue-500/40',
+    representative: 'bg-amber-500/20 text-amber-500 border-amber-500/40',
+    telemarketing: 'bg-emerald-500/20 text-emerald-500 border-emerald-500/40'
 };
 
 export default function DashboardMaster() {
@@ -111,7 +103,6 @@ export default function DashboardMaster() {
         const initial = {
             stats: { totalVisits: 0, totalOrders: 0, totalSales: 0, activeZones: 0 },
             repData: [] as RepPerformance[],
-            regionStats: {} as Record<string, { sales: number, visits: number }>,
             zoneData: [] as ZoneKPI[],
         };
 
@@ -144,154 +135,109 @@ export default function DashboardMaster() {
         ordersData?.forEach((o: any) => { if (repStatsMap[o.user_id]) { repStatsMap[o.user_id].orders++; repStatsMap[o.user_id].sales += (o.total || 0); } });
 
         const repsArray = Object.values(repStatsMap).map(rep => ({ ...rep, effectiveness: rep.visits > 0 ? (rep.orders / rep.visits) * 100 : 0 }));
-        
-        const regMap: Record<string, { sales: number, visits: number }> = {};
-        repsArray.forEach(rep => {
-            if (rep.region === 'N/A') return;
-            if (!regMap[rep.region]) regMap[rep.region] = { sales: 0, visits: 0 };
-            regMap[rep.region].sales += rep.sales;
-            regMap[rep.region].visits += rep.visits;
-        });
-
         const zoneStatsMap: Record<string, ZoneKPI> = {};
         (kpiDataRaw || []).forEach((k: any) => { zoneStatsMap[k.zone_name] = { estate: k.zone_name, region: k.zone_name, visit_count: 0, orders_count: k.total_orders || 0, sales_total: k.total_amount || 0 }; });
 
-        const finalZoneData = Object.values(zoneStatsMap);
         return {
-            stats: { totalVisits: visitCount || 0, totalOrders: ordersData?.length || 0, totalSales: ordersData?.reduce((sum: number, o: any) => sum + (o.total || 0), 0) || 0, activeZones: finalZoneData.length || 0 },
-            repData: repsArray, regionStats: regMap, zoneData: finalZoneData
+            stats: { totalVisits: visitCount || 0, totalOrders: ordersData?.length || 0, totalSales: ordersData?.reduce((sum: number, o: any) => sum + (o.total || 0), 0) || 0, activeZones: Object.keys(zoneStatsMap).length || 0 },
+            repData: repsArray, zoneData: Object.values(zoneStatsMap)
         };
-    }, [visitsDataObj, ordersData, profilesRoles, zonesData, kpiDataRaw, loading, isMaster, user]);
+    }, [visitsDataObj, ordersData, profilesRoles, zonesData, kpiDataRaw, loading, isMaster]);
 
     useEffect(() => { if (!authLoading && (!user || (!isManager && !isAdmin && !isMaster))) { navigate("/"); } }, [user, isManager, isAdmin, isMaster, navigate, authLoading]);
 
     if (loading && !stats.totalVisits) return (
-        <div className="h-screen flex flex-col items-center justify-center bg-background space-y-8">
-            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner animate-pulse">
+        <div className="h-screen flex flex-col items-center justify-center bg-card space-y-8 font-display">
+            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-premium-lg animate-pulse">
                 <RefreshCw className="h-10 w-10 text-primary animate-spin" />
             </div>
-            <div className="text-muted-foreground font-black uppercase tracking-[0.4em] font-display text-[10px]">Sincronizando Centro de Mando...</div>
+            <div className="text-muted-foreground font-black uppercase tracking-[0.4em] text-[10px]">Sincronizando Mando Central...</div>
         </div>
     );
 
     return (
-        <div className="flex flex-col h-full bg-background space-y-10 p-1 animate-in fade-in duration-700">
+        <div className="flex flex-col min-h-full bg-card space-y-10 p-1 animate-in fade-in duration-700 font-display">
             <EliteHeader 
                 title="Centro de Mando Alpha"
-                subtitle="Soberanía Digital y Orquestación SaaS de MediVisitPro"
+                subtitle="Soberanía Digital y Orquestación SaaS de MediVisitPro Intelligence"
                 icon={LayoutDashboard}
                 badgeText="SYSTEM ACCESS ALPHA"
                 statusText="Core Online & Sincronizado"
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button 
+                        <EliteButton 
+                            variant="secondary"
                             onClick={() => queryClient.invalidateQueries({ queryKey: ['dashboard'] })} 
-                            size="icon"
-                            variant="ghost" 
-                            className="h-14 w-14 rounded-2xl bg-card border border-border text-muted-foreground hover:text-primary transition-all shadow-sm group"
+                            className="h-14 w-14 p-0 shadow-premium-sm group"
                         >
                             <RefreshCw className={cn("h-6 w-6 group-hover:rotate-180 transition-transform duration-500", loading && "animate-spin")} />
-                        </Button>
+                        </EliteButton>
                     </div>
                 }
             />
 
             <AdminDataFilter onFilterChange={setFilters} />
 
-            <Tabs defaultValue="dashboard" className="w-full space-y-8" onValueChange={setActiveTab}>
+            <Tabs defaultValue="dashboard" className="w-full space-y-10" onValueChange={setActiveTab}>
                 <div className="flex justify-start">
-                    <TabsList className="bg-muted/30 border border-border/40 p-2 rounded-full h-auto flex gap-2 shadow-inner">
-                        <TabsTrigger 
-                            value="dashboard" 
-                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-primary data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none group"
-                        >
-                            <LayoutDashboard size={14} className="group-data-[state=active]:text-white" /> TABLERO
+                    <TabsList className="bg-muted/5 border border-border/40 p-1.5 rounded-full h-auto flex gap-1 shadow-inner">
+                        <TabsTrigger value="dashboard" className="flex items-center gap-3 px-10 py-3 data-[state=active]:bg-primary data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none group">
+                            <LayoutDashboard size={14} /> TABLERO
                         </TabsTrigger>
-                        
-                        <TabsTrigger 
-                            value="pedidos" 
-                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-primary data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-muted-foreground group"
-                        >
-                            <ShoppingCart size={14} className="group-data-[state=active]:text-white" /> PEDIDOS
-                            {pendingOrders.length > 0 && (
-                                <span className="ml-2 px-2 py-0.5 rounded-full bg-destructive text-white text-[9px] font-black">{pendingOrders.length}</span>
-                            )}
+                        <TabsTrigger value="pedidos" className="flex items-center gap-3 px-10 py-3 data-[state=active]:bg-primary data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-muted-foreground group">
+                            <ShoppingCart size={14} /> PEDIDOS {pendingOrders.length > 0 && <Badge className="ml-2 bg-rose-500 text-white border-none text-[8px] h-5 min-w-5 flex items-center justify-center rounded-full p-0">{pendingOrders.length}</Badge>}
                         </TabsTrigger>
-                        
-                        <TabsTrigger 
-                            value="equipo" 
-                            className="flex items-center gap-3 px-8 py-3 data-[state=active]:bg-primary data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-muted-foreground group"
-                        >
-                            <Users size={14} className="group-data-[state=active]:text-white" /> EQUIPO
+                        <TabsTrigger value="equipo" className="flex items-center gap-3 px-10 py-3 data-[state=active]:bg-primary data-[state=active]:text-white rounded-full transition-all font-black text-[11px] uppercase tracking-widest border-none text-muted-foreground group">
+                            <Users size={14} /> EQUIPO
                         </TabsTrigger>
                     </TabsList>
                 </div>
 
                 <TabsContent value="dashboard" className="space-y-10 animate-in fade-in zoom-in-95 duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <EliteKPICard 
-                            title="Ventas Totales" 
-                            value={`$${stats.totalSales.toLocaleString()}`} 
-                            icon={TrendingUp}
-                            color="emerald"
-                        />
-                        <EliteKPICard 
-                            title="Visitas Médicas" 
-                            value={stats.totalVisits.toString()} 
-                            icon={Activity}
-                            color="indigo"
-                        />
-                        <EliteKPICard 
-                            title="Pedidos" 
-                            value={stats.totalOrders.toString()} 
-                            icon={ShoppingCart}
-                            color="blue"
-                        />
-                        <EliteKPICard 
-                            title="Detección Zonas" 
-                            value={stats.activeZones.toString()} 
-                            icon={Globe}
-                            color="amber"
-                        />
+                        <EliteKPICard title="Ventas Totales" value={`$${stats.totalSales.toLocaleString()}`} icon={TrendingUp} color="emerald" />
+                        <EliteKPICard title="Visitas Médicas" value={stats.totalVisits.toString()} icon={Activity} color="indigo" />
+                        <EliteKPICard title="Pedidos Activos" value={stats.totalOrders.toString()} icon={ShoppingCart} color="blue" />
+                        <EliteKPICard title="Detección Zonas" value={stats.activeZones.toString()} icon={Globe} color="amber" />
                     </div>
                     <CompetitivenessMonitor />
                     <AnalyticsCharts zoneData={zoneData} />
                 </TabsContent>
 
                 <TabsContent value="pedidos" className="space-y-6 animate-in slide-in-from-right-10 duration-500">
-                    <Card className="bg-card rounded-[2.5rem] border border-border shadow-premium-sm overflow-hidden p-6">
+                    <EliteCard className="p-8 shadow-premium-sm overflow-hidden">
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-b border-border/40 hover:bg-transparent">
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Orden de Manifiesto</TableHead>
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Entrada / Punto de Venta</TableHead>
-                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6 text-right">Monto Proyectado</TableHead>
+                                    <TableHead className="font-black text-elite-xs text-muted-foreground uppercase tracking-[0.3em] py-8">Orden de Manifiesto</TableHead>
+                                    <TableHead className="font-black text-elite-xs text-muted-foreground uppercase tracking-[0.3em] py-8">Entrada / Punto de Venta</TableHead>
+                                    <TableHead className="font-black text-elite-xs text-muted-foreground uppercase tracking-[0.3em] py-8 text-right">Monto Proyectado</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {pendingOrders.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={3} className="text-center py-24 text-muted-foreground">
-                                            <div className="flex flex-col items-center">
-                                                <ShoppingCart className="h-12 w-12 opacity-10 mb-4" />
-                                                <p className="font-black text-[10px] uppercase tracking-[0.3em]">No hay pedidos pendientes de revisión</p>
+                                        <TableCell colSpan={3} className="text-center py-32 text-muted-foreground">
+                                            <div className="flex flex-col items-center gap-6 opacity-30">
+                                                <ShoppingCart className="h-16 w-16" />
+                                                <p className="font-black text-elite-xs uppercase tracking-[0.4em]">Sin pedidos pendientes de orquestación</p>
                                             </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     pendingOrders.map(order => (
-                                        <TableRow key={order.id} className="border-b border-border/20 hover:bg-muted/30 group transition-colors">
-                                            <TableCell className="py-6 font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">
+                                        <TableRow key={order.id} className="border-b border-border/10 hover:bg-muted/5 group transition-colors">
+                                            <TableCell className="py-8 font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">
                                                 {order.order_number}
                                             </TableCell>
-                                            <TableCell className="py-6">
+                                            <TableCell className="py-8">
                                                 <div className="flex flex-col">
-                                                    <span className="font-bold text-foreground uppercase text-[11px] tracking-tight">{order.pharmacy_name}</span>
-                                                    <span className="text-[9px] text-muted-foreground font-black uppercase tracking-widest">Sede Autorizada</span>
+                                                    <span className="font-black text-foreground uppercase text-xs tracking-tight">{order.pharmacy_name}</span>
+                                                    <span className="text-elite-xs text-muted-foreground font-black uppercase tracking-widest opacity-60">Sede Autorizada</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="py-6 text-right font-black text-foreground font-display text-lg tracking-tighter">
+                                            <TableCell className="py-8 text-right font-black text-foreground font-display text-2xl tracking-tighter tabular-nums">
                                                 ${order.total?.toLocaleString()}
                                             </TableCell>
                                         </TableRow>
@@ -299,47 +245,48 @@ export default function DashboardMaster() {
                                 )}
                             </TableBody>
                         </Table>
-                    </Card>
+                    </EliteCard>
                 </TabsContent>
 
                 <TabsContent value="equipo" className="space-y-8 animate-in slide-in-from-left-10 duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {repData.map(rep => (
-                            <Card key={rep.id} className="bg-card border border-border rounded-[2.5rem] shadow-premium-sm p-8 group hover:shadow-premium-md transition-all duration-500">
-                                <div className="flex justify-between items-start mb-6">
-                                     <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 transition-all group-hover:scale-110 shadow-inner">
-                                         <Users className="text-primary h-7 w-7" />
+                            <EliteCard key={rep.id} className="p-10 shadow-premium-sm group hover:shadow-premium-lg transition-all duration-500 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-8 opacity-5"><Users className="w-20 h-20" /></div>
+                                <div className="flex justify-between items-start mb-8 relative z-10">
+                                     <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 transition-all group-hover:scale-110 shadow-inner group-hover:border-primary/40">
+                                         <Users className="text-primary h-8 w-8" />
                                      </div>
-                                     <Badge className={cn("px-4 py-1.5 font-black text-[9px] uppercase border tracking-widest rounded-full", ROLE_COLORS[rep.role || 'representative'])}>
+                                     <Badge className={cn("px-5 py-2 font-black text-elite-xs uppercase border tracking-widest rounded-full shadow-sm", ROLE_COLORS[rep.role || 'representative'])}>
                                         {ROLE_LABELS[rep.role || 'representative']}
                                      </Badge>
                                 </div>
-                                <h3 className="font-black text-foreground text-lg uppercase mb-1 tracking-tight group-hover:text-primary transition-colors">{rep.name}</h3>
-                                <p className="text-[10px] text-muted-foreground mb-8 font-black uppercase tracking-widest">{rep.email}</p>
+                                <h3 className="font-black text-foreground text-xl uppercase mb-1 tracking-tighter group-hover:text-primary transition-colors font-display">{rep.name}</h3>
+                                <p className="text-elite-xs text-muted-foreground mb-10 font-black uppercase tracking-widest opacity-60">{rep.email}</p>
                                 
-                                <div className="pt-6 border-t border-border/40 flex justify-between items-center">
+                                <div className="pt-8 border-t border-border/40 flex justify-between items-end relative z-10">
                                     <div className="flex flex-col">
-                                         <span className="text-[8px] font-black text-muted-foreground/50 uppercase tracking-widest mb-1">Ventas Período</span>
-                                         <p className="text-xl font-black text-emerald-500 font-display tracking-tighter">${rep.sales.toLocaleString()}</p>
+                                         <span className="text-elite-xs font-black text-muted-foreground/40 uppercase tracking-widest mb-2">Ventas Período</span>
+                                         <p className="text-2xl font-black text-emerald-500 font-display tracking-tighter tabular-nums">${rep.sales.toLocaleString()}</p>
                                     </div>
                                     <div className="text-right">
-                                         <p className="text-xl font-black text-foreground font-display tracking-tighter">{rep.effectiveness.toFixed(0)}%</p>
-                                         <p className="text-[8px] font-black text-muted-foreground/50 uppercase tracking-widest">Eficacia</p>
+                                         <p className="text-2xl font-black text-foreground font-display tracking-tighter tabular-nums">{rep.effectiveness.toFixed(0)}%</p>
+                                         <p className="text-elite-xs font-black text-muted-foreground/40 uppercase tracking-widest">Eficacia</p>
                                     </div>
                                 </div>
 
-                                <Button 
-                                    variant="ghost" 
-                                    className="w-full mt-6 h-12 rounded-xl bg-muted/20 border border-transparent hover:border-primary/20 text-muted-foreground hover:text-primary font-black text-[10px] uppercase tracking-widest transition-all"
-                                    onClick={() => navigate(`/performance/${rep.id}`)}
-                                >
-                                    <ExternalLink className="h-4 w-4 mr-2" /> Ver Rendimiento
-                                </Button>
-                            </Card>
+                                <EliteButton variant="secondary" className="w-full mt-8 h-12 shadow-sm" icon={ExternalLink} onClick={() => navigate(`/performance/${rep.id}`)}>VER RENDIMIENTO</EliteButton>
+                            </EliteCard>
                         ))}
                     </div>
                 </TabsContent>
             </Tabs>
+
+            <div className="text-center pb-10 pt-4">
+                <p className="text-elite-xs text-muted-foreground/30 font-black uppercase tracking-[0.4em]">
+                    Powered by Antigravity Core • Alpha Hub • Empresa CA
+                </p>
+            </div>
         </div>
     );
 }

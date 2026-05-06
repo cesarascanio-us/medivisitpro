@@ -11,7 +11,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { LucideIcon, TrendingUp, TrendingDown, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+/**
+ * ELITE DESIGN SYSTEM - COMPONENT LIBRARY
+ * Standardized components for the Master Framework (CA)
+ */
 
 interface EliteHeaderProps {
     title: string;
@@ -25,27 +32,32 @@ interface EliteHeaderProps {
 
 export function EliteHeader({ title, subtitle, icon: Icon, badgeText, statusText, statusColor = "bg-emerald-500", rightContent }: EliteHeaderProps) {
     return (
-        <header className="bg-card px-4 py-4 md:px-6 md:py-5 rounded-[1.2rem] md:rounded-2xl border border-border shadow-soft relative overflow-hidden mx-1">
+        <header className="bg-card px-4 py-4 md:px-10 md:py-8 rounded-elite-lg border border-border/40 shadow-premium-lg relative overflow-hidden mx-1 animate-in fade-in slide-in-from-top-5 duration-700">
+            {/* Glowing Accent Orbs */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-30" />
+            
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
-                <div className="flex items-start md:items-center gap-4 md:gap-6">
-                    <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-primary/10 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner border border-primary/20 transition-transform duration-500">
-                        <Icon className="text-primary h-6 w-6 md:h-8 md:w-8 premium-icon" />
+                <div className="flex items-center gap-6 md:gap-8">
+                    <div className="icon-box-primary group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+                        <Icon className="h-8 w-8 premium-icon relative z-10" />
                     </div>
                     <div>
-                        <p className="text-primary text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] mb-1">{subtitle}</p>
-                        <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight leading-tight">{title}</h1>
-                        <div className="flex flex-wrap items-center gap-2 mt-2 md:mt-3">
-                            {badgeText && <Badge className="bg-primary/5 text-primary border-none font-bold text-[8px] md:text-[9px] px-2.5 py-0.5 uppercase tracking-wider rounded-full">{badgeText}</Badge>}
+                        <p className="text-primary text-elite-xs mb-2">{subtitle}</p>
+                        <h1 className="text-xl md:text-2xl font-black text-foreground tracking-tighter uppercase font-display">{title}</h1>
+                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                            {badgeText && <Badge className="badge-elite-info">{badgeText}</Badge>}
                             {statusText && (
-                                <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-50 border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
-                                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", statusColor)}></div>
-                                    <span className="text-[8px] md:text-[9px] font-bold text-slate-500 uppercase tracking-wider">{statusText}</span>
+                                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-muted/10 border border-border/40 shadow-inner group">
+                                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]", statusColor)}></div>
+                                    <span className="text-elite-xs text-muted-foreground group-hover:text-foreground transition-colors">{statusText}</span>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
+                <div className="flex items-center gap-4 w-full md:w-auto">
                     {rightContent}
                 </div>
             </div>
@@ -79,118 +91,134 @@ export function EliteKPICard({
     isActive
 }: EliteKPICardProps) {
     
-    const colorConfigs = {
-        primary: "text-primary bg-primary/5 border-primary/10",
-        secondary: "text-blue-600 bg-blue-600/5 border-blue-600/10",
-        accent: "text-indigo-600 bg-indigo-600/5 border-indigo-600/10",
-        emerald: "text-emerald-600 bg-emerald-600/5 border-emerald-600/10",
-        rose: "text-rose-600 bg-rose-600/5 border-rose-600/10",
-        amber: "text-amber-600 bg-amber-600/5 border-amber-600/10",
-        blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
-        indigo: "text-indigo-700 bg-indigo-700/5 border-indigo-700/10"
+    const colors = {
+        primary: "text-primary bg-primary/10 border-primary/20",
+        secondary: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+        accent: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
+        emerald: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+        rose: "text-rose-500 bg-rose-500/10 border-rose-500/20",
+        amber: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+        blue: "text-blue-400 bg-blue-400/10 border-blue-400/20",
+        indigo: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20"
     };
 
-    const activeColor = colorConfigs[color as keyof typeof colorConfigs] || colorConfigs.primary;
+    const colorStyle = colors[color] || colors.primary;
 
     return (
-        <Card 
-            onClick={onClick}
-            className={cn(
-                "border shadow-soft rounded-3xl overflow-hidden group transition-all duration-500",
-                onClick ? "cursor-pointer hover:shadow-card hover:-translate-y-1" : "",
-                isActive ? "border-primary ring-2 ring-primary/20 shadow-premium-md scale-[1.02]" : "border-border/50",
-                "animate-in fade-in slide-in-from-bottom duration-700",
-                variant === 'glass' ? "bg-card/80 backdrop-blur-xl" : "bg-card"
-            )}
-            style={{ animationDelay: `${delay}ms` }}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: delay / 1000 }}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
         >
-            <CardContent className="p-3 md:p-5">
-                <div className="flex items-start justify-between mb-3 md:mb-4">
-                    <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center transition-transform group-hover:rotate-6 duration-500", activeColor.split(' ')[1])}>
-                        <Icon className={cn("h-5 w-5 md:h-6 md:w-6 premium-icon", activeColor.split(' ')[0])} />
+            <Card 
+                onClick={onClick}
+                className={cn(
+                    "card-elite group h-full",
+                    onClick ? "cursor-pointer" : "",
+                    isActive ? "border-primary/40 ring-2 ring-primary/20 scale-[1.02]" : "",
+                    variant === 'glass' ? "backdrop-blur-xl" : ""
+                )}
+            >
+                <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-6">
+                        <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-inner border group-hover:scale-110", colorStyle)}>
+                            <Icon className="h-7 w-7 premium-icon" />
+                        </div>
+                        {trend !== undefined && (
+                            <Badge className={cn(
+                                "badge-elite-success border-none",
+                                trend >= 0 ? "badge-elite-success" : "badge-elite-error"
+                            )}>
+                                {trend >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                                {Math.abs(trend)}%
+                            </Badge>
+                        )}
                     </div>
-                    {trend !== undefined && (
-                        <Badge className={cn(
-                            "border-none font-bold text-[8px] md:text-[9px] px-2 py-0.5 rounded-full uppercase flex items-center gap-1",
-                            trend >= 0 ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
-                        )}>
-                            {trend >= 0 ? <TrendingUp size={8} /> : <TrendingDown size={8} />}
-                            {Math.abs(trend)}%
-                        </Badge>
-                    )}
-                </div>
-                
-                <div className="space-y-1">
-                    <p className="text-[8px] md:text-[9px] font-bold text-slate-500 uppercase tracking-widest">{title}</p>
-                    <div className="flex items-baseline gap-2">
-                        <p className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tabular-nums tracking-tight leading-none">{value}</p>
+                    
+                    <div className="space-y-2">
+                        <p className="text-elite-xs text-muted-foreground">{title}</p>
+                        <p className="text-2xl font-black text-foreground tracking-tighter tabular-nums leading-none">{value}</p>
+                        {subtitle && (
+                            <div className="flex items-center gap-2 mt-3">
+                                <div className={cn("w-1 h-1 rounded-full", colorStyle.split(' ')[0].replace('text', 'bg'))} />
+                                <p className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-widest">{subtitle}</p>
+                            </div>
+                        )}
                     </div>
-                    {subtitle && (
-                        <p className="text-[7px] md:text-[8px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5 md:mt-2 flex items-center gap-1.5">
-                            <span className={cn("w-1 h-1 rounded-full", activeColor.split(' ')[0].replace('text', 'bg'))} />
-                            {subtitle}
-                        </p>
-                    )}
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        </motion.div>
     );
 }
 
-export function EliteTabsList({ children, className }: { children: React.ReactNode, className?: string }) {
+export function EliteCard({ children, className, onClick, delay = 0 }: { children: React.ReactNode, className?: string, onClick?: () => void, delay?: number }) {
     return (
-        <div className={cn("flex justify-start px-1 overflow-x-auto no-scrollbar", className)}>
-            <TabsList className="bg-slate-100/50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50 p-1 rounded-xl h-auto flex flex-nowrap gap-1 backdrop-blur-md shadow-inner">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: delay / 1000 }}
+            whileHover={onClick ? { y: -4, transition: { duration: 0.2 } } : undefined}
+            className="h-full"
+        >
+            <Card 
+                onClick={onClick}
+                className={cn(
+                    "card-elite h-full",
+                    onClick && "cursor-pointer hover:border-primary/20",
+                    className
+                )}
+            >
                 {children}
-            </TabsList>
+            </Card>
+        </motion.div>
+    );
+}
+
+export function EliteButton({ 
+    children, 
+    variant = 'primary', 
+    icon: Icon, 
+    className,
+    ...props 
+}: React.ComponentProps<typeof Button> & { variant?: 'primary' | 'secondary' | 'ghost', icon?: LucideIcon }) {
+    const variants = {
+        primary: "btn-elite-primary",
+        secondary: "btn-elite-secondary",
+        ghost: "btn-elite-ghost"
+    };
+
+    return (
+        <Button className={cn(variants[variant], className)} {...props}>
+            {Icon && <Icon className="h-5 w-5" />}
+            {children}
+        </Button>
+    );
+}
+
+export function EliteInput({ icon: Icon, className, ...props }: React.ComponentProps<typeof Input> & { icon?: LucideIcon }) {
+    return (
+        <div className="relative group w-full">
+            {Icon && <Icon className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />}
+            <Input className={cn("input-elite", Icon ? "pl-16" : "px-6", className)} {...props} />
         </div>
     );
 }
 
-interface EliteTabsTriggerProps {
-    value: string;
-    label: string;
-    icon: LucideIcon;
-    activeColor?: string;
-}
-
-export function EliteTabsTrigger({ value, label, icon: Icon, activeColor = "data-[state=active]:bg-primary" }: EliteTabsTriggerProps) {
-    return (
-        <TabsTrigger 
-            value={value} 
-            className={cn(
-                "flex items-center gap-2 px-3 py-2 md:px-6 md:py-3 data-[state=active]:text-primary-foreground rounded-lg md:rounded-xl transition-all font-bold text-[9px] md:text-[10px] uppercase tracking-wider border-none group whitespace-nowrap",
-                activeColor
-            )}
-        >
-            <Icon size={12} strokeWidth={2.5} className="text-slate-400 group-data-[state=active]:text-inherit" /> {label}
-        </TabsTrigger>
-    );
-}
-
-interface EliteTableProps {
-    title: string;
-    description: string;
-    children: React.ReactNode;
-    onSearch?: (value: string) => void;
-    searchPlaceholder?: string;
-}
-
 export function EliteTable({ title, description, children, onSearch, searchPlaceholder = "BUSCAR..." }: EliteTableProps) {
     return (
-        <Card className="bg-card border border-border shadow-premium-lg rounded-[2.5rem] overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-1000">
-            <div className="p-8 md:p-10 border-b border-border/40 bg-muted/5 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
-                <div className="space-y-1">
-                    <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase font-display">{title}</h2>
-                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">{description}</p>
+        <Card className="card-elite rounded-elite-xl animate-in fade-in slide-in-from-bottom-10 duration-1000">
+            <div className="p-6 md:p-8 border-b border-border/40 bg-muted/5 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
+                <div className="space-y-2">
+                    <h2 className="text-elite-title text-foreground font-display">{title}</h2>
+                    <p className="text-elite-sm text-muted-foreground">{description}</p>
                 </div>
                 {onSearch && (
-                    <div className="relative w-full xl:w-96 group">
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        <Input 
+                    <div className="w-full xl:w-96">
+                        <EliteInput 
+                            icon={Search}
                             placeholder={searchPlaceholder} 
                             onChange={(e) => onSearch(e.target.value)}
-                            className="h-14 pl-14 bg-muted/20 border-none focus-visible:ring-primary rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-muted-foreground/50 text-foreground"
                         />
                     </div>
                 )}
@@ -199,5 +227,26 @@ export function EliteTable({ title, description, children, onSearch, searchPlace
                 {children}
             </div>
         </Card>
+    );
+}
+
+export function EliteTabsList({ children, className }: { children: React.ReactNode, className?: string }) {
+    return (
+        <div className={cn("flex justify-start px-1 overflow-x-auto no-scrollbar", className)}>
+            <TabsList className="bg-muted/10 border border-border/40 p-1.5 rounded-elite-md h-auto flex flex-nowrap gap-1.5 backdrop-blur-md shadow-inner">
+                {children}
+            </TabsList>
+        </div>
+    );
+}
+
+export function EliteTabsTrigger({ value, label, icon: Icon }: EliteTabsTriggerProps) {
+    return (
+        <TabsTrigger 
+            value={value} 
+            className="flex items-center gap-3 px-8 py-4 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border-none group whitespace-nowrap"
+        >
+            <Icon size={14} className="text-primary group-data-[state=active]:text-white transition-colors" /> {label}
+        </TabsTrigger>
     );
 }

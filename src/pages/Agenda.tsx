@@ -1,17 +1,7 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
- ======================================================================== */
-
 import { useState, useEffect } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Plus, MapPin, Clock, User, Target } from "lucide-react";
-import { EliteHeader } from "@/components/layout/DesignSystem";
+import { Calendar, ChevronLeft, ChevronRight, Plus, MapPin, Clock, User, Target, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { EliteHeader, EliteKPICard, EliteButton, EliteCard } from "@/components/layout/DesignSystem";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { VisitDetailDialog } from "@/components/visits/VisitDetailDialog";
 import { QuickScheduleWizard } from "@/components/visits/QuickScheduleWizard";
@@ -22,6 +12,7 @@ import { useDemoData } from "@/contexts/MockDataProvider";
 import { cn } from "@/lib/utils";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Agenda() {
   const [searchParams] = useSearchParams();
@@ -99,137 +90,141 @@ export default function Agenda() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-emerald-500/10 text-emerald-500 border-none'; 
-      case 'scheduled': return 'bg-primary/10 text-primary border-none';
-      case 'cancelled': return 'bg-rose-500/5 text-rose-500 border-none';
-      default: return 'bg-slate-50 text-slate-400 border-none';
+      case 'completed': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'; 
+      case 'scheduled': return 'bg-primary/10 text-primary border-primary/20';
+      case 'cancelled': return 'bg-rose-500/5 text-rose-500 border-rose-500/20';
+      default: return 'bg-muted/10 text-muted-foreground border-border/40';
     }
   };
 
   return (
-    <div className="space-y-10 pb-10 font-display animate-in fade-in duration-700">
-      {/* Header Industrial de Élite con Control Cronológico */}
+    <div className="space-y-10 pb-20 font-display animate-in fade-in duration-700">
       <EliteHeader 
-        title="Plan de Mando"
+        title="Plan de Mando Táctico"
         subtitle={currentDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}
         icon={Calendar}
-        badgeText="TÁCTICO V6"
-        statusText={`CARGA OPERATIVA: ${visits.length} MISIONES`}
-        statusColor="bg-primary"
+        badgeText="Operativo V6.0"
+        statusText={`${visits.length} MISIONES PROGRAMADAS`}
+        statusColor={visits.length > 0 ? "bg-primary" : "bg-muted-foreground/30"}
         rightContent={
-          <div className="flex items-center gap-4 bg-background/50 backdrop-blur-md p-2 pl-4 rounded-[1.5rem] border border-slate-100 shadow-premium-sm group hover:shadow-premium-md transition-all">
+          <div className="flex items-center gap-4 bg-muted/5 backdrop-blur-md p-1.5 rounded-elite-md border border-border/40 shadow-inner group">
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={() => changeDate(-1)} className="h-10 w-10 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+              <EliteButton variant="ghost" className="h-10 w-10 p-0" onClick={() => changeDate(-1)}>
                 <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" onClick={() => setCurrentDate(new Date())} className="h-10 px-4 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 rounded-xl">HOY</Button>
-              <Button variant="ghost" size="icon" onClick={() => changeDate(1)} className="h-10 w-10 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+              </EliteButton>
+              <EliteButton variant="ghost" className="h-10 px-4 text-primary font-black text-[10px]" onClick={() => setCurrentDate(new Date())}>HOY</EliteButton>
+              <EliteButton variant="ghost" className="h-10 w-10 p-0" onClick={() => changeDate(1)}>
                 <ChevronRight className="h-5 w-5" />
-              </Button>
+              </EliteButton>
             </div>
-            <div className="w-[1px] h-8 bg-slate-100 mx-2 text-slate-900" />
-            <Button onClick={() => setWizardOpen(true)} className="bg-primary text-white shadow-premium-md h-12 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
-              <Plus className="h-4 w-4" /> NUEVA MISIÓN
-            </Button>
+            <div className="w-px h-8 bg-border/40 mx-2" />
+            <EliteButton onClick={() => setWizardOpen(true)} className="h-12 px-6" icon={Plus}>
+              NUEVA MISIÓN
+            </EliteButton>
           </div>
         }
       />
 
-      <div className="space-y-8">
-        <div className="grid gap-6">
+      <div className="grid gap-8">
+        <AnimatePresence mode="popLayout">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-40 gap-6">
-              <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-[1.5rem] animate-spin shadow-glow shadow-primary/20" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-40 gap-6">
+              <div className="w-16 h-16 border-4 border-primary/10 border-t-primary rounded-full animate-spin shadow-glow shadow-primary/10" />
               <div className="text-center">
-                <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em] animate-pulse">Sincronizando Archivo Maestro CA...</p>
-                <p className="text-slate-300 font-bold uppercase text-[8px] tracking-widest mt-2">CÉSAR ASCANIO ENTERPRISE FRAMEWORK</p>
+                <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em] animate-pulse">Sincronizando Archivo Maestro...</p>
+                <p className="text-muted-foreground font-bold uppercase text-[8px] tracking-widest mt-2">CÉSAR ASCANIO ENTERPRISE FRAMEWORK</p>
               </div>
-            </div>
+            </motion.div>
           ) : visits.length === 0 ? (
-            <div className="bg-background/50 backdrop-blur-3xl rounded-[4rem] border border-dashed border-slate-200 p-24 text-center shadow-inner">
-              <PremiumEmptyState
-                icon={Calendar}
-                title="OBJETIVOS NO DETECTADOS"
-                description="ZONA CRONOLÓGICA DESPEJADA. INICIE EL DESPLIEGUE AÑADIENDO UNA NUEVA MISIÓN ESTRATÉGICA."
-                actionLabel="ABRIR WIZARD"
-                onAction={() => setWizardOpen(true)}
-              />
-            </div>
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+              <EliteCard className="p-24 border-dashed border-border/40 bg-muted/5 text-center">
+                <PremiumEmptyState
+                  icon={Calendar}
+                  title="OBJETIVOS NO DETECTADOS"
+                  description="ZONA CRONOLÓGICA DESPEJADA. INICIE EL DESPLIEGUE AÑADIENDO UNA NUEVA MISIÓN ESTRATÉGICA."
+                  actionLabel="ABRIR WIZARD"
+                  onAction={() => setWizardOpen(true)}
+                />
+              </EliteCard>
+            </motion.div>
           ) : (
-            <div className="grid gap-8">
-              {visits.map((v) => (
-                <Card key={v.id} className="group relative overflow-hidden rounded-[3rem] bg-card border-slate-100 hover:border-primary/30 transition-all duration-700 shadow-premium-sm hover:shadow-premium-xl cursor-pointer">
-                  <div className="absolute top-0 left-0 w-2 h-full bg-slate-50 group-hover:bg-primary transition-colors duration-1000 text-slate-900" />
-                  <CardContent className="p-10">
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
-                      <div className="flex items-start gap-10">
-                        <div className="flex flex-col items-center gap-4">
-                          <div className={cn("w-20 h-20 rounded-[2rem] flex items-center justify-center transition-all duration-700 transform group-hover:scale-110 group-hover:rotate-6 bg-slate-50 border border-slate-100 shadow-inner group-hover:bg-primary group-hover:text-white")}>
-                            <Clock className="h-10 w-10 opacity-30 group-hover:opacity-100" />
-                          </div>
-                          <Badge className="text-[10px] font-black text-slate-500 uppercase tracking-widest tabular-nums px-4 py-1.5 bg-slate-50 border-none rounded-xl shadow-sm">
-                            {new Date(v.scheduled_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                          </Badge>
+            <div className="grid gap-6">
+              {visits.map((v, i) => (
+                <EliteCard key={v.id} delay={i * 50} className="group overflow-hidden">
+                   <div className="absolute top-0 left-0 w-1.5 h-full bg-muted/20 group-hover:bg-primary transition-colors duration-500" />
+                   <CardContent className="p-0">
+                    <div className="flex flex-col lg:flex-row lg:items-center">
+                      <div className="lg:w-32 bg-muted/5 p-8 flex flex-col items-center justify-center border-r border-border/40 group-hover:bg-primary/5 transition-colors duration-500">
+                        <div className="w-14 h-14 rounded-2xl bg-card border border-border/40 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500">
+                          <Clock className="h-6 w-6 text-primary" />
                         </div>
-                        <div className="space-y-4">
-                          <div>
-                            <div className="flex items-center gap-4 mb-2 flex-wrap">
-                              <h3 className="text-3xl font-black text-foreground group-hover:text-primary transition-colors tracking-tighter leading-none uppercase font-display">{v.contacts?.name || v.contacts?.full_name || "OBJETIVO_TIER_0"}</h3>
-                              <Badge className={cn("px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border-none shadow-sm", getStatusColor(v.status))}>
-                                {v.status.toUpperCase()}
-                              </Badge>
-                            </div>
-                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em]">{v.visit_type?.toUpperCase() || 'LOGS'} • DESPLIEGUE TÁCTICO</p>
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                            <div className="flex items-center text-[11px] font-black text-slate-500 uppercase tracking-widest group/item">
-                              <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-primary/10 transition-colors shadow-soft text-slate-900">
-                                <Target className="h-4 w-4 text-primary opacity-60" />
-                              </div>
-                              {v.contacts?.specialty || v.contacts?.city || "SECTOR_GENERAL"}
-                            </div>
-                            {v.contacts?.address && (
-                              <div className="flex items-center text-[11px] font-black text-slate-500 uppercase tracking-widest group/item">
-                                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover/item:bg-emerald-500/10 transition-colors shadow-soft text-slate-900">
-                                  <MapPin className="h-4 w-4 text-emerald-500 opacity-60" />
+                        <Badge className="mt-4 bg-muted/10 text-foreground font-black text-[10px] border-none px-3 py-1 rounded-lg">
+                           {new Date(v.scheduled_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                        </Badge>
+                      </div>
+
+                      <div className="flex-1 p-8 md:p-10">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                          <div className="space-y-4">
+                             <div>
+                                <div className="flex items-center gap-4 flex-wrap mb-2">
+                                   <h3 className="text-xl font-black text-foreground group-hover:text-primary transition-colors uppercase tracking-tight font-display">
+                                      {v.contacts?.name || v.contacts?.full_name || "OBJETIVO_TIER_0"}
+                                   </h3>
+                                   <Badge className={cn("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-inner", getStatusColor(v.status))}>
+                                      {v.status.toUpperCase()}
+                                   </Badge>
                                 </div>
-                                <span className="truncate">{v.contacts.address}</span>
-                              </div>
-                            )}
+                                <p className="text-elite-xs text-muted-foreground uppercase tracking-widest">{v.visit_type?.toUpperCase() || 'LOGS'} • DESPLIEGUE TÁCTICO</p>
+                             </div>
+
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <div className="flex items-center text-elite-xs text-muted-foreground group/item">
+                                   <div className="w-8 h-8 rounded-xl bg-muted/10 flex items-center justify-center mr-3 border border-border/40 group-hover/item:bg-primary/10 group-hover/item:border-primary/20 transition-all">
+                                      <Target className="h-4 w-4 text-primary opacity-60" />
+                                   </div>
+                                   {v.contacts?.specialty || v.contacts?.city || "SECTOR_GENERAL"}
+                                </div>
+                                {v.contacts?.address && (
+                                  <div className="flex items-center text-elite-xs text-muted-foreground group/item">
+                                    <div className="w-8 h-8 rounded-xl bg-muted/10 flex items-center justify-center mr-3 border border-border/40 group-hover/item:bg-emerald-500/10 group-hover/item:border-emerald-500/20 transition-all">
+                                      <MapPin className="h-4 w-4 text-emerald-500 opacity-60" />
+                                    </div>
+                                    <span className="truncate max-w-[200px]">{v.contacts.address}</span>
+                                  </div>
+                                )}
+                             </div>
                           </div>
+
+                          <VisitDetailDialog
+                            trigger={
+                              <EliteButton className="h-14 px-10 group/btn" icon={ChevronRightIcon}>
+                                GESTIONAR MISIÓN
+                              </EliteButton>
+                            }
+                            visitData={v} onVisitSaved={loadVisits}
+                          />
                         </div>
                       </div>
-                      <VisitDetailDialog
-                        trigger={
-                          <Button className="bg-primary text-white w-full lg:w-auto h-16 px-12 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary/90 hover:shadow-glow shadow-premium-md transition-all active:scale-95 flex items-center gap-3">
-                            GESTIONAR MISIÓN <ChevronRight className="h-5 w-5" />
-                          </Button>
-                        }
-                        visitData={v} onVisitSaved={loadVisits}
-                      />
                     </div>
-                  </CardContent>
-                </Card>
+                   </CardContent>
+                </EliteCard>
               ))}
             </div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
 
-      {/* Acciones Rápidas Proactivas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-10 border-t border-border/40">
         <VisitDetailDialog
           trigger={
-            <Card className="rounded-[3.5rem] border border-slate-100 bg-card hover:border-primary/30 cursor-pointer group transition-all duration-700 overflow-hidden shadow-premium-sm hover:shadow-premium-xl">
-              <CardContent className="p-12 text-center relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-slate-300 transition-all transform group-hover:scale-110 group-hover:rotate-12 group-hover:bg-primary group-hover:text-white shadow-inner">
-                  <Plus className="h-10 w-10" />
+            <EliteCard className="p-10 text-center relative group cursor-pointer border-dashed border-border/60 hover:border-primary/40">
+                <div className="w-20 h-20 bg-muted/10 rounded- elite-md flex items-center justify-center mx-auto mb-6 text-muted-foreground transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12 group-hover:bg-primary group-hover:text-white border border-border/40 shadow-inner">
+                  <Plus className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black text-foreground uppercase mb-2 tracking-tighter font-display">Visita Espontánea</h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] leading-relaxed">LOG INMEDIATO FUERA DE PLAN</p>
-              </CardContent>
-            </Card>
+                <h3 className="text-xl font-black text-foreground uppercase mb-2 tracking-tighter font-display">Visita Espontánea</h3>
+                <p className="text-elite-xs text-muted-foreground uppercase tracking-widest">LOG INMEDIATO FUERA DE PLAN</p>
+            </EliteCard>
           }
           visitData={{ scheduled_date: new Date().toISOString().split('T')[0], status: 'completed', visit_type: 'doctor' }}
           onVisitSaved={loadVisits}

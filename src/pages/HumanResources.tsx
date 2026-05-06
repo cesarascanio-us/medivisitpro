@@ -81,32 +81,25 @@ export default function HumanResources() {
     const [searchTerm, setSearchTerm] = useState("");
 
     return (
-        <div className="min-h-screen flex flex-col bg-background p-8 font-outfit transition-colors duration-500 overflow-y-auto">
-            
-            {/* HEADER NATURISTA ELITE - TALENTO HUMANO */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-8 animate-in fade-in slide-in-from-top duration-700">
-                <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-[2rem] bg-indigo-600 shadow-xl shadow-indigo-500/30 flex items-center justify-center rotate-3 hover:rotate-0 transition-transform text-white">
-                        <ShieldCheck className="h-8 w-8 text-white" />
+        <div className="space-y-6">
+            <EliteHeader
+                title="Talento Humano"
+                subtitle="Gestión Integral y Estrategia Corporativa"
+                icon={ShieldCheck}
+                badgeText="Estrategia 2026"
+                statusText="Gestión Integral • V06-CA"
+                statusColor="bg-indigo-500"
+                rightContent={
+                    <div className="flex items-center gap-3">
+                        <Button variant="outline" className="h-12 px-6 border-border/40 hover:bg-card bg-transparent rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all">
+                            <Scale className="mr-2 h-4 w-4" /> Auditoría
+                        </Button>
+                        <Button className="btn-elite-primary h-12 px-8">
+                            <Plus className="h-5 w-5 mr-3" /> Nuevo Contrato
+                        </Button>
                     </div>
-                    <div>
-                        <h1 className="text-4xl font-black text-foreground tracking-tight leading-tight">Talento Humano</h1>
-                        <div className="flex items-center gap-2 mt-1">
-                            <Badge className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 font-black text-[9px] uppercase tracking-widest px-3">Estrategia 2026</Badge>
-                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest pl-2 border-l border-border leading-none">Gestión Integral • V06-CA</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-12 px-6 border-border hover:bg-card bg-transparent rounded-2xl font-bold text-xs uppercase tracking-widest transition-all">
-                        <Scale className="mr-2 h-4 w-4" /> Auditoría
-                    </Button>
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/20 font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95">
-                        <Plus className="h-5 w-5 mr-3" /> Nuevo Contrato
-                    </Button>
-                </div>
-            </div>
+                }
+            />
 
             {/* KPI GRID - NATURISTA STYLE */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 overflow-visible">
@@ -137,7 +130,7 @@ export default function HumanResources() {
             </div>
 
             {/* CONTENT MODULES */}
-            <Tabs defaultValue="directory" className="flex-1 min-h-0 flex flex-col gap-6 overflow-hidden">
+            <Tabs defaultValue="directory" className="flex-1 min-h-0 flex flex-col gap-8 overflow-hidden">
                 <EliteTabsList>
                     <EliteTabsTrigger value="directory" label="Directorio Industrial" icon={Users} />
                     <EliteTabsTrigger value="legal" label="Expediente Legal" icon={Scale} />
@@ -146,14 +139,14 @@ export default function HumanResources() {
 
                 {/* Directorio de Empleados */}
                 <TabsContent value="directory" className="flex-1 min-h-0 flex flex-col gap-6 animate-in slide-in-from-bottom-5 duration-700">
-                    <Card className="bg-card border border-border rounded-[1.5rem] shadow-soft p-4 shrink-0">
-                        <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Card className="card-elite p-4 shrink-0 bg-card border border-border/40 rounded-2xl shadow-premium-sm">
+                        <div className="relative group">
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                             <Input
-                                placeholder="Busca por nombre, cargo o rol..."
+                                placeholder="BUSCA POR NOMBRE, CARGO O ROL..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-12 h-14 bg-muted/20 border-transparent focus-visible:ring-indigo-500 font-bold rounded-2xl text-foreground transition-all focus:bg-card shadow-inner"
+                                className="pl-16 h-14 bg-muted/10 border-none focus-visible:ring-primary/20 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner text-foreground transition-all"
                             />
                         </div>
                     </Card>

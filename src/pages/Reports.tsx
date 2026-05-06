@@ -12,7 +12,7 @@ import {
   BarChart3, TrendingUp, Download, Calendar, Users as UsersIcon,
   FileText, Target, Award, FileDown, PieChart as PieChartIcon,
   AlertCircle, Map as MapIcon, ShieldAlert, DollarSign,
-  ShoppingCart, UserRound, Truck, Store, Package
+  ShoppingCart, UserRound, Truck, Store, Package, Stethoscope, Sprout, FlaskConical, Building2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
@@ -234,29 +235,31 @@ export default function Reports() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black tracking-tighter text-foreground font-display uppercase leading-none">Next-Gen Reporting Suite</h1>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-2">Gerencial Dashboard | Business Intelligence en Tiempo Real</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1">
-            <TrendingUp className="mr-1 h-3 w-3" />
-            Backend Sync Active
-          </Badge>
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-[180px] bg-background">
-              <Calendar className="mr-2 h-4 w-4 opacity-50" />
-              <SelectValue placeholder="Periodo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="month">Este Mes</SelectItem>
-              <SelectItem value="quarter">Trimestre Actual</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <EliteHeader
+        title="Next-Gen Reporting Suite"
+        subtitle="Business Intelligence en Tiempo Real"
+        icon={BarChart3}
+        badgeText="Sincronizado"
+        statusText="Backend Sync Active"
+        statusColor="bg-emerald-500"
+        rightContent={
+          <div className="flex items-center gap-4">
+             <Select value={timeRange} onValueChange={setTimeRange}>
+               <SelectTrigger className="w-[180px] h-12 bg-muted/10 border-none font-black text-[10px] uppercase tracking-widest rounded-xl shadow-inner">
+                 <Calendar className="mr-2 h-4 w-4 opacity-50" />
+                 <SelectValue placeholder="Periodo" />
+               </SelectTrigger>
+               <SelectContent className="rounded-xl border-border/40 font-black text-[10px] uppercase tracking-widest">
+                 <SelectItem value="month">Este Mes</SelectItem>
+                 <SelectItem value="quarter">Trimestre Actual</SelectItem>
+               </SelectContent>
+             </Select>
+             <Button variant="outline" className="h-12 px-6 border-border/40 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all">
+                <Download className="h-4 w-4 mr-2" /> Exportar
+             </Button>
+          </div>
+        }
+      />
 
       {!hasAdvancedReports && (
         <SubscriptionLock

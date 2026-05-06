@@ -25,7 +25,9 @@ import {
     Loader2,
     ShieldAlert,
     Zap,
-    Briefcase
+    Briefcase,
+    ChevronRight,
+    MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +36,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { EliteHeader, EliteKPICard, EliteButton, EliteCard } from "@/components/layout/DesignSystem";
 
 // Mock CRM Data (Leads)
 const CRM_LEADS = [
@@ -89,11 +91,11 @@ const CRM_LEADS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-    "Nuevo Lead": "bg-[#00a0e9]",
+    "Nuevo Lead": "bg-primary",
     "Contactado": "bg-amber-500",
     "Propuesta": "bg-indigo-500",
     "Negociación": "bg-emerald-500",
-    "Cerrado": "bg-slate-500"
+    "Cerrado": "bg-muted-foreground/40"
 };
 
 export default function CRMDashboard() {
@@ -101,7 +103,6 @@ export default function CRMDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
-    // [STRICT] Tenant 0 / AdminGuard Validation
     const isTenantZero = organizationId === '00000000-0000-0000-0000-000000000000';
     const hasAccess = isMaster || isTenantZero;
 
@@ -118,89 +119,59 @@ export default function CRMDashboard() {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-                <Loader2 className="h-10 w-10 animate-spin text-[#0056b3]" />
-                <p className="text-slate-500 font-medium animate-pulse">Sincronizando Pipeline de Ventas...</p>
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                <p className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest animate-pulse">Sincronizando Pipeline de Ventas...</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#f4f6f8] p-4 md:p-8 space-y-8 font-sans overflow-x-hidden">
+        <div className="space-y-10 pb-20 font-display">
             <EliteHeader 
                 title="Centro de Mandos CRM"
-                subtitle="Gestión de Inteligencia Comercial y Pipeline"
+                subtitle="Gestión de Inteligencia Comercial y Pipeline de Leads"
                 icon={Target}
                 badgeText="TENANT 0 • ISO 27001"
                 statusText="Sincronización de n8n Activa"
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" className="h-14 px-8 rounded-2xl bg-card border-slate-100 text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
-                            <ArrowUpRight className="h-5 w-5 mr-3 text-primary" /> Reporte de Conversión
-                        </Button>
-                        <Button className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
-                            <Zap className="h-6 w-6" /> Nuevo Lead Manual
-                        </Button>
+                        <EliteButton variant="secondary" className="h-14 px-8" icon={ArrowUpRight}>REPORTES</EliteButton>
+                        <EliteButton className="h-14 px-10 shadow-premium-md" icon={Zap}>NUEVO LEAD</EliteButton>
                     </div>
                 }
             />
 
-            {/* EVM Driven Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <EliteKPICard 
-                    title="Leads Totales" 
-                    value="48" 
-                    subtitle="Prospectos en radar"
-                    icon={Users}
-                    color="indigo"
-                />
-                <EliteKPICard 
-                    title="Valor Pipeline" 
-                    value="$184k" 
-                    subtitle="Valor potencial acumulado"
-                    icon={TrendingUp}
-                    trend={12.5}
-                    color="emerald"
-                />
-                <EliteKPICard 
-                    title="Tasa de Cierre" 
-                    value="24%" 
-                    subtitle="Eficiencia de conversión"
-                    icon={Target}
-                    color="amber"
-                />
-                <EliteKPICard 
-                    title="SPI Comercial" 
-                    value="1.05" 
-                    subtitle="Schedule Performance Index"
-                    icon={Clock}
-                    color="indigo"
-                />
+                <EliteKPICard title="Leads Totales" value="48" subtitle="Prospectos en radar" icon={Users} color="indigo" />
+                <EliteKPICard title="Valor Pipeline" value="$184k" subtitle="Valor potencial acumulado" icon={TrendingUp} trend={12.5} color="emerald" />
+                <EliteKPICard title="Tasa de Cierre" value="24%" subtitle="Eficiencia de conversión" icon={Target} color="amber" />
+                <EliteKPICard title="SPI Comercial" value="1.05" subtitle="Schedule Performance Index" icon={Clock} color="indigo" />
             </div>
 
-            {/* Control Bar */}
-            <div className="flex flex-col md:flex-row gap-4 bg-background/60 backdrop-blur-md p-4 rounded-lg border border-white/80 shadow-sm">
-                <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                    <Input
-                        placeholder="Buscar leads por empresa, contacto o etiqueta..."
-                        className="pl-12 h-14 bg-card border-slate-100 focus:ring-2 focus:ring-[#00a0e9]/20 transition-all rounded-lg text-lg"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+            <EliteCard className="p-4 border border-border/40 bg-card shadow-premium-sm">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="relative flex-1 group">
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                            placeholder="BUSCAR LEADS POR EMPRESA, CONTACTO O ETIQUETA..."
+                            className="h-14 pl-16 bg-muted/5 border-border/40 focus-visible:ring-primary/20 rounded-2xl font-black uppercase text-elite-xs tracking-widest shadow-inner text-foreground placeholder:text-muted-foreground/30"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <EliteButton variant="secondary" className="h-14 px-8" icon={Filter}>FILTROS</EliteButton>
                 </div>
-                <Button variant="outline" className="h-14 px-6 border-slate-200 bg-card rounded-lg font-bold text-slate-600 gap-2">
-                    <Filter className="h-5 w-5" />
-                    Filtros de Pipeline
-                </Button>
-            </div>
+            </EliteCard>
 
-            {/* Sales Feed */}
-            <div className="space-y-4">
-                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 px-2">
-                    Feed de Leads en Tiempo Real (n8n Webhook)
-                    <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                </h2>
+            <div className="space-y-6">
+                <div className="flex items-center justify-between px-2">
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tighter flex items-center gap-4 font-display">
+                        Feed de Leads (n8n Real-Time)
+                        <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_currentColor]" />
+                    </h2>
+                    <Badge className="badge-elite-info border-none">4 RESULTADOS ACTIVOS</Badge>
+                </div>
 
                 <div className="grid grid-cols-1 gap-4 pb-12">
                     <AnimatePresence mode="popLayout">
@@ -214,107 +185,82 @@ export default function CRMDashboard() {
                                 <m.div
                                     key={lead.id}
                                     layout
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ delay: i * 0.05 }}
                                 >
-                                    <Card className="bg-card border-none shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] transition-all duration-300 group cursor-pointer overflow-hidden rounded-lg">
-                                        <CardContent className="p-0">
-                                            <div className="flex flex-col lg:flex-row lg:items-center">
-                                                {/* Score / Conversion Column */}
-                                                <div className="lg:w-32 bg-slate-50/50 p-6 flex flex-col items-center justify-center border-r border-slate-100">
-                                                    <div className="relative h-16 w-16 flex items-center justify-center">
-                                                        <svg className="h-16 w-16 transform -rotate-90">
-                                                            <circle
-                                                                cx="32" cy="32" r="28"
-                                                                stroke="currentColor" strokeWidth="4"
-                                                                fill="transparent" className="text-slate-100"
-                                                            />
-                                                            <circle
-                                                                cx="32" cy="32" r="28"
-                                                                stroke="currentColor" strokeWidth="4"
-                                                                fill="transparent" strokeDasharray={176}
-                                                                strokeDashoffset={176 - (176 * lead.score) / 100}
-                                                                className={cn(
-                                                                    lead.score > 90 ? "text-emerald-500" : "text-[#00a0e9]",
-                                                                    "transition-all duration-1000"
-                                                                )}
-                                                            />
-                                                        </svg>
-                                                        <span className="absolute text-xl font-black text-slate-700">{lead.score}</span>
+                                    <EliteCard className="p-0 shadow-premium-sm hover:shadow-premium-md transition-all duration-300 group cursor-pointer overflow-hidden border border-border/40">
+                                        <div className="flex flex-col lg:flex-row lg:items-stretch">
+                                            {/* Score Column */}
+                                            <div className="lg:w-32 bg-muted/5 p-8 flex flex-col items-center justify-center border-r border-border/40">
+                                                <div className="relative h-16 w-16 flex items-center justify-center">
+                                                    <svg className="h-16 w-16 transform -rotate-90">
+                                                        <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-muted/10" />
+                                                        <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" strokeDasharray={176} strokeDashoffset={176 - (176 * lead.score) / 100} className={cn(lead.score > 90 ? "text-emerald-500" : "text-primary", "transition-all duration-1000")} />
+                                                    </svg>
+                                                    <span className="absolute text-xl font-black text-foreground tracking-tighter">{lead.score}</span>
+                                                </div>
+                                                <p className="text-elite-xs font-black text-muted-foreground mt-3 uppercase tracking-tighter text-center leading-none opacity-60">Deal Score</p>
+                                            </div>
+
+                                            {/* Information Column */}
+                                            <div className="flex-1 p-8">
+                                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                                    <div className="flex gap-6">
+                                                        <div className="h-16 w-16 rounded-2xl bg-primary text-white flex items-center justify-center shadow-premium-md border border-primary/20 font-black text-2xl group-hover:scale-105 transition-transform">
+                                                            {lead.avatar}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-1 group-hover:text-primary transition-colors font-display">{lead.name}</h3>
+                                                            <p className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest flex items-center gap-2 opacity-60">
+                                                                <Users className="h-3 h-3" />
+                                                                {lead.contact}
+                                                            </p>
+                                                            <div className="flex flex-wrap gap-2 mt-4">
+                                                                {lead.tags.map(tag => (
+                                                                    <Badge key={tag} className="bg-muted/10 text-muted-foreground border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">
+                                                                        {tag}
+                                                                    </Badge>
+                                                                ))}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <p className="text-[10px] font-black text-slate-400 mt-2 uppercase tracking-tighter text-center leading-none">Deal Score</p>
+
+                                                    <div className="flex flex-col gap-3 items-end">
+                                                        <div className="text-3xl font-black text-foreground tracking-tighter font-display tabular-nums">
+                                                            {lead.value}
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={cn("h-2.5 w-2.5 rounded-full shadow-[0_0_8px_currentColor]", STATUS_COLORS[lead.status])} />
+                                                            <span className="text-elite-xs font-black text-muted-foreground uppercase tracking-widest opacity-80">{lead.status}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                {/* Information Column */}
-                                                <div className="flex-1 p-6">
-                                                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                                        <div className="flex gap-4">
-                                                            <div className="h-14 w-14 rounded-full bg-[#f4f6f8] flex items-center justify-center border-2 border-white shadow-sm font-black text-[#0056b3] text-xl">
-                                                                {lead.avatar}
-                                                            </div>
-                                                            <div>
-                                                                <h3 className="text-xl font-extrabold text-foreground group-hover:text-[#0056b3] transition-colors">{lead.name}</h3>
-                                                                <p className="text-slate-500 font-bold flex items-center gap-2">
-                                                                    <Users className="h-3 h-3" />
-                                                                    {lead.contact}
-                                                                </p>
-                                                                <div className="flex flex-wrap gap-2 mt-3">
-                                                                    {lead.tags.map(tag => (
-                                                                        <Badge key={tag} variant="secondary" className="bg-[#f4f6f8] text-slate-600 border-none font-bold text-[10px]">
-                                                                            {tag}
-                                                                        </Badge>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="flex flex-col gap-2 items-end">
-                                                            <div className="text-2xl font-black text-slate-800 tracking-tighter">
-                                                                {lead.value}
-                                                            </div>
-                                                            <div className="flex items-center gap-2">
-                                                                <div className={cn("h-2.5 w-2.5 rounded-full", STATUS_COLORS[lead.status])} />
-                                                                <span className="text-sm font-black text-slate-700 uppercase tracking-tight">{lead.status}</span>
-                                                            </div>
-                                                        </div>
+                                                <div className="mt-8 flex items-center justify-between border-t border-border/40 pt-6">
+                                                    <div className="flex items-center gap-4 text-muted-foreground text-elite-xs font-black uppercase tracking-widest opacity-60">
+                                                        <div className="flex items-center gap-2"><Briefcase className="h-3.5 h-3.5 text-primary" /> {lead.source}</div>
+                                                        <span className="opacity-20">|</span>
+                                                        <div className="flex items-center gap-2"><Clock className="h-3.5 h-3.5" /> Act. {lead.time}</div>
                                                     </div>
-
-                                                    <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
-                                                        <div className="flex items-center gap-2 text-slate-500 text-xs font-bold">
-                                                            <Briefcase className="h-3 h-3 text-[#00a0e9]" />
-                                                            {lead.source}
-                                                            <span className="mx-2">•</span>
-                                                            <Clock className="h-3 h-3" />
-                                                            Última act. {lead.time}
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-[#0056b3]">
-                                                                <Mail className="h-4 w-4" />
-                                                            </Button>
-                                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-[#0056b3]">
-                                                                <Phone className="h-4 w-4" />
-                                                            </Button>
-                                                            <Button variant="ghost" className="text-[#0056b3] font-bold hover:bg-[#0056b3]/5 gap-2 h-8">
-                                                                Gestionar Lead
-                                                                <MoreHorizontal className="h-4 w-4" />
-                                                            </Button>
-                                                        </div>
+                                                    <div className="flex gap-2">
+                                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"><Mail className="h-4 w-4" /></Button>
+                                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"><Phone className="h-4 w-4" /></Button>
+                                                        <EliteButton variant="secondary" className="h-10 px-6" icon={ChevronRight}>GESTIONAR</EliteButton>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </CardContent>
-                                    </Card>
+                                        </div>
+                                    </EliteCard>
                                 </m.div>
                             ))}
                     </AnimatePresence>
                 </div>
             </div>
 
-            {/* Footer SaaS Note */}
             <div className="text-center pb-8 pt-4">
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em]">
+                <p className="text-elite-xs text-muted-foreground/40 font-black uppercase tracking-[0.4em]">
                     Powered by Antigravity OS • Master CRM Engine • Empresa CA
                 </p>
             </div>

@@ -99,6 +99,12 @@ export default function Doctors() {
                 return;
             }
 
+            if (!organizationId && !demoData) {
+                console.warn('Doctors: Missing organizationId, skipping load');
+                setLoading(false);
+                return;
+            }
+
             let triangulatedUserIds: string[] = [];
             
             if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
@@ -106,7 +112,11 @@ export default function Doctors() {
                 triangulatedUserIds = userData?.map((u: any) => u.id) || [];
             }
 
-            let query: any = supabase.from('doctors').select('*, specialties(name)').eq('organization_id', organizationId);
+            let query: any = supabase.from('doctors').select('*');
+            
+            if (organizationId) {
+                query = query.eq('organization_id', organizationId);
+            }
             
             if (isSupervisor && zoneId) {
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
@@ -120,8 +130,8 @@ export default function Doctors() {
                         query = query.eq('id', '00000000-0000-0000-0000-000000000000');
                     }
                 }
-            } else if (!canViewAllData) {
-                query = query.or(`representative_id.eq.${user?.id},user_id.eq.${user?.id}`);
+            } else if (!canViewAllData && user?.id) {
+                query = query.or(`representative_id.eq.${user.id},user_id.eq.${user.id}`);
             } else {
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
@@ -242,15 +252,15 @@ export default function Doctors() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={() => exportToCSV(filteredDoctors, 'medicos')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
-                            <Download className="h-4 w-4 mr-3 text-primary" /> Exportar Inteligencia
-                        </Button>
-                        <Button variant="outline" onClick={triggerImport} disabled={importing} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
-                            {importing ? <RefreshCw className="animate-spin h-4 w-4 mr-3 text-primary" /> : <Upload className="h-4 w-4 mr-3 text-primary" />} Sincronizar Manifiesto
-                        </Button>
-                        <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95 flex items-center gap-3">
-                            <Plus className="h-6 w-6" /> Nuevo Especialista
-                        </Button>
+                        <EliteButton variant="secondary" onClick={() => exportToCSV(filteredDoctors, 'medicos')} icon={Download}>
+                            Exportar Inteligencia
+                        </EliteButton>
+                        <EliteButton variant="secondary" onClick={triggerImport} disabled={importing} icon={importing ? RefreshCw : Upload}>
+                            {importing ? "Sincronizando..." : "Sincronizar Manifiesto"}
+                        </EliteButton>
+                        <EliteButton onClick={() => setDialogOpen(true)} icon={Plus}>
+                            Nuevo Especialista
+                        </EliteButton>
                     </div>
                 }
             />

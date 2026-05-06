@@ -15,6 +15,7 @@ import { POPAssignmentManager } from "@/components/pop/POPAssignmentManager";
 import { POPAssignmentHistory } from "@/components/pop/POPAssignmentHistory";
 import { POPPendingAssignments } from "@/components/pop/POPPendingAssignments";
 import { useAuth } from "@/hooks/useAuth";
+import { EliteHeader, EliteKPICard, EliteTabsList, EliteTabsTrigger } from "@/components/layout/DesignSystem";
 
 export default function MaterialPOP() {
     const { isMaster, isAdmin, isManager, isSupervisor } = useAuth();
@@ -29,32 +30,24 @@ export default function MaterialPOP() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">Material POP</h1>
-                    <p className="text-muted-foreground">Gestión de Material Promocional y Publicitario</p>
-                </div>
-            </div>
+            <EliteHeader
+                title="Material POP"
+                subtitle="Gestión de Material Promocional y Publicitario"
+                icon={Package}
+                badgeText="Industrial"
+            />
 
             <Tabs defaultValue="pending" className="w-full">
-                <TabsList className={`grid w-full grid-cols-${tabCount} lg:w-[600px]`}>
-                    <TabsTrigger value="pending" className="gap-2">
-                        <Inbox className="h-4 w-4" /> Pendientes
-                    </TabsTrigger>
+                <EliteTabsList className="mb-6">
+                    <EliteTabsTrigger value="pending" label="Pendientes" icon={Inbox} />
                     {canManageCatalog && (
-                        <TabsTrigger value="catalog" className="gap-2">
-                            <Package className="h-4 w-4" /> Catálogo
-                        </TabsTrigger>
+                        <EliteTabsTrigger value="catalog" label="Catálogo" icon={Package} />
                     )}
                     {canManageAssignments && (
-                        <TabsTrigger value="assign" className="gap-2">
-                            <Send className="h-4 w-4" /> Asignar
-                        </TabsTrigger>
+                        <EliteTabsTrigger value="assign" label="Asignar" icon={Send} />
                     )}
-                    <TabsTrigger value="history" className="gap-2">
-                        <History className="h-4 w-4" /> Historial
-                    </TabsTrigger>
-                </TabsList>
+                    <EliteTabsTrigger value="history" label="Historial" icon={History} />
+                </EliteTabsList>
 
                 <TabsContent value="pending" className="mt-6">
                     <POPPendingAssignments />

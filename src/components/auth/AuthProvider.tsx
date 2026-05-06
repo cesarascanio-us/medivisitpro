@@ -301,11 +301,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // Load Organization Features and Name
             if (finalOrgId) {
-                const { data: orgData } = await supabase
+                const { data: orgData, error: orgError } = await supabase
                     .from('organizations')
                     .select('name, settings')
                     .eq('id', finalOrgId)
-                    .single();
+                    .maybeSingle();
+
+                if (orgError) console.error('DEBUG: Organization error:', orgError);
 
                 if (orgData) {
                     setOrganizationName((orgData as any).name);

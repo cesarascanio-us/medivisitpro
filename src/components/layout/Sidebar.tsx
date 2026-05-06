@@ -50,7 +50,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     isManager,
     isCoordinator,
     isSupervisor,
-    organizationName
+    organizationName,
+    loading
   } = useAuth();
 
   const location = useLocation();
@@ -96,11 +97,11 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     {
       title: "Gestión Médica",
       items: [
+        { name: "Historial de Visitas", href: "/visits", icon: ClipboardList, visible: true },
+        { name: "Banco de Muestras", href: "/sample-banks", icon: Pill, visible: true },
         { name: "Directorio Profesional", href: "/doctors", icon: Stethoscope, visible: true },
         { name: "Agenda de Visitas", href: "/agenda", icon: Calendar, visible: true },
         { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: true },
-        { name: "Historial de Visitas", href: "/visits", icon: ClipboardList, visible: true },
-        { name: "Banco de Muestras", href: "/muestras", icon: Pill, visible: true },
       ]
     },
     {
@@ -158,7 +159,20 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
       {/* Navigation Section */}
       <nav className="flex-1 px-4 py-8 space-y-10 overflow-y-auto custom-scrollbar scrollbar-none">
-        {filteredNav.map((group) => (
+        {loading ? (
+          <div className="space-y-10 animate-pulse">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="space-y-4 px-4">
+                <div className="h-2 w-20 bg-muted rounded" />
+                <div className="space-y-2">
+                  <div className="h-10 w-full bg-muted rounded-2xl" />
+                  <div className="h-10 w-full bg-muted rounded-2xl" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          filteredNav.map((group) => (
           <div key={group.title} className="space-y-4">
             {isExpanded && (
               <div className="px-4 flex items-center justify-between cursor-pointer group/title" onClick={(e) => toggleGroup(group.title, e)}>
@@ -175,7 +189,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                       key={item.name}
                       to={item.href}
                       className={cn(
-                        "flex items-center px-5 py-3 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all group relative overflow-hidden",
+                        "flex items-center px-5 py-2 text-elite-sm rounded-2xl transition-all group relative overflow-hidden",
                          isActive 
                           ? "bg-primary text-white shadow-premium-lg shadow-primary/20" 
                           : "text-muted-foreground hover:bg-muted/10 hover:text-primary border border-transparent hover:border-border/40 transition-all duration-300"
@@ -189,8 +203,9 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                 })}
               </div>
             )}
-          </div>
-        ))}
+            </div>
+          ))
+        )}
       </nav>
 
       {/* Profile Footer Section */}

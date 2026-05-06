@@ -117,7 +117,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 try {
                     const { data: allOrgs, error: orgsError } = await supabase
                         .from('organizations')
-                        .select('*')
+                        .select('id, name, slug, plan_tier, subscription_status, settings, onboarding_completed, is_system_owner')
                         .order('name');
 
                     if (orgsError) {
@@ -150,7 +150,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 if (organizationId) {
                     const { data: org } = await supabase
                         .from('organizations')
-                        .select('*')
+                        .select('id, name, slug, plan_tier, subscription_status, settings, onboarding_completed, is_system_owner')
                         .eq('id', organizationId)
                         .maybeSingle();
 
