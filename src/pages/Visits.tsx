@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 import { cn } from "@/lib/utils";
-import { EliteHeader, EliteKPICard, EliteTable, EliteTabsList, EliteTabsTrigger } from "@/components/layout/DesignSystem";
+import { EliteHeader, EliteKPICard, EliteTable, EliteTabsList, EliteTabsTrigger, EliteButton, EliteCard, EliteInput } from "@/components/layout/DesignSystem";
 
 interface AdminFilterState {
   region?: string;
