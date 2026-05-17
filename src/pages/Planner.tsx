@@ -187,40 +187,73 @@ export default function Planner() {
     const addItem = async () => {
         if (!user || !plan || !formData.title) return;
 
+        const baseItem = {
+            user_id: user.id,
+            plan_id: plan.id,
+            title: formData.title,
+            description: formData.description || null,
+            scheduled_time: formData.scheduled_time,
+            duration_minutes: formData.duration_minutes,
+            status: 'pending',
+            priority: items.length
+        };
+
         try {
+            console.log('Attempting daily plan item insert (Attempt 1)...');
+            // Attempt 1: Full insert with organization_id and contact_id
             let { error } = await supabase.from('daily_plan_items').insert({
-                user_id: user.id,
-                plan_id: plan.id,
-                title: formData.title,
-                description: formData.description || null,
-                scheduled_time: formData.scheduled_time,
-                duration_minutes: formData.duration_minutes,
+                ...baseItem,
                 contact_id: formData.contact_id || null,
-                status: 'pending',
-                priority: items.length,
                 organization_id: organizationId
             });
 
             if (error) {
-                console.warn('Item insert with organizationId failed:', error.message);
+                console.warn('Item insert Attempt 1 failed:', error.message);
                 
-                // Fallback for foreign key violation: retry with null organization_id
                 if (error.code === '23503') {
-                    console.info('Retrying daily plan item insert with null organization_id due to foreign key violation...');
-                    const { error: fallbackError } = await supabase.from('daily_plan_items').insert({
-                        user_id: user.id,
-                        plan_id: plan.id,
-                        title: formData.title,
-                        description: formData.description || null,
-                        scheduled_time: formData.scheduled_time,
-                        duration_minutes: formData.duration_minutes,
+                    console.info('Attempting fallback hierarchy due to foreign key violation...');
+                    
+                    // Attempt 2: retry without organization_id (keep contact_id)
+                    console.log('Attempting daily plan item insert (Attempt 2 - null org)...');
+                    const { error: err2 } = await supabase.from('daily_plan_items').insert({
+                        ...baseItem,
                         contact_id: formData.contact_id || null,
-                        status: 'pending',
-                        priority: items.length,
                         organization_id: null
                     });
                     
-                    if (fallbackError) throw fallbackError;
+                    if (err2) {
+                        console.warn('Item insert Attempt 2 failed:', err2.message);
+                        
+                        if (err2.code === '23503') {
+                            // Attempt 3: retry with organization_id but null contact_id
+                            console.log('Attempting daily plan item insert (Attempt 3 - null contact)...');
+                            const { error: err3 } = await supabase.from('daily_plan_items').insert({
+                                ...baseItem,
+                                contact_id: null,
+                                organization_id: organizationId
+                            });
+                            
+                            if (err3) {
+                                console.warn('Item insert Attempt 3 failed:', err3.message);
+                                
+                                if (err3.code === '23503') {
+                                    // Attempt 4: retry with both null
+                                    console.log('Attempting daily plan item insert (Attempt 4 - safe mode null both)...');
+                                    const { error: err4 } = await supabase.from('daily_plan_items').insert({
+                                        ...baseItem,
+                                        contact_id: null,
+                                        organization_id: null
+                                    });
+                                    
+                                    if (err4) throw err4;
+                                } else {
+                                    throw err3;
+                                }
+                            }
+                        } else {
+                            throw err2;
+                        }
+                    }
                 } else {
                     throw error;
                 }
@@ -231,7 +264,7 @@ export default function Planner() {
             setFormData({ title: "", description: "", scheduled_time: "09:00", duration_minutes: 30, contact_id: "" });
             loadPlan();
         } catch (error: any) {
-            console.error('Error adding task item:', error);
+            console.error('Error adding task item after progressive fallbacks:', error);
             toast({ title: "Error", description: "No se pudo agregar la tarea.", variant: "destructive" });
         }
     };
@@ -410,11 +443,17 @@ export default function Planner() {
                                                 </Badge>
                                             )}
                                         </div>
-                                        {item.contacts && (
-                                            <p className="text-sm text-muted-foreground">
-                                                👨‍⚕️ {item.contacts.name} - {item.contacts.specialty}
-                                            </p>
-                                        )}
+                                        {(() => {
+                                            const contactInfo = item.contacts
+                                                ? (Array.isArray(item.contacts) ? item.contacts[0] : item.contacts)
+                                                : null;
+                                            
+                                            return contactInfo ? (
+                                                <p className="text-sm text-muted-foreground">
+                                                    👨‍⚕️ {contactInfo.name} {contactInfo.specialty ? `- ${contactInfo.specialty}` : ''}
+                                                </p>
+                                            ) : null;
+                                        })()}
                                         {item.description && (
                                             <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
                                         )}
