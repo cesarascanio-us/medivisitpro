@@ -98,33 +98,62 @@ export default function Planner() {
                 return;
             }
 
-            // Atomic Get-or-Create using upsert to avoid parallel 409 Conflict race conditions
-            let planData = null;
-            const { data: upsertedPlan, error: upsertError } = await supabase
+            // Read-first: check if plan already exists for this date
+            let { data: planData } = await supabase
                 .from('daily_plans')
-                .upsert(
-                    { 
+                .select('*')
+                .eq('user_id', user?.id)
+                .eq('plan_date', selectedDate)
+                .maybeSingle();
+
+            // Create only if no plan exists yet
+            if (!planData) {
+                let { data: newPlan, error: insertError } = await supabase
+                    .from('daily_plans')
+                    .insert({ 
                         user_id: user?.id, 
                         plan_date: selectedDate,
                         organization_id: organizationId
-                    },
-                    { onConflict: 'user_id,plan_date' }
-                )
-                .select()
-                .maybeSingle();
-
-            if (upsertError) {
-                console.error("Conflict or error handling daily plan upsert, fallback to selective fetch:", upsertError);
-                // Fallback to fetch
-                const { data: fetchedPlan } = await supabase
-                    .from('daily_plans')
-                    .select('*')
-                    .eq('user_id', user?.id)
-                    .eq('plan_date', selectedDate)
+                    })
+                    .select()
                     .maybeSingle();
-                planData = fetchedPlan;
-            } else {
-                planData = upsertedPlan;
+
+                if (insertError) {
+                    console.warn('Plan insert failed:', insertError.message);
+                    
+                    // Safe Fallback: If foreign key violation occurs, retry inserting with null organization_id
+                    if (insertError.code === '23503') {
+                        console.info('Retrying daily plan insert with null organization_id due to foreign key constraint...');
+                        const { data: fallbackPlan, error: fallbackError } = await supabase
+                            .from('daily_plans')
+                            .insert({ 
+                                user_id: user?.id, 
+                                plan_date: selectedDate,
+                                organization_id: null
+                            })
+                            .select()
+                            .maybeSingle();
+
+                        if (!fallbackError) {
+                            planData = fallbackPlan;
+                        } else {
+                            console.error('Fallback plan insert also failed:', fallbackError.message);
+                        }
+                    }
+
+                    // Secondary Fallback: Fetch in case of parallel render race condition
+                    if (!planData) {
+                        const { data: retryPlan } = await supabase
+                            .from('daily_plans')
+                            .select('*')
+                            .eq('user_id', user?.id)
+                            .eq('plan_date', selectedDate)
+                            .maybeSingle();
+                        planData = retryPlan;
+                    }
+                } else {
+                    planData = newPlan;
+                }
             }
 
             setPlan(planData);
@@ -159,7 +188,7 @@ export default function Planner() {
         if (!user || !plan || !formData.title) return;
 
         try {
-            const { error } = await supabase.from('daily_plan_items').insert({
+            let { error } = await supabase.from('daily_plan_items').insert({
                 user_id: user.id,
                 plan_id: plan.id,
                 title: formData.title,
@@ -172,13 +201,37 @@ export default function Planner() {
                 organization_id: organizationId
             });
 
-            if (error) throw error;
+            if (error) {
+                console.warn('Item insert with organizationId failed:', error.message);
+                
+                // Fallback for foreign key violation: retry with null organization_id
+                if (error.code === '23503') {
+                    console.info('Retrying daily plan item insert with null organization_id due to foreign key violation...');
+                    const { error: fallbackError } = await supabase.from('daily_plan_items').insert({
+                        user_id: user.id,
+                        plan_id: plan.id,
+                        title: formData.title,
+                        description: formData.description || null,
+                        scheduled_time: formData.scheduled_time,
+                        duration_minutes: formData.duration_minutes,
+                        contact_id: formData.contact_id || null,
+                        status: 'pending',
+                        priority: items.length,
+                        organization_id: null
+                    });
+                    
+                    if (fallbackError) throw fallbackError;
+                } else {
+                    throw error;
+                }
+            }
 
             toast({ title: "Tarea agregada", description: "La tarea ha sido añadida al plan." });
             setDialogOpen(false);
             setFormData({ title: "", description: "", scheduled_time: "09:00", duration_minutes: 30, contact_id: "" });
             loadPlan();
-        } catch (error) {
+        } catch (error: any) {
+            console.error('Error adding task item:', error);
             toast({ title: "Error", description: "No se pudo agregar la tarea.", variant: "destructive" });
         }
     };
