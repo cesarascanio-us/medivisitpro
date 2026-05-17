@@ -152,9 +152,13 @@ export function EliteKPICard({
     );
 }
 
-export function EliteCard({ children, className, onClick, delay = 0 }: { children: React.ReactNode, className?: string, onClick?: () => void, delay?: number }) {
+export const EliteCard = React.forwardRef<
+    HTMLDivElement,
+    { children: React.ReactNode, className?: string, onClick?: () => void, delay?: number }
+>(({ children, className, onClick, delay = 0 }, ref) => {
     return (
         <motion.div
+            ref={ref}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: delay / 1000 }}
@@ -173,15 +177,19 @@ export function EliteCard({ children, className, onClick, delay = 0 }: { childre
             </Card>
         </motion.div>
     );
-}
+});
+EliteCard.displayName = "EliteCard";
 
-export function EliteButton({ 
+export const EliteButton = React.forwardRef<
+    HTMLButtonElement,
+    React.ComponentProps<typeof Button> & { variant?: 'primary' | 'secondary' | 'ghost', icon?: LucideIcon }
+>(({ 
     children, 
     variant = 'primary', 
     icon: Icon, 
     className,
     ...props 
-}: React.ComponentProps<typeof Button> & { variant?: 'primary' | 'secondary' | 'ghost', icon?: LucideIcon }) {
+}, ref) => {
     const variants = {
         primary: "btn-elite-primary",
         secondary: "btn-elite-secondary",
@@ -189,20 +197,33 @@ export function EliteButton({
     };
 
     return (
-        <Button className={cn(variants[variant], className)} {...props}>
+        <Button ref={ref} className={cn(variants[variant], className)} {...props}>
             {Icon && <Icon className="h-5 w-5" />}
             {children}
         </Button>
     );
-}
+});
+EliteButton.displayName = "EliteButton";
 
-export function EliteInput({ icon: Icon, className, ...props }: React.ComponentProps<typeof Input> & { icon?: LucideIcon }) {
+export const EliteInput = React.forwardRef<
+    HTMLInputElement,
+    React.ComponentProps<typeof Input> & { icon?: LucideIcon }
+>(({ icon: Icon, className, ...props }, ref) => {
     return (
         <div className="relative group w-full">
             {Icon && <Icon className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />}
-            <Input className={cn("input-elite", Icon ? "pl-16" : "px-6", className)} {...props} />
+            <Input ref={ref} className={cn("input-elite", Icon ? "pl-16" : "px-6", className)} {...props} />
         </div>
     );
+});
+EliteInput.displayName = "EliteInput";
+
+interface EliteTableProps {
+    title: string;
+    description: string;
+    children: React.ReactNode;
+    onSearch?: (term: string) => void;
+    searchPlaceholder?: string;
 }
 
 export function EliteTable({ title, description, children, onSearch, searchPlaceholder = "BUSCAR..." }: EliteTableProps) {
@@ -238,6 +259,12 @@ export function EliteTabsList({ children, className }: { children: React.ReactNo
             </TabsList>
         </div>
     );
+}
+
+interface EliteTabsTriggerProps {
+    value: string;
+    label: string;
+    icon: LucideIcon;
 }
 
 export function EliteTabsTrigger({ value, label, icon: Icon }: EliteTabsTriggerProps) {

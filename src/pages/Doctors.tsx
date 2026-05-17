@@ -20,7 +20,7 @@ import { DoctorProfileDialog } from "@/components/doctors/DoctorProfileDialog";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { getStatesInRegion } from "@/constants/regions";
 import { useDemoData } from "@/contexts/MockDataProvider";
-import { EliteKPICard, EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
+import { EliteKPICard, EliteHeader, EliteTable, EliteButton } from "@/components/layout/DesignSystem";
 
 interface AdminFilterState {
     region?: string;

@@ -30,7 +30,6 @@ import { VisualAidModal } from "./VisualAidModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { useOrganization } from "@/hooks/useOrganization";
 import {
   Command,
   CommandEmpty,
@@ -46,6 +45,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { EliteButton } from "@/components/layout/DesignSystem";
 
 // Helper MultiSelect Component - Elite Dark Version
 // Helper MultiSelect Component - Elite Dark Version
@@ -111,8 +111,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { user, profile } = useAuth();
-  const { organizationId } = useOrganization();
+  const { user, profile, organizationId } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic");
 

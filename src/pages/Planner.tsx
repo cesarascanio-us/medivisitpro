@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,7 +44,7 @@ interface DailyPlan {
 }
 
 export default function Planner() {
-    const { user } = useAuth();
+    const { user, organizationId } = useAuth();
     const { toast } = useToast();
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [plan, setPlan] = useState<DailyPlan | null>(null);
@@ -98,21 +98,33 @@ export default function Planner() {
                 return;
             }
 
-            // Get or create plan for date
-            let { data: planData } = await supabase
+            // Atomic Get-or-Create using upsert to avoid parallel 409 Conflict race conditions
+            let planData = null;
+            const { data: upsertedPlan, error: upsertError } = await supabase
                 .from('daily_plans')
-                .select('*')
-                .eq('user_id', user?.id)
-                .eq('plan_date', selectedDate)
-                .single();
+                .upsert(
+                    { 
+                        user_id: user?.id, 
+                        plan_date: selectedDate,
+                        organization_id: organizationId
+                    },
+                    { onConflict: 'user_id,plan_date' }
+                )
+                .select()
+                .maybeSingle();
 
-            if (!planData) {
-                const { data: newPlan } = await supabase
+            if (upsertError) {
+                console.error("Conflict or error handling daily plan upsert, fallback to selective fetch:", upsertError);
+                // Fallback to fetch
+                const { data: fetchedPlan } = await supabase
                     .from('daily_plans')
-                    .insert({ user_id: user?.id, plan_date: selectedDate })
-                    .select()
-                    .single();
-                planData = newPlan;
+                    .select('*')
+                    .eq('user_id', user?.id)
+                    .eq('plan_date', selectedDate)
+                    .maybeSingle();
+                planData = fetchedPlan;
+            } else {
+                planData = upsertedPlan;
             }
 
             setPlan(planData);
@@ -156,7 +168,8 @@ export default function Planner() {
                 duration_minutes: formData.duration_minutes,
                 contact_id: formData.contact_id || null,
                 status: 'pending',
-                priority: items.length
+                priority: items.length,
+                organization_id: organizationId
             });
 
             if (error) throw error;
@@ -215,6 +228,9 @@ export default function Planner() {
                     <DialogContent className="max-w-md">
                         <DialogHeader>
                             <DialogTitle>Agregar Tarea</DialogTitle>
+                            <DialogDescription className="sr-only">
+                                Formulario para agregar una nueva tarea al planificador diario.
+                            </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
