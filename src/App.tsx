@@ -32,7 +32,7 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 
 // Lazy load everything else to reduce initial bundle size
-const DashboardRouter = lazy(() => import("./pages/DashboardRouter"));
+const DashboardRouter = lazy(() => import("./components/dashboard/DashboardRouter"));
 const Agenda = lazy(() => import("./pages/Agenda"));
 const Contacts = lazy(() => import("./pages/Contacts"));
 const Visits = lazy(() => import("./pages/Visits"));
@@ -65,7 +65,6 @@ const MasterPanel = lazy(() => import("./pages/MasterPanel"));
 const TransferOrders = lazy(() => import("./pages/TransferOrders"));
 const CoverageMap = lazy(() => import("./pages/CoverageMap"));
 const PromotionalCycles = lazy(() => import("./pages/PromotionalCycles"));
-const DashboardMaster = lazy(() => import("./pages/DashboardMaster"));
 const HumanResources = lazy(() => import("./pages/HumanResources"));
 const HRRecruitment = lazy(() => import("./pages/HRRecruitment"));
 const PMBOKMaster = lazy(() => import("./pages/PMBOKMaster"));
@@ -285,7 +284,7 @@ const AppContent = () => (
     } />
     <Route path="dashboard-master" element={
       <ProtectedRoute allowedRoles={['master', 'admin']}>
-        <Layout><DashboardMaster /></Layout>
+        <Layout><Navigate to="/dashboard" replace /></Layout>
       </ProtectedRoute>
     } />
     <Route path="finance-monitor" element={

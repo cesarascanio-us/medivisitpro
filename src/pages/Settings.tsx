@@ -8,6 +8,7 @@
 ======================================================================== */
 
 import { useState, useEffect } from "react";
+import { SystemSeeders } from "@/components/admin/SystemSeeders";
 import { cn } from "@/lib/utils";
 import {
   User, Bell, Palette, Settings2, Save, RotateCcw,
@@ -491,6 +492,9 @@ export default function Settings() {
                   {loading ? 'Sincronizando...' : 'Consolidar Perfil de Élite'}
                 </Button>
               </div>
+              <div className="pt-8 mt-8 border-t border-border">
+                <SystemSeeders />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -560,6 +564,9 @@ export default function Settings() {
                   <Save className="h-4 w-4 mr-3" />
                   Consolidar Alertas
                 </Button>
+              </div>
+              <div className="pt-8 mt-8 border-t border-border">
+                <SystemSeeders />
               </div>
             </CardContent>
           </Card>
@@ -675,6 +682,9 @@ export default function Settings() {
                   Aplicar Estética
                 </Button>
               </div>
+              <div className="pt-8 mt-8 border-t border-border">
+                <SystemSeeders />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -746,6 +756,9 @@ export default function Settings() {
                   <Save className="h-4 w-4 mr-3" />
                   Sincronizar Core
                 </Button>
+              </div>
+              <div className="pt-8 mt-8 border-t border-border">
+                <SystemSeeders />
               </div>
             </CardContent>
           </Card>
@@ -849,3 +862,4 @@ export default function Settings() {
     </div>
   );
 }
+

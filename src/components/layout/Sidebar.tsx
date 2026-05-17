@@ -27,7 +27,8 @@ import {
   ClipboardList,
   Sprout,
   FlaskConical,
-  LogOut
+  LogOut,
+  LayoutDashboard
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
