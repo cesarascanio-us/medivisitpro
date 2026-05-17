@@ -60,8 +60,17 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
       
       {/* SECCIÓN 1 — Saludo */}
       <div className="flex flex-col gap-2 bg-card p-4 rounded-lg shadow-premium-md border border-border">
-        <h1 className="text-xl font-serif font-bold">Buenos días, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Representante'}</h1>
-        <p className="text-sm text-muted-foreground capitalize">{formatDate(time)}</p>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+          <div>
+            <h1 className="text-xl font-serif font-bold">Buenos días, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Representante'}</h1>
+            {organizationName && (
+              <p className="text-xs text-primary font-semibold uppercase tracking-wider mt-0.5">
+                {organizationName}
+              </p>
+            )}
+          </div>
+          <p className="text-sm text-muted-foreground capitalize md:text-right">{formatDate(time)}</p>
+        </div>
         <div className="flex flex-wrap gap-2 mt-2">
           <Badge variant="outline" className="border-primary/50 text-primary bg-primary/5">
             <MapPin className="w-3 h-3 mr-1" /> Zona Asignada
