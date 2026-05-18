@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 const DashboardMaster = React.lazy(() => import('./DashboardMaster'));
 const DashboardManager = React.lazy(() => import('./DashboardManager'));
-const DashboardRepresentative = React.lazy(() => import('./DashboardRepresentative'));
+const DashboardRep = React.lazy(() => import('./DashboardRep'));
 const DashboardDoctor = React.lazy(() => import('./DashboardDoctor'));
 
 // Un fallback o skeleton se usa en React.Suspense que envuelve este componente desde App.tsx
@@ -31,7 +31,7 @@ export default function DashboardRouter() {
   }
 
   if (role === 'representative' || role === 'telemarketing') {
-    return <DashboardRepresentative organizationId={organizationId} zoneId={profile.zone_id} />;
+    return <DashboardRep />;
   }
 
   if (role === 'doctor') {

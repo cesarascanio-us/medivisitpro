@@ -278,24 +278,24 @@ export default function PlanManager() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-background space-y-8 p-1">
-            {/* Premium White Header Container */}
-            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
+        <div className="flex flex-col h-full bg-background space-y-8 p-1 text-foreground">
+            {/* Premium Header Container */}
+            <header className="bg-card px-8 py-8 rounded-lg shadow-premium-md border border-border/40 relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
+                <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/5 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl opacity-60"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-3xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none transform transition-transform hover:scale-105">
-                            <Rocket className="text-white h-10 w-10" />
+                        <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shadow-premium-lg transform transition-transform hover:scale-105">
+                            <Rocket className="text-primary-foreground h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-indigo-500 text-[11px] font-black uppercase tracking-[0.25em] mb-1.5">Monetización & SaaS</p>
-                            <h1 className="text-4xl font-black text-foreground tracking-tight">
+                            <p className="text-primary text-xs font-bold uppercase tracking-wider mb-1.5">Monetización & SaaS</p>
+                            <h1 className="text-2xl font-bold tracking-tight">
                                 Gestión de Planes
                             </h1>
-                            <p className="text-muted-foreground text-sm mt-1 max-w-lg font-medium">Configura la oferta comercial, límites de uso e infraestructura de precios</p>
+                            <p className="text-muted-foreground text-xs mt-1 max-w-lg font-medium">Configura la oferta comercial, límites de uso e infraestructura de precios</p>
                         </div>
                     </div>
 
@@ -305,32 +305,32 @@ export default function PlanManager() {
                             if (!open) resetForm();
                         }}>
                             <DialogTrigger asChild>
-                                <Button className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-200 dark:shadow-none transition-all hover:-translate-y-0.5 active:translate-y-0 font-bold uppercase text-[10px] tracking-widest">
-                                    <Plus className="mr-3 h-4 w-4" />
+                                <Button variant="default" size="default" className="shadow-premium-md font-bold">
+                                    <Plus className="mr-2 h-4 w-4" />
                                     Crear Nuevo Plan
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-card border-none shadow-2xl rounded-[2rem] max-w-md">
+                            <DialogContent className="bg-card border border-border/40 shadow-premium-2xl rounded-lg max-w-md p-6">
                                 <DialogHeader>
-                                    <DialogTitle className="text-2xl font-black text-foreground tracking-tight">
+                                    <DialogTitle className="text-xl font-bold tracking-tight">
                                         {editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}
                                     </DialogTitle>
                                 </DialogHeader>
-                                <div className="space-y-6 py-6">
+                                <div className="space-y-4 py-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Nombre del Plan</label>
-                                        <input
-                                            className="flex h-12 w-full rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold"
+                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Nombre del Plan</label>
+                                        <Input
+                                            className="font-semibold bg-muted border-input"
                                             placeholder="Ej: Enterprise"
                                             value={newPlanName}
                                             onChange={(e) => setNewPlanName(e.target.value)}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Precio Mensual ($)</label>
-                                        <input
+                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Precio Mensual ($)</label>
+                                        <Input
                                             type="number"
-                                            className="flex h-12 w-full rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold"
+                                            className="font-semibold bg-muted border-input"
                                             placeholder="99.99"
                                             value={newPlanPrice}
                                             onChange={(e) => setNewPlanPrice(e.target.value)}
@@ -338,24 +338,24 @@ export default function PlanManager() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Características</label>
+                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Características</label>
                                         <div className="flex gap-2">
-                                            <input
-                                                className="flex h-12 flex-1 rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all font-medium"
+                                            <Input
+                                                className="font-medium bg-muted border-input"
                                                 placeholder="Nueva característica..."
                                                 value={featureInput}
                                                 onChange={(e) => setFeatureInput(e.target.value)}
                                                 onKeyDown={(e) => e.key === 'Enter' && addFeature()}
                                             />
-                                            <Button size="icon" onClick={addFeature} className="bg-indigo-600 hover:bg-indigo-500 rounded-xl w-12 h-12 text-white">
-                                                <Plus className="w-5 h-5" />
+                                            <Button size="icon" variant="default" onClick={addFeature} className="w-10 h-10 shrink-0">
+                                                <Plus className="w-4 h-4" />
                                             </Button>
                                         </div>
                                         <div className="max-h-40 overflow-y-auto space-y-2 mt-4 p-1">
                                             {newPlanFeatures.map((feat, idx) => (
-                                                <div key={idx} className="flex items-center justify-between bg-muted p-3 rounded-xl border border-border">
+                                                <div key={idx} className="flex items-center justify-between bg-muted p-2 rounded-lg border border-border/40">
                                                     <span className="text-xs font-bold text-muted-foreground truncate mr-2">{feat}</span>
-                                                    <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                                                    <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg">
                                                         <X className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -363,7 +363,7 @@ export default function PlanManager() {
                                         </div>
                                     </div>
 
-                                    <Button onClick={handleSavePlan} className="w-full h-14 bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-indigo-100 mt-4 transition-all active:scale-[0.98]">
+                                    <Button variant="default" onClick={handleSavePlan} className="w-full font-bold shadow-premium-md">
                                         {editingPlan ? 'Actualizar Plan' : 'Guardar Plan'}
                                     </Button>
                                 </div>
@@ -372,11 +372,12 @@ export default function PlanManager() {
 
                         <Button
                             variant="outline"
+                            size="default"
                             onClick={resetToOfficialPlans}
                             disabled={loading}
-                            className="h-14 px-8 rounded-2xl border-slate-200 bg-white shadow-sm hover:shadow-md transition-all active:scale-95 text-slate-600 font-bold uppercase text-[10px] tracking-widest"
+                            className="shadow-sm font-bold"
                         >
-                            <RefreshCw className={`mr-3 h-4 w-4 ${loading ? 'animate-spin text-indigo-500' : ''}`} />
+                            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin text-primary' : ''}`} />
                             Sincronizar Cloud
                         </Button>
                     </div>
@@ -385,68 +386,69 @@ export default function PlanManager() {
 
             {loading && plans.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-32 gap-6">
-                    <Loader2 className="w-16 h-16 animate-spin text-indigo-500" />
-                    <p className="text-slate-400 font-black uppercase text-xs tracking-[0.3em]">Cargando ecosistema de cargos...</p>
+                    <Loader2 className="w-16 h-16 animate-spin text-primary" />
+                    <p className="text-slate-400 font-bold uppercase text-xs tracking-wider">Cargando ecosistema de cargos...</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 pb-20">
                     {plans.map((plan) => (
                         <Card
                             key={plan.id}
-                            className={`relative flex flex-col h-full rounded-[3rem] border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-card overflow-hidden group transition-all duration-500 hover:translate-y-[-10px] ${!plan.active ? 'opacity-60 grayscale' : 'hover:shadow-indigo-200/50'}`}
+                            className={`relative flex flex-col h-full rounded-lg border border-border/40 shadow-premium-md bg-card overflow-hidden group transition-all duration-500 hover:translate-y-[-4px] ${!plan.active ? 'opacity-60 grayscale' : 'hover:shadow-primary/20'}`}
                         >
                             {/* Decorative accent */}
-                            <div className="absolute top-0 left-0 w-full h-2.5 bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-600"></div>
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary/80 to-primary"></div>
 
-                            <CardHeader className="pt-12 pb-8 px-10">
-                                <div className="flex justify-between items-start mb-8">
-                                    <div className="w-16 h-16 bg-muted rounded-[1.5rem] flex items-center justify-center group-hover:bg-indigo-600 transition-colors duration-500">
-                                        <Shield className="w-8 h-8 text-indigo-500 group-hover:text-white transition-colors" />
+                            <CardHeader className="pt-8 pb-6 px-8">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center group-hover:bg-primary transition-colors duration-500">
+                                        <Shield className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <Badge className={`${plan.active ? 'bg-indigo-50 text-indigo-700' : 'bg-red-50 text-red-700'} border-none font-black text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-full`}>
+                                        <Badge className={`${plan.active ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'} border-none font-bold text-xs uppercase tracking-wider px-2 py-0.5 rounded-full`}>
                                             {plan.active ? 'Activo' : 'Inactivo'}
                                         </Badge>
                                         <Switch
                                             checked={plan.active}
                                             onCheckedChange={() => togglePlan(plan.id, plan.active)}
-                                            className="data-[state=checked]:bg-indigo-600"
+                                            className="data-[state=checked]:bg-primary"
                                         />
                                     </div>
                                 </div>
 
-                                <CardTitle className="text-3xl font-black text-foreground tracking-tighter mb-3 uppercase flex items-center gap-2">
+                                <CardTitle className="text-2xl font-bold text-foreground tracking-tight mb-2 uppercase flex items-center gap-2">
                                     {plan.name}
-                                    {plan.name === 'Pro' && <Badge className="bg-amber-400 text-amber-950 font-black border-none text-[9px] px-2 py-0.5 rounded-md">POPULAR</Badge>}
+                                    {plan.name === 'Pro' && <Badge className="bg-amber-400 text-amber-950 font-bold border-none text-xs px-2 py-0.5 rounded-md">POPULAR</Badge>}
                                 </CardTitle>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl font-black text-foreground tracking-tighter">${plan.price}</span>
-                                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
+                                    <span className="text-4xl font-bold text-foreground tracking-tighter">${plan.price}</span>
+                                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">/ {plan.interval === 'month' ? 'mes' : 'año'}</span>
                                 </div>
-                                <CardDescription className="text-muted-foreground mt-6 font-medium leading-relaxed  text-sm">
+                                <CardDescription className="text-muted-foreground mt-4 font-medium leading-relaxed text-xs">
                                     {plan.description || "Solución avanzada para la industria farmacéutica."}
                                 </CardDescription>
                             </CardHeader>
 
-                            <CardContent className="flex-grow px-10 pb-10">
-                                <div className="pt-8 border-t border-border">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400 mb-6">Capacidades del Plan</p>
-                                    <ul className="space-y-4">
+                            <CardContent className="flex-grow px-8 pb-8">
+                                <div className="pt-6 border-t border-border/40">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Capacidades del Plan</p>
+                                    <ul className="space-y-3">
                                         {plan.features?.map((feature, i) => (
                                             <li key={i} className="flex items-start group/li">
-                                                <div className="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mr-3 mt-0.5 shrink-0 group-hover/li:bg-emerald-500 group-hover/li:text-white transition-all text-slate-900">
+                                                <div className="w-5 h-5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center mr-3 mt-0.5 shrink-0 group-hover/li:bg-emerald-500 group-hover/li:text-white transition-all text-slate-900">
                                                     <Check className="h-3 w-3 text-emerald-500 group-hover/li:text-white transition-all" />
                                                 </div>
-                                                <span className="text-muted-foreground text-sm font-bold leading-tight group-hover/li:text-slate-900 dark:group-hover/li:text-white transition-colors">{feature}</span>
+                                                <span className="text-muted-foreground text-xs font-bold leading-tight group-hover/li:text-foreground transition-colors">{feature}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
 
-                                <div className="mt-12 grid grid-cols-2 gap-4">
+                                <div className="mt-8 grid grid-cols-2 gap-3">
                                     <Button
                                         variant="outline"
-                                        className="rounded-2xl border-border bg-muted/50 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/20 font-black uppercase text-[10px] tracking-widest h-14 transition-all"
+                                        size="sm"
+                                        className="rounded-lg border-border bg-muted/50 hover:bg-primary/10 hover:text-primary font-bold uppercase text-xs tracking-wider transition-all"
                                         onClick={() => {
                                             setEditingPlan(plan);
                                             setNewPlanName(plan.name);
@@ -459,7 +461,8 @@ export default function PlanManager() {
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className="rounded-2xl border-red-50 text-red-500 hover:bg-red-50 font-black uppercase text-[10px] tracking-widest h-14 transition-all"
+                                        size="sm"
+                                        className="rounded-lg border-destructive/20 text-destructive hover:bg-destructive/10 font-bold uppercase text-xs tracking-wider transition-all"
                                         onClick={() => handleDeletePlan(plan.id)}
                                     >
                                         <Trash2 className="w-4 h-4 mr-2" /> Eliminar

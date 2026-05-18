@@ -13,8 +13,10 @@ import { cn } from "@/lib/utils";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTexts } from "@/hooks/useTexts";
 
 export default function Agenda() {
+  const t = useTexts();
   const [searchParams] = useSearchParams();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [visits, setVisits] = useState<any[]>([]);
@@ -100,7 +102,7 @@ export default function Agenda() {
   return (
     <div className="space-y-10 pb-20 font-display animate-in fade-in duration-700">
       <EliteHeader 
-        title="Plan de Mando Táctico"
+        title={t.agenda_title}
         subtitle={currentDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}
         icon={Calendar}
         badgeText="Operativo V6.0"

@@ -136,61 +136,61 @@ export default function DashboardDoctor({ organizationId, doctorId }: { organiza
     <div className="flex flex-col w-full min-h-screen bg-background space-y-4 p-4 md:p-6 pb-24 max-w-[1200px] mx-auto">
       
       {/* SECCIÓN 1 — Saludo */}
-      <div className="flex items-center gap-4 bg-card p-4 rounded-lg shadow-premium-md border border-border">
-        <div className="bg-primary/10 p-3 rounded-md">
-          <Stethoscope className="h-6 w-6 text-primary" />
+      <div className="flex items-center gap-4 bg-card p-4 rounded-lg shadow-premium-md border border-border/40">
+        <div className="bg-primary/10 p-3 rounded-lg border border-primary/20">
+          <Stethoscope className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-xl font-serif font-bold">Portal Médico — {organizationName}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-sm font-bold font-sans text-foreground">Portal Médico — {organizationName}</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
             {doctor?.name ? `Dr. ${doctor.name}` : `Dr. ${user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Médico'}`}
-            {doctor?.specialty && <span className="text-primary ml-2">· {doctor.specialty}</span>}
+            {doctor?.specialty && <span className="text-primary ml-2 font-medium">· {doctor.specialty}</span>}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="shadow-premium-md border-l-2 border-primary">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-primary rounded-lg">
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase">Visitas Recibidas (Mes)</p>
-            <h3 className="text-2xl font-bold mt-1">{visitasEsteMes}</h3>
+            <p className="text-xs text-muted-foreground uppercase font-medium">Visitas Recibidas (Mes)</p>
+            <h3 className="text-sm font-bold mt-1 text-foreground">{visitasEsteMes}</h3>
           </CardContent>
         </Card>
-        <Card className="shadow-premium-md border-l-2 border-chart-2">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-chart-2 rounded-lg">
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase">Muestras en Banco</p>
-            <h3 className="text-2xl font-bold mt-1">{inventarioMuestras.reduce((s, m) => s + m.quantity, 0)}</h3>
+            <p className="text-xs text-muted-foreground uppercase font-medium">Muestras en Banco</p>
+            <h3 className="text-sm font-bold mt-1 text-foreground">{inventarioMuestras.reduce((s, m) => s + m.quantity, 0)}</h3>
           </CardContent>
         </Card>
-        <Card className="shadow-premium-md border-l-2 border-warning">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-amber-500 rounded-lg">
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase">Próxima Visita</p>
-            <h3 className="text-lg font-bold mt-1 truncate">Por agendar</h3>
+            <p className="text-xs text-muted-foreground uppercase font-medium">Próxima Visita</p>
+            <h3 className="text-xs font-bold mt-1 truncate text-foreground">Por agendar</h3>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* SECCIÓN 2 — Historial de visitas */}
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex flex-col flex-1">
             <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-primary" />
-              <h4 className="text-sm font-semibold">Historial de Atención</h4>
+              <Calendar className="w-4 h-4 text-primary" />
+              <h4 className="text-sm font-semibold text-foreground">Historial de Atención</h4>
             </div>
-            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
+            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/40 before:to-transparent">
               {visitasRecientes.map((v, i) => (
                 <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-background bg-card shadow-premium-sm text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-background bg-card shadow-premium-sm text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 border-border/40">
                     <Activity className="w-4 h-4" />
                   </div>
-                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-lg border border-border shadow-sm bg-card">
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-lg border border-border/40 shadow-sm bg-card hover:bg-muted/30 transition-colors">
                     <div className="flex items-center justify-between mb-1">
-                      <div className="text-xs font-semibold">{v.date}</div>
-                      <Badge variant="outline" className="text-[10px]">{v.duration}</Badge>
+                      <div className="text-xs font-semibold text-foreground">{v.date}</div>
+                      <Badge variant="outline" className="text-xs font-normal border-border/40 bg-muted/40">{v.duration}</Badge>
                     </div>
                     <div className="text-xs text-muted-foreground">Rep: {v.rep}</div>
-                    <div className="text-[10px] mt-2 text-primary/80 truncate">Prod: {v.products}</div>
+                    <div className="text-xs mt-2 text-primary/80 truncate">Prod: {v.products}</div>
                   </div>
                 </div>
               ))}
@@ -200,23 +200,23 @@ export default function DashboardDoctor({ organizationId, doctorId }: { organiza
 
         {/* SECCIÓN 3 y 4 — Inventario y Gráfico */}
         <div className="flex flex-col gap-4">
-          <Card className="shadow-premium-md">
+          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-4">
-                <Pill className="w-5 h-5 text-primary" />
-                <h4 className="text-sm font-semibold">Mi Banco de Muestras</h4>
+                <Pill className="w-4 h-4 text-primary" />
+                <h4 className="text-sm font-semibold text-foreground">Mi Banco de Muestras</h4>
               </div>
               <ScrollArea className="h-[150px]">
                 <div className="space-y-2">
                   {inventarioMuestras.map((m, i) => (
-                    <div key={i} className="flex justify-between items-center p-2 rounded-md bg-muted/20 border border-border">
+                    <div key={i} className="flex justify-between items-center p-2 rounded-lg bg-muted/20 border border-border/40 hover:bg-muted/40 transition-colors">
                       <div>
-                        <p className="text-xs font-semibold">{m.name}</p>
-                        <p className={`text-[10px] ${m.alert ? 'text-destructive font-bold' : 'text-muted-foreground'}`}>
+                        <p className="text-xs font-bold text-foreground">{m.name}</p>
+                        <p className={`text-xs ${m.alert ? 'text-destructive font-bold' : 'text-muted-foreground'}`}>
                           Exp: {m.expires}
                         </p>
                       </div>
-                      <Badge variant={m.alert ? "destructive" : "secondary"}>{m.quantity} u.</Badge>
+                      <Badge variant={m.alert ? "destructive" : "secondary"} className="text-xs font-normal">{m.quantity} u.</Badge>
                     </div>
                   ))}
                 </div>
@@ -224,16 +224,16 @@ export default function DashboardDoctor({ organizationId, doctorId }: { organiza
             </CardContent>
           </Card>
 
-          <Card className="shadow-premium-md">
+          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
             <CardContent className="p-4">
-              <h4 className="text-sm font-semibold mb-2">Productos Frecuentes</h4>
+              <h4 className="text-sm font-semibold mb-2 text-foreground">Productos Frecuentes</h4>
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={donutData} innerRadius={40} outerRadius={60} paddingAngle={5} dataKey="value" stroke="none">
                       {donutData.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }} />
+                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

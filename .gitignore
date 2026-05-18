@@ -54,3 +54,8 @@ AI_RULES_MASTER.md
 mcp_settings.json
 setup_reglas.ps1
 proteger_git.ps1
+
+# Temporary scratch files
+scratch/
+db_medivisitpro_supabase
+

@@ -125,7 +125,7 @@ export default function BillingManager() {
     return (
         <div className="flex flex-col h-full bg-background space-y-8 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-10 md:px-12 py-10 rounded-elite-lg shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
                 <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-slate-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>

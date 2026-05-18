@@ -673,20 +673,20 @@ export default function VisitExecutionPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 bg-muted/20 px-3 py-1.5 rounded-full border border-border/40 mr-1 text-foreground shadow-inner">
-                        <Label htmlFor="focus-mode" className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Foco Crítico</Label>
+                    <div className="flex items-center gap-2 bg-muted/20 px-3 py-1.5 rounded-full border border-border/40 mr-1 text-foreground shadow-none">
+                        <Label htmlFor="focus-mode" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Foco Crítico</Label>
                         <Switch id="focus-mode" checked={isFocusMode} onCheckedChange={setIsFocusMode} className="data-[state=checked]:bg-emerald-500 scale-[0.65]" />
                     </div>
                     <Button
                         size="sm"
                         variant="outline"
                         onClick={() => goToTab("negotiation")}
-                        className="bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white font-black uppercase tracking-widest text-[10px] gap-2 shadow-sm rounded-xl h-11 px-5"
+                        className="gap-2 h-9 px-4 text-xs font-bold"
                     >
                         <BadgeDollarSign className="w-4 h-4" /> Venta / Cierre
                     </Button>
                     {isTimerRunning && (
-                        <Badge variant="outline" className="text-[10px] font-black text-primary border-primary/20 bg-primary/5 uppercase tracking-widest px-4 py-1.5 rounded-full h-11">
+                        <Badge variant="outline" className="text-xs font-black text-primary border-primary/20 bg-primary/5 uppercase tracking-widest px-4 py-1.5 rounded-full h-9">
                             <Clock className="h-4 w-4 mr-2" />
                             {formatTime(timer)}
                         </Badge>
@@ -695,61 +695,61 @@ export default function VisitExecutionPage() {
             </div>
 
             {!visit.checkin_at ? (
-                <div className="py-12 text-center bg-card rounded-xl border border-dashed border-border">
-                    <div className="w-20 h-20 bg-primary/10 text-primary rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 border border-primary/20 shadow-inner">
+                <div className="py-12 text-center bg-card rounded-lg border border-dashed border-border shadow-premium-md">
+                    <div className="w-20 h-20 bg-primary/10 text-primary rounded-lg flex items-center justify-center mx-auto mb-6 border border-primary/20">
                         <Navigation className="h-10 w-10" />
                     </div>
                     <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-2">Despliegue Listo</h3>
                     <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest max-w-sm mx-auto mb-8 opacity-70">
                         VERIFICA COBERTURA GPS E INICIA EL REGISTRO DE VISITA.
                     </p>
-                    <Button size="lg" onClick={handleCheckIn} className="bg-primary hover:bg-primary/90 gap-3 shadow-premium-lg text-white font-black uppercase tracking-widest text-[10px] h-16 px-10 rounded-2xl active:scale-95 transition-all">
-                        <Play className="h-6 w-6" /> INICIAR VISITA
+                    <Button size="lg" onClick={handleCheckIn} className="gap-3 h-11 px-6 rounded-lg active:scale-95 transition-all text-xs font-bold">
+                        <Play className="h-5 w-5" /> INICIAR VISITA
                     </Button>
                 </div>
             ) : visit.status === 'completed' ? (
-                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-8 text-center text-slate-900">
+                <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-8 text-center text-slate-900 shadow-premium-md">
                     <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-emerald-900 mb-2">Visita Completada</h3>
                     <Button
                         onClick={() => navigate('/agenda')}
-                        className="mt-6 bg-emerald-600 text-white hover:bg-emerald-700 shadow-md transition-all active:scale-95"
+                        className="mt-6 shadow-premium-md transition-all active:scale-95"
                     >
                         Volver a la Agenda
                     </Button>
                 </div>
             ) : (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-10 bg-muted/20 p-2 h-auto md:h-20 rounded-[2rem] border border-border/40 shadow-inner">
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-10 bg-muted/20 p-2 h-auto md:h-12 rounded-lg border border-border/40">
                         <TabsTrigger
                             value="strategy"
-                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-emerald-400/20"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <Brain className="w-5 h-5" />
+                            <Brain className="w-4 h-4" />
                             <span className="hidden sm:inline">1. Estrategia Alpha</span>
                             <span className="sm:hidden">Estrat.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="development"
-                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-primary/20"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <ActivityIcon className="w-5 h-5" />
+                            <ActivityIcon className="w-4 h-4" />
                             <span className="hidden sm:inline">2. Desarrollo Estratégico</span>
                             <span className="sm:hidden">Desarr.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="negotiation"
-                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-indigo-400/20"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <Store className="w-5 h-5" />
+                            <Store className="w-4 h-4" />
                             <span className="hidden sm:inline">3. Negociación Elite</span>
                             <span className="sm:hidden">Negoc.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="closing"
-                            className="rounded-2xl text-muted-foreground data-[state=active]:bg-rose-500 data-[state=active]:text-white data-[state=active]:shadow-premium-lg transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-12 md:h-full border border-transparent data-[state=active]:border-rose-400/20"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <CheckCircle className="w-5 h-5" />
+                            <CheckCircle className="w-4 h-4" />
                             <span className="hidden sm:inline">4. Cierre de Visita</span>
                             <span className="sm:hidden">Cierre</span>
                         </TabsTrigger>
@@ -759,7 +759,7 @@ export default function VisitExecutionPage() {
                     <TabsContent value="strategy" className="space-y-6 animate-in fade-in-50 duration-500">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {scenario && !scenarioLoading && (
-                                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 shadow-sm text-slate-900">
+                                <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 shadow-premium-md text-slate-900">
                                     <h3 className="text-base font-bold text-emerald-700 mb-1 flex items-center gap-2">
                                         <Brain className="h-5 w-5 text-emerald-600" /> Brain 360: {scenario.title || 'Sugerencia Estratégica'}
                                     </h3>
@@ -778,7 +778,7 @@ export default function VisitExecutionPage() {
                             )}
 
 
-                            <Card className="border-border bg-card shadow-md rounded-xl overflow-hidden">
+                            <Card className="border-border bg-card shadow-premium-md rounded-lg overflow-hidden">
                                 <CardHeader className="bg-slate-50 py-3 px-4 border-b border-slate-100 text-slate-900">
                                     <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
                                         <FileText className="h-4 w-4 text-emerald-600" /> Preparación y Foco
@@ -786,7 +786,7 @@ export default function VisitExecutionPage() {
                                 </CardHeader>
                                 <CardContent className="space-y-4 pt-4 px-4 pb-4">
                                     {scenario?.showMasterDataCard && (
-                                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-slate-900">
+                                        <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-slate-900">
                                             <MasterDataCard
                                                 directoryItemId={directoryItemId || ''}
                                                 currentEmail={directoryItem?.email}
@@ -801,7 +801,7 @@ export default function VisitExecutionPage() {
                                             <Input
                                                 value={customObjective || (visit as any).objective || ''}
                                                 readOnly
-                                                className="relative bg-card border-border text-foreground font-medium h-14 text-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+                                                className="relative bg-card border-border text-foreground font-medium h-10 text-sm shadow-premium-sm focus:ring-emerald-500 focus:border-emerald-500"
                                             />
                                         </div>
                                     </div>
@@ -830,15 +830,15 @@ export default function VisitExecutionPage() {
 
                         </div>
                         <div className="flex justify-end mt-8">
-                            <Button onClick={() => goToTab("development")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 rounded-xl h-12 px-6 gap-2 font-bold text-lg hover:scale-105 transition-transform">
-                                Siguiente Fase <Navigation className="h-5 w-5" />
+                            <Button variant="default" size="sm" onClick={() => goToTab("development")} className="gap-2">
+                                Siguiente Fase <Navigation className="h-4 w-4" />
                             </Button>
                         </div>
                     </TabsContent>
 
                     {/* TAB 2: DESARROLLO (NEURO VENTAS & ENTREVISTA) */}
                     <TabsContent value="development" className="space-y-4 animate-in fade-in-50">
-                        <Card className="border-border bg-card shadow-lg rounded-2xl overflow-hidden">
+                        <Card className="border-border bg-card shadow-premium-md rounded-lg overflow-hidden">
                             <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100 text-slate-900">
                                 <CardTitle className="flex items-center gap-2 text-xl font-bold text-foreground">
                                     <Star className="h-5 w-5 text-yellow-500" /> Psicología de Venta & Interés
@@ -846,22 +846,22 @@ export default function VisitExecutionPage() {
                             </CardHeader>
                             <CardContent className="space-y-8 pt-6">
                                 {/* Interest Scale */}
-                                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-slate-900">
+                                <div className="bg-slate-50 p-6 rounded-lg border border-slate-100 text-slate-900">
                                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] block mb-6 text-center sm:text-left">Nivel de Engagement Detectado</label>
                                     <div className="flex items-center justify-center sm:justify-start gap-4 mb-2">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <button
                                                 key={star}
                                                 onClick={() => setFormData((prev: any) => ({ ...prev, doctor_interest: star }))}
-                                                className={`p-3 transition-all transform hover:scale-110 rounded-xl border ${formData.doctor_interest >= star
-                                                    ? 'bg-yellow-400 text-white shadow-md border-yellow-500'
+                                                className={`p-3 transition-all transform hover:scale-110 rounded-lg border ${formData.doctor_interest >= star
+                                                    ? 'bg-yellow-400 text-white shadow-premium-sm border-yellow-500'
                                                     : 'bg-card text-muted-foreground border-border hover:text-yellow-400 hover:border-yellow-300'}`}
                                             >
                                                 <Star className={`h-8 w-8 ${formData.doctor_interest >= star ? 'fill-current' : ''}`} />
                                             </button>
                                         ))}
                                     </div>
-                                    <p className="text-center sm:text-left text-base font-bold text-foreground mt-4 bg-card py-2 px-4 rounded-full border border-border inline-block">
+                                    <p className="text-center sm:text-left text-xs font-bold text-foreground mt-4 bg-card py-2 px-4 rounded-full border border-border inline-block">
                                         {formData.doctor_interest === 1 && "❌ Rechazo Frontal"}
                                         {formData.doctor_interest === 2 && "🤔 Escéptico / Barreras"}
                                         {formData.doctor_interest === 3 && "😐 Neutral / Informativo"}
@@ -877,7 +877,7 @@ export default function VisitExecutionPage() {
                                             value={formData.emotional_state}
                                             onValueChange={(v) => setFormData({ ...formData, emotional_state: v })}
                                         >
-                                            <SelectTrigger className="bg-card border-border text-foreground h-12">
+                                            <SelectTrigger className="bg-card border-border text-foreground h-10">
                                                 <SelectValue placeholder="Seleccionar..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-card border-border text-foreground">
@@ -895,7 +895,7 @@ export default function VisitExecutionPage() {
                                             value={formData.purchase_driver}
                                             onValueChange={(v) => setFormData({ ...formData, purchase_driver: v })}
                                         >
-                                            <SelectTrigger className="bg-card border-border text-foreground h-12">
+                                            <SelectTrigger className="bg-card border-border text-foreground h-10">
                                                 <SelectValue placeholder="Seleccionar..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-card border-border text-foreground">
@@ -943,7 +943,7 @@ export default function VisitExecutionPage() {
                                 </div>
                             )}
                              {(entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore') && scenario && scenario.type !== 'conquest' && (
-                                <div className="bg-card rounded-xl border border-border p-3 shadow-md">
+                                <div className="bg-card rounded-lg border border-border p-3 shadow-premium-md">
                                     <CommercialAudit
                                         data={commercialData}
                                         onChange={(data) => {
@@ -956,11 +956,11 @@ export default function VisitExecutionPage() {
                             )}
                         </div>
                         <div className="flex justify-between mt-8">
-                            <Button variant="outline" onClick={() => goToTab("strategy")} className="border-slate-200 text-slate-600 hover:bg-slate-50 gap-2 h-12 px-6 rounded-xl font-medium">
-                                <Navigation className="h-5 w-5 rotate-180" /> Volver
+                            <Button variant="outline" size="sm" onClick={() => goToTab("strategy")} className="gap-2">
+                                <Navigation className="h-4 w-4 rotate-180" /> Volver
                             </Button>
-                            <Button onClick={() => goToTab("negotiation")} className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-200 rounded-xl h-12 px-6 gap-2 font-bold text-lg hover:scale-105 transition-transform">
-                                Ir a Negociación <Store className="h-5 w-5" />
+                            <Button variant="default" size="sm" onClick={() => goToTab("negotiation")} className="gap-2">
+                                Ir a Negociación <Store className="h-4 w-4" />
                             </Button>
                         </div>
                     </TabsContent >
@@ -968,14 +968,14 @@ export default function VisitExecutionPage() {
                     {/* TAB: NEGOCIACIÓN (NUEVA INTEGRACIÓN) */}
                     <TabsContent value="negotiation" className="space-y-6 animate-in fade-in-50">
                         <div className="grid grid-cols-1 gap-4">
-                            <div className="bg-gradient-to-r from-purple-50 to-white p-6 rounded-2xl border border-purple-200 shadow-sm">
+                            <div className="bg-gradient-to-r from-purple-50 to-white p-6 rounded-lg border border-purple-200 shadow-premium-md">
                                 <h3 className="text-xl font-bold text-purple-900 mb-2 flex items-center gap-2">
                                     <Store className="h-6 w-6 text-purple-600" /> Foco Comercial: Línea Femenina
                                 </h3>
-                                <p className="text-slate-400 mb-6">Selecciona un producto clave para iniciar la negociación y registrar acuerdos.</p>
+                                <p className="text-xs text-muted-foreground mb-6">Selecciona un producto clave para iniciar la negociación y registrar acuerdos.</p>
 
                                 {isWholesale && (
-                                    <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                    <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
                                         <h4 className="font-bold text-red-800 flex items-center gap-2 mb-4">
                                             <AlertCircle className="h-5 w-5" /> 🚨 Monitor de Inventario Central (Falla)
                                         </h4>
@@ -988,14 +988,14 @@ export default function VisitExecutionPage() {
                                                         onValueChange={(v) => {
                                                             const newAlerts = centralStockAlerts.filter(a => a.productId !== product.id);
                                                             if (v !== 'available') {
-                                                                newAlerts.push({ productId: product.id, status: v });
-                                                                if (v === 'out_of_stock') {
+                                                                 newAlerts.push({ productId: product.id, status: v });
+                                                                 if (v === 'out_of_stock') {
                                                                     toast({
                                                                         title: "🔥 ALERTA DE FALLA",
                                                                         description: `Se ha registrado agotamiento de ${product.name} en esta droguería.`,
                                                                         variant: "destructive"
                                                                     });
-                                                                }
+                                                                 }
                                                             }
                                                             setCentralStockAlerts(newAlerts);
                                                         }}
@@ -1006,7 +1006,7 @@ export default function VisitExecutionPage() {
                                                         <SelectContent>
                                                             <SelectItem value="available">🟢 Disponible</SelectItem>
                                                             <SelectItem value="low">🟡 Poca Existencia</SelectItem>
-                                                            <SelectItem value="out_of_stock">🔴 AGOTADO (Falla)</SelectItem>
+                                                            <SelectItem value="out_of_stock">🔴 Sin existencias</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>
@@ -1017,7 +1017,7 @@ export default function VisitExecutionPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {negotiationProducts.map(product => (
-                                        <Card key={product.id} className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+                                        <Card key={product.id} className="bg-card border-border shadow-premium-md hover:shadow-premium-md transition-shadow rounded-lg">
                                             <CardContent className="p-4 flex flex-col justify-between h-full gap-4">
                                                 <div>
                                                     <h4 className="font-bold text-foreground text-lg leading-tight">{product.name}</h4>
@@ -1027,8 +1027,10 @@ export default function VisitExecutionPage() {
                                                     </div>
                                                 </div>
                                                 <Button
+                                                    variant="default"
+                                                    size="sm"
                                                     onClick={() => handleNegotiate(product)}
-                                                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md shadow-purple-100"
+                                                    className="w-full"
                                                 >
                                                     💲 Negociar
                                                 </Button>
@@ -1042,9 +1044,9 @@ export default function VisitExecutionPage() {
 
                     {/* TAB 3: CIERRE (MUESTRAS, POP, EVIDENCIA) */}
                     <TabsContent value="closing" className="space-y-8 animate-in fade-in-50 duration-500">
-                        <Card className="border-orange-100 bg-orange-50 shadow-lg rounded-2xl overflow-hidden">
+                        <Card className="border-orange-100 bg-orange-50 shadow-premium-md rounded-lg overflow-hidden">
                             <CardHeader className="bg-orange-50/50 pb-4 border-b border-orange-100">
-                                <CardTitle className="text-lg font-bold text-orange-700 flex items-center gap-2">
+                                <CardTitle className="text-base font-bold text-orange-700 flex items-center gap-2">
                                     <ActivityIcon className="h-5 w-5" /> Inteligencia Competitiva 360°
                                 </CardTitle>
                             </CardHeader>
@@ -1053,7 +1055,7 @@ export default function VisitExecutionPage() {
                                     placeholder="¿Qué está haciendo la competencia en este punto? (Precios, promociones, visitas...)"
                                     value={formData.competitor_activity}
                                     onChange={(e) => setFormData(prev => ({ ...prev, competitor_activity: e.target.value }))}
-                                    className="w-full text-base p-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[100px]"
+                                    className="w-full text-sm p-4 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[100px]"
                                 />
                             </CardContent>
                         </Card>
@@ -1087,8 +1089,8 @@ export default function VisitExecutionPage() {
 
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-md text-slate-900">
-                                <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                            <div className="bg-slate-50 rounded-lg p-6 border border-slate-200 shadow-premium-md text-slate-900">
+                                <h3 className="text-base font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
                                     <PenTool className="h-5 w-5 text-emerald-600" /> Evidencia y Firma
                                 </h3>
                                 <div className="space-y-6">
@@ -1113,7 +1115,7 @@ export default function VisitExecutionPage() {
                             </div>
 
                             <div className="flex flex-col gap-6">
-                                <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100 shadow-md flex-grow text-slate-900">
+                                <div className="bg-blue-50 rounded-lg p-6 border border-blue-100 shadow-premium-md flex-grow text-slate-900">
                                     <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center gap-2">
                                         <Navigation className="h-5 w-5" /> Próximo Paso
                                     </h3>
@@ -1123,18 +1125,18 @@ export default function VisitExecutionPage() {
                                             placeholder="¿Cuál es el compromiso para la siguiente visita?"
                                             value={formData.next_commitment}
                                             onChange={(e) => setFormData({ ...formData, next_commitment: e.target.value })}
-                                            className="w-full text-lg p-4 rounded-xl border border-blue-200 bg-card text-foreground placeholder:text-muted-foreground focus:border-blue-500 transition-all min-h-[120px]"
+                                            className="w-full text-sm p-4 rounded-lg border border-blue-200 bg-card text-foreground placeholder:text-muted-foreground focus:border-blue-500 transition-all min-h-[120px]"
                                         />
                                     </div>
                                 </div>
 
                                 <Button
-                                    className="w-full h-20 text-xl font-black bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-200 border border-slate-200 rounded-2xl group overflow-hidden relative"
+                                    variant="default"
+                                    size="lg"
+                                    className="w-full h-11 text-xs font-bold"
                                     onClick={handleCheckOut}
                                 >
-                                    <div className="absolute inset-0 bg-card/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <Square className="h-6 w-6 mr-3 fill-current group-hover:scale-110 transition-transform" />
-                                    FINALIZAR VISITA ESTRATÉGICA
+                                    <Square className="h-4 w-4 mr-2" /> FINALIZAR VISITA ESTRATÉGICA
                                 </Button>
                             </div>
                         </div>
@@ -1171,7 +1173,7 @@ export default function VisitExecutionPage() {
         
             {/* FOCUS MODE OVERLAY (FRICTIONLESS) */}
             {isFocusMode && (
-                <div className="fixed inset-x-0 bottom-0 z-[60] p-4 bg-card/90 backdrop-blur-2xl border-t border-border animate-in slide-in-from-bottom duration-500 shadow-[0_-20px_50px_rgba(0,0,0,0.1)] rounded-t-[3rem]">
+                <div className="fixed inset-x-0 bottom-0 z-[60] p-4 bg-card/90 backdrop-blur-2xl border-t border-border animate-in slide-in-from-bottom duration-500 shadow-premium-lg rounded-t-lg">
                     <div className="max-w-4xl mx-auto space-y-8 pb-8">
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-black text-slate-800 tracking-tighter">MODO <span className="text-emerald-500">MANOS LIBRES</span></h2>
@@ -1179,7 +1181,7 @@ export default function VisitExecutionPage() {
                                 <AlertCircle className="h-5 w-5 text-slate-400" />
                             </Button>
                         </div>
-                        <div className="bg-emerald-500 rounded-[2rem] p-6 text-white shadow-xl shadow-emerald-200">
+                        <div className="bg-emerald-500 rounded-lg p-6 text-white shadow-premium-md">
                             <VoiceInput label="Narra la visita (IA detectará campos)" rows={2} placeholder="Pisa el micro y cuenta qué pasó..." value={formData.notes} onValueChange={(val) => { setFormData(prev => ({ ...prev, notes: val })); processVoiceHeuristics(val); }} className="bg-background/10 border-white/20 text-white placeholder:text-emerald-100" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1202,8 +1204,8 @@ export default function VisitExecutionPage() {
                                 </div>
                             </div>
                         </div>
-                        <Button className="w-full h-20 text-xl font-black bg-slate-900 hover:bg-slate-800 text-white shadow-2xl shadow-slate-200 border border-slate-200 rounded-[2rem] group overflow-hidden relative" onClick={handleCheckOut}>
-                            <Square className="h-6 w-6 mr-3 fill-emerald-500 animate-pulse" /> TERMINAR VISITA AHORA
+                        <Button variant="default" size="lg" className="w-full h-11 text-xs font-bold" onClick={handleCheckOut}>
+                            <Square className="h-4 w-4 mr-2 fill-emerald-500" /> TERMINAR VISITA AHORA
                         </Button>
                     </div>
                 </div>

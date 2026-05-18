@@ -28,17 +28,17 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
 
     const getStateColor = (stateName: string): string => {
         const data = stateData.find(s => s.name === stateName);
-        if (!data) return "#f1f5f9"; // slate-100 default
+        if (!data) return "hsl(var(--muted))";
 
         switch (data.status) {
             case 'caliente':
-                return "#0056b3"; // primary
+                return "hsl(var(--primary))";
             case 'tibio':
-                return "#00a0e9"; // secondary
+                return "hsl(var(--chart-2))";
             case 'frio':
-                return "#b3d9ff"; // primary-light
+                return "hsl(var(--primary)/0.3)";
             default:
-                return "#f1f5f9";
+                return "hsl(var(--muted))";
         }
     };
 
@@ -91,22 +91,22 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
     const hoveredData = hoveredState ? getStateData(hoveredState) : null;
 
     return (
-        <Card className="corporate-card overflow-hidden">
-            <CardHeader className="bg-muted border-b border-border pb-3">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
+            <CardHeader className="bg-muted/40 border-b border-border/40 pb-3">
                 <CardTitle className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <span className="font-black text-text-main tracking-tight">Mapa de Calor Comercial</span>
-                    <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
+                    <span className="font-bold text-foreground tracking-tight text-sm">Mapa de Calor Comercial</span>
+                    <div className="flex gap-4 text-xs font-bold uppercase tracking-wider">
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#0056b3" }}></div>
-                            <span className="text-text-muted">Alta</span>
+                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "hsl(var(--primary))" }}></div>
+                            <span className="text-muted-foreground">Alta</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#00a0e9" }}></div>
-                            <span className="text-text-muted">Media</span>
+                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "hsl(var(--chart-2))" }}></div>
+                            <span className="text-muted-foreground">Media</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#b3d9ff" }}></div>
-                            <span className="text-text-muted">Baja</span>
+                            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "hsl(var(--primary)/0.3)" }}></div>
+                            <span className="text-muted-foreground">Baja</span>
                         </div>
                     </div>
                 </CardTitle>
@@ -117,7 +117,7 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
                         width="100%"
                         height="400"
                         viewBox="0 0 100 100"
-                        className="rounded-2xl bg-slate-50 border border-slate-100 shadow-inner text-slate-900"
+                        className="rounded-lg bg-muted/30 border border-border/40 shadow-inner text-foreground"
                     >
                         {states.map((state) => (
                             <g key={state.name}>
@@ -153,27 +153,27 @@ export function VenezuelaHeatMap({ stateData }: VenezuelaHeatMapProps) {
                 {/* Tooltip */}
                 {hoveredData && (
                     <div
-                        className="fixed z-[100] bg-card border border-border px-4 py-3 rounded-2xl shadow-2xl pointer-events-none animate-in fade-in zoom-in-95 duration-200"
+                        className="fixed z-[100] bg-card border border-border/40 px-4 py-3 rounded-lg shadow-premium-2xl pointer-events-none animate-in fade-in zoom-in-95 duration-200"
                         style={{
                             left: `${tooltipPos.x + 15}px`,
                             top: `${tooltipPos.y + 15}px`,
                         }}
                     >
-                        <div className="font-black text-text-main text-base mb-2 border-b border-border pb-1">{hoveredData.name}</div>
+                        <div className="font-bold text-foreground text-sm mb-2 border-b border-border/40 pb-1">{hoveredData.name}</div>
                         <div className="space-y-1.5">
                             <div className="flex justify-between items-center gap-4">
-                                <span className="text-[10px] font-bold text-text-muted uppercase">Ventas</span>
-                                <span className="text-sm font-black text-primary">${hoveredData.sales.toLocaleString()}</span>
+                                <span className="text-xs font-bold text-muted-foreground uppercase">Ventas</span>
+                                <span className="text-sm font-bold text-primary">${hoveredData.sales.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between items-center gap-4">
-                                <span className="text-[10px] font-bold text-text-muted uppercase">Visitas</span>
-                                <span className="text-sm font-bold text-text-main">{hoveredData.visits}</span>
+                                <span className="text-xs font-bold text-muted-foreground uppercase">Visitas</span>
+                                <span className="text-sm font-bold text-foreground">{hoveredData.visits}</span>
                             </div>
                             <div className="flex justify-between items-center gap-4 pt-1">
-                                <span className="text-[10px] font-bold text-text-muted uppercase">Nivel</span>
-                                <Badge className={`text-[10px] font-black uppercase ${hoveredData.status === 'caliente' ? 'bg-primary' :
-                                    hoveredData.status === 'tibio' ? 'bg-secondary' :
-                                        'bg-primary-light text-primary'
+                                <span className="text-xs font-bold text-muted-foreground uppercase">Nivel</span>
+                                <Badge className={`text-xs font-bold uppercase ${hoveredData.status === 'caliente' ? 'bg-primary text-primary-foreground' :
+                                    hoveredData.status === 'tibio' ? 'bg-chart-2 text-white' :
+                                        'bg-primary/20 text-primary'
                                     }`}>
                                     {hoveredData.status}
                                 </Badge>

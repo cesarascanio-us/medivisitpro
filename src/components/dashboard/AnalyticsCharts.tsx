@@ -21,14 +21,20 @@ interface AnalyticsChartsProps {
     zoneData: ZoneKPI[];
 }
 
-const COLORS = ['#0056b3', '#00a0e9', '#003d7a', '#4da3ff', '#b3d9ff', '#002b55'];
+const COLORS = [
+    'hsl(var(--primary))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--chart-5))'
+];
 
 export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
     if (!zoneData || zoneData.length === 0) {
         return (
-            <Card className="col-span-1 lg:col-span-2 corporate-card">
+            <Card className="col-span-1 lg:col-span-2 bg-card border border-border/40 shadow-premium-md rounded-lg">
                 <CardHeader>
-                    <CardTitle>Análisis de Rendimiento</CardTitle>
+                    <CardTitle className="text-sm font-bold text-foreground">Análisis de Rendimiento</CardTitle>
                     <CardDescription>No hay datos suficientes para generar gráficos.</CardDescription>
                 </CardHeader>
             </Card>
@@ -60,9 +66,9 @@ export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-5 duration-700">
             {/* Sales by Zone (Bar Chart) */}
-            <Card className="lg:col-span-2 xl:col-span-1 corporate-card">
+            <Card className="lg:col-span-2 xl:col-span-1 bg-card border border-border/40 shadow-premium-md rounded-lg">
                 <CardHeader>
-                    <CardTitle className="text-text-main font-bold">Ventas por Zona (Top 8)</CardTitle>
+                    <CardTitle className="text-sm font-bold text-foreground">Ventas por Zona (Top 8)</CardTitle>
                     <CardDescription>Rendimiento comercial por región geográfica</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -74,9 +80,14 @@ export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
                                 <YAxis dataKey="estate" type="category" width={80} tick={{ fontSize: 12, fontWeight: 'bold' }} />
                                 <Tooltip
                                     formatter={(value: number) => [`$${value.toLocaleString()}`, 'Ventas']}
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}
+                                    contentStyle={{ 
+                                        backgroundColor: 'hsl(var(--card))', 
+                                        border: '1px solid hsl(var(--border))', 
+                                        borderRadius: 'var(--radius)', 
+                                        color: 'hsl(var(--foreground))' 
+                                    }}
                                 />
-                                <Bar dataKey="sales_total" fill="#0056b3" radius={[0, 4, 4, 0]} barSize={20} />
+                                <Bar dataKey="sales_total" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -84,9 +95,9 @@ export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
             </Card>
 
             {/* Effectiveness (Pie Chart) */}
-            <Card className="corporate-card">
+            <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
                 <CardHeader>
-                    <CardTitle className="text-text-main font-bold">Efectividad de Visitas</CardTitle>
+                    <CardTitle className="text-sm font-bold text-foreground">Efectividad de Visitas</CardTitle>
                     <CardDescription>Conversión de visitas a pedidos</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -99,12 +110,12 @@ export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
                                     cy="50%"
                                     innerRadius={70}
                                     outerRadius={90}
-                                    fill="#8884d8"
+                                    fill="hsl(var(--primary))"
                                     paddingAngle={5}
                                     dataKey="value"
                                 >
                                     {conversionData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={index === 1 ? '#00a0e9' : '#f1f5f9'} />
+                                        <Cell key={`cell-${index}`} fill={index === 1 ? 'hsl(var(--chart-2))' : 'hsl(var(--muted))'} />
                                     ))}
                                 </Pie>
                                 <Tooltip />
@@ -116,15 +127,15 @@ export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
                         <p className="text-4xl font-black text-primary">
                             {totalVisits > 0 ? ((totalOrders / totalVisits) * 100).toFixed(0) : 0}%
                         </p>
-                        <p className="text-[10px] text-text-muted uppercase tracking-[0.2em] font-black">Tasa de Conversión</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] font-bold">Tasa de Conversión</p>
                     </div>
                 </CardContent>
             </Card>
 
             {/* Monthly Trend (Line Chart) */}
-            <Card className="lg:col-span-2 corporate-card">
+            <Card className="lg:col-span-2 bg-card border border-border/40 shadow-premium-md rounded-lg">
                 <CardHeader>
-                    <CardTitle className="text-text-main font-bold">Tendencia de Ventas (Semestral)</CardTitle>
+                    <CardTitle className="text-sm font-bold text-foreground">Tendencia de Ventas (Semestral)</CardTitle>
                     <CardDescription>Proyección histórica de ingresos</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -136,9 +147,14 @@ export function AnalyticsCharts({ zoneData }: AnalyticsChartsProps) {
                                 <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} tick={{ fontWeight: 'bold' }} />
                                 <Tooltip
                                     formatter={(value: number) => [`$${value.toLocaleString()}`, 'Ventas']}
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}
+                                    contentStyle={{ 
+                                        backgroundColor: 'hsl(var(--card))', 
+                                        border: '1px solid hsl(var(--border))', 
+                                        borderRadius: 'var(--radius)', 
+                                        color: 'hsl(var(--foreground))' 
+                                    }}
                                 />
-                                <Line type="monotone" dataKey="sales" stroke="#0056b3" strokeWidth={4} dot={{ r: 6, fill: '#0056b3', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} />
+                                <Line type="monotone" dataKey="sales" stroke="hsl(var(--primary))" strokeWidth={4} dot={{ r: 6, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>

@@ -76,6 +76,7 @@ interface EliteKPICardProps {
     delay?: number;
     onClick?: () => void;
     isActive?: boolean;
+    className?: string;
 }
 
 export function EliteKPICard({ 
@@ -88,7 +89,8 @@ export function EliteKPICard({
     variant = 'glass',
     delay = 0,
     onClick,
-    isActive
+    isActive,
+    className
 }: EliteKPICardProps) {
     
     const colors = {
@@ -110,6 +112,7 @@ export function EliteKPICard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: delay / 1000 }}
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className={className}
         >
             <Card 
                 onClick={onClick}

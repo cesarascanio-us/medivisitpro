@@ -22,12 +22,22 @@ BEGIN
   END IF;
 
   SELECT json_build_object(
-    'total_organizations', (SELECT COUNT(*) FROM organizations WHERE status = 'active'),
+    'total_organizations', (SELECT COUNT(*) FROM organizations),
     'total_users',         (SELECT COUNT(*) FROM profiles),
     'total_visits_month',  (SELECT COUNT(*) FROM visits
                             WHERE checkin_at >= date_trunc('month', now())),
     'total_transfers',     (SELECT COUNT(*) FROM transfer_orders
-                            WHERE created_at >= date_trunc('month', now()))
+                            WHERE created_at >= date_trunc('month', now())),
+    'organizations_activity', (
+      SELECT json_agg(t) FROM (
+        SELECT o.name as name, COUNT(v.id)::int as visits
+        FROM organizations o
+        LEFT JOIN visits v ON v.organization_id = o.id
+        GROUP BY o.id, o.name
+        ORDER BY visits DESC
+        LIMIT 5
+      ) t
+    )
   ) INTO result;
 
   RETURN result;

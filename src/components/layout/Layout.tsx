@@ -44,11 +44,11 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-y-auto font-outfit transition-colors duration-500">
+    <div className="h-screen overflow-hidden bg-background text-foreground flex flex-col relative font-outfit transition-colors duration-500">
       {/* Premium Corporate Background Orbs — Dark-Aware */}
-      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-primary/5 dark:bg-primary/10 rounded-full blur-[160px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-secondary/5 dark:bg-secondary/10 rounded-full blur-[160px] pointer-events-none"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-primary/3 dark:bg-primary/5 rounded-full blur-[180px] pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-primary/5 dark:bg-primary/10 rounded-full blur-[160px] -z-10 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-secondary/5 dark:bg-secondary/10 rounded-full blur-[160px] -z-10 pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-primary/3 dark:bg-primary/5 rounded-full blur-[180px] -z-10 pointer-events-none"></div>
 
       {/* Compact Demo Mode Banner - Only shown on explicit demo routes */}
       {location.pathname.startsWith('/demo/') && (
@@ -86,15 +86,15 @@ export const Layout = ({ children }: LayoutProps) => {
       )}
 
       {/* Main container with sidebar and content */}
-      <div className="flex flex-1 overflow-visible">
+      <div className="flex flex-1 overflow-hidden h-full">
         {/* Sidebar - Hidden on mobile/tablet, visible on laptop+ (lg breakpoint) */}
         {/* CRITICAL: relative z-50 ensures sidebar is above any map elements */}
-        <div className="hidden lg:block flex-shrink-0 relative z-50 sidebar-wrapper">
+        <div className="hidden lg:block flex-shrink-0 relative z-50 sidebar-wrapper h-full">
           <Sidebar />
         </div>
 
         {/* Content area - z-0 to ensure it's below sidebar */}
-        <div className="flex-1 flex flex-col min-h-0 overflow-visible relative z-0">
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative z-0">
           {/* Mobile/Tablet Header with hamburger menu */}
           <div className="lg:hidden p-3 md:p-4 border-b border-border flex items-center justify-between bg-card/95 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
             <div className="flex items-center gap-3">
@@ -110,12 +110,12 @@ export const Layout = ({ children }: LayoutProps) => {
           </div>
 
           {/* Desktop Header - only on lg+ */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block shrink-0">
             <Header />
           </div>
 
-          {/* Main Content - Responsive padding */}
-          <main className="flex-1 overflow-x-hidden p-3 md:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          {/* Main Content - Responsive padding - Only main scrolls */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 md:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {children}
           </main>
         </div>

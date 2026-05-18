@@ -33,8 +33,10 @@ import {
 } from "@/components/ui/table";
 
 import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { useTexts } from "@/hooks/useTexts";
 
 export default function SampleBanks() {
+    const t = useTexts();
     const { user } = useAuth();
     const { toast } = useToast();
     const demoData = useDemoData();
@@ -190,8 +192,8 @@ export default function SampleBanks() {
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
             <EliteHeader
-                title="Gestión de Muestras"
-                subtitle="Control de stock de muestras médicas y materiales promocionales"
+                title={t.samples_title}
+                subtitle={t.samples_subtitle}
                 icon={Package}
                 badgeText="Inventario"
                 statusText={loading ? "Sincronizando..." : "Sistema en línea"}

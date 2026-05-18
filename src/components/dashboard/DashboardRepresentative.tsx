@@ -59,24 +59,24 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
     <div className="flex flex-col w-full min-h-screen bg-background space-y-4 p-4 md:p-6 pb-24 max-w-[1200px] mx-auto">
       
       {/* SECCIÓN 1 — Saludo */}
-      <div className="flex flex-col gap-2 bg-card p-4 rounded-lg shadow-premium-md border border-border">
+      <div className="flex flex-col gap-2 bg-card p-4 rounded-lg shadow-premium-md border border-border/40">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
           <div>
-            <h1 className="text-xl font-serif font-bold">Buenos días, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Representante'}</h1>
+            <h1 className="text-sm font-bold font-sans text-foreground">Buenos días, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Representante'}</h1>
             {organizationName && (
               <p className="text-xs text-primary font-semibold uppercase tracking-wider mt-0.5">
                 {organizationName}
               </p>
             )}
           </div>
-          <p className="text-sm text-muted-foreground capitalize md:text-right">{formatDate(time)}</p>
+          <p className="text-xs text-muted-foreground capitalize md:text-right">{formatDate(time)}</p>
         </div>
         <div className="flex flex-wrap gap-2 mt-2">
-          <Badge variant="outline" className="border-primary/50 text-primary bg-primary/5">
-            <MapPin className="w-3 h-3 mr-1" /> Zona Asignada
+          <Badge variant="outline" className="border-primary/50 text-primary bg-primary/5 text-xs">
+            <MapPin className="w-3.5 h-3.5 mr-1" /> Zona Asignada
           </Badge>
-          <Badge className="bg-primary text-white">Ciclo Vigente</Badge>
-          <Badge variant="secondary" className="flex items-center gap-1">
+          <Badge className="bg-primary text-primary-foreground text-xs">Ciclo Vigente</Badge>
+          <Badge variant="secondary" className="flex items-center gap-1 text-xs">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> GPS Activo
           </Badge>
         </div>
@@ -84,27 +84,27 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
 
       {/* SECCIÓN 2 — KPIs del día */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Card className="shadow-premium-md border-l-2 border-primary">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-primary rounded-lg">
           <CardContent className="p-4 flex flex-col justify-center">
-            <h3 className="text-2xl font-bold">3</h3>
+            <h3 className="text-sm font-bold text-foreground">3</h3>
             <p className="text-xs text-muted-foreground uppercase mt-1">Visitas Hoy</p>
           </CardContent>
         </Card>
-        <Card className="shadow-premium-md border-l-2 border-chart-2">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-chart-2 rounded-lg">
           <CardContent className="p-4 flex flex-col justify-center">
-            <h3 className="text-2xl font-bold">14</h3>
+            <h3 className="text-sm font-bold text-foreground">14</h3>
             <p className="text-xs text-muted-foreground uppercase mt-1">Esta Semana</p>
           </CardContent>
         </Card>
-        <Card className="shadow-premium-md border-l-2 border-warning">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-amber-500 rounded-lg">
           <CardContent className="p-4 flex flex-col justify-center">
-            <h3 className="text-2xl font-bold">8</h3>
+            <h3 className="text-sm font-bold text-foreground">8</h3>
             <p className="text-xs text-muted-foreground uppercase mt-1">Pendientes</p>
           </CardContent>
         </Card>
-        <Card className="shadow-premium-md border-l-2 border-primary">
+        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-primary rounded-lg">
           <CardContent className="p-4 flex flex-col justify-center">
-            <h3 className="text-2xl font-bold">64%</h3>
+            <h3 className="text-sm font-bold text-foreground">64%</h3>
             <p className="text-xs text-muted-foreground uppercase mt-1">Meta Ciclo</p>
           </CardContent>
         </Card>
@@ -112,23 +112,23 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
 
       {/* SECCIÓN 3 y 4 — Agenda y Últimas Visitas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="shadow-premium-md flex flex-col h-full">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col h-full">
           <CardContent className="p-4 flex flex-col flex-1">
             <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-primary" />
-              <h4 className="text-sm font-semibold">Mi Agenda de Hoy</h4>
+              <Calendar className="w-4 h-4 text-primary" />
+              <h4 className="text-sm font-semibold text-foreground">Mi Agenda de Hoy</h4>
             </div>
             <div className="space-y-3 flex-1">
               {agendaHoy.map((item, i) => (
-                <div key={i} className="flex justify-between items-center p-3 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors">
+                <div key={i} className="flex justify-between items-center p-3 rounded-lg border border-border/40 bg-muted/20 hover:bg-muted/40 transition-colors">
                   <div>
-                    <p className="text-sm font-semibold">{item.name}</p>
+                    <p className="text-sm font-bold text-foreground">{item.name}</p>
                     <p className="text-xs text-muted-foreground">{item.address}</p>
-                    <Badge variant="secondary" className="mt-1 text-[10px]">{item.type}</Badge>
+                    <Badge variant="secondary" className="mt-1 text-xs">{item.type}</Badge>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-xs font-medium mb-2 flex items-center text-muted-foreground"><Clock className="w-3 h-3 mr-1" />{item.time}</span>
-                    <Button size="sm" className="h-11 text-xs px-3">Registrar</Button>
+                    <span className="text-xs font-medium mb-2 flex items-center text-muted-foreground"><Clock className="w-3.5 h-3.5 mr-1" />{item.time}</span>
+                    <Button size="sm" className="h-8 text-xs px-3">Registrar</Button>
                   </div>
                 </div>
               ))}
@@ -136,15 +136,15 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md flex flex-col h-full">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col h-full">
           <CardContent className="p-0 flex flex-col flex-1">
-            <div className="p-4 border-b border-border">
-              <h4 className="text-sm font-semibold flex items-center gap-2"><Map className="w-5 h-5 text-primary" />Últimas Visitas Registradas</h4>
+            <div className="p-4 border-b border-border/40">
+              <h4 className="text-sm font-semibold text-foreground flex items-center gap-2"><Map className="w-4 h-4 text-primary" />Últimas Visitas Registradas</h4>
             </div>
             <ScrollArea className="h-[250px]">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="border-b border-border/40">
                     <TableHead className="text-xs">ID</TableHead>
                     <TableHead className="text-xs">Estado</TableHead>
                     <TableHead className="text-xs">GPS</TableHead>
@@ -152,13 +152,13 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
                 </TableHeader>
                 <TableBody>
                   {ultimasVisitas.map((v: any, i: number) => (
-                    <TableRow key={i}>
+                    <TableRow key={i} className="border-b border-border/40 hover:bg-muted/30">
                       <TableCell className="text-xs font-medium">#{v.contact_id.substring(0,4)}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-500 border-green-500/20"><CheckCircle className="w-3 h-3 mr-1"/> Completada</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-xs bg-green-500/10 text-green-500 border-green-500/20"><CheckCircle className="w-3 h-3 mr-1"/> Completada</Badge></TableCell>
                       <TableCell>
                         {v.out_of_range ? 
-                          <Badge variant="destructive" className="text-[10px]"><AlertTriangle className="w-3 h-3 mr-1"/> Fuera Rango</Badge> : 
-                          <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary border-primary/20"><MapPin className="w-3 h-3 mr-1"/> OK</Badge>
+                          <Badge variant="destructive" className="text-xs"><AlertTriangle className="w-3 h-3 mr-1"/> Fuera Rango</Badge> : 
+                          <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20"><MapPin className="w-3 h-3 mr-1"/> OK</Badge>
                         }
                       </TableCell>
                     </TableRow>
@@ -171,18 +171,18 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
       </div>
 
       {/* SECCIÓN 5 — Estado Transferencias */}
-      <Card className="shadow-premium-md">
+      <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-4">
-            <Package className="w-5 h-5 text-primary" />
-            <h4 className="text-sm font-semibold">Estado de Mis Transferencias</h4>
+            <Package className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Estado de Mis Transferencias</h4>
           </div>
           <div className="h-32">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart layout="vertical" data={transferData} margin={{ left: 0, right: 20 }}>
                 <XAxis type="number" hide />
                 <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px' }} />
+                <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                 <Bar dataKey="value" barSize={16} radius={[0, 4, 4, 0]}>
                   {transferData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.name === 'Procesado' ? 'hsl(var(--primary))' : entry.name === 'Pendiente' ? 'hsl(var(--warning))' : 'hsl(var(--destructive))'} />
@@ -196,22 +196,22 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
 
       {/* SECCIÓN 6 y 7 — Listas de contactos */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
-              <Store className="w-5 h-5 text-primary" />
-              <h4 className="text-sm font-semibold">Mis Farmacias Prioritarias</h4>
+              <Store className="w-4 h-4 text-primary" />
+              <h4 className="text-sm font-semibold text-foreground">Mis Farmacias Prioritarias</h4>
             </div>
             <div className="space-y-3">
               {misFarmacias.map((f, i) => (
-                <div key={i} className="flex justify-between items-center p-2 border-b border-border last:border-0">
+                <div key={i} className="flex justify-between items-center p-2 border-b border-border/40 last:border-0 hover:bg-muted/20 rounded-lg transition-colors">
                   <div>
-                    <p className="text-xs font-semibold">{f.name}</p>
-                    <p className="text-[10px] text-muted-foreground">Potencial: {f.potential}</p>
+                    <p className="text-xs font-bold text-foreground">{f.name}</p>
+                    <p className="text-xs text-muted-foreground">Potencial: {f.potential}</p>
                   </div>
                   <div>
                     {f.lastVisit > 15 ? 
-                      <Badge variant="destructive" className="text-[10px]">+15 días sin visita</Badge> :
+                      <Badge variant="destructive" className="text-xs">+15 días sin visita</Badge> :
                       <span className="text-xs text-muted-foreground">Hace {f.lastVisit} días</span>
                     }
                   </div>
@@ -221,18 +221,18 @@ export default function DashboardRepresentative({ organizationId, zoneId }: { or
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
-              <Stethoscope className="w-5 h-5 text-primary" />
-              <h4 className="text-sm font-semibold">Mis Médicos Activos</h4>
+              <Stethoscope className="w-4 h-4 text-primary" />
+              <h4 className="text-sm font-semibold text-foreground">Mis Médicos Activos</h4>
             </div>
             <div className="space-y-3">
               {misMedicos.map((m, i) => (
-                <div key={i} className="flex justify-between items-center p-2 border-b border-border last:border-0">
+                <div key={i} className="flex justify-between items-center p-2 border-b border-border/40 last:border-0 hover:bg-muted/20 rounded-lg transition-colors">
                   <div>
-                    <p className="text-xs font-semibold">{m.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{m.specialty}</p>
+                    <p className="text-xs font-bold text-foreground">{m.name}</p>
+                    <p className="text-xs text-muted-foreground">{m.specialty}</p>
                   </div>
                   <div>
                     <span className="text-xs text-muted-foreground">Hace {m.lastVisit} días</span>

@@ -249,7 +249,7 @@ export default function RoleManager() {
     return (
         <div className="flex flex-col h-full bg-background space-y-8 p-1">
             {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE SEGURIDAD */}
-            <header className="bg-card px-8 py-10 rounded-[3rem] shadow-premium-sm border border-border relative overflow-hidden">
+            <header className="bg-card px-10 md:px-12 py-10 rounded-elite-lg shadow-premium-sm border border-border relative overflow-hidden">
                 {/* Decorative backgrounds */}
                 <div className="absolute -top-24 -right-24 w-80 h-80 bg-primary/5 rounded-full blur-3xl opacity-40" />
                 <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-muted/10 rounded-full blur-3xl opacity-40" />

@@ -79,6 +79,13 @@
     /* 9. TYPOGRAPHY - PLUS JAKARTA SANS */
     --font-sans: 'Inter', sans-serif;
     --font-display: 'Outfit', sans-serif;
+
+    /* 10. CHART COLORS - PALETA PREMIUM INTUITIVA Y SÓLIDA */
+    --chart-1: 221 83% 53%;             /* Azul Primario Elite */
+    --chart-2: 142 71% 45%;             /* Esmeralda */
+    --chart-3: 38 92% 50%;              /* Ámbar/Naranja */
+    --chart-4: 262 83% 58%;             /* Púrpura */
+    --chart-5: 199 89% 48%;             /* Celeste/Cyan */
   }
 
   .dark {
@@ -137,6 +144,13 @@
     --glass-bg: rgba(15, 23, 42, 0.7);
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-blur: 16px;
+
+    /* 10. CHART COLORS - PALETA LUMINOSA PARA MODO OSCURO */
+    --chart-1: 217 91% 60%;             /* Azul Brillante */
+    --chart-2: 142 76% 50%;             /* Verde Esmeralda Neon */
+    --chart-3: 38 92% 55%;              /* Ámbar Luminoso */
+    --chart-4: 262 83% 65%;             /* Violeta Pastel */
+    --chart-5: 199 89% 58%;             /* Celeste Eléctrico */
   }
 
   /* ────────────────────────────────────────────────────────────────────

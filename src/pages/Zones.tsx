@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getAllRegions, getStatesInRegion } from "@/constants/regions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useTexts } from "@/hooks/useTexts";
 
 interface Zone {
     id: string;
@@ -38,6 +39,7 @@ interface Zone {
 }
 
 export default function Zones() {
+    const t = useTexts();
     const { canManageZones, isMaster, profile } = useAuth();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
@@ -182,8 +184,8 @@ export default function Zones() {
                         <MapPin className="h-10 w-10 text-white" />
                     </div>
                     <div>
-                        <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">Infraestructura Geográfica</p>
-                        <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">Gestión de Zonas</h1>
+                        <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">{t.zones_subtitle}</p>
+                        <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">{t.zones_title}</h1>
                         <div className="flex items-center gap-3 mt-4">
                             <Badge className="bg-muted/20 text-muted-foreground border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">Base Operativa V6.0</Badge>
                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-foreground">

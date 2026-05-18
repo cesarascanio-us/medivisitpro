@@ -156,18 +156,18 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
   const intensidades = [0, 0, 1, 0, 0, 0, 2, 3, 1, 0, 0, 0, 5, 4, 3, 5, 8, 7, 2, 1, 0, 0, 0, 1, 2, 4, 6, 8, 5, 3, 4, 3, 2, 1, 0, 0];
   const estrategia = [
-    { dia: "Lunes", act: "Auditoría Inventario", zona: "Santa Rita", color: "bg-blue-100 text-blue-800" },
-    { dia: "Martes", act: "Fidelización", zona: "Casco Central", color: "bg-green-100 text-green-800" },
-    { dia: "Miércoles", act: "Rotación", zona: "SurOeste", color: "bg-yellow-100 text-yellow-800" },
-    { dia: "Jueves", act: "Jornada de Impulso", zona: "Farmatodo Delta", color: "bg-red-100 text-red-800" },
-    { dia: "Viernes", act: "Entorno 360", zona: "Zona Norte HCM", color: "bg-purple-100 text-purple-800" }
+    { dia: "Lunes", act: "Auditoría Inventario", zona: "Santa Rita", color: "bg-primary/10 text-primary" },
+    { dia: "Martes", act: "Fidelización", zona: "Casco Central", color: "bg-chart-2/10 text-chart-2" },
+    { dia: "Miércoles", act: "Rotación", zona: "SurOeste", color: "bg-amber-500/10 text-amber-500" },
+    { dia: "Jueves", act: "Jornada de Impulso", zona: "Farmatodo Delta", color: "bg-destructive/10 text-destructive" },
+    { dia: "Viernes", act: "Entorno 360", zona: "Zona Norte HCM", color: "bg-chart-4/10 text-chart-4" }
   ];
 
   const feed = [
     { icon: Store, text: "Jornada Impulso PRO-013 — Farmacias", time: "hace 2 días", color: "text-primary bg-primary/10" },
     { icon: Package, text: "Transferencia — Farmacia Malanga (DroNena)", time: "hace 4 días", color: "text-chart-2 bg-chart-2/10" },
     { icon: Store, text: "Visita Inventario zona Norte", time: "hace 5 días", color: "text-primary bg-primary/10" },
-    { icon: FileText, text: "Cotización aprobada — Vista Alegre", time: "hace 6 días", color: "text-warning bg-warning/10" },
+    { icon: FileText, text: "Cotización aprobada — Vista Alegre", time: "hace 6 días", color: "text-amber-500 bg-amber-500/10" },
     { icon: Presentation, text: "Charla Mundo Pharma — 6 asistentes", time: "hace 7 días", color: "text-chart-4 bg-chart-4/10" },
     { icon: Package, text: "Transferencia — Mi Esperanza (COBECA)", time: "hace 9 días", color: "text-chart-2 bg-chart-2/10" },
     { icon: AlertTriangle, text: "Retiro Lote 249301 — PRO-027", time: "hace 14 días", color: "text-destructive bg-destructive/10" },
@@ -230,17 +230,17 @@ export default function DashboardManager({ organizationId }: { organizationId: s
     <div className="flex flex-col w-full min-h-screen bg-background space-y-4 p-4 md:p-6 pb-24 max-w-[1600px] mx-auto">
       
       {/* SECCIÓN 1 — Subheader */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-4 rounded-lg shadow-premium-md border border-border">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-4 rounded-lg shadow-premium-md border border-border/40">
         <div className="flex items-center gap-4">
-          <div className="bg-primary/10 p-3 rounded-md">
-            <LayoutDashboard className="h-6 w-6 text-primary" />
+          <div className="bg-primary/10 p-3 rounded-lg border border-primary/20">
+            <LayoutDashboard className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-serif font-bold text-foreground">{organizationName || 'Empresa'} — Centro de Comando</h1>
+            <h1 className="text-sm font-bold text-foreground font-sans">{organizationName || 'Empresa'} — Centro de Comando</h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="relative flex h-2.5 w-2.5">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
               <span className="text-xs text-primary font-medium tracking-wide">Ciclo Abril 2026 — VIGENTE</span>
             </div>
@@ -258,7 +258,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
       </div>
 
       {/* SECCIÓN 2 — Barra de filtros */}
-      <Card className="shadow-premium-md">
+      <Card className="shadow-premium-md border border-border/40 bg-card rounded-lg">
         <CardContent className="p-4 flex flex-wrap gap-4 items-center">
           <Select value={filters.ciclo} onValueChange={v => setFilters({...filters, ciclo: v})}>
             <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue /></SelectTrigger>
@@ -301,7 +301,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
       {/* SECCIÓN 3 — 6 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         {kpis.map((k, i) => (
-          <Card key={i} className="border-l-2 border-primary shadow-premium-md relative overflow-hidden group">
+          <Card key={i} className="border-l-2 border-primary bg-card shadow-premium-md border border-border/40 rounded-lg relative overflow-hidden group">
             <CardContent className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <div className="rounded-md p-2 bg-primary/10">
@@ -323,7 +323,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 4 — Fila 3 columnas */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex-1">
             <h4 className="text-sm font-semibold mb-4">Segmentación Farmacias</h4>
             <div className="h-48 relative">
@@ -346,7 +346,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex-1">
             <h4 className="text-sm font-semibold mb-4">Cobertura por Zona</h4>
             <div className="h-48">
@@ -366,7 +366,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex-1">
             <h4 className="text-sm font-semibold mb-4">Médicos por Especialidad</h4>
             <div className="h-48">
@@ -389,7 +389,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
       </div>
 
       {/* SECCIÓN 5 — Area Chart */}
-      <Card className="shadow-premium-md">
+      <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
         <CardContent className="p-4">
           <h4 className="text-sm font-semibold mb-4">Visitas Efectivas por Ciclo (Meta 20/día)</h4>
           <div className="h-[200px]">
@@ -419,7 +419,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 6 — 3 columnas Gantt + Rings + Map */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex-1">
             <h4 className="text-sm font-semibold mb-4">Línea de Tiempo de Ciclos</h4>
             <div className="relative h-40 border-l border-b border-border pl-2 pb-2 mt-4">
@@ -440,7 +440,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex-1">
             <h4 className="text-sm font-semibold mb-6">Cumplimiento del Plan</h4>
             <div className="flex justify-around items-end h-32">
@@ -452,7 +452,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
           <CardContent className="p-4 flex-1">
             <h4 className="text-sm font-semibold mb-2">Impacto por Territorio (Aragua)</h4>
             <div className="flex justify-center items-center h-40">
@@ -477,16 +477,16 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 7 — 2 columnas Scatter + Bar Horizontal */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-4">Estatus de Transferencias (Volumen vs Frecuencia)</h4>
+            <h4 className="text-sm font-semibold mb-4 text-foreground">Estatus de Transferencias (Volumen vs Frecuencia)</h4>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <ScatterChart margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                   <XAxis type="number" dataKey="x" name="Días" tick={{ fontSize: 10 }} />
                   <YAxis type="number" dataKey="y" name="Vol." tick={{ fontSize: 10 }} />
                   <ZAxis type="number" dataKey="z" range={[50, 400]} />
-                  <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px' }} />
+                  <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                   <Scatter name="Procesado" data={scatterData1} fill="hsl(var(--primary))" opacity={0.8} />
                   <Scatter name="Pendiente" data={scatterData2} fill="hsl(var(--warning))" opacity={0.8} />
                   <Scatter name="Revisión" data={scatterData3} fill="hsl(var(--destructive))" opacity={0.8} />
@@ -496,15 +496,15 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-4">Top Farmacias en Sell-Out</h4>
+            <h4 className="text-sm font-semibold mb-4 text-foreground">Top Farmacias en Sell-Out</h4>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart layout="vertical" data={barFarmacias} margin={{ left: 10, right: 10 }}>
                   <XAxis type="number" hide />
                   <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                  <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px' }} />
+                  <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                   <Bar dataKey="value" barSize={12} radius={[0, 4, 4, 0]}>
                     {barFarmacias.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={index < 2 ? 'hsl(var(--primary))' : index < 5 ? 'hsl(var(--chart-2))' : 'hsl(var(--muted-foreground))'} />
@@ -519,15 +519,15 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 8 — 2 columnas Droguerías + Muestras */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-4">Inventario en Droguerías (Unidades)</h4>
+            <h4 className="text-sm font-semibold mb-4 text-foreground">Inventario en Droguerías (Unidades)</h4>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barDroguerias} margin={{ left: -10 }}>
                   <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval={0} angle={-25} textAnchor="end" />
                   <YAxis tick={{ fontSize: 10 }} />
-                  <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px' }} />
+                  <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                   <Bar dataKey="value" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -535,15 +535,15 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-4">Stock de Muestras Médicas (Disponibilidad)</h4>
+            <h4 className="text-sm font-semibold mb-4 text-foreground">Stock de Muestras Médicas (Disponibilidad)</h4>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={muestrasData} margin={{ left: -10 }}>
                   <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval={0} angle={-25} textAnchor="end" />
                   <YAxis tick={{ fontSize: 10 }} />
-                  <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px' }} />
+                  <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                   <Bar dataKey="inicial" fill="hsl(var(--chart-2))" fillOpacity={0.4} radius={[4, 4, 0, 0]} />
                   <Bar dataKey="disponible" radius={[4, 4, 0, 0]}>
                     {muestrasData.map((d, i) => (
@@ -559,9 +559,9 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 9 — Heatmap + Tabla (1.5fr / 1fr) */}
       <div className="grid grid-cols-1 xl:grid-cols-[1.5fr_1fr] gap-4">
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-4">Densidad de Actividad (Semanas)</h4>
+            <h4 className="text-sm font-semibold mb-4 text-foreground">Densidad de Actividad (Semanas)</h4>
             <div className="flex flex-wrap gap-1 max-w-[600px] mt-2">
               {intensidades.map((val, i) => {
                 let bg = 'bg-muted/40';
@@ -572,7 +572,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
                 return <div key={i} className={`w-3 h-3 sm:w-4 sm:h-4 rounded-[2px] ${bg} hover:scale-125 transition-transform cursor-pointer`} title={`Semana ${i+1}: ${val} acciones`} />
               })}
             </div>
-            <div className="flex gap-2 items-center text-[10px] text-muted-foreground mt-4">
+            <div className="flex gap-2 items-center text-xs text-muted-foreground mt-4">
               <span>Menos</span>
               <div className="flex gap-1"><div className="w-3 h-3 bg-muted/40"></div><div className="w-3 h-3 bg-primary/20"></div><div className="w-3 h-3 bg-primary/60"></div><div className="w-3 h-3 bg-primary"></div></div>
               <span>Más</span>
@@ -580,13 +580,13 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md overflow-hidden">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
           <CardContent className="p-0">
-            <h4 className="text-sm font-semibold p-4 pb-2">Plan Estratégico Semanal</h4>
+            <h4 className="text-sm font-semibold p-4 pb-2 text-foreground">Plan Estratégico Semanal</h4>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="hover:bg-transparent">
+                  <TableRow className="hover:bg-transparent border-b border-border/40">
                     <TableHead className="text-xs">Día</TableHead>
                     <TableHead className="text-xs">Actividad Clave</TableHead>
                     <TableHead className="text-xs">Territorio</TableHead>
@@ -594,9 +594,9 @@ export default function DashboardManager({ organizationId }: { organizationId: s
                 </TableHeader>
                 <TableBody>
                   {estrategia.map((e, i) => (
-                    <TableRow key={i}>
+                    <TableRow key={i} className="border-b border-border/40 hover:bg-muted/30">
                       <TableCell className="py-2 text-xs font-medium">{e.dia}</TableCell>
-                      <TableCell className="py-2"><Badge variant="outline" className={`text-[10px] font-normal ${e.color} border-transparent`}>{e.act}</Badge></TableCell>
+                      <TableCell className="py-2"><Badge variant="outline" className={`text-xs font-normal ${e.color} border-transparent`}>{e.act}</Badge></TableCell>
                       <TableCell className="py-2 text-xs text-muted-foreground">{e.zona}</TableCell>
                     </TableRow>
                   ))}
@@ -609,11 +609,11 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 10 — 3 columnas Alerta + Feed + Perfil */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <Card className="border-l-4 border-l-destructive bg-destructive/5 shadow-premium-md relative">
+        <Card className="border-l-4 border-l-destructive bg-destructive/5 border border-border/40 shadow-premium-md rounded-lg relative">
           <CardContent className="p-4">
             <div className="flex justify-between items-start mb-3">
-              <Badge variant="destructive" className="animate-pulse">NOVEDAD ACTIVA — Lote 249301</Badge>
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <Badge variant="destructive" className="animate-pulse text-xs">NOVEDAD ACTIVA — Lote 249301</Badge>
+              <AlertTriangle className="h-4 w-4 text-destructive" />
             </div>
             <h4 className="font-semibold text-sm">PRO-027 Limonada Laxante</h4>
             <p className="text-xs text-muted-foreground mt-1">Lugar: Farmacias Mundo Total (Av. Bolívar)</p>
@@ -622,17 +622,17 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-3">Feed Operacional</h4>
+            <h4 className="text-sm font-semibold mb-3 text-foreground">Feed Operacional</h4>
             <ScrollArea className="h-[140px] pr-4">
               <div className="space-y-3">
                 {feed.map((f, i) => (
-                  <div key={i} className="flex gap-3 group cursor-pointer hover:bg-muted/50 p-1 rounded-md transition-colors">
-                    <div className={`p-1.5 rounded-full shrink-0 h-min ${f.color}`}><f.icon className="h-3 w-3" /></div>
+                  <div key={i} className="flex gap-3 group cursor-pointer hover:bg-muted/50 p-1 rounded-lg transition-colors border border-transparent hover:border-border/20">
+                    <div className={`p-1.5 rounded-lg shrink-0 h-min ${f.color}`}><f.icon className="h-3.5 w-3.5" /></div>
                     <div>
                       <p className="text-xs font-medium">{f.text}</p>
-                      <p className="text-[10px] text-muted-foreground">{f.time}</p>
+                      <p className="text-xs text-muted-foreground">{f.time}</p>
                     </div>
                   </div>
                 ))}
@@ -641,22 +641,22 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
             <div className="relative">
-              <Avatar className="h-16 w-16 border-2 border-background shadow-sm">
+              <Avatar className="h-16 w-16 border border-border/40 shadow-sm">
                 <AvatarFallback className="bg-primary/10 text-primary font-bold">CA</AvatarFallback>
               </Avatar>
-              <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-background rounded-full animate-pulse"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border border-background rounded-full animate-pulse"></div>
             </div>
             <h4 className="font-semibold text-sm mt-3">César A. Ascanio Méndez</h4>
             <p className="text-xs text-muted-foreground">Representante Ejecutivo · Zona Aragua</p>
-            <Badge variant="outline" className="mt-2 text-[10px]">Ciclo Abril 2026</Badge>
+            <Badge variant="outline" className="mt-2 text-xs">Ciclo Abril 2026</Badge>
             
-            <div className="grid grid-cols-3 gap-4 w-full mt-4 pt-4 border-t border-border">
-              <div><p className="text-lg font-semibold text-primary">11</p><p className="text-[9px] uppercase text-muted-foreground">Visitas</p></div>
-              <div className="border-x border-border"><p className="text-lg font-semibold text-primary">19</p><p className="text-[9px] uppercase text-muted-foreground">Transf.</p></div>
-              <div><p className="text-lg font-semibold text-primary">2</p><p className="text-[9px] uppercase text-muted-foreground">Eventos</p></div>
+            <div className="grid grid-cols-3 gap-4 w-full mt-4 pt-4 border-t border-border/40">
+              <div><p className="text-sm font-bold text-primary">11</p><p className="text-[10px] uppercase text-muted-foreground">Visitas</p></div>
+              <div className="border-x border-border/40"><p className="text-sm font-bold text-primary">19</p><p className="text-[10px] uppercase text-muted-foreground">Transf.</p></div>
+              <div><p className="text-sm font-bold text-primary">2</p><p className="text-[10px] uppercase text-muted-foreground">Eventos</p></div>
             </div>
           </CardContent>
         </Card>
@@ -664,20 +664,20 @@ export default function DashboardManager({ organizationId }: { organizationId: s
 
       {/* SECCIÓN 11 — 2 columnas Carrusel + Semáforos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="shadow-premium-md overflow-hidden">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
           <CardContent className="p-4 h-full flex flex-col justify-center">
-            <h4 className="text-sm font-semibold mb-4">Productos Estrella (Impulso)</h4>
+            <h4 className="text-sm font-semibold mb-4 text-foreground">Productos Estrella (Impulso)</h4>
             <div className="relative overflow-hidden w-full max-w-[300px] mx-auto">
               <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
                 {prodCarousel.map((p, i) => (
                   <div key={i} className="min-w-full text-center px-4">
-                    <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-3">
-                      <Pill className="h-8 w-8 text-primary" />
+                    <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 border border-primary/20">
+                      <Pill className="h-6 w-6 text-primary" />
                     </div>
-                    <Badge variant="secondary" className="mb-2 text-[10px]">{p.code}</Badge>
-                    <h3 className="text-lg font-bold">{p.name}</h3>
+                    <Badge variant="secondary" className="mb-2 text-xs">{p.code}</Badge>
+                    <h3 className="text-sm font-bold">{p.name}</h3>
                     <p className="text-xs text-muted-foreground">{p.cat}</p>
-                    <p className="text-sm font-medium mt-2 text-primary">Stock: {p.stock} u.</p>
+                    <p className="text-xs font-semibold mt-2 text-primary">Stock: {p.stock} u.</p>
                   </div>
                 ))}
               </div>
@@ -690,9 +690,9 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           </CardContent>
         </Card>
 
-        <Card className="shadow-premium-md">
+        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-6">Salud Operacional de la Zona</h4>
+            <h4 className="text-sm font-semibold mb-6 text-foreground">Salud Operacional de la Zona</h4>
             <div className="grid grid-cols-2 gap-y-6 gap-x-4">
               {semaforos.map((s, i) => (
                 <div key={i} className="flex items-center gap-4">
@@ -702,13 +702,13 @@ export default function DashboardManager({ organizationId }: { organizationId: s
                       <circle cx="30" cy="30" r="26" fill="none" stroke={s.color} strokeWidth="6"
                         strokeDasharray="163" strokeDashoffset={163 * (1 - s.pct)} className="transition-all duration-1000 ease-out" />
                     </svg>
-                    <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold" style={{color: s.color}}>
+                    <div className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{color: s.color}}>
                       {Math.round(s.pct * 100)}%
                     </div>
                   </div>
                   <div>
                     <p className="text-xs font-medium">{s.label}</p>
-                    <p className="text-[10px]" style={{color: s.color}}>{s.status}</p>
+                    <p className="text-xs font-semibold" style={{color: s.color}}>{s.status}</p>
                   </div>
                 </div>
               ))}

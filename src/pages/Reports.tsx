@@ -34,8 +34,10 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import VisitHeatmap from "@/components/map/VisitHeatmap";
 import { useChartTheme } from "@/hooks/useChartTheme";
+import { useTexts } from "@/hooks/useTexts";
 
 export default function Reports() {
+  const t = useTexts();
   const [timeRange, setTimeRange] = useState("month");
   const { user, role: userRole, isManager: isAdminOrManager, isMaster, companyId, organizationId } = useAuth();
   const { toast } = useToast();
@@ -231,13 +233,19 @@ export default function Reports() {
     );
   }
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+  const COLORS = [
+    'hsl(var(--chart-1))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--chart-5))'
+  ];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <EliteHeader
-        title="Next-Gen Reporting Suite"
-        subtitle="Business Intelligence en Tiempo Real"
+        title={t.reports_title}
+        subtitle={t.reports_subtitle}
         icon={BarChart3}
         badgeText="Sincronizado"
         statusText="Backend Sync Active"
@@ -245,16 +253,16 @@ export default function Reports() {
         rightContent={
           <div className="flex items-center gap-4">
              <Select value={timeRange} onValueChange={setTimeRange}>
-               <SelectTrigger className="w-[180px] h-12 bg-muted/10 border-none font-black text-[10px] uppercase tracking-widest rounded-xl shadow-inner">
+               <SelectTrigger className="w-[180px] h-10 rounded-lg shadow-sm border border-input text-xs font-medium bg-card">
                  <Calendar className="mr-2 h-4 w-4 opacity-50" />
                  <SelectValue placeholder="Periodo" />
                </SelectTrigger>
-               <SelectContent className="rounded-xl border-border/40 font-black text-[10px] uppercase tracking-widest">
+               <SelectContent className="rounded-lg text-xs font-medium border border-border bg-card shadow-md">
                  <SelectItem value="month">Este Mes</SelectItem>
                  <SelectItem value="quarter">Trimestre Actual</SelectItem>
                </SelectContent>
              </Select>
-             <Button variant="outline" className="h-12 px-6 border-border/40 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all">
+             <Button variant="outline" size="default" className="shadow-sm">
                 <Download className="h-4 w-4 mr-2" /> Exportar
              </Button>
           </div>
@@ -273,7 +281,7 @@ export default function Reports() {
         {/* NIVEL 1: Impact KPI Cards */}
         {/* NIVEL 2: Strategy 360 KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-          <Card className="border-t-4 border-t-emerald-500 shadow-sm bg-card border-border">
+          <Card className="border-t-4 border-t-emerald-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -286,11 +294,11 @@ export default function Reports() {
                   <TrendingUp className="h-5 w-5 text-emerald-500" />
                 </div>
               </div>
-              <p className="text-[10px] mt-4 text-muted-foreground ">Volumen estimado basado en compromisos</p>
+              <p className="text-xs mt-4 text-muted-foreground">Volumen estimado basado en compromisos</p>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-rose-500 shadow-sm bg-card border-border">
+          <Card className="border-t-4 border-t-rose-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -303,11 +311,11 @@ export default function Reports() {
                   <AlertCircle className="h-5 w-5 text-rose-500" />
                 </div>
               </div>
-              <p className="text-[10px] mt-4 text-rose-500 font-bold">Est: ${fugaVentas.estimated_usd.toLocaleString()} USD</p>
+              <p className="text-xs mt-4 text-rose-500 font-bold">Est: ${fugaVentas.estimated_usd.toLocaleString()} USD</p>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-blue-500 shadow-sm">
+          <Card className="border-t-4 border-t-blue-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -321,11 +329,11 @@ export default function Reports() {
                 </div>
               </div>
               <Progress value={gerencialKpis.message_reach_rate} className="h-1.5 mt-4" />
-              <p className="text-[10px] mt-2 text-muted-foreground">Estrategia 360 Activa</p>
+              <p className="text-xs mt-2 text-muted-foreground">Estrategia 360 Activa</p>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-purple-500 shadow-sm">
+          <Card className="border-t-4 border-t-purple-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -339,7 +347,7 @@ export default function Reports() {
                 </div>
               </div>
               <Progress value={gerencialKpis.pos_health_index} className="h-1.5 mt-4 bg-purple-100" />
-              <p className="text-[10px] mt-2 text-muted-foreground">PDV Saludables (Capacitación + POP)</p>
+              <p className="text-xs mt-2 text-muted-foreground">PDV Saludables (Capacitación + POP)</p>
             </CardContent>
           </Card>
         </div>
@@ -347,9 +355,9 @@ export default function Reports() {
         {/* NIVEL 3: Product & Zone Analytics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Sales by Zone */}
-          <Card className="shadow-sm">
+          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center">
+              <CardTitle className="text-base flex items-center">
                 <BarChart3 className="mr-2 h-5 w-5 text-primary" />
                 Comparativa de Ventas por Zona
               </CardTitle>
@@ -363,9 +371,9 @@ export default function Reports() {
                     <YAxis dataKey="zona" type="category" width={80} style={{ fontSize: '12px' }} />
                     <Tooltip
                       cursor={{ fill: 'transparent' }}
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }}
                     />
-                    <Bar dataKey="total_ventas" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={20}>
+                    <Bar dataKey="total_ventas" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20}>
                       {ventasZona.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
@@ -377,9 +385,9 @@ export default function Reports() {
           </Card>
 
           {/* Product Mix */}
-          <Card className="shadow-sm">
+          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center">
+              <CardTitle className="text-base flex items-center">
                 <PieChartIcon className="mr-2 h-5 w-5 text-secondary" />
                 Sales Mix: Unidades por Categoría
               </CardTitle>
@@ -402,7 +410,7 @@ export default function Reports() {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                     <Legend verticalAlign="bottom" height={36} />
                   </PieChart>
                 </ResponsiveContainer>
@@ -411,26 +419,26 @@ export default function Reports() {
           </Card>
         </div>
         {/* Heatmap Section */}
-        <Card className="mt-6 shadow-premium-md overflow-hidden border-border bg-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 bg-muted/10 border-b border-border">
+        <Card className="mt-6 bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 bg-muted/10 border-b border-border/40">
             <div>
-              <CardTitle className="text-xl font-black flex items-center text-foreground uppercase tracking-tight font-display">
+              <CardTitle className="text-base font-bold flex items-center text-foreground uppercase tracking-tight">
                 <MapIcon className="mr-2 h-5 w-5 text-primary" />
                 Mapa de Calor Estratégico de Cobertura
               </CardTitle>
-              <CardDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
+              <CardDescription className="text-xs text-muted-foreground mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
             <Select value={heatmapType} onValueChange={(v: any) => setHeatmapType(v)}>
-              <SelectTrigger className="w-[200px] bg-muted/20 border-border/40 text-foreground font-black text-[10px] uppercase tracking-widest rounded-xl">
+              <SelectTrigger className="w-[200px] bg-card border border-input text-xs font-medium rounded-lg h-10 shadow-sm">
                 <SelectValue placeholder="Tipo de Punto" />
               </SelectTrigger>
-              <SelectContent className="bg-card border-border text-foreground shadow-xl rounded-xl">
-                <SelectItem value="doctor" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Stethoscope className="h-3.5 w-3.5" /> Médicos</div></SelectItem>
-                <SelectItem value="pharmacy" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Store className="h-3.5 w-3.5" /> Farmacias</div></SelectItem>
-                <SelectItem value="health_center" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5" /> Centros Salud</div></SelectItem>
-                <SelectItem value="natural_store" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><Sprout className="h-3.5 w-3.5" /> Naturistas</div></SelectItem>
-                <SelectItem value="drugstore" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><FlaskConical className="h-3.5 w-3.5" /> Droguerías</div></SelectItem>
-                <SelectItem value="commerce" className="hover:bg-primary/5 focus:bg-primary/5"><div className="flex items-center gap-2"><ShoppingCart className="h-3.5 w-3.5" /> Comercios</div></SelectItem>
+              <SelectContent className="bg-card border border-border text-foreground shadow-premium-lg rounded-lg">
+                <SelectItem value="doctor"><div className="flex items-center gap-2"><Stethoscope className="h-3.5 w-3.5" /> Médicos</div></SelectItem>
+                <SelectItem value="pharmacy"><div className="flex items-center gap-2"><Store className="h-3.5 w-3.5" /> Farmacias</div></SelectItem>
+                <SelectItem value="health_center"><div className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5" /> Centros Salud</div></SelectItem>
+                <SelectItem value="natural_store"><div className="flex items-center gap-2"><Sprout className="h-3.5 w-3.5" /> Naturistas</div></SelectItem>
+                <SelectItem value="drugstore"><div className="flex items-center gap-2"><FlaskConical className="h-3.5 w-3.5" /> Droguerías</div></SelectItem>
+                <SelectItem value="commerce"><div className="flex items-center gap-2"><ShoppingCart className="h-3.5 w-3.5" /> Comercios</div></SelectItem>
               </SelectContent>
             </Select>
           </CardHeader>
@@ -464,26 +472,26 @@ export default function Reports() {
         </Card>
 
         {/* NIVEL 4: Trazabilidad 360 (Correlation) */}
-        <Card className="mt-6 border-border bg-card shadow-premium-md rounded-[2.5rem] overflow-hidden">
-          <CardHeader className="p-10 border-b border-border/40">
-            <CardTitle className="flex items-center gap-3 text-emerald-500 font-black uppercase tracking-tight font-display text-xl">
+        <Card className="mt-6 bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
+          <CardHeader className="p-6 border-b border-border/40">
+            <CardTitle className="flex items-center gap-3 text-emerald-500 font-bold uppercase tracking-tight text-base">
               <ShoppingCart className="h-6 w-6 text-emerald-500" />
               Trazabilidad 360: Impacto Médico en PDV
             </CardTitle>
-            <CardDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
+            <CardDescription className="text-xs text-muted-foreground mt-1">
               Correlación entre entrega de muestras en consultorios y riesgos de stock en farmacias aledañas (Radio {orgSettings.geo_radius_attribution}km)
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-10">
+          <CardContent className="p-6">
             <div className="space-y-4">
               {correlationData.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-4 bg-muted/10 rounded-xl border border-border/40 shadow-sm">
+                <div key={idx} className="flex items-center justify-between p-4 bg-muted/10 rounded-lg border border-border/40 shadow-sm">
                   <div className="flex items-center gap-4">
                     <div className="p-2 bg-emerald-500/10 rounded-full">
                       <UserRound className="h-5 w-5 text-emerald-500" />
                     </div>
                     <div>
-                      <p className="font-semibold">{item.doctor_name}</p>
+                      <p className="font-semibold text-sm">{item.doctor_name}</p>
                       <p className="text-xs text-muted-foreground font-medium">✨ {item.samples_dropped}</p>
                     </div>
                   </div>
@@ -492,16 +500,16 @@ export default function Reports() {
                     <div className="h-px w-24 bg-emerald-200 relative">
                       <Truck className="h-3 w-3 text-emerald-400 absolute -top-1.5 left-1/2 -translate-x-1/2" />
                     </div>
-                    <span className="text-[10px] text-emerald-600 mt-1">{item.distance_km} km</span>
+                    <span className="text-xs text-emerald-600 mt-1">{item.distance_km} km</span>
                   </div>
 
                   <div className="flex items-center gap-4 text-right">
                     <div>
                       <p className="font-semibold text-sm">{item.pharmacy_name}</p>
                       {item.stock_risk ? (
-                        <Badge variant="destructive" className="text-[10px] animate-pulse">ALERTA: RIESGO QUIEBRE</Badge>
+                        <Badge variant="destructive" className="text-xs animate-pulse">ALERTA: RIESGO QUIEBRE</Badge>
                       ) : (
-                        <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-200">Stock Saludable</Badge>
+                        <Badge variant="outline" className="text-xs text-emerald-600 border-emerald-200">Stock Saludable</Badge>
                       )}
                     </div>
                     <div className="p-2 bg-muted rounded-full">

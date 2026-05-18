@@ -23,7 +23,11 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { ThemeProvider } from "./components/theme-provider";
+import { ThemeProvider as CustomThemeProvider } from "@/context/ThemeContext";
 import { LazyMotion } from "framer-motion";
+
+// Theme Builder visually customizable SaaS console
+const ThemeBuilder = lazy(() => import("@/components/theme/ThemeBuilder"));
 
 const loadFeatures = () => import('./lib/framer-features').then(r => r.default);
 
@@ -71,7 +75,7 @@ const PMBOKMaster = lazy(() => import("./pages/PMBOKMaster"));
 const CRMDashboard = lazy(() => import("./pages/CRMDashboard"));
 const SalesPipeline = lazy(() => import("./pages/SalesPipeline"));
 const FinanceMonitor = lazy(() => import("./pages/FinanceMonitor"));
-const AssetBunker = lazy(() => import("./pages/AssetBunker"));
+const DocumentCenter = lazy(() => import("./pages/DocumentCenter"));
 
 const PublicProductPage = lazy(() => import("./pages/Public/ProductPage"));
 const Documentation = lazy(() => import("./pages/Documentation"));
@@ -282,6 +286,11 @@ const AppContent = () => (
         <Layout><MasterPanel /></Layout>
       </ProtectedRoute>
     } />
+    <Route path="admin/theme-builder" element={
+      <ProtectedRoute allowedRoles={['master', 'admin']}>
+        <Layout><ThemeBuilder /></Layout>
+      </ProtectedRoute>
+    } />
     <Route path="dashboard-master" element={
       <ProtectedRoute allowedRoles={['master', 'admin']}>
         <Layout><Navigate to="/dashboard" replace /></Layout>
@@ -292,9 +301,9 @@ const AppContent = () => (
         <Layout><FinanceMonitor /></Layout>
       </ProtectedRoute>
     } />
-    <Route path="asset-bunker" element={
+    <Route path="documentos" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-        <Layout><AssetBunker /></Layout>
+        <Layout><DocumentCenter /></Layout>
       </ProtectedRoute>
     } />
     <Route path="settings" element={
@@ -394,45 +403,47 @@ const App = () => (
             <MockDataProvider>
               <DemoDataSeeder />
               <OrganizationProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter
-                    future={{
-                      v7_startTransition: true,
-                      v7_relativeSplatPath: true,
-                    }}
-                  >
-                    <Suspense fallback={<PageLoader />}>
-                      <RoutesWithRemount>
-                        <Routes>
-                          {/* Public Routes */}
-                          <Route path="/" element={<LandingPage />} />
-                          <Route path="/auth" element={<AuthPage />} />
+                <CustomThemeProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter
+                      future={{
+                        v7_startTransition: true,
+                        v7_relativeSplatPath: true,
+                      }}
+                    >
+                      <Suspense fallback={<PageLoader />}>
+                        <RoutesWithRemount>
+                          <Routes>
+                            {/* Public Routes */}
+                            <Route path="/" element={<LandingPage />} />
+                            <Route path="/auth" element={<AuthPage />} />
 
-                          {/* Demo Landing - Initiates Demo Mode */}
-                          <Route path="/demo" element={<DemoPage />} />
+                            {/* Demo Landing - Initiates Demo Mode */}
+                            <Route path="/demo" element={<DemoPage />} />
 
-                          {/* Isolated Demo Routes Cluster */}
-                          <Route path="/demo/*" element={<AppContent />} />
+                            {/* Isolated Demo Routes Cluster */}
+                            <Route path="/demo/*" element={<AppContent />} />
 
-                          {/* Main Application Routes Cluster */}
-                          <Route path="/*" element={<AppContent />} />
+                            {/* Main Application Routes Cluster */}
+                            <Route path="/*" element={<AppContent />} />
 
-                          <Route path="/onboarding" element={
-                            <ProtectedRoute>
-                              <OnboardingWizard />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="/product/:id" element={<PublicProductPage />} />
+                            <Route path="/onboarding" element={
+                              <ProtectedRoute>
+                                <OnboardingWizard />
+                              </ProtectedRoute>
+                            } />
+                            <Route path="/product/:id" element={<PublicProductPage />} />
 
-                          {/* Global Catch-all */}
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </RoutesWithRemount>
-                    </Suspense>
-                  </BrowserRouter>
-                </TooltipProvider>
+                            {/* Global Catch-all */}
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </RoutesWithRemount>
+                      </Suspense>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </CustomThemeProvider>
               </OrganizationProvider>
             </MockDataProvider>
           </LazyMotion>

@@ -20,10 +20,10 @@ export const generateDocumentPDF = (
 ) => {
   const doc = new jsPDF();
   
-  // Paleta de Colores Corporativos
-  const medicalBlue = '#0056B3';
-  const medicalBlueRGB = [0, 86, 179] as [number, number, number];
-  const corporateGreen = '#28A745';
+  // Paleta de Colores Corporativos (Elite UI Theme)
+  const medicalBlue = '#0F172A'; // Slate-900 (Primario Corporativo)
+  const medicalBlueRGB = [15, 23, 42] as [number, number, number];
+  const corporateGreen = '#10B981'; // Emerald-500 (Éxito Comercial)
   const slateDark = '#1E293B';
   const slateGray = '#64748B';
   

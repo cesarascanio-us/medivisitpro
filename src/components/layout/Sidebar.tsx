@@ -28,11 +28,15 @@ import {
   Sprout,
   FlaskConical,
   LogOut,
-  LayoutDashboard
+  LayoutDashboard,
+  Palette,
+  Globe
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/context/ThemeContext";
+import { useTexts } from "@/hooks/useTexts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -55,8 +59,11 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     loading
   } = useAuth();
 
+  const { theme } = useTheme();
+  const texts = useTexts();
+
   const location = useLocation();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(theme?.sidebar_default !== "collapsed");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (title: string, e: any) => {
@@ -88,41 +95,43 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     {
       title: "Panel de Control",
       items: [
-        { name: "Panel Principal", href: "/dashboard-master", icon: BarChart3, visible: canSeeMaster },
+        { name: texts.dashboard_title, href: "/dashboard-master", icon: BarChart3, visible: canSeeMaster },
         { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
         { name: "Consola de Administración", href: "/master-panel", icon: Crown, visible: canSeeMaster },
-        { name: "Monitor Financiero", href: "/finance-monitor", icon: DollarSign, visible: canSeeAnalytics },
-        { name: "Gestión de Seguridad", href: "/asset-bunker", icon: ShieldCheck, visible: canSeeMaster },
+        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
+        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: canSeeAnalytics && theme.enable_finance_monitor },
+        { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: isMaster || isAdmin },
+        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: true },
       ]
     },
     {
       title: "Gestión Médica",
       items: [
-        { name: "Historial de Visitas", href: "/visits", icon: ClipboardList, visible: true },
-        { name: "Banco de Muestras", href: "/sample-banks", icon: Pill, visible: true },
-        { name: "Directorio Profesional", href: "/doctors", icon: Stethoscope, visible: true },
-        { name: "Agenda de Visitas", href: "/agenda", icon: Calendar, visible: true },
-        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: true },
+        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: true },
+        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: theme.enable_sample_tracking },
+        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: true },
+        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: true },
+        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: theme.enable_geolocation },
       ]
     },
     {
       title: "Gestión Comercial",
       items: [
-        { name: "Gestión de Usuarios", href: "/users", icon: Users, visible: canSeeManagement },
+        { name: texts.users_title, href: "/users", icon: Users, visible: canSeeManagement },
         { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR },
         { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
-        { name: "Territorios", href: "/zones", icon: GitBranch, visible: canSeeZones },
-        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: true },
+        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: canSeeZones },
+        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: theme.enable_pmbok },
       ]
     },
     {
       title: "Logística y Cobertura",
       items: [
-        { name: "Transferencias", href: "/transfer-orders", icon: Truck, visible: true },
+        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: true },
         { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: true },
-        { name: "Farmacias y POS", href: "/pharmacies", icon: Store, visible: true },
+        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: true },
         { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: true },
-        { name: "Mapa de Cobertura", href: "/coverage-map", icon: Map, visible: canSeeManagement },
+        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: canSeeManagement && theme.enable_coverage_map },
       ]
     }
   ].map(group => ({
@@ -131,9 +140,9 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   })).filter(group => group.items.length > 0);
 
   return (
-    <div
+    <aside
       className={cn(
-        "flex flex-col bg-card text-foreground border-r border-border/40 h-screen shadow-premium-2xl z-50 transition-all duration-500 ease-in-out font-display",
+        "flex flex-col bg-card text-foreground border-r border-border/40 h-screen sticky top-0 overflow-y-auto flex-shrink-0 shadow-premium-2xl z-50 transition-all duration-500 ease-in-out font-display",
         isExpanded ? "w-80" : "w-24",
         className
       )}
@@ -141,15 +150,23 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       {/* Branding Section */}
       <div className="flex items-center justify-between h-28 px-6 border-b border-border/40 bg-muted/5 backdrop-blur-xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-primary/5 opacity-50" />
-        <div className="flex items-center gap-5 overflow-hidden relative z-10" onClick={() => setIsExpanded(!isExpanded)}>
-          <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-premium-md flex-shrink-0 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300">
-            <Zap className="h-7 w-7" />
+        <div className="flex items-center gap-5 overflow-hidden relative z-10 w-full" onClick={() => setIsExpanded(!isExpanded)}>
+          <div className="w-14 h-14 bg-transparent rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden">
+            <img src={theme?.logo_url || "/favicon.svg"} className="w-full h-full object-contain" alt="Logo" />
           </div>
+          
           {isExpanded && (
-            <div className="animate-in fade-in slide-in-from-left-5 duration-700">
-              <h1 className="text-2xl font-black text-foreground tracking-tighter leading-none uppercase">Elite</h1>
+            <div className="animate-in fade-in slide-in-from-left-5 duration-700 min-w-0 flex-1">
+              <h1 className="text-sm font-black text-foreground tracking-tight leading-none uppercase truncate">
+                {theme?.texts?.sidebar_title || theme?.app_name || "MediVisitPro"}
+              </h1>
+              {theme?.texts?.sidebar_subtitle && (
+                <p className="text-[10px] text-muted-foreground truncate mt-1 font-medium leading-none">
+                  {theme.texts.sidebar_subtitle}
+                </p>
+              )}
               <div className="flex items-center gap-2 mt-2">
-                <Badge className="bg-primary/10 text-primary border-primary/20 font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg">
+                <Badge className="bg-primary/10 text-primary border-primary/20 font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg truncate">
                   {getRoleLabel(role)}
                 </Badge>
               </div>
@@ -232,6 +249,6 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           )}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

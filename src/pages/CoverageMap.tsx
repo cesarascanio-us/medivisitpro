@@ -32,6 +32,7 @@ import { PharmacyProximityAnalysis } from "@/components/map/PharmacyProximityAna
 import { getStateCenter } from "@/utils/stateCoordinates";
 import type { ProximityResult, Location } from "@/utils/proximityCalculations";
 import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { useTexts } from "@/hooks/useTexts";
 
 // Local interface compatible with OptimizedRouteView's callback
 interface OptimizedRoute {
@@ -94,6 +95,7 @@ interface MapContact {
 }
 
 export default function CoverageMap() {
+    const t = useTexts();
     const { user, role, userState, zoneId, organizationId, canViewAllData } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -569,8 +571,8 @@ export default function CoverageMap() {
         <div className="space-y-8 pb-10">
             {/* Elite Header */}
             <EliteHeader
-                title="Mapa de Cobertura"
-                subtitle="Visualización de red territorial y rutas comerciales"
+                title={t.coverage_title}
+                subtitle={t.coverage_subtitle}
                 icon={MapPin}
                 badgeText="Mapa"
                 statusText={loading ? "Sincronizando..." : "Mapa activo"}

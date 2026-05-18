@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { useTheme } from "@/context/ThemeContext";
 
 const TRANSFER_ORDERS = [
     { id: "TRF-2026-001", pharmacy: "FARMACIA EL SOL", drugstore: "DROGUERÍA NENA", items: 12, total: 450.50, status: "pendiente", date: "2026-04-01" },
@@ -25,6 +26,7 @@ const TRANSFER_ORDERS = [
 ];
 
 export default function TransferOrders() {
+    const { theme } = useTheme();
     const [searchTerm, setSearchTerm] = useState("");
 
     const getStatusBadge = (status: string) => {
@@ -39,8 +41,8 @@ export default function TransferOrders() {
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
             <EliteHeader
-                title="Canal de Transferencia"
-                subtitle="Gestión de órdenes de transferencia y logística de suministro"
+                title={theme?.texts?.transfers_title || "Canal de Transferencia"}
+                subtitle={theme?.texts?.transfers_subtitle || "Gestión de órdenes de transferencia y logística de suministro"}
                 icon={Truck}
                 badgeText="Logística"
                 statusText="Sistema operativo"
@@ -82,7 +84,7 @@ export default function TransferOrders() {
                     title="Proyección ventas"
                     value="$14.2K"
                     icon={TrendingUp}
-                    color="purple"
+                    color="indigo"
                 />
             </div>
 

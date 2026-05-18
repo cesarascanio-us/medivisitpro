@@ -21,6 +21,7 @@ import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { getStatesInRegion } from "@/constants/regions";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { EliteKPICard, EliteHeader, EliteTable, EliteButton } from "@/components/layout/DesignSystem";
+import { useTheme } from "@/context/ThemeContext";
 
 interface AdminFilterState {
     region?: string;
@@ -64,6 +65,7 @@ interface Doctor {
 }
 
 export default function Doctors() {
+    const { theme } = useTheme();
     const navigate = useNavigate();
     const { user, canViewAllData, isSupervisor, zoneId, organizationId, organizationName } = useAuth();
     const { toast } = useToast();
@@ -244,8 +246,8 @@ export default function Doctors() {
             <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx,.xls,.csv" className="hidden" />
 
             <EliteHeader 
-                title="Directorio Alpha"
-                subtitle={organizationName || "Gestión de Especialistas Biofarco"}
+                title={theme?.texts?.doctors_title || "Directorio Alpha"}
+                subtitle={theme?.texts?.doctors_subtitle || organizationName || "Gestión de Especialistas Biofarco"}
                 icon={Stethoscope}
                 badgeText="Activos Humanos"
                 statusText={`${doctors.length} Especialistas Registrados`}

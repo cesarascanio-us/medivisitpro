@@ -141,16 +141,18 @@ export default function LandingPage() {
                         <div className="lg:col-span-7 text-center lg:text-left space-y-8 lg:space-y-10">
                             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
                                 <Zap className="w-4 h-4 text-blue-400" />
-                                <span className="text-xs font-bold tracking-wide text-blue-100">Tecnología de Grado Operativo</span>
+                                <span className="text-xs font-bold tracking-wide text-blue-100">{content.hero?.badge || "Tecnología de Grado Operativo"}</span>
                             </div>
 
                             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
-                                Orquestación inteligente de <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Visita Médica de Élite</span>
+                                {content.hero?.title_part1 || "Orquestación inteligente de"} <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">
+                                    {content.hero?.title_highlight || "Visita Médica de Élite"}
+                                </span>
                             </h1>
 
                             <p className="text-lg lg:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                                Transforme su gestión operativa con precisión clínica. Cumplimiento ISO 9000, inteligencia de campo y analíticas de alto impacto en una sola plataforma unificada.
+                                {content.hero?.subtitle || "Transforme su gestión operativa con precisión clínica. Cumplimiento ISO 9000, inteligencia de campo y analíticas de alto impacto en una sola plataforma unificada."}
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 sm:gap-6 pt-4">
@@ -161,7 +163,7 @@ export default function LandingPage() {
                                     }}
                                     className="w-full sm:w-auto px-10 h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl shadow-blue-600/20 transition-all text-lg font-bold group flex items-center justify-center gap-3 active:scale-95"
                                 >
-                                    Solicitar Demo 72h
+                                    {content.hero?.cta_primary || "Solicitar Demo 72h"}
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </button>
                                 <button
@@ -169,7 +171,7 @@ export default function LandingPage() {
                                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 h-16 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10 font-bold transition-all text-sm group bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl"
                                 >
                                     <PlayCircle className="w-6 h-6 text-blue-500" />
-                                    Ver Ecosistema
+                                    {content.hero?.cta_secondary || "Ver Ecosistema"}
                                 </button>
                             </div>
 
@@ -181,7 +183,7 @@ export default function LandingPage() {
                             <div className="relative z-10 bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3.5rem] shadow-2xl border border-slate-200 dark:border-white/10 p-2 transform hover:rotate-1 transition-all duration-1000 overflow-hidden group">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                                 <img
-                                    src="/img/landing/hero-premium.png"
+                                    src={content.hero?.hero_image || "/img/landing/hero-premium.png"}
                                     alt="MediVisitPro Interface"
                                     className="rounded-[2.2rem] lg:rounded-[3.2rem] w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                                 />
@@ -195,10 +197,12 @@ export default function LandingPage() {
             <section id="capacidades" className="py-20 lg:py-32 px-6 sm:px-8 lg:px-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 lg:mb-8 tracking-tight">Capacidades de Grado Maestro</h2>
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 lg:mb-8 tracking-tight">
+                            {content.features?.title || "Capacidades de Grado Maestro"}
+                        </h2>
                         <div className="h-1.5 w-24 bg-blue-600 mx-auto mb-6 lg:mb-8" />
                         <p className="text-slate-500 dark:text-slate-400 text-lg lg:text-xl font-medium">
-                            Diseñado para organizaciones que exigen la perfección operativa y la trazabilidad absoluta en cada visita médica.
+                            {content.features?.subtitle || "Diseñado para organizaciones que exigen la perfección operativa y la trazabilidad absoluta en cada visita médica."}
                         </p>
                     </div>
 

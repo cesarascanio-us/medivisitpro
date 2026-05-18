@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getAllRegions, getStatesInRegion } from "@/constants/regions";
 import { cn } from "@/lib/utils";
 import { EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
+import { useTexts } from "@/hooks/useTexts";
 
 interface Zone {
     id: string;
@@ -91,6 +92,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
 };
 
 export default function Users() {
+    const t = useTexts();
     const { user, canManageUsers, isMaster, profile, organizationName } = useAuth();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
@@ -387,8 +389,8 @@ export default function Users() {
         <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
             
             <EliteHeader 
-                title="Gestión de Personal"
-                subtitle={organizationName || "Administración Central"}
+                title={t.users_title}
+                subtitle={t.users_subtitle}
                 icon={UsersIcon}
                 badgeText={isMaster ? "Soberanía Global" : "Control de Acceso"}
                 statusText={`${users.length} Operadores Activos`}

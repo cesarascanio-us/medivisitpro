@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { refreshObjectivesProgress } from "@/services/objectiveService";
+import { useTexts } from "@/hooks/useTexts";
 
 interface Objective {
     id: string;
@@ -39,6 +40,7 @@ interface Objective {
 }
 
 export default function Objectives() {
+    const t = useTexts();
     const { user, canViewAllData, isSupervisor, isManager, isCoordinator, zoneId, canAssignObjectives: canAssign } = useAuth();
     const { toast } = useToast();
     const [objectives, setObjectives] = useState<Objective[]>([]);
@@ -220,16 +222,16 @@ export default function Objectives() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">Objetivos y Metas</h1>
-                    <p className="text-muted-foreground">Define y monitorea tus metas de desempeño</p>
+                    <h1 className="text-2xl font-bold text-foreground">{t.objectives_title}</h1>
+                    <p className="text-muted-foreground">{t.objectives_subtitle}</p>
                 </div>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button className="btn-medical">
+                        <Button variant="default">
                             <Plus className="mr-2 h-4 w-4" /> Nuevo Objetivo
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-md">
+                    <DialogContent className="max-w-md bg-card border border-border/40 shadow-premium-2xl rounded-lg p-6">
                         <DialogHeader>
                             <DialogTitle>Crear Nuevo Objetivo</DialogTitle>
                         </DialogHeader>
@@ -336,7 +338,7 @@ export default function Objectives() {
                                     placeholder="Detalles del objetivo..."
                                 />
                             </div>
-                            <Button onClick={handleSubmit} className="w-full btn-medical">Crear Objetivo</Button>
+                            <Button variant="default" onClick={handleSubmit} className="w-full">Crear Objetivo</Button>
                         </div>
                     </DialogContent>
                 </Dialog>
@@ -344,7 +346,7 @@ export default function Objectives() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="medical-card">
+                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
@@ -355,7 +357,7 @@ export default function Objectives() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="medical-card">
+                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
@@ -366,7 +368,7 @@ export default function Objectives() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="medical-card">
+                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
@@ -384,7 +386,7 @@ export default function Objectives() {
             {loading ? (
                 <div className="text-center py-12 text-muted-foreground">Cargando objetivos...</div>
             ) : objectives.length === 0 ? (
-                <Card className="medical-card">
+                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
                     <CardContent className="text-center py-12">
                         <Target className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                         <h3 className="text-lg font-medium mb-2">No hay objetivos</h3>
@@ -396,7 +398,7 @@ export default function Objectives() {
                     {objectives.map((obj) => {
                         const progress = getProgress(obj.current_value, obj.target_value);
                         return (
-                            <Card key={obj.id} className="medical-card">
+                            <Card key={obj.id} className="bg-card border border-border/40 shadow-premium-md rounded-lg">
                                 <CardContent className="py-4">
                                     <div className="flex items-center justify-between mb-3">
                                         <div className="flex items-center space-x-3">

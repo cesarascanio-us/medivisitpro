@@ -38,7 +38,7 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card";
-import { EliteTabsList, EliteTabsTrigger, EliteKPICard } from "@/components/layout/DesignSystem";
+import { EliteTabsList, EliteTabsTrigger, EliteKPICard, EliteHeader } from "@/components/layout/DesignSystem";
 
 // Simulated Employee Data for RRHH (LOTTT Compliant)
 const EMPLOYEES = [

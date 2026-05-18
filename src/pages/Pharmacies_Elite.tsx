@@ -44,8 +44,10 @@ import { exportToCSV } from "@/utils/exportUtils";
 import { PharmacyFormDialog } from "@/components/pharma/PharmacyFormDialog";
 import { PharmacyInventoryDialog } from "@/components/pharma/PharmacyInventoryDialog";
 import { EliteTabsList, EliteTabsTrigger, EliteKPICard, EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function PharmaciesElite() {
+    const { theme } = useTheme();
     const { user, organizationId, organizationName } = useAuth();
     const { toast } = useToast();
     const navigate = useNavigate();
@@ -119,8 +121,8 @@ export default function PharmaciesElite() {
     return (
         <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
             <EliteHeader 
-                title="Red de Farmacias"
-                subtitle={organizationName || "Gestión de Activos Biofarco"}
+                title={theme?.texts?.pharmacies_title || "Red de Farmacias"}
+                subtitle={theme?.texts?.pharmacies_subtitle || organizationName || "Gestión de Activos Biofarco"}
                 icon={Store}
                 badgeText="Puntos de Venta"
                 statusText={`${pharmacies.length} Centros Activos`}

@@ -124,7 +124,7 @@ export default function Documentation() {
     };
 
     if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
-    if (error) return <div className="p-8 text-red-500">Error cargando documentación: {error}</div>;
+    if (error) return <div className="p-8 text-destructive font-semibold">Error cargando documentación: {error}</div>;
 
     const categories = [
         { id: 'manual', label: 'Manuales de Usuario', icon: <BookOpen className="h-4 w-4" /> },
@@ -143,12 +143,12 @@ export default function Documentation() {
                 {canEdit && (
                     <Dialog open={isNewOpen} onOpenChange={setIsNewOpen}>
                         <DialogTrigger asChild>
-                            <Button>
+                            <Button variant="default">
                                 <Plus className="h-4 w-4 mr-2" />
                                 Nuevo Documento
                             </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="bg-card border border-border/40 shadow-premium-2xl rounded-lg p-6 max-w-md">
                             <DialogHeader>
                                 <DialogTitle>Crear Nuevo Documento</DialogTitle>
                             </DialogHeader>
@@ -164,10 +164,10 @@ export default function Documentation() {
                                 <div className="space-y-2">
                                     <Label>Categoría</Label>
                                     <Select value={newCategory} onValueChange={setNewCategory}>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="w-full bg-card border border-input text-xs font-medium rounded-lg h-10 shadow-sm">
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="bg-card border border-border text-foreground shadow-premium-lg rounded-lg">
                                             <SelectItem value="manual">Manual de Usuario</SelectItem>
                                             <SelectItem value="sop">SOP (Proceso)</SelectItem>
                                             <SelectItem value="policy">Política</SelectItem>
@@ -178,7 +178,7 @@ export default function Documentation() {
                             </div>
                             <DialogFooter>
                                 <Button variant="outline" onClick={() => setIsNewOpen(false)}>Cancelar</Button>
-                                <Button onClick={handleCreate} disabled={!newTitle || isSaving}>
+                                <Button variant="default" onClick={handleCreate} disabled={!newTitle || isSaving}>
                                     {isSaving ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : null}
                                     Crear
                                 </Button>
@@ -190,9 +190,9 @@ export default function Documentation() {
 
             <div className="grid grid-cols-12 gap-6 flex-1 min-h-0">
                 {/* Sidebar List */}
-                <Card className="col-span-4 flex flex-col min-h-0">
+                <Card className="col-span-4 flex flex-col min-h-0 bg-card border border-border/40 shadow-premium-md rounded-lg">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Biblioteca</CardTitle>
+                        <CardTitle className="text-base font-bold">Biblioteca</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1 min-h-0 p-0">
                         <ScrollArea className="h-full px-4">
@@ -226,10 +226,10 @@ export default function Documentation() {
                 </Card>
 
                 {/* Content Viewer / Editor */}
-                <Card className="col-span-8 flex flex-col min-h-0">
+                <Card className="col-span-8 flex flex-col min-h-0 bg-card border border-border/40 shadow-premium-md rounded-lg">
                     {selectedDoc ? (
                         <>
-                            <CardHeader className="border-b shadow-sm bg-card/50 py-3">
+                            <CardHeader className="border-b border-border/40 shadow-sm bg-card/50 py-3">
                                 <div className="flex justify-between items-center">
                                     <div className="space-y-1 flex-1 mr-4">
                                         {isEditing ? (
