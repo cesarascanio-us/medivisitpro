@@ -89,9 +89,7 @@ export const Layout = ({ children }: LayoutProps) => {
       <div className="flex flex-1 overflow-hidden h-full">
         {/* Sidebar - Hidden on mobile/tablet, visible on laptop+ (lg breakpoint) */}
         {/* CRITICAL: relative z-50 ensures sidebar is above any map elements */}
-        <div className="hidden lg:block flex-shrink-0 relative z-50 sidebar-wrapper h-full">
-          <Sidebar />
-        </div>
+        <Sidebar className="hidden lg:block relative z-50 h-full" />
 
         {/* Content area - z-0 to ensure it's below sidebar */}
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative z-0">

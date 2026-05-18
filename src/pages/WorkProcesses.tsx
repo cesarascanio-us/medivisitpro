@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 
 const STANDARD_OPERATING_PROCEDURE = [
   {
@@ -80,6 +81,8 @@ const STANDARD_OPERATING_PROCEDURE = [
 ];
 
 export default function WorkProcesses() {
+  const { isMaster } = useAuth();
+
   return (
     <div className="min-h-screen flex flex-col p-8 font-display transition-colors duration-500 overflow-y-auto">
       
@@ -226,22 +229,125 @@ export default function WorkProcesses() {
              </Tabs>
           </TabsContent>
 
-          <TabsContent value="manual" className="flex-1 flex items-center justify-center">
-             <div className="text-center p-24 bg-card rounded-[4rem] border border-border shadow-premium-lg max-w-xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-16 opacity-[0.02]">
-                   <ClipboardList className="h-64 w-64" />
+          <TabsContent value="manual" className="flex-1 flex flex-col gap-8 animate-in fade-in slide-in-from-bottom duration-500">
+             {isMaster ? (
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 text-left">
+                   {/* Left Side: Active Master Strategy Directives */}
+                   <div className="xl:col-span-2 space-y-8">
+                      <div className="p-12 bg-card rounded-[3rem] border border-border shadow-premium-lg relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 p-16 opacity-[0.03] pointer-events-none">
+                            <Layers className="h-64 w-64" />
+                         </div>
+                         <div className="flex items-center gap-6 mb-8">
+                            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                               <ShieldCheck className="h-7 w-7 text-primary" />
+                            </div>
+                            <div>
+                               <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em] font-display">Nivel de Acceso: Master Global</span>
+                               <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mt-1 font-display">Directivas Estratégicas de Penetración</h3>
+                            </div>
+                         </div>
+                         <p className="text-sm text-muted-foreground leading-relaxed mb-8">
+                            Bienvenido al centro de modelado de procesos estándar y contra-inteligencia comercial de nivel maestro. Aquí se gestionan los workflows operativos que regulan la labor de toda la fuerza representativa de MediVisitPro.
+                         </p>
+
+                         <div className="space-y-4">
+                            {[
+                              { 
+                                title: "1. Táctica de Visibilidad Premium (Anaquel)", 
+                                desc: "Posicionar marcas propias a la altura de la vista (Eye-Level) ocupando al menos el 45% del espacio útil de la categoría de exhibición.",
+                                priority: "CRÍTICA",
+                                color: "text-rose-500 bg-rose-500/10 border-rose-500/20"
+                              },
+                              { 
+                                title: "2. Mitigación de Quiebres y Stock de Seguridad", 
+                                desc: "Activar solicitudes automáticas de pedido de transferencia a droguerías aliadas cuando la cobertura baje de 15 días estimados.",
+                                priority: "ALTA",
+                                color: "text-amber-500 bg-amber-500/10 border-amber-500/20"
+                              },
+                              { 
+                                title: "3. Protocolo de Captura Forense Multicanal", 
+                                desc: "Validación y cruce de imágenes de anaquel con geolocalización de satélite en tiempo real para evitar reportes fantasmas.",
+                                priority: "ESTÁNDAR",
+                                color: "text-blue-500 bg-blue-500/10 border-blue-500/20"
+                              }
+                            ].map((dir, idx) => (
+                               <div key={idx} className="p-6 bg-muted/5 rounded-[2rem] border border-border/60 hover:border-primary/20 transition-all duration-300">
+                                  <div className="flex items-center justify-between gap-4 mb-3">
+                                     <h4 className="text-sm font-black text-foreground uppercase tracking-tight">{dir.title}</h4>
+                                     <Badge className={cn("font-black text-[9px] px-3 py-1 uppercase tracking-widest rounded-full border shadow-sm shrink-0", dir.color)}>
+                                        {dir.priority}
+                                     </Badge>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground leading-relaxed">{dir.desc}</p>
+                               </div>
+                            ))}
+                         </div>
+                      </div>
+                   </div>
+
+                   {/* Right Side: Master Control Panel */}
+                   <div className="space-y-8">
+                      <Card className="bg-card border border-border rounded-[3rem] shadow-premium-sm p-10 flex flex-col relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none">
+                            <Zap className="h-32 w-32" />
+                         </div>
+                         <h3 className="text-base font-black text-foreground uppercase tracking-tight mb-6 font-display">Operaciones de Directiva</h3>
+                         
+                         <div className="space-y-4 flex-1">
+                            <Button className="w-full h-12 bg-primary text-white hover:bg-primary/90 font-black uppercase text-[10px] tracking-widest rounded-2xl flex items-center justify-center gap-2 group/btn shadow-md shadow-primary/10">
+                               <Zap className="h-4 w-4 text-white group-hover:scale-110 transition-transform" />
+                               Desplegar Nueva Directiva
+                            </Button>
+                            
+                            <Button variant="outline" className="w-full h-12 border-border/80 hover:bg-muted/10 font-black uppercase text-[10px] tracking-widest rounded-2xl flex items-center justify-center gap-2">
+                               <ClipboardList className="h-4 w-4" />
+                               Exportar Manual de Campo
+                            </Button>
+
+                            <Button variant="ghost" className="w-full h-12 text-muted-foreground hover:text-primary hover:bg-primary/5 font-black uppercase text-[10px] tracking-widest rounded-2xl flex items-center justify-center gap-2">
+                               <Activity className="h-4 w-4" />
+                               Auditar Cumplimiento de SOP
+                            </Button>
+                         </div>
+
+                         <div className="mt-8 pt-8 border-t border-border/40">
+                            <div className="flex items-center justify-between p-4 bg-muted/10 rounded-2xl border border-border/60">
+                               <div className="flex flex-col">
+                                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground leading-none mb-1">Mapeo de Rutas</span>
+                                  <span className="text-xs font-black text-emerald-400 leading-none">ACTIVO</span>
+                               </div>
+                               <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[9px] font-black px-3 py-1">SECURE</Badge>
+                            </div>
+                         </div>
+                      </Card>
+
+                      <Card className="bg-card border border-border rounded-[3rem] shadow-premium-sm p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
+                         <div className="w-16 h-16 rounded-[2rem] bg-muted/20 flex items-center justify-center text-muted-foreground mb-8 shadow-inner">
+                            <ShieldCheck className="h-8 w-8 text-primary" />
+                         </div>
+                         <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-4 font-display">Estado de Seguridad</h4>
+                         <p className="text-base font-black text-emerald-400 uppercase tracking-tighter font-display leading-none">SOP GLOBAL HABILITADO</p>
+                      </Card>
+                   </div>
                 </div>
-                <div className="w-24 h-24 bg-muted/20 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner group-hover:scale-110 transition-transform">
-                   <ShieldCheck className="h-12 w-12 text-muted-foreground" />
+             ) : (
+                <div className="text-center p-24 bg-card rounded-[4rem] border border-border shadow-premium-lg max-w-xl relative overflow-hidden group mx-auto">
+                   <div className="absolute top-0 right-0 p-16 opacity-[0.02]">
+                      <ClipboardList className="h-64 w-64" />
+                   </div>
+                   <div className="w-24 h-24 bg-muted/20 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner group-hover:scale-110 transition-transform">
+                      <ShieldCheck className="h-12 w-12 text-muted-foreground" />
+                   </div>
+                   <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-6 font-display">Búnker de Estrategia</h3>
+                   <p className="text-sm text-muted-foreground leading-loose font-bold font-sans">
+                      El manual detallado de tácticas de penetración de mercado y contra-inteligencia comercial se encuentra bajo protocolo de seguridad de nivel 5.
+                   </p>
+                   <div className="mt-12 flex justify-center">
+                      <Badge className="bg-primary/5 text-primary border border-primary/10 font-black text-[10px] px-6 py-2.5 uppercase tracking-widest rounded-full shadow-sm">Acceso Restringido</Badge>
+                   </div>
                 </div>
-                <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-6 font-display">Búnker de Estrategia</h3>
-                <p className="text-sm text-muted-foreground leading-loose font-bold font-sans">
-                   El manual detallado de tácticas de penetración de mercado y contra-inteligencia comercial se encuentra bajo protocolo de seguridad de nivel 5.
-                </p>
-                <div className="mt-12 flex justify-center">
-                   <Badge className="bg-primary/5 text-primary border border-primary/10 font-black text-[10px] px-6 py-2.5 uppercase tracking-widest rounded-full shadow-sm">Acceso Restringido</Badge>
-                </div>
-             </div>
+             )}
           </TabsContent>
         </Tabs>
       </div>
