@@ -101,7 +101,7 @@ export default function NaturalStores() {
     };
 
     return (
-        <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
+        <div className="flex flex-col min-h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
             <EliteHeader 
                 title="Canal Naturista Alpha"
                 subtitle={organizationName || "Gestión de Establecimientos Estratégicos"}

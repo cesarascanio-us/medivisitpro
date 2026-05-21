@@ -197,7 +197,7 @@ export default function Visits() {
   };
 
   return (
-    <div className="flex flex-col h-full space-y-10 animate-in fade-in duration-700 text-foreground pb-20">
+    <div className="flex flex-col min-h-full space-y-10 animate-in fade-in duration-700 text-foreground pb-20">
       <EliteHeader 
         title={theme?.texts?.visits_title || "Historial de Visitas"}
         subtitle={theme?.texts?.visits_subtitle || organizationName || "Gestión de Visitas Biofarco"}

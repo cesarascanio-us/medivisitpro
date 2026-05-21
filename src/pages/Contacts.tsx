@@ -166,7 +166,7 @@ export default function Contacts() {
   const hasReachedLimit = isFreePlan && contacts.length >= 50;
 
   return (
-    <div className="flex flex-col h-full bg-background min-h-screen p-8 gap-8 font-sans transition-colors duration-500 overflow-y-auto no-scrollbar">
+    <div className="flex flex-col min-h-full space-y-10 font-sans transition-colors duration-500 text-foreground pb-20 animate-in fade-in duration-700">
       <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx, .xls, .csv" className="hidden" />
 
       {/* Premium Header */}

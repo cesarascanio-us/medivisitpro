@@ -278,7 +278,7 @@ export default function PlanManager() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-background space-y-8 p-1 text-foreground">
+        <div className="flex flex-col min-h-full space-y-8 p-1 text-foreground">
             {/* Premium Header Container */}
             <header className="bg-card px-8 py-8 rounded-lg shadow-premium-md border border-border/40 relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}

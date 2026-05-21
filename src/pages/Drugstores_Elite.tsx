@@ -176,7 +176,7 @@ export default function DrugstoresElite() {
     };
 
     return (
-        <div className="flex flex-col h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
+        <div className="flex flex-col min-h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
             <EliteHeader 
                 title="Droguerías Alpha"
                 subtitle={organizationName || "Gestión de Socios Logísticos Biofarco"}

@@ -76,7 +76,7 @@ export default function AssetList() {
     );
 
     return (
-        <div className="flex flex-col h-full bg-background space-y-10 p-1 animate-in fade-in duration-700">
+        <div className="flex flex-col min-h-full space-y-10 p-1 animate-in fade-in duration-700">
             {/* HEADER INDUSTRIAL ELITE */}
             <EliteHeader
                 title="Búnker de Activos"

@@ -180,7 +180,7 @@ export default function LandingEditor() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-background space-y-8 p-1">
+        <div className="flex flex-col min-h-full space-y-8 p-1">
             {/* Premium White Header Container */}
             <header className="bg-card px-10 md:px-12 py-10 rounded-elite-lg shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}

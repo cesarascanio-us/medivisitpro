@@ -196,7 +196,7 @@ export default function Help() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-background min-h-screen p-8 gap-8 font-sans transition-colors duration-500 overflow-y-auto no-scrollbar">
+        <div className="flex flex-col min-h-full space-y-10 font-sans transition-colors duration-500 text-foreground pb-20 animate-in fade-in duration-700">
             <EliteHeader
                 title={t.help_title || "Centro de Ayuda"}
                 subtitle={t.help_subtitle || "Encuentra respuestas, tutoriales y soporte corporativo"}

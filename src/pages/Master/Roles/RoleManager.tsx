@@ -297,7 +297,7 @@ export default function RoleManager() {
     }, {} as Record<string, AppPermission[]>);
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col min-h-full space-y-6">
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight text-foreground">Perfiles y Niveles de Acceso</h2>
