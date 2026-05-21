@@ -10,12 +10,11 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Search, Stethoscope, Trash2, Edit } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { SpecialtyDialog } from "@/components/specialties/SpecialtyDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTexts } from "@/hooks/useTexts";
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton, EliteInput, EliteTable, EliteTabsList, EliteTabsTrigger } from '@/components/layout/DesignSystem';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function Specialties() {
+    const t = useTexts();
     const { toast } = useToast();
     const [specialties, setSpecialties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -98,84 +98,96 @@ export default function Specialties() {
     );
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">Especialidades</h1>
-                    <p className="text-muted-foreground">Gestiona las especialidades médicas</p>
-                </div>
-                <Button onClick={() => { setEditingSpecialty(null); setDialogOpen(true); }}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nueva Especialidad
-                </Button>
-            </div>
+        <div className="min-h-screen flex flex-col bg-background p-8 font-sans transition-colors duration-500 overflow-y-auto">
+            
+            {/* HEADER INDUSTRIAL ELITE */}
+            <EliteHeader
+                title={t.specialties_title || "Especialidades"}
+                subtitle={t.specialties_subtitle || "Gestiona las especialidades médicas"}
+                icon={Stethoscope}
+                badgeText="Catálogo Médico"
+                statusText="Sincronizado"
+                statusColor="bg-emerald-500"
+                rightContent={
+                    <EliteButton
+                        onClick={() => { setEditingSpecialty(null); setDialogOpen(true); }}
+                        className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+                    >
+                        <Plus className="h-5 w-5 mr-3" /> Nueva Especialidad
+                    </EliteButton>
+                }
+            />
 
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
+            {/* SEARCH AREA */}
+            <EliteCard className="p-6 shrink-0 mt-8 mb-8">
+                <EliteInput
+                    icon={Search}
                     placeholder="Buscar especialidad..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="h-16 bg-muted/20 border-none font-bold rounded-2xl text-foreground transition-all shadow-inner pl-14"
                 />
-            </div>
+            </EliteCard>
 
             {loading ? (
-                <div className="text-center py-12 text-muted-foreground">Cargando especialidades...</div>
+                <div className="text-center py-12 text-muted-foreground font-black text-xs uppercase tracking-widest">Cargando especialidades...</div>
             ) : filteredSpecialties.length === 0 ? (
-                <Card className="medical-card">
-                    <CardContent className="text-center py-12">
-                        <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-medium mb-2">No hay especialidades</h3>
-                        <p className="text-muted-foreground mb-4">Agrega la primera especialidad</p>
-                    </CardContent>
-                </Card>
+                <EliteCard className="text-center py-16">
+                    <Stethoscope className="mx-auto h-16 w-16 text-muted-foreground/30 mb-6" />
+                    <h3 className="text-lg font-black uppercase tracking-tight font-display mb-2">No hay especialidades</h3>
+                    <p className="text-muted-foreground font-bold text-xs uppercase tracking-wider">Agrega la primera especialidad médica al sistema</p>
+                </EliteCard>
             ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {filteredSpecialties.map((specialty) => (
-                        <Card key={specialty.id} className="medical-card hover:shadow-lg transition-shadow group relative">
-                            <CardHeader className="pb-3">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-primary/10 rounded-lg">
-                                            <Stethoscope className="h-5 w-5 text-primary" />
+                        <EliteCard key={specialty.id} className="hover:shadow-premium-md transition-all group relative rounded-elite-xl">
+                            <div className="p-6">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center border border-border/30">
+                                            <Stethoscope className="h-6 w-6 text-primary" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-lg">{specialty.name}</CardTitle>
+                                            <h3 className="text-lg font-black text-foreground uppercase tracking-tight font-display leading-tight">{specialty.name}</h3>
                                         </div>
                                     </div>
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(specialty)}>
+                                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <EliteButton variant="ghost" size="icon" onClick={() => handleEdit(specialty)} className="w-10 h-10 rounded-xl hover:bg-primary/5 flex items-center justify-center">
                                             <Edit className="h-4 w-4 text-muted-foreground hover:text-primary" />
-                                        </Button>
+                                        </EliteButton>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" size="icon">
+                                                <EliteButton variant="ghost" size="icon" className="w-10 h-10 rounded-xl hover:bg-rose-500/10 flex items-center justify-center">
                                                     <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                                                </Button>
+                                                </EliteButton>
                                             </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        Esta acción no se puede deshacer. Esto eliminará permanentemente la especialidad.
+                                            <AlertDialogContent className="rounded-[3rem] border-none shadow-2xl bg-card p-0 overflow-hidden">
+                                                <div className="bg-rose-600 p-10 text-white relative">
+                                                    <AlertDialogTitle className="text-3xl font-black uppercase tracking-tighter font-display leading-none">Eliminar Especialidad</AlertDialogTitle>
+                                                    <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mt-4">Protocolo de seguridad</p>
+                                                </div>
+                                                <div className="p-10">
+                                                    <AlertDialogDescription className="text-muted-foreground font-bold text-base leading-relaxed font-sans">
+                                                        ¿Está seguro que desea eliminar la especialidad <span className="text-rose-600 underline">"{specialty.name}"</span>? Esta acción no se puede deshacer y podría afectar el catálogo de médicos vinculados.
                                                     </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => handleDelete(specialty.id)}>Eliminar</AlertDialogAction>
-                                                </AlertDialogFooter>
+                                                </div>
+                                                <div className="p-10 pt-0 flex gap-4">
+                                                    <AlertDialogCancel asChild>
+                                                        <EliteButton variant="secondary" className="flex-1 h-16 rounded-2xl border-border/40 bg-muted/20 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Abortar</EliteButton>
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction asChild>
+                                                        <EliteButton onClick={() => handleDelete(specialty.id)} className="flex-1 h-16 rounded-2xl bg-rose-600 hover:bg-rose-700 font-black uppercase tracking-widest text-[10px] text-white shadow-premium-md shadow-rose-500/20 transition-all">Confirmar</EliteButton>
+                                                    </AlertDialogAction>
+                                                </div>
                                             </AlertDialogContent>
                                         </AlertDialog>
                                     </div>
                                 </div>
-                            </CardHeader>
-                            <CardContent>
                                 {specialty.detail && (
-                                    <p className="text-sm text-muted-foreground line-clamp-2">{specialty.detail}</p>
+                                    <p className="text-xs font-bold text-muted-foreground line-clamp-3 leading-relaxed mt-2">{specialty.detail}</p>
                                 )}
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </EliteCard>
                     ))}
                 </div>
             )}

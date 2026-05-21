@@ -192,22 +192,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const isHardcodedDemo = lowerEmail === demoEmailLower;
 
         // [DEMO FAIL-SAFE] Only for the public demo account
+        // Supports localStorage override for testing different roles
         if (isHardcodedDemo) {
-            console.log('AuthProvider: DEMO context triggered for', lowerEmail);
+            const overrideRole = (typeof window !== 'undefined' && localStorage.getItem('demo_role')) as UserRole | null;
+            const demoRole: UserRole = (overrideRole && ['master', 'manager', 'representative'].includes(overrideRole))
+                ? overrideRole as UserRole
+                : 'representative';
+            const demoIsMaster = demoRole === 'master';
+
+            console.log('AuthProvider: DEMO context triggered for', lowerEmail, '| role override:', demoRole);
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
-                role: 'representative',
+                role: demoRole,
                 organization_id: DEMO_ORG_ID,
                 company_id: DEMO_ORG_ID, // In demo, both match
                 zone_id: null,
                 state: null,
                 region: null,
-                is_master: false
+                is_master: demoIsMaster
             };
 
             setProfile(combinedProfile);
-            setRole('representative');
+            setRole(demoRole);
+            setIsOwner(demoIsMaster);
             setPermissions([]);
             setLoading(false);
             return;

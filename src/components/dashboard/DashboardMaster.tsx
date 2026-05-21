@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton } from '@/components/layout/DesignSystem';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 import { Globe, Building2, Users, Activity, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { useTexts } from '@/hooks/useTexts';
 
 const FALLBACK_KPIS = {
   total_organizations: 12,
@@ -20,6 +20,13 @@ function formatNumber(n: number): string {
 }
 
 export default function DashboardMaster() {
+  const rawTexts = useTexts();
+  const t = {
+    ...rawTexts,
+    create: rawTexts.btn_create,
+    export: rawTexts.btn_export,
+    import: rawTexts.btn_import,
+  };
   const { profile, user } = useAuth();
 
   // --- DATOS REALES: RPC cross-organization con SECURITY DEFINER ---
@@ -104,152 +111,143 @@ export default function DashboardMaster() {
   const heatmap = useMemo(() => Array(35).fill(0).map(() => Math.floor(Math.random() * 10)), []);
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-background space-y-4 p-4 md:p-6 pb-24 max-w-[1400px] mx-auto">
+    <div className="flex flex-col w-full min-h-screen bg-background space-y-6 p-4 md:p-8 pb-24 max-w-[1400px] mx-auto animate-in fade-in duration-500">
       
       {/* SECCIÓN 1 — Saludo */}
-      <div className="flex items-center gap-4 bg-card p-4 rounded-lg shadow-premium-md border border-border/40">
-        <div className="bg-primary/10 p-3 rounded-lg border border-primary/20">
-          <Globe className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-sm font-bold font-sans text-foreground">Control Central SaaS</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Admin: {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Master'}</p>
-        </div>
-        <div className="ml-auto">
-          <Badge variant="outline" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Sistemas Operativos
-          </Badge>
-        </div>
-      </div>
+      <EliteHeader
+        title="Control Central SaaS"
+        subtitle="Panel de Control del Administrador SaaS"
+        icon={Globe}
+        badgeText="v4.0 Master"
+        statusText={`Admin: ${user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Master'}`}
+        statusColor="bg-emerald-500"
+        rightContent={
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-full bg-chart-2/10 text-chart-2 border border-chart-2/20 text-xs font-black uppercase tracking-wider shadow-inner h-14">
+              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+              <span>Sistemas Operativos</span>
+            </div>
+            <EliteButton variant="secondary" onClick={() => window.print()} className="h-14 rounded-2xl" icon={Globe}>
+              {t.export}
+            </EliteButton>
+          </div>
+        }
+      />
 
       {/* KPIs Globales — datos reales via RPC */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-primary rounded-lg">
-          <CardContent className="p-4 flex justify-between items-center">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase font-medium">Organizaciones</p>
-              <h3 className="text-sm font-bold mt-1 text-foreground">{kpis?.total_organizations ?? 0}</h3>
-            </div>
-            <Building2 className="w-6 h-6 text-primary/40" />
-          </CardContent>
-        </Card>
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-chart-2 rounded-lg">
-          <CardContent className="p-4 flex justify-between items-center">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase font-medium">Usuarios Activos</p>
-              <h3 className="text-sm font-bold mt-1 text-foreground">{kpis?.total_users ?? 0}</h3>
-            </div>
-            <Users className="w-6 h-6 text-chart-2/40" />
-          </CardContent>
-        </Card>
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-chart-3 rounded-lg">
-          <CardContent className="p-4 flex justify-between items-center">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase font-medium">Visitas Mes</p>
-              <h3 className="text-sm font-bold mt-1 text-foreground">{formatNumber(kpis?.total_visits_month ?? 0)}</h3>
-            </div>
-            <Activity className="w-6 h-6 text-chart-3/40" />
-          </CardContent>
-        </Card>
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-amber-500 rounded-lg">
-          <CardContent className="p-4 flex justify-between items-center">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase font-medium">Transf. Mes</p>
-              <h3 className="text-sm font-bold mt-1 text-foreground">{kpis?.total_transfers ?? 0}</h3>
-            </div>
-            <Globe className="w-6 h-6 text-amber-500/40" />
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <EliteKPICard
+          title="ORGANIZACIONES"
+          value={kpis?.total_organizations ?? 0}
+          icon={Building2}
+          color="primary"
+          delay={100}
+        />
+        <EliteKPICard
+          title="USUARIOS ACTIVOS"
+          value={kpis?.total_users ?? 0}
+          icon={Users}
+          color="secondary"
+          delay={200}
+        />
+        <EliteKPICard
+          title="VISITAS MES"
+          value={formatNumber(kpis?.total_visits_month ?? 0)}
+          icon={Activity}
+          color="emerald"
+          delay={300}
+        />
+        <EliteKPICard
+          title="TRANSF. MES"
+          value={kpis?.total_transfers ?? 0}
+          icon={Globe}
+          color="amber"
+          delay={400}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* SECCIÓN 2 — Actividad por organización */}
-        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-          <CardContent className="p-4">
-            <h4 className="text-sm font-semibold mb-4 text-foreground">Actividad (Top 5 Organizaciones)</h4>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.4} vertical={false} />
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fontSize: 10, fill: 'var(--muted-foreground)', fontWeight: 600 }} 
-                    axisLine={{ stroke: 'var(--border)', opacity: 0.5 }}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 10, fill: 'var(--muted-foreground)', fontWeight: 600 }} 
-                    axisLine={{ stroke: 'var(--border)', opacity: 0.5 }}
-                    tickLine={false}
-                  />
-                  <Tooltip 
-                    cursor={{ fill: 'var(--muted)', opacity: 0.15 }} 
-                    contentStyle={{ 
-                      backgroundColor: 'var(--card)', 
-                      borderColor: 'var(--border)', 
-                      borderRadius: '12px', 
-                      color: 'var(--foreground)',
-                      boxShadow: 'var(--shadow-premium-md)',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      border: '1px solid var(--border)'
-                    }} 
-                  />
-                  <Bar dataKey="visits" radius={[6, 6, 0, 0]} maxBarSize={38}>
-                    {activityData.map((_, i) => (
-                      <Cell key={i} fill={`hsl(var(--chart-${(i % 5) + 1}))`} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <EliteCard className="p-6">
+          <h4 className="text-sm font-black mb-6 text-foreground uppercase tracking-widest font-display">Actividad (Top 5 Organizaciones)</h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.4} vertical={false} />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{ fontSize: 10, fill: 'var(--muted-foreground)', fontWeight: 600 }} 
+                  axisLine={{ stroke: 'var(--border)', opacity: 0.5 }}
+                  tickLine={false}
+                />
+                <YAxis 
+                  tick={{ fontSize: 10, fill: 'var(--muted-foreground)', fontWeight: 600 }} 
+                  axisLine={{ stroke: 'var(--border)', opacity: 0.5 }}
+                  tickLine={false}
+                />
+                <Tooltip 
+                  cursor={{ fill: 'var(--muted)', opacity: 0.15 }} 
+                  contentStyle={{ 
+                    backgroundColor: 'var(--card)', 
+                    borderColor: 'var(--border)', 
+                    borderRadius: '12px', 
+                    color: 'var(--foreground)',
+                    boxShadow: 'var(--shadow-premium-md)',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    border: '1px solid var(--border)'
+                  }} 
+                />
+                <Bar dataKey="visits" radius={[6, 6, 0, 0]} maxBarSize={38}>
+                  {activityData.map((_, i) => (
+                    <Cell key={i} fill={`hsl(var(--chart-${(i % 5) + 1}))`} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </EliteCard>
  
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {/* SECCIÓN 3 — Mapa Calor Global */}
-          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-            <CardContent className="p-4">
-              <h4 className="text-sm font-semibold mb-4 text-foreground">Heatmap de Interacciones (Red Global)</h4>
-              <div className="grid grid-cols-7 gap-1.5 md:flex md:flex-wrap">
-                {heatmap.map((val, i) => {
-                  let bg = 'bg-primary/5';
-                  let border = 'border-primary/10';
-                  if (val > 2) { bg = 'bg-primary/20'; border = 'border-primary/20'; }
-                  if (val > 5) { bg = 'bg-primary/45'; border = 'border-primary/30'; }
-                  if (val > 7) { bg = 'bg-primary/75'; border = 'border-primary/50'; }
-                  if (val > 9) { bg = 'bg-primary'; border = 'border-primary'; }
-                  return (
-                    <div 
-                      key={i} 
-                      className={`w-8 h-8 rounded-lg border transition-all duration-300 hover:scale-110 cursor-pointer ${bg} ${border}`} 
-                      title={`Intensidad: ${val}`}
-                    />
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+          <EliteCard className="p-6">
+            <h4 className="text-sm font-black mb-6 text-foreground uppercase tracking-widest font-display">Heatmap de Interacciones (Red Global)</h4>
+            <div className="grid grid-cols-7 gap-2 md:flex md:flex-wrap">
+              {heatmap.map((val, i) => {
+                let bg = 'bg-primary/5';
+                let border = 'border-primary/10';
+                if (val > 2) { bg = 'bg-primary/20'; border = 'border-primary/20'; }
+                if (val > 5) { bg = 'bg-primary/45'; border = 'border-primary/30'; }
+                if (val > 7) { bg = 'bg-primary/75'; border = 'border-primary/50'; }
+                if (val > 9) { bg = 'bg-primary'; border = 'border-primary'; }
+                return (
+                  <div 
+                    key={i} 
+                    className={`w-8 h-8 rounded-lg border transition-all duration-300 hover:scale-110 cursor-pointer ${bg} ${border}`} 
+                    title={`Intensidad: ${val}`}
+                  />
+                );
+              })}
+            </div>
+          </EliteCard>
  
           {/* SECCIÓN 4 — Alertas */}
-          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex-1">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <ShieldAlert className="w-4 h-4 text-destructive" />
-                <h4 className="text-sm font-semibold text-foreground">Alertas de Sistema</h4>
+          <EliteCard className="p-6 flex-1">
+            <div className="flex items-center gap-2.5 mb-6">
+              <ShieldAlert className="w-5 h-5 text-rose-500" />
+              <h4 className="text-sm font-black text-foreground uppercase tracking-widest font-display">Alertas de Sistema</h4>
+            </div>
+            <div className="space-y-4">
+              <div className="p-4 bg-rose-500/10 dark:bg-rose-500/5 border border-rose-500/20 rounded-xl shadow-premium-sm">
+                <p className="text-xs font-black text-rose-600 dark:text-rose-400 uppercase tracking-wide">Novedad Calidad - {alertOrgs[0] || 'CA LABS PHARMA C.A.'}</p>
+                <p className="text-xs text-muted-foreground mt-2 font-bold">Lote 249301 reportado en 3 zonas.</p>
               </div>
-              <div className="space-y-3">
-                <div className="p-3 bg-rose-500/10 dark:bg-rose-500/5 border border-rose-500/20 rounded-xl shadow-sm">
-                  <p className="text-xs font-bold text-rose-600 dark:text-rose-400">Novedad Calidad - {alertOrgs[0] || 'CA LABS PHARMA C.A.'}</p>
-                  <p className="text-xs text-muted-foreground mt-1 font-medium">Lote 249301 reportado en 3 zonas.</p>
-                </div>
-                <div className="p-3 bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 rounded-xl shadow-sm">
-                  <p className="text-xs font-bold text-amber-600 dark:text-amber-400">Licencias Inactivas - {alertOrgs[1] || 'MediVisit Master S.A.'}</p>
-                  <p className="text-xs text-muted-foreground mt-1 font-medium">5 usuarios sin actividad en &gt; 30 días.</p>
-                </div>
+              <div className="p-4 bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 rounded-xl shadow-premium-sm">
+                <p className="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-wide">Licencias Inactivas - {alertOrgs[1] || 'MediVisit Master S.A.'}</p>
+                <p className="text-xs text-muted-foreground mt-2 font-bold">5 usuarios sin actividad en &gt; 30 días.</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </EliteCard>
         </div>
       </div>
 

@@ -67,7 +67,7 @@ export function EliteHeader({ title, subtitle, icon: Icon, badgeText, statusText
 
 interface EliteKPICardProps {
     title: string;
-    value: string | number;
+    value: React.ReactNode;
     subtitle?: string;
     icon: LucideIcon;
     trend?: number;

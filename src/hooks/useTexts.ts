@@ -84,6 +84,15 @@ export function useTexts() {
     documents_title: theme?.texts?.documents_title || "Centro Documental",
     documents_subtitle: theme?.texts?.documents_subtitle || "Bandeja de normativas, guías y documentos corporativos",
 
+    contacts_title: theme?.texts?.contacts_title || "Directorio de Contactos",
+    contacts_subtitle: theme?.texts?.contacts_subtitle || "Gestión de contactos clave de la red médica",
+
+    help_title: theme?.texts?.help_title || "Soporte & Ayuda",
+    help_subtitle: theme?.texts?.help_subtitle || "Manuales, guías y centro de asistencia",
+
+    specialties_title: theme?.texts?.specialties_title || "Especialidades Médicas",
+    specialties_subtitle: theme?.texts?.specialties_subtitle || "Administración de especialidades y clasificaciones",
+
     // Acciones y Botones
     btn_save: theme?.texts?.btn_save || "Guardar",
     btn_cancel: theme?.texts?.btn_cancel || "Cancelar",

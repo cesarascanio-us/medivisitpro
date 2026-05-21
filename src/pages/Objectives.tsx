@@ -8,14 +8,11 @@
 ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Plus, Target, TrendingUp, Calendar, CheckCircle, AlertCircle, MoreVertical } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Plus, Target, TrendingUp, CheckCircle, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +20,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { refreshObjectivesProgress } from "@/services/objectiveService";
 import { useTexts } from "@/hooks/useTexts";
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton, EliteInput } from "@/components/layout/DesignSystem";
+import { motion } from "framer-motion";
 
 interface Objective {
     id: string;
@@ -40,7 +39,13 @@ interface Objective {
 }
 
 export default function Objectives() {
-    const t = useTexts();
+    const rawTexts = useTexts();
+    const t = {
+        ...rawTexts,
+        create: rawTexts.btn_create,
+        export: rawTexts.btn_export,
+        import: rawTexts.btn_import,
+    };
     const { user, canViewAllData, isSupervisor, isManager, isCoordinator, zoneId, canAssignObjectives: canAssign } = useAuth();
     const { toast } = useToast();
     const [objectives, setObjectives] = useState<Objective[]>([]);
@@ -219,221 +224,224 @@ export default function Objectives() {
         : 0;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">{t.objectives_title}</h1>
-                    <p className="text-muted-foreground">{t.objectives_subtitle}</p>
-                </div>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="default">
-                            <Plus className="mr-2 h-4 w-4" /> Nuevo Objetivo
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md bg-card border border-border/40 shadow-premium-2xl rounded-lg p-6">
-                        <DialogHeader>
-                            <DialogTitle>Crear Nuevo Objetivo</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            {canAssign && (
-                                <div className="space-y-2">
-                                    <Label className="text-blue-600 font-semibold">Asignar a (Opcional)</Label>
-                                    <Select value={targetUserId} onValueChange={setTargetUserId}>
-                                        <SelectTrigger className="bg-blue-50 border-blue-200 text-slate-900">
-                                            <SelectValue placeholder="Seleccionar miembro del equipo..." />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="">Asignarme a mí mismo</SelectItem>
-                                            {teamMembers.map(member => (
-                                                <SelectItem key={member.id} value={member.id}>
-                                                    {member.first_name} {member.last_name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <p className="text-xs text-muted-foreground">
-                                        Si seleccionas un usuario, el objetivo se creará en su tablero.
-                                    </p>
-                                </div>
-                            )}
-                            <div className="space-y-2">
-                                <Label>Título *</Label>
-                                <Input
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    placeholder="Ej: Visitar 20 médicos este mes"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Categoría</Label>
-                                    <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="visits">Visitas</SelectItem>
-                                            <SelectItem value="sales">Ventas</SelectItem>
-                                            <SelectItem value="contacts">Contactos</SelectItem>
-                                            <SelectItem value="events">Eventos</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Período</Label>
-                                    <Select value={formData.objective_type} onValueChange={(v) => setFormData({ ...formData, objective_type: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="daily">Diario</SelectItem>
-                                            <SelectItem value="weekly">Semanal</SelectItem>
-                                            <SelectItem value="monthly">Mensual</SelectItem>
-                                            <SelectItem value="quarterly">Trimestral</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Meta *</Label>
-                                    <Input
-                                        type="number"
-                                        value={formData.target_value}
-                                        onChange={(e) => setFormData({ ...formData, target_value: parseInt(e.target.value) || 0 })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Prioridad</Label>
-                                    <Select value={formData.priority} onValueChange={(v) => setFormData({ ...formData, priority: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="low">Baja</SelectItem>
-                                            <SelectItem value="normal">Normal</SelectItem>
-                                            <SelectItem value="high">Alta</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Fecha Inicio</Label>
-                                    <Input
-                                        type="date"
-                                        value={formData.start_date}
-                                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Fecha Fin</Label>
-                                    <Input
-                                        type="date"
-                                        value={formData.end_date}
-                                        onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Descripción</Label>
-                                <Textarea
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="Detalles del objetivo..."
-                                />
-                            </div>
-                            <Button variant="default" onClick={handleSubmit} className="w-full">Crear Objetivo</Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            </div>
+        <div className="min-h-screen flex flex-col bg-background p-8 font-sans transition-colors duration-500 overflow-y-auto">
+            
+            {/* HEADER INDUSTRIAL ELITE */}
+            <EliteHeader
+                title={t.objectives_title}
+                subtitle={t.objectives_subtitle}
+                icon={Target}
+                badgeText="Objetivos & Metas"
+                statusText="Enlace de Progreso Activo"
+                statusColor="bg-primary"
+                rightContent={
+                    <EliteButton
+                        onClick={() => setDialogOpen(true)}
+                        className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95 whitespace-nowrap animate-pulse-subtle"
+                        icon={Plus}
+                    >
+                        {t.create}
+                    </EliteButton>
+                }
+            />
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Objetivos Activos</p>
-                                <p className="text-3xl font-bold text-primary">{activeObjectives.length}</p>
-                            </div>
-                            <Target className="h-10 w-10 text-primary opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Completados</p>
-                                <p className="text-3xl font-bold text-green-600">{completedObjectives.length}</p>
-                            </div>
-                            <CheckCircle className="h-10 w-10 text-green-600 opacity-20" />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Progreso General</p>
-                                <p className="text-3xl font-bold">{Math.round(overallProgress)}%</p>
-                            </div>
-                            <TrendingUp className="h-10 w-10 text-blue-500 opacity-20" />
-                        </div>
-                        <Progress value={overallProgress} className="mt-2" />
-                    </CardContent>
-                </Card>
+            {/* KPI GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-8">
+                <EliteKPICard
+                    title="Objetivos Activos"
+                    value={activeObjectives.length}
+                    icon={Target}
+                    color="primary"
+                    delay={0}
+                />
+                <EliteKPICard
+                    title="Completados"
+                    value={completedObjectives.length}
+                    icon={CheckCircle}
+                    color="emerald"
+                    delay={100}
+                />
+                <EliteKPICard
+                    title="Progreso General"
+                    value={`${Math.round(overallProgress)}%`}
+                    icon={TrendingUp}
+                    color="blue"
+                    delay={200}
+                />
             </div>
 
             {/* Objectives List */}
             {loading ? (
-                <div className="text-center py-12 text-muted-foreground">Cargando objetivos...</div>
+                <div className="text-center py-12 text-muted-foreground font-black text-xs uppercase tracking-widest">Cargando objetivos...</div>
             ) : objectives.length === 0 ? (
-                <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-                    <CardContent className="text-center py-12">
-                        <Target className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-medium mb-2">No hay objetivos</h3>
-                        <p className="text-muted-foreground mb-4">Crea tu primer objetivo para comenzar a monitorear tu progreso</p>
-                    </CardContent>
-                </Card>
+                <EliteCard className="text-center py-16">
+                    <Target className="mx-auto h-16 w-16 text-muted-foreground/30 mb-6" />
+                    <h3 className="text-lg font-black uppercase tracking-tight font-display mb-2">No hay objetivos</h3>
+                    <p className="text-muted-foreground font-bold text-xs uppercase tracking-wider mb-4">Crea tu primer objetivo para comenzar a monitorear tu progreso</p>
+                </EliteCard>
             ) : (
                 <div className="space-y-4">
                     {objectives.map((obj) => {
                         const progress = getProgress(obj.current_value, obj.target_value);
                         return (
-                            <Card key={obj.id} className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-                                <CardContent className="py-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center space-x-3">
-                                            {getStatusIcon(obj.status)}
+                            <EliteCard key={obj.id} className="bg-card border border-border/40 shadow-premium-md rounded-elite-xl">
+                                <div className="p-6">
+                                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center border border-border/30">
+                                                {getStatusIcon(obj.status)}
+                                            </div>
                                             <div>
-                                                <h3 className="font-medium">{obj.title}</h3>
-                                                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                                                    <Badge variant="outline">{getCategoryLabel(obj.category)}</Badge>
-                                                    <Badge variant="secondary">{getTypeLabel(obj.objective_type)}</Badge>
+                                                <h3 className="font-black text-foreground text-base tracking-tight uppercase font-display leading-tight">{obj.title}</h3>
+                                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                    <Badge className="bg-primary/10 text-primary border-none font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full">{getCategoryLabel(obj.category)}</Badge>
+                                                    <Badge className="bg-muted/30 text-muted-foreground border-none font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full">{getTypeLabel(obj.objective_type)}</Badge>
                                                     {(canAssign || canViewAllData) && (obj as any).profiles && (
-                                                        <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+                                                        <Badge className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full">
                                                             {(obj as any).profiles?.first_name} {(obj as any).profiles?.last_name}
                                                         </Badge>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="text-right">
-                                            <p className="text-2xl font-bold">
+                                        <div className="text-left md:text-right shrink-0">
+                                            <p className="text-xl font-black text-foreground tracking-tighter tabular-nums leading-none">
                                                 {obj.category === 'sales' ? `$${obj.current_value.toLocaleString()}` : obj.current_value} / {obj.category === 'sales' ? `$${obj.target_value.toLocaleString()}` : obj.target_value}
                                             </p>
-                                            <p className="text-sm text-muted-foreground">{Math.round(progress)}% completado</p>
+                                            <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-1.5">{Math.round(progress)}% completado</p>
                                         </div>
                                     </div>
-                                    <Progress value={progress} className="h-2" />
-                                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                                    <Progress value={progress} className="h-2.5 bg-primary/5 rounded-full overflow-hidden" />
+                                    <div className="flex justify-between text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest mt-3">
                                         <span>Inicio: {new Date(obj.start_date).toLocaleDateString()}</span>
                                         <span>Fin: {new Date(obj.end_date).toLocaleDateString()}</span>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                </div>
+                            </EliteCard>
                         );
                     })}
                 </div>
             )}
+
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="bg-card border-none shadow-2xl rounded-[3rem] max-w-md p-0 overflow-hidden font-sans border border-border/40">
+                    <div className="bg-primary p-10 text-white relative">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-card/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                        <DialogTitle className="text-3xl font-black uppercase tracking-tighter font-display leading-none relative z-10">Nuevo Objetivo</DialogTitle>
+                        <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mt-4 relative z-10">Meta de Desempeño Élite</p>
+                    </div>
+                    <div className="p-10 space-y-6 bg-muted/30">
+                        {canAssign && (
+                            <div className="space-y-2">
+                                <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Asignar a (Opcional)</Label>
+                                <Select value={targetUserId} onValueChange={setTargetUserId}>
+                                    <SelectTrigger className="h-14 border-transparent rounded-2xl bg-card font-bold shadow-sm">
+                                        <SelectValue placeholder="Seleccionar miembro del equipo..." />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card shadow-premium-md">
+                                        <SelectItem value="">Asignarme a mí mismo</SelectItem>
+                                        {teamMembers.map(member => (
+                                            <SelectItem key={member.id} value={member.id} className="font-bold">
+                                                {member.first_name} {member.last_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-wide">
+                                    Si seleccionas un usuario, el objetivo se creará en su tablero.
+                                </p>
+                            </div>
+                        )}
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Título *</Label>
+                            <EliteInput
+                                value={formData.title}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                placeholder="Ej: Visitar 20 médicos este mes"
+                                className="h-14 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Categoría</Label>
+                                <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                                    <SelectTrigger className="h-14 border-transparent rounded-2xl bg-card font-bold shadow-sm"><SelectValue /></SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card shadow-premium-md">
+                                        <SelectItem value="visits" className="font-bold">Visitas</SelectItem>
+                                        <SelectItem value="sales" className="font-bold">Ventas</SelectItem>
+                                        <SelectItem value="contacts" className="font-bold">Contactos</SelectItem>
+                                        <SelectItem value="events" className="font-bold">Eventos</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Período</Label>
+                                <Select value={formData.objective_type} onValueChange={(v) => setFormData({ ...formData, objective_type: v })}>
+                                    <SelectTrigger className="h-14 border-transparent rounded-2xl bg-card font-bold shadow-sm"><SelectValue /></SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card shadow-premium-md">
+                                        <SelectItem value="daily" className="font-bold">Diario</SelectItem>
+                                        <SelectItem value="weekly" className="font-bold">Semanal</SelectItem>
+                                        <SelectItem value="monthly" className="font-bold">Mensual</SelectItem>
+                                        <SelectItem value="quarterly" className="font-bold">Trimestral</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Meta *</Label>
+                                <EliteInput
+                                    type="number"
+                                    value={formData.target_value}
+                                    onChange={(e) => setFormData({ ...formData, target_value: parseInt(e.target.value) || 0 })}
+                                    className="h-14 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Prioridad</Label>
+                                <Select value={formData.priority} onValueChange={(v) => setFormData({ ...formData, priority: v })}>
+                                    <SelectTrigger className="h-14 border-transparent rounded-2xl bg-card font-bold shadow-sm"><SelectValue /></SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card shadow-premium-md">
+                                        <SelectItem value="low" className="font-bold">Baja</SelectItem>
+                                        <SelectItem value="normal" className="font-bold">Normal</SelectItem>
+                                        <SelectItem value="high" className="font-bold">Alta</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Fecha Inicio</Label>
+                                <EliteInput
+                                    type="date"
+                                    value={formData.start_date}
+                                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                                    className="h-14 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Fecha Fin</Label>
+                                <EliteInput
+                                    type="date"
+                                    value={formData.end_date}
+                                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                                    className="h-14 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Descripción</Label>
+                            <Textarea
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                placeholder="Detalles del objetivo..."
+                                className="rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm min-h-[80px]"
+                            />
+                        </div>
+                        <EliteButton onClick={handleSubmit} className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-premium-md transition-all">Crear Objetivo</EliteButton>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

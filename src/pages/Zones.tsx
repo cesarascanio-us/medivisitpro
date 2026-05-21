@@ -9,15 +9,12 @@
 
 import { useState, useEffect } from "react";
 import { Plus, MapPin, Search, Trash2, Edit, X, Users, Globe, Map, RefreshCw, LayoutTemplate, ShieldCheck } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription } from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +23,8 @@ import { getAllRegions, getStatesInRegion } from "@/constants/regions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useTexts } from "@/hooks/useTexts";
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton, EliteInput } from "@/components/layout/DesignSystem";
+import { motion } from "framer-motion";
 
 interface Zone {
     id: string;
@@ -39,7 +38,13 @@ interface Zone {
 }
 
 export default function Zones() {
-    const t = useTexts();
+    const rawTexts = useTexts();
+    const t = {
+        ...rawTexts,
+        create: rawTexts.btn_create,
+        export: rawTexts.btn_export,
+        import: rawTexts.btn_import,
+    };
     const { canManageZones, isMaster, profile } = useAuth();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
@@ -178,75 +183,84 @@ export default function Zones() {
         <div className="min-h-screen flex flex-col bg-background p-8 font-sans transition-colors duration-500 overflow-y-auto">
             
             {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE ZONAS */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-12 animate-in fade-in slide-in-from-top duration-700">
-                <div className="flex items-center gap-8">
-                    <div className="w-20 h-20 rounded-[2.5rem] bg-primary flex items-center justify-center shadow-premium-md rotate-3 hover:rotate-0 transition-transform text-white">
-                        <MapPin className="h-10 w-10 text-white" />
+            <EliteHeader
+                title={t.zones_title}
+                subtitle={t.zones_subtitle}
+                icon={MapPin}
+                badgeText="Base Operativa V6.0"
+                statusText="Sincronización Regional OK"
+                statusColor="bg-primary"
+                rightContent={
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <EliteButton 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => loadZones()} 
+                            className="w-14 h-14 rounded-2xl bg-card border border-border/40 hover:bg-muted/20 hover:shadow-premium-sm transition-all shadow-sm flex items-center justify-center"
+                        >
+                            <RefreshCw className={cn("h-6 w-6 text-muted-foreground/50", loading && "animate-spin text-primary")} />
+                        </EliteButton>
+                        <EliteButton
+                            onClick={openCreateDialog}
+                            className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95 whitespace-nowrap animate-pulse-subtle"
+                            icon={Plus}
+                        >
+                            {t.create}
+                        </EliteButton>
                     </div>
-                    <div>
-                        <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">{t.zones_subtitle}</p>
-                        <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">{t.zones_title}</h1>
-                        <div className="flex items-center gap-3 mt-4">
-                            <Badge className="bg-muted/20 text-muted-foreground border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">Base Operativa V6.0</Badge>
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-foreground">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">Sincronización Regional OK</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => loadZones()} className="w-14 h-14 rounded-2xl bg-card border border-border/40 hover:bg-muted/20 hover:shadow-premium-sm transition-all shadow-sm">
-                        <RefreshCw className={cn("h-6 w-6 text-muted-foreground/50", loading && "animate-spin text-primary")} />
-                    </Button>
-                    <Button
-                        onClick={openCreateDialog}
-                        className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-10 rounded-2xl transition-all hover:scale-105 active:scale-95"
-                    >
-                        <Plus className="h-5 w-5 mr-3" /> Nueva Zona
-                    </Button>
-                </div>
-            </div>
+                }
+            />
 
             {/* KPI GRID - INDUSTRIAL STYLE */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-                {[
-                    { label: 'Zonas Activas', val: zones.length, icon: <MapPin />, color: 'text-blue-600' },
-                    { label: 'Personal Campo', val: zones.reduce((acc, z) => acc + (z.user_count || 0), 0), icon: <Users />, color: 'text-indigo-600' },
-                    { label: 'Zonas Desiertas', val: zones.filter(z => !z.user_count || z.user_count === 0).length, icon: <Globe />, color: 'text-amber-500' },
-                    { label: 'Eficiencia OK', val: '92%', icon: <ShieldCheck />, color: 'text-emerald-600' }
-                ].map((kpi, i) => (
-                    <Card key={i} className="bg-card border border-border/40 shadow-premium-sm rounded-[2.5rem] p-8 hover:shadow-premium-md transition-all group overflow-hidden relative">
-                        <div className={cn("absolute -right-2 -bottom-2 opacity-[0.03] transition-transform group-hover:scale-110", kpi.color)}>
-                            {kpi.icon && (kpi.icon as any).type ? (kpi.icon as any).type.displayName === 'MapPin' ? <MapPin size={100} /> : kpi.icon : null}
-                        </div>
-                        <div className="relative z-10">
-                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-4 font-display">{kpi.label}</p>
-                            <div className={cn("text-3xl font-black tracking-tighter tabular-nums font-display leading-none", kpi.color)}>{kpi.val}</div>
-                        </div>
-                    </Card>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 mt-8">
+                <EliteKPICard
+                    title="Zonas Activas"
+                    value={zones.length}
+                    icon={MapPin}
+                    color="blue"
+                    delay={0}
+                />
+                <EliteKPICard
+                    title="Personal Campo"
+                    value={zones.reduce((acc, z) => acc + (z.user_count || 0), 0)}
+                    icon={Users}
+                    color="indigo"
+                    delay={100}
+                />
+                <EliteKPICard
+                    title="Zonas Desiertas"
+                    value={zones.filter(z => !z.user_count || z.user_count === 0).length}
+                    icon={Globe}
+                    color="amber"
+                    delay={200}
+                />
+                <EliteKPICard
+                    title="Eficiencia OK"
+                    value="92%"
+                    icon={ShieldCheck}
+                    color="emerald"
+                    delay={300}
+                />
             </div>
 
             {/* MAIN AREA */}
             <div className="flex-1 min-h-0 flex flex-col gap-8">
-                <Card className="bg-card border border-border/40 rounded-[2.5rem] shadow-premium-sm p-6 shrink-0 flex flex-col md:flex-row gap-6">
+                <EliteCard className="p-6 shrink-0 flex flex-col md:flex-row gap-6">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" />
-                        <Input
+                        <EliteInput
+                            icon={Search}
                             placeholder="Busca por nombre o descripción de zona..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-16 h-16 bg-muted/20 border-none focus-visible:ring-primary/20 font-bold rounded-2xl text-foreground transition-all font-sans shadow-inner"
+                            className="h-16 bg-muted/20 border-none font-bold rounded-2xl text-foreground transition-all shadow-inner pl-14"
                         />
                     </div>
-                    <Button variant="outline" className="h-16 px-8 rounded-2xl border-border/40 hover:bg-card hover:text-primary hover:shadow-premium-sm transition-all font-black text-[10px] uppercase tracking-widest bg-muted/30">
+                    <EliteButton variant="secondary" className="h-16 px-8 rounded-2xl border-border/40 hover:bg-card hover:text-primary hover:shadow-premium-sm transition-all font-black text-[10px] uppercase tracking-widest bg-muted/30">
                         <Map className="mr-3 h-5 w-5" /> Regiones
-                    </Button>
-                </Card>
+                    </EliteButton>
+                </EliteCard>
 
-                <Card className="flex-1 min-h-0 bg-card border border-border/40 rounded-[3rem] shadow-premium-sm overflow-hidden flex flex-col">
+                <EliteCard className="flex-1 min-h-0 overflow-hidden flex flex-col p-0">
                     <ScrollArea className="flex-1">
                         <Table>
                             <TableHeader className="bg-muted/30 sticky top-0 z-10 backdrop-blur-md border-b border-border/40">
@@ -304,19 +318,19 @@ export default function Zones() {
                                             </TableCell>
                                             <TableCell className="text-right pr-10">
                                                 <div className="flex justify-end items-center gap-2">
-                                                    <Button variant="ghost" size="icon" onClick={() => openEditDialog(zone)} className="w-12 h-12 rounded-2xl hover:bg-primary/5 hover:text-primary transition-all">
+                                                    <EliteButton variant="ghost" size="icon" onClick={() => openEditDialog(zone)} className="w-12 h-12 rounded-2xl hover:bg-primary/5 hover:text-primary transition-all">
                                                         <Edit className="h-5 w-5 text-muted-foreground/50" />
-                                                    </Button>
+                                                    </EliteButton>
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
-                                                            <Button
+                                                            <EliteButton
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 disabled={(zone.user_count || 0) > 0}
-                                                                className="w-12 h-12 rounded-2xl hover:bg-rose-500/10 hover:text-rose-600 transition-all"
+                                                                className="w-12 h-12 rounded-2xl hover:bg-rose-500/10 hover:text-rose-600 transition-all flex items-center justify-center"
                                                             >
                                                                 <Trash2 className="h-5 w-5 text-muted-foreground/50" />
-                                                            </Button>
+                                                            </EliteButton>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent className="rounded-[3rem] border-none shadow-2xl bg-card p-0 overflow-hidden">
                                                             <div className="bg-rose-600 p-10 text-white relative">
@@ -329,8 +343,12 @@ export default function Zones() {
                                                                 </AlertDialogDescription>
                                                             </div>
                                                             <div className="p-10 pt-0 flex gap-4">
-                                                                <AlertDialogCancel className="flex-1 h-16 rounded-2xl border-border/40 bg-muted/20 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Abortar</AlertDialogCancel>
-                                                                <AlertDialogAction onClick={() => handleDelete(zone.id)} className="flex-1 h-16 rounded-2xl bg-rose-600 hover:bg-rose-700 font-black uppercase tracking-widest text-[10px] text-white shadow-premium-md shadow-rose-500/20 transition-all">Confirmar Purga</AlertDialogAction>
+                                                                <AlertDialogCancel asChild>
+                                                                    <EliteButton variant="secondary" className="flex-1 h-16 rounded-2xl border-border/40 bg-muted/20 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Abortar</EliteButton>
+                                                                </AlertDialogCancel>
+                                                                <AlertDialogAction asChild>
+                                                                    <EliteButton onClick={() => handleDelete(zone.id)} className="flex-1 h-16 rounded-2xl bg-rose-600 hover:bg-rose-700 font-black uppercase tracking-widest text-[10px] text-white shadow-premium-md shadow-rose-500/20 transition-all">Confirmar Purga</EliteButton>
+                                                                </AlertDialogAction>
                                                             </div>
                                                         </AlertDialogContent>
                                                     </AlertDialog>
@@ -342,7 +360,7 @@ export default function Zones() {
                             </TableBody>
                         </Table>
                     </ScrollArea>
-                </Card>
+                </EliteCard>
             </div>
 
             {/* FOOTER AUDITORÍA */}
@@ -371,7 +389,7 @@ export default function Zones() {
                     <div className="p-12 space-y-8 bg-muted/30">
                         <div className="space-y-3">
                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Designación de Zona</Label>
-                            <Input
+                            <EliteInput
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
@@ -400,7 +418,7 @@ export default function Zones() {
                         </div>
                         <div className="space-y-3">
                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1 font-display">Umbral de Ventas (Target)</Label>
-                            <Input
+                            <EliteInput
                                 type="number"
                                 value={formData.sales_threshold}
                                 onChange={(e) => setFormData({ ...formData, sales_threshold: Number(e.target.value) })}
@@ -417,9 +435,9 @@ export default function Zones() {
                                 placeholder="Detalles de cobertura estratégica..."
                             />
                         </div>
-                        <Button onClick={handleSubmit} className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-premium-md transition-all">
+                        <EliteButton onClick={handleSubmit} className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-premium-md transition-all">
                             Validar Infraestructura
-                        </Button>
+                        </EliteButton>
                     </div>
                 </DialogContent>
             </Dialog>
