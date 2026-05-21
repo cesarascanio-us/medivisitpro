@@ -68,7 +68,7 @@ export default function DashboardRep() {
           id,
           scheduled_date,
           status,
-          contacts (name, address, latitude, longitude, category)
+          contacts (name, address, latitude, longitude, contact_type)
         `)
         .eq("user_id", user.id)
         .gte("scheduled_date", `${today}T00:00:00`)
@@ -76,19 +76,29 @@ export default function DashboardRep() {
         .order("scheduled_date", { ascending: true });
 
       if (!error) {
-        const mappedVisits: VisitItem[] = (visitsData || []).map((v: any) => ({
-          id: v.id,
-          scheduledTime: new Date(v.scheduled_date).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          contactName: v.contacts?.name || "Sin nombre",
-          address: v.contacts?.address || "Sin dirección",
-          status: v.status === "completed" ? "completed" : "pending",
-          latitude: v.contacts?.latitude,
-          longitude: v.contacts?.longitude,
-          category: v.contacts?.category
-        }));
+        const mappedVisits: VisitItem[] = (visitsData || []).map((v: any) => {
+          const rawType = v.contacts?.contact_type;
+          const displayCategory = rawType === 'doctor' ? 'Médico' : 
+                                  rawType === 'pharmacy' ? 'Farmacia' : 
+                                  rawType === 'health_center' ? 'Centro de Salud' : 
+                                  rawType === 'drugstore' ? 'Droguería' :
+                                  rawType === 'natural_store' ? 'Tienda Naturista' : 
+                                  rawType === 'commerce' ? 'Comercio/Retail' : rawType;
+
+          return {
+            id: v.id,
+            scheduledTime: new Date(v.scheduled_date).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            contactName: v.contacts?.name || "Sin nombre",
+            address: v.contacts?.address || "Sin dirección",
+            status: v.status === "completed" ? "completed" : "pending",
+            latitude: v.contacts?.latitude,
+            longitude: v.contacts?.longitude,
+            category: displayCategory
+          };
+        });
         setVisits(mappedVisits);
 
         const completedCount = mappedVisits.filter((v) => v.status === "completed").length;
