@@ -343,81 +343,139 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // 1. Fetch organization settings on mount
-  useEffect(() => {
-    let active = true;
-
-    async function loadTheme() {
-      if (!organizationId) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        const { data, error } = await supabase
-          .from("organizations")
-          .select("settings, name, logo_url")
-          .eq("id", organizationId)
-          .maybeSingle();
-
-        if (error) throw error;
-
-        if (active && data) {
-          const orgSettings = (data.settings || {}) as any;
-          const hasCustomSettings = !!(
-            orgSettings.primary_color ||
-            orgSettings.secondary_color ||
-            orgSettings.logo_url ||
-            orgSettings.app_name
-          );
-
-          const mergedTheme: ThemeConfig = {
-            ...DEFAULT_THEME,
-            logo_url: data.logo_url || orgSettings.logo_url || DEFAULT_THEME.logo_url,
-            app_name: orgSettings.app_name || data.name || DEFAULT_THEME.app_name,
-            primary_color: orgSettings.primary_color || DEFAULT_THEME.primary_color,
-            secondary_color: orgSettings.secondary_color || DEFAULT_THEME.secondary_color,
-            accent_color: orgSettings.accent_color || DEFAULT_THEME.accent_color,
-            background_style: orgSettings.background_style || DEFAULT_THEME.background_style,
-            favicon_url: orgSettings.favicon_url || DEFAULT_THEME.favicon_url,
-            enable_geolocation: orgSettings.enable_geolocation !== false,
-            enable_sample_tracking: orgSettings.enable_sample_tracking !== false,
-            enable_finance_monitor: orgSettings.enable_finance_monitor !== false,
-            enable_pmbok: orgSettings.enable_pmbok !== false,
-            enable_smart_assistant: orgSettings.enable_smart_assistant !== false,
-            enable_coverage_map: orgSettings.enable_coverage_map !== false,
-            locale: orgSettings.locale || DEFAULT_THEME.locale,
-            custom_css: orgSettings.custom_css || DEFAULT_THEME.custom_css,
-            border_radius_scale: orgSettings.border_radius_scale || DEFAULT_THEME.border_radius_scale,
-            sidebar_default: orgSettings.sidebar_default || DEFAULT_THEME.sidebar_default,
-            texts: {
-              ...DEFAULT_THEME.texts,
-              ...(orgSettings.texts || {})
-            }
-          };
-
-          setDbTheme(mergedTheme);
-          setCurrentTheme(mergedTheme);
-          setIsDefaultTheme(!hasCustomSettings);
-          injectTheme(mergedTheme, !hasCustomSettings);
-        }
-      } catch (err) {
-        console.warn("Failed to load custom organization theme settings:", err);
-      } finally {
-        if (active) setIsLoading(false);
-      }
+  const loadTheme = useCallback(async (active = true) => {
+    if (!organizationId) {
+      setIsLoading(false);
+      return;
     }
 
-    loadTheme();
+    try {
+      setIsLoading(true);
 
+      // Fetch Master organization theme settings first (for global fallback)
+      let masterSettings = {} as any;
+      let masterLogoUrl = "";
+      let masterName = "";
+      
+      try {
+        const { data: masterData } = await supabase
+          .from("organizations")
+          .select("settings, name, logo_url")
+          .eq("id", "00000000-0000-0000-0000-000000000000")
+          .maybeSingle();
+          
+        if (masterData) {
+          masterSettings = masterData.settings || {};
+          masterLogoUrl = masterData.logo_url || "";
+          masterName = masterData.name || "";
+        }
+      } catch (masterErr) {
+        console.warn("Failed to load master fallback settings:", masterErr);
+      }
+
+      const { data, error } = await supabase
+        .from("organizations")
+        .select("settings, name, logo_url")
+        .eq("id", organizationId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (active && data) {
+        const orgSettings = (data.settings || {}) as any;
+        const isOrgTenantZero = organizationId === '00000000-0000-0000-0000-000000000000';
+        
+        // Base theme is DEFAULT_THEME, but for non-master orgs, fall back to Master's custom colors if set
+        const baseFallbackTheme: ThemeConfig = {
+          ...DEFAULT_THEME,
+          logo_url: isOrgTenantZero ? DEFAULT_THEME.logo_url : (masterLogoUrl || DEFAULT_THEME.logo_url),
+          app_name: isOrgTenantZero ? DEFAULT_THEME.app_name : (masterName || DEFAULT_THEME.app_name),
+          primary_color: isOrgTenantZero ? DEFAULT_THEME.primary_color : (masterSettings.primary_color || DEFAULT_THEME.primary_color),
+          secondary_color: isOrgTenantZero ? DEFAULT_THEME.secondary_color : (masterSettings.secondary_color || DEFAULT_THEME.secondary_color),
+          accent_color: isOrgTenantZero ? DEFAULT_THEME.accent_color : (masterSettings.accent_color || DEFAULT_THEME.accent_color),
+          background_style: isOrgTenantZero ? DEFAULT_THEME.background_style : (masterSettings.background_style || DEFAULT_THEME.background_style),
+          favicon_url: isOrgTenantZero ? DEFAULT_THEME.favicon_url : (masterSettings.favicon_url || DEFAULT_THEME.favicon_url),
+          border_radius_scale: isOrgTenantZero ? DEFAULT_THEME.border_radius_scale : (masterSettings.border_radius_scale || DEFAULT_THEME.border_radius_scale),
+          sidebar_default: isOrgTenantZero ? DEFAULT_THEME.sidebar_default : (masterSettings.sidebar_default || DEFAULT_THEME.sidebar_default),
+          custom_css: isOrgTenantZero ? DEFAULT_THEME.custom_css : (masterSettings.custom_css || DEFAULT_THEME.custom_css),
+          texts: {
+            ...DEFAULT_THEME.texts,
+            ...(isOrgTenantZero ? {} : (masterSettings.texts || {}))
+          }
+        };
+
+        const hasCustomSettings = !!(
+          orgSettings.primary_color ||
+          orgSettings.secondary_color ||
+          orgSettings.logo_url ||
+          orgSettings.app_name
+        );
+
+        const mergedTheme: ThemeConfig = {
+          ...baseFallbackTheme,
+          logo_url: data.logo_url || orgSettings.logo_url || baseFallbackTheme.logo_url,
+          app_name: orgSettings.app_name || data.name || baseFallbackTheme.app_name,
+          primary_color: orgSettings.primary_color || baseFallbackTheme.primary_color,
+          secondary_color: orgSettings.secondary_color || baseFallbackTheme.secondary_color,
+          accent_color: orgSettings.accent_color || baseFallbackTheme.accent_color,
+          background_style: orgSettings.background_style || baseFallbackTheme.background_style,
+          favicon_url: orgSettings.favicon_url || baseFallbackTheme.favicon_url,
+          enable_geolocation: orgSettings.enable_geolocation !== false,
+          enable_sample_tracking: orgSettings.enable_sample_tracking !== false,
+          enable_finance_monitor: orgSettings.enable_finance_monitor !== false,
+          enable_pmbok: orgSettings.enable_pmbok !== false,
+          enable_smart_assistant: orgSettings.enable_smart_assistant !== false,
+          enable_coverage_map: orgSettings.enable_coverage_map !== false,
+          locale: orgSettings.locale || baseFallbackTheme.locale,
+          custom_css: orgSettings.custom_css || baseFallbackTheme.custom_css,
+          border_radius_scale: orgSettings.border_radius_scale || baseFallbackTheme.border_radius_scale,
+          sidebar_default: orgSettings.sidebar_default || baseFallbackTheme.sidebar_default,
+          texts: {
+            ...baseFallbackTheme.texts,
+            ...(orgSettings.texts || {})
+          }
+        };
+
+        setDbTheme(mergedTheme);
+        setCurrentTheme(mergedTheme);
+        setIsDefaultTheme(!hasCustomSettings);
+        injectTheme(mergedTheme, !hasCustomSettings);
+      }
+    } catch (err) {
+      console.warn("Failed to load custom organization theme settings:", err);
+    } finally {
+      if (active) setIsLoading(false);
+    }
+  }, [organizationId, injectTheme]);
+
+  useEffect(() => {
+    let active = true;
+    loadTheme(active);
     return () => {
       active = false;
     };
-  }, [organizationId, injectTheme]);
+  }, [loadTheme]);
 
   // 2. Realtime subscription for cross-device theme updates
   useEffect(() => {
     if (!organizationId) return;
+
+    // Listen for updates on the Master Tenant settings as well to propagate fallbacks instantly!
+    const masterChannel = supabase
+      .channel(`theme-sync-master`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "organizations",
+          filter: `id=eq.00000000-0000-0000-0000-000000000000`,
+        },
+        () => {
+          loadTheme(true);
+        }
+      )
+      .subscribe();
 
     const channel = supabase
       .channel(`theme-sync-${organizationId}`)
@@ -429,55 +487,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           table: "organizations",
           filter: `id=eq.${organizationId}`,
         },
-        (payload: any) => {
-          const updatedOrg = payload.new;
-          if (updatedOrg && updatedOrg.settings) {
-            const orgSettings = updatedOrg.settings;
-            const hasCustomSettings = !!(
-              orgSettings.primary_color ||
-              orgSettings.secondary_color ||
-              orgSettings.logo_url ||
-              orgSettings.app_name
-            );
-
-            const updatedTheme: ThemeConfig = {
-              ...DEFAULT_THEME,
-              logo_url: updatedOrg.logo_url || orgSettings.logo_url || DEFAULT_THEME.logo_url,
-              app_name: orgSettings.app_name || updatedOrg.name || DEFAULT_THEME.app_name,
-              primary_color: orgSettings.primary_color || DEFAULT_THEME.primary_color,
-              secondary_color: orgSettings.secondary_color || DEFAULT_THEME.secondary_color,
-              accent_color: orgSettings.accent_color || DEFAULT_THEME.accent_color,
-              background_style: orgSettings.background_style || DEFAULT_THEME.background_style,
-              favicon_url: orgSettings.favicon_url || DEFAULT_THEME.favicon_url,
-              enable_geolocation: orgSettings.enable_geolocation !== false,
-              enable_sample_tracking: orgSettings.enable_sample_tracking !== false,
-              enable_finance_monitor: orgSettings.enable_finance_monitor !== false,
-              enable_pmbok: orgSettings.enable_pmbok !== false,
-              enable_smart_assistant: orgSettings.enable_smart_assistant !== false,
-              enable_coverage_map: orgSettings.enable_coverage_map !== false,
-              locale: orgSettings.locale || DEFAULT_THEME.locale,
-              custom_css: orgSettings.custom_css || DEFAULT_THEME.custom_css,
-              border_radius_scale: orgSettings.border_radius_scale || DEFAULT_THEME.border_radius_scale,
-              sidebar_default: orgSettings.sidebar_default || DEFAULT_THEME.sidebar_default,
-              texts: {
-                ...DEFAULT_THEME.texts,
-                ...(orgSettings.texts || {})
-              }
-            };
-
-            setDbTheme(updatedTheme);
-            setCurrentTheme(updatedTheme);
-            setIsDefaultTheme(!hasCustomSettings);
-            injectTheme(updatedTheme, !hasCustomSettings);
-          }
+        () => {
+          loadTheme(true);
         }
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(masterChannel);
     };
-  }, [organizationId, injectTheme]);
+  }, [organizationId, loadTheme]);
 
   // 3. Live Preview / Temporary update
   const updateTheme = useCallback((partial: Partial<ThemeConfig>) => {

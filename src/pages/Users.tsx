@@ -96,6 +96,22 @@ export default function Users() {
     const { user, canManageUsers, isMaster, profile, organizationName } = useAuth();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
+    
+    // --- NUEVOS ESTADOS DE INVITACIÓN Y ORGANIZACIONES ---
+    const isGlobalAdmin = isMaster && organizationId === '00000000-0000-0000-0000-000000000000';
+    const [organizations, setOrganizations] = useState<{ id: string; name: string }[]>([]);
+    const [selectedOrgFilter, setSelectedOrgFilter] = useState<string>('all');
+    
+    const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteFirstName, setInviteFirstName] = useState('');
+    const [inviteLastName, setInviteLastName] = useState('');
+    const [inviteRole, setInviteRole] = useState<UserRole>('representative');
+    const [inviteOrgId, setInviteOrgId] = useState<string>('');
+    const [isInviting, setIsInviting] = useState(false);
+    
+    const [editOrgId, setEditOrgId] = useState<string>('');
+
     const [users, setUsers] = useState<UserWithRole[]>([]);
     const [zones, setZones] = useState<Zone[]>([]);
     const [loading, setLoading] = useState(true);
@@ -117,8 +133,11 @@ export default function Users() {
         if (user) {
             loadUsers();
             loadZones();
+            if (isMaster) {
+                loadOrganizations();
+            }
         }
-    }, [user]);
+    }, [user, selectedOrgFilter]);
 
     useEffect(() => {
         if (editingUser) {
@@ -128,6 +147,7 @@ export default function Users() {
             setSelectedZones(editingUser.assigned_zones?.map(z => z.id) || []);
             setFirstName(editingUser.first_name || '');
             setLastName(editingUser.last_name || '');
+            setEditOrgId(editingUser.organization_id || 'none');
         } else {
             setSelectedRole('representative');
             setSelectedRegion('');
@@ -135,6 +155,7 @@ export default function Users() {
             setSelectedZones([]);
             setFirstName('');
             setLastName('');
+            setEditOrgId('');
         }
     }, [editingUser]);
 
@@ -160,10 +181,23 @@ export default function Users() {
         }
     }, [selectedState]);
 
+    const loadOrganizations = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('organizations')
+                .select('id, name')
+                .order('name');
+            if (error) throw error;
+            setOrganizations(data || []);
+        } catch (error) {
+            console.error('Error loading organizations:', error);
+        }
+    };
+
     const loadZones = async () => {
         try {
             let query = supabase.from('zones').select('*');
-            if (!isMaster && organizationId) {
+            if (!isGlobalAdmin && organizationId) {
                 query = query.eq('organization_id', organizationId);
             }
             const { data, error } = await query.order('name');
@@ -193,8 +227,18 @@ export default function Users() {
                     )
                 `);
 
-            if (!isMaster && organizationId) {
-                query = query.eq('organization_id', organizationId);
+            if (!isGlobalAdmin) {
+                if (organizationId) {
+                    query = query.eq('organization_id', organizationId);
+                }
+            } else {
+                if (selectedOrgFilter !== 'all') {
+                    if (selectedOrgFilter === 'none') {
+                        query = query.is('organization_id', null);
+                    } else {
+                        query = query.eq('organization_id', selectedOrgFilter);
+                    }
+                }
             }
 
             const { data: rolesData, error: rolesError } = await query;
@@ -244,6 +288,7 @@ export default function Users() {
         }
     };
 
+
     const handleEditClick = (user: UserWithRole) => {
         setEditingUser(user);
         setIsEditDialogOpen(true);
@@ -276,7 +321,10 @@ export default function Users() {
                     role: selectedRole,
                     region: selectedRegion || null,
                     state: selectedState || null,
-                    zone_id: primaryZoneId
+                    zone_id: primaryZoneId,
+                    ...(isGlobalAdmin && {
+                        organization_id: editOrgId === 'none' ? null : editOrgId
+                    })
                 })
                 .eq('user_id', editingUser.user_id);
 
@@ -317,6 +365,41 @@ export default function Users() {
             });
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleInviteUserSubmit = async () => {
+        setIsInviting(true);
+        try {
+            const resolvedOrgId = isGlobalAdmin 
+                ? (inviteOrgId === 'none' ? null : inviteOrgId)
+                : (organizationId || null);
+
+            await supabase.functions.invoke('invite-user', {
+                body: { 
+                    email: inviteEmail, 
+                    firstName: inviteFirstName, 
+                    lastName: inviteLastName, 
+                    role: inviteRole, 
+                    organizationId: resolvedOrgId 
+                }
+            });
+            
+            toast({ 
+                title: "Invitación Enviada", 
+                description: "Credenciales de acceso y enlace de onboarding enviados por correo electrónico." 
+            });
+            setIsInviteDialogOpen(false);
+            loadUsers();
+        } catch (error: any) { 
+            console.error("Invite error:", error);
+            toast({ 
+                title: "Error de Envío", 
+                description: error.message || "Fallo al enviar la invitación al operador.", 
+                variant: "destructive" 
+            }); 
+        } finally {
+            setIsInviting(false); 
         }
     };
 
@@ -398,6 +481,20 @@ export default function Users() {
                 rightContent={
                     <div className="flex items-center gap-4">
                         <Button
+                            onClick={() => {
+                                setInviteEmail('');
+                                setInviteFirstName('');
+                                setInviteLastName('');
+                                setInviteRole('representative');
+                                setInviteOrgId(organizationId || 'none');
+                                setIsInviteDialogOpen(true);
+                            }}
+                            className="bg-primary hover:bg-primary/95 text-white border-none rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 animate-in fade-in zoom-in duration-300"
+                        >
+                            <Plus className="h-4 w-4 text-white" />
+                            Invitar Colaborador
+                        </Button>
+                        <Button
                             onClick={loadUsers}
                             variant="outline"
                             className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all group"
@@ -414,12 +511,43 @@ export default function Users() {
                 description="Matriz central de colaboradores y niveles de acceso corporativo."
                 searchPlaceholder="BUSCAR COLABORADOR POR IDENTIFICADOR..."
                 onSearch={setSearchTerm}
+                filterElement={
+                    isGlobalAdmin ? (
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtrar Org:</span>
+                            <Select
+                                value={selectedOrgFilter}
+                                onValueChange={setSelectedOrgFilter}
+                            >
+                                <SelectTrigger className="h-9 w-48 bg-muted/30 border-border/40 rounded-xl font-black uppercase text-[9px] px-4 shadow-sm">
+                                    <SelectValue placeholder="Todas" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-xl border-border/40 bg-card">
+                                    <SelectItem value="all" className="font-black uppercase text-[9px] tracking-widest py-2">
+                                        Todas las Organizaciones
+                                    </SelectItem>
+                                    <SelectItem value="none" className="font-black uppercase text-[9px] tracking-widest py-2">
+                                        Sistémico / Global Core
+                                    </SelectItem>
+                                    {organizations.map((org) => (
+                                        <SelectItem key={org.id} value={org.id} className="font-black uppercase text-[9px] tracking-widest py-2">
+                                            {org.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    ) : null
+                }
             >
                 <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent border-border/40">
                             <TableHead className="text-[10px] font-black uppercase tracking-widest py-6 pl-8">Operador</TableHead>
                             <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Privilegios</TableHead>
+                            {isGlobalAdmin && (
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Organización</TableHead>
+                            )}
                             <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Despliegue Geográfico</TableHead>
                             <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Radio de Cobertura</TableHead>
                             <TableHead className="text-center text-[10px] font-black uppercase tracking-widest py-6">Estado</TableHead>
@@ -430,14 +558,14 @@ export default function Users() {
                         {loading ? (
                             [1,2,3,4,5].map(i => (
                                 <TableRow key={i} className="animate-pulse border-border/40">
-                                    <TableCell colSpan={6} className="h-16 py-8">
+                                    <TableCell colSpan={isGlobalAdmin ? 7 : 6} className="h-16 py-8">
                                         <div className="h-4 bg-muted/20 rounded-full w-full"></div>
                                     </TableCell>
                                 </TableRow>
                             ))
                         ) : filteredUsers.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-40 text-center text-muted-foreground font-black uppercase text-[10px] tracking-widest">
+                                <TableCell colSpan={isGlobalAdmin ? 7 : 6} className="h-40 text-center text-muted-foreground font-black uppercase text-[10px] tracking-widest">
                                     Ningún colaborador interceptado en el radar.
                                 </TableCell>
                             </TableRow>
@@ -462,6 +590,13 @@ export default function Users() {
                                             {ROLE_LABELS[user.role]}
                                         </Badge>
                                     </TableCell>
+                                    {isGlobalAdmin && (
+                                        <TableCell className="py-8">
+                                            <span className="text-[10px] font-black text-foreground uppercase tracking-tight">
+                                                {organizations.find(o => o.id === user.organization_id)?.name || (user.organization_id === '00000000-0000-0000-0000-000000000000' ? 'Global Core' : 'Sistémico')}
+                                            </span>
+                                        </TableCell>
+                                    )}
                                     <TableCell className="py-8">
                                         <div className="flex flex-col gap-2">
                                             {user.region && (
@@ -597,6 +732,30 @@ export default function Users() {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {isGlobalAdmin && (
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">SaaS Tenant (Organización)</Label>
+                                <Select
+                                    value={editOrgId}
+                                    onValueChange={setEditOrgId}
+                                >
+                                    <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                        <SelectValue placeholder="Elegir organización" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                        <SelectItem value="none" className="font-black uppercase text-[10px] tracking-widest py-3">
+                                            Sistémico / Global Core
+                                        </SelectItem>
+                                        {organizations.map((org) => (
+                                            <SelectItem key={org.id} value={org.id} className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                {org.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
 
                         <div className="space-y-8 rounded-[2.5rem] border border-border/40 p-8 bg-muted/10 shadow-inner">
                             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
@@ -739,6 +898,123 @@ export default function Users() {
                             >
                                 {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                                 Consolidar Cambios
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+                <DialogContent className="sm:max-w-[700px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-hidden bg-card font-display">
+                    <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+                        <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase mb-2">Invitar Colaborador</DialogTitle>
+                        <DialogDescription className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-70">
+                            Invitar un nuevo miembro al equipo e iniciar el flujo de onboarding automático.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="grid gap-8 p-10">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Nombre</Label>
+                                <Input
+                                    value={inviteFirstName}
+                                    onChange={(e) => setInviteFirstName(e.target.value)}
+                                    placeholder="EJ: JUAN"
+                                    className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner focus-visible:ring-primary"
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Apellido</Label>
+                                <Input
+                                    value={inviteLastName}
+                                    onChange={(e) => setInviteLastName(e.target.value)}
+                                    placeholder="EJ: PÉREZ"
+                                    className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner focus-visible:ring-primary"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Correo Electrónico</Label>
+                            <Input
+                                type="email"
+                                value={inviteEmail}
+                                onChange={(e) => setInviteEmail(e.target.value)}
+                                placeholder="EJ: JUAN.PEREZ@EMPRESA.COM"
+                                className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner focus-visible:ring-primary"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rol / Nivel de Acceso</Label>
+                                <Select
+                                    value={inviteRole}
+                                    onValueChange={(v) => setInviteRole(v as UserRole)}
+                                >
+                                    <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                        <SelectValue placeholder="Definir rol" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                        {Object.entries(ROLE_LABELS)
+                                            .filter(([r]) => isGlobalAdmin ? true : r !== 'master') // Only master can invite masters
+                                            .map(([value, label]) => (
+                                                <SelectItem key={value} value={value} className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                    {label}
+                                                </SelectItem>
+                                            ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Organización / SaaS Tenant</Label>
+                                {isGlobalAdmin ? (
+                                    <Select
+                                        value={inviteOrgId}
+                                        onValueChange={setInviteOrgId}
+                                    >
+                                        <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                            <SelectValue placeholder="Asignar organización" />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                            <SelectItem value="none" className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                Sistémico / Global Core
+                                            </SelectItem>
+                                            {organizations.map((org) => (
+                                                <SelectItem key={org.id} value={org.id} className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                    {org.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                ) : (
+                                    <Input
+                                        value={organizationName || "Organización Local"}
+                                        disabled
+                                        className="h-14 bg-muted/30 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner cursor-not-allowed text-muted-foreground"
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4 justify-end pt-4">
+                            <Button 
+                                variant="outline" 
+                                onClick={() => setIsInviteDialogOpen(false)}
+                                className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40 hover:bg-muted/10"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button 
+                                onClick={handleInviteUserSubmit} 
+                                disabled={isInviting || !inviteEmail || !inviteFirstName || !inviteLastName}
+                                className="h-14 px-12 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                            >
+                                {isInviting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                                Enviar Invitación
                             </Button>
                         </div>
                     </div>

@@ -280,6 +280,7 @@ interface EliteTableProps {
     children: React.ReactNode;
     onSearch?: (term: string) => void;
     searchPlaceholder?: string;
+    filterElement?: React.ReactNode;
 }
 
 export function EliteTable({
@@ -287,24 +288,28 @@ export function EliteTable({
     description,
     children,
     onSearch,
-    searchPlaceholder = "Buscar..."
+    searchPlaceholder = "Buscar...",
+    filterElement
 }: EliteTableProps) {
     return (
         <div className="bg-card border border-border rounded-lg overflow-hidden">
-            {(title || onSearch) && (
+            {(title || onSearch || filterElement) && (
                 <div className="flex items-center justify-between px-4 py-3 border-b border-border gap-3">
                     <div>
                         {title && <h3 className="text-sm font-semibold text-foreground">{title}</h3>}
                         {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
                     </div>
-                    {onSearch && (
-                        <EliteInput
-                            icon={Search}
-                            placeholder={searchPlaceholder}
-                            onChange={(e) => onSearch(e.target.value)}
-                            className="w-52"
-                        />
-                    )}
+                    <div className="flex items-center gap-3">
+                        {filterElement}
+                        {onSearch && (
+                            <EliteInput
+                                icon={Search}
+                                placeholder={searchPlaceholder}
+                                onChange={(e) => onSearch(e.target.value)}
+                                className="w-52"
+                            />
+                        )}
+                    </div>
                 </div>
             )}
             <div className="overflow-x-auto">
@@ -313,6 +318,7 @@ export function EliteTable({
         </div>
     );
 }
+
 
 // ─── EliteTabsList ────────────────────────────────────────────────────────────
 
