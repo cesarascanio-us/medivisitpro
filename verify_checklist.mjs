@@ -18,8 +18,10 @@ const SCREENSHOT_DIR = path.resolve('./screenshots_checklist');
 // Credentials
 const MASTER_EMAIL = 'cesar.ascanio@gmail.com';
 const MASTER_PASS  = '123456';
-const DEMO_EMAIL   = 'demo.medivisitpro@gmail.com';
-const DEMO_PASS    = 'demo123456';
+const MANAGER_EMAIL = 'cesarascaniofp.us@gmail.com';
+const MANAGER_PASS  = '12142020';
+const REP_EMAIL     = 'cesarascanio.edu@gmail.com';
+const REP_PASS      = '123456';
 
 // Ensure screenshot dir exists
 if (!fs.existsSync(SCREENSHOT_DIR)) fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -41,24 +43,22 @@ async function loginViaForm(page, email, password) {
   await page.goto(`${BASE}/auth`, { waitUntil: 'networkidle', timeout: 20000 });
   await page.waitForTimeout(1000);
 
-  // Fill email
-  const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="mail"], input[placeholder*="correo"]').first();
-  await emailInput.fill(email);
+  // Fill email using precise ID
+  await page.fill('#login-email', email);
 
-  // Fill password
-  const passInput = page.locator('input[type="password"]').first();
-  await passInput.fill(password);
+  // Fill password using precise ID
+  await page.fill('#login-password', password);
 
-  // Click submit button
-  const submitBtn = page.locator('button[type="submit"], button:has-text("Iniciar"), button:has-text("Entrar"), button:has-text("Login"), button:has-text("Sign")').first();
-  await submitBtn.click();
+  // Click submit using precise ID
+  await page.click('#login-submit');
 
   // Wait for navigation to dashboard
-  await page.waitForTimeout(3000);
+  console.log(`   Submitted credentials for ${email}...`);
+  await page.waitForTimeout(4000);
   try {
-    await page.waitForURL('**/dashboard**', { timeout: 12000 });
+    await page.waitForURL('**/dashboard**', { timeout: 15000 });
   } catch {
-    // May already be at dashboard
+    // Check if we are actually at dashboard
   }
   await page.waitForTimeout(2000);
 }
@@ -115,23 +115,29 @@ console.log('══════════════════════�
 console.log('🔐 Logging in as MASTER...');
 const masterCtx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'es-ES' });
 const masterPage = await masterCtx.newPage();
+masterPage.on('console', msg => console.log('[MASTER CONSOLE]', msg.text()));
+masterPage.on('pageerror', err => console.log('[MASTER ERROR]', err.message));
 await loginViaForm(masterPage, MASTER_EMAIL, MASTER_PASS);
 const masterUrl = masterPage.url();
 console.log(`   Master landing: ${masterUrl}\n`);
 
-// === MANAGER context (demo with override) ===
-console.log('🔐 Logging in as MANAGER (demo override)...');
+// === MANAGER context ===
+console.log('🔐 Logging in as MANAGER...');
 const managerCtx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'es-ES' });
 const managerPage = await managerCtx.newPage();
-await loginDemo(managerPage, 'manager');
+managerPage.on('console', msg => console.log('[MANAGER CONSOLE]', msg.text()));
+managerPage.on('pageerror', err => console.log('[MANAGER ERROR]', err.message));
+await loginViaForm(managerPage, MANAGER_EMAIL, MANAGER_PASS);
 const managerUrl = managerPage.url();
 console.log(`   Manager landing: ${managerUrl}\n`);
 
-// === REPRESENTATIVE context (demo default) ===
-console.log('🔐 Logging in as REPRESENTATIVE (demo default)...');
+// === REPRESENTATIVE context ===
+console.log('🔐 Logging in as REPRESENTATIVE...');
 const repCtx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'es-ES' });
 const repPage = await repCtx.newPage();
-await loginDemo(repPage);
+repPage.on('console', msg => console.log('[REP CONSOLE]', msg.text()));
+repPage.on('pageerror', err => console.log('[REP ERROR]', err.message));
+await loginViaForm(repPage, REP_EMAIL, REP_PASS);
 const repUrl = repPage.url();
 console.log(`   Rep landing: ${repUrl}\n`);
 
@@ -143,7 +149,7 @@ console.log('\n── GRUPO 1: MÓDULOS ESTANDARIZADOS ──\n');
 
 // 1.1 Specialties — cards y búsqueda Elite
 try {
-  await go(repPage, 'demo/specialties');
+  await go(repPage, 'specialties');
   const ui = await hasEliteUI(repPage);
   await screenshot(repPage, '01_specialties');
   mark('1.1', 'Specialties — cards y búsqueda Elite', ui.ok);
@@ -151,7 +157,7 @@ try {
 
 // 1.2 Contacts — KPIs y header Elite
 try {
-  await go(repPage, 'demo/contacts');
+  await go(repPage, 'contacts');
   const ui = await hasEliteUI(repPage);
   await screenshot(repPage, '02_contacts');
   mark('1.2', 'Contacts — KPIs y header Elite', ui.ok);
@@ -159,7 +165,7 @@ try {
 
 // 1.3 Objectives — cards de progreso Elite
 try {
-  await go(repPage, 'demo/objectives');
+  await go(repPage, 'objectives');
   const ui = await hasEliteUI(repPage);
   await screenshot(repPage, '03_objectives');
   mark('1.3', 'Objectives — cards de progreso Elite', ui.ok);
@@ -167,7 +173,7 @@ try {
 
 // 1.4 Help — tabs y tabla Elite
 try {
-  await go(repPage, 'demo/help');
+  await go(repPage, 'help');
   const ui = await hasEliteUI(repPage);
   await screenshot(repPage, '04_help');
   mark('1.4', 'Help — tabs y tabla Elite', ui.ok);
@@ -202,7 +208,7 @@ try {
 
 // 1.7 DashboardManager — dashboard completo
 try {
-  await go(managerPage, 'demo/dashboard');
+  await go(managerPage, 'dashboard');
   const ui = await hasEliteUI(managerPage);
   await screenshot(managerPage, '07_dashboard_manager');
   mark('1.7', 'DashboardManager — dashboard completo', ui.ok);
@@ -442,7 +448,7 @@ try {
 
 // 4.2 Login con rol manager → DashboardManager
 try {
-  await go(managerPage, 'demo/dashboard');
+  await go(managerPage, 'dashboard');
   const ui = await hasEliteUI(managerPage);
   await screenshot(managerPage, '16_role_manager');
   mark('4.2', 'Login con rol manager → DashboardManager', ui.ok, `URL: ${managerPage.url()}`);
@@ -450,7 +456,7 @@ try {
 
 // 4.3 Login con rol representative → DashboardRep
 try {
-  await go(repPage, 'demo/dashboard');
+  await go(repPage, 'dashboard');
   const ui = await hasEliteUI(repPage);
   await screenshot(repPage, '17_role_representative');
   mark('4.3', 'Login con rol representative → DashboardRep', ui.ok, `URL: ${repPage.url()}`);
@@ -507,7 +513,7 @@ try {
 // 4.7 /admin/theme-builder accesible solo master
 try {
   // Test: rep should be blocked
-  await go(repPage, 'demo/admin/theme-builder', 10000);
+  await go(repPage, 'admin/theme-builder', 10000);
   await repPage.waitForTimeout(2000);
   const repBlocked = !repPage.url().includes('theme-builder');
 

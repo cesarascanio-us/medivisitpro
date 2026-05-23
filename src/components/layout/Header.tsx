@@ -3,21 +3,47 @@
  Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
 
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
  ======================================================================== */
 
-import { useState, useEffect } from "react";
-import { Bell, Search, Calendar, Plus, Sun, Moon } from "lucide-react";
+import { useState } from "react";
+import { Bell, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBadge } from "@/components/layout/NotificationBadge";
 import { OrganizationSwitcher } from "@/components/organization/OrganizationSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator";
+
+// Page title map from pathname
+function usePageTitle() {
+  const location = useLocation();
+  const titleMap: Record<string, string> = {
+    '/dashboard':           'Resumen de Actividad',
+    '/dashboard-master':    'Panel Master',
+    '/master-panel':        'Consola de Administración',
+    '/visits':              'Visitas',
+    '/doctors':             'Médicos',
+    '/pharmacies':          'Farmacias',
+    '/sample-banks':        'Muestras',
+    '/agenda':              'Agenda',
+    '/users':               'Usuarios',
+    '/zones':               'Zonas',
+    '/transfer-orders':     'Transferencias',
+    '/health-centers':      'Centros Médicos',
+    '/drugstores':          'Droguerías',
+    '/coverage-map':        'Mapa de Cobertura',
+    '/sales-pipeline':      'Pipeline de Ventas',
+    '/finance-monitor':     'Monitor Financiero',
+    '/hr':                  'Capital Humano',
+    '/documentos':          'Documentos',
+    '/admin/theme-builder': 'Personalizador Visual',
+    '/planner':             'Planificador de Rutas',
+    '/work-processes':      'Modelado de Procesos',
+  };
+  return titleMap[location.pathname] || 'MediVisitPro';
+}
 
 export function HeaderActions() {
   const { theme, setTheme } = useTheme();
@@ -28,17 +54,17 @@ export function HeaderActions() {
   };
 
   return (
-    <div className="flex items-center gap-2 md:gap-4">
+    <div className="flex items-center gap-1.5">
       <OnlineStatusIndicator />
-      
+
       <Button
         variant="ghost"
         size="icon"
         onClick={toggleDarkMode}
-        className="h-8 w-8 md:h-9 md:w-9 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300 border border-transparent hover:border-primary/10"
-        title={isDarkMode ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
+        className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+        title={isDarkMode ? "Modo Claro" : "Modo Oscuro"}
       >
-        {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        {isDarkMode ? <Sun className="h-4 w-4" strokeWidth={1.5} /> : <Moon className="h-4 w-4" strokeWidth={1.5} />}
       </Button>
 
       <NotificationBadge />
@@ -48,48 +74,73 @@ export function HeaderActions() {
 
 export function Header() {
   const navigate = useNavigate();
-  const { isSystemAdmin } = useAuth();
+  const { isSystemAdmin, user, role } = useAuth();
+  const pageTitle = usePageTitle();
 
-  const today = new Date();
-  const todayFormatted = today.toLocaleDateString('es-ES', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short'
-  });
+  const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || "Usuario";
+  const userInitials = userName.substring(0, 2).toUpperCase();
+
+  const getRoleLabel = () => {
+    const roleLabels: Record<string, string> = {
+      master:       'Master',
+      admin:        'Administrador',
+      manager:      'Gerente',
+      coordinator:  'Coordinador',
+      supervisor:   'Supervisor',
+      representative: 'Representante',
+      doctor:       'Médico',
+    };
+    return roleLabels[role] || role || 'Usuario';
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-card/95 backdrop-blur-md px-4 py-2 shadow-none shrink-0 h-14 transition-all duration-300">
-      <div className="flex items-center justify-between h-full gap-4">
-        {/* Left side - Date */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-foreground capitalize">
-            <Calendar className="h-4 w-4 text-primary" />
-            <span className="hidden sm:inline opacity-80">{todayFormatted}</span>
-          </div>
-          {isSystemAdmin && (
-            <Badge variant="outline" className="ml-2 bg-primary/10 text-primary border-primary/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-              System Admin
-            </Badge>
-          )}
+    <header className="h-13 sticky top-0 z-40 w-full bg-card border-b border-border flex items-center px-4 gap-3 shrink-0" style={{ height: '52px' }}>
+
+      {/* Left: Page title */}
+      <div className="flex items-center gap-2 flex-1 min-w-0">
+        <span className="text-sm font-semibold text-foreground truncate">{pageTitle}</span>
+        {isSystemAdmin && (
+          <Badge
+            variant="outline"
+            className="ml-1 bg-primary/10 text-primary border-primary/20 px-1.5 py-0 text-[10px] font-medium hidden sm:inline-flex"
+          >
+            System Admin
+          </Badge>
+        )}
+      </div>
+
+      {/* Center: Organization Switcher */}
+      <OrganizationSwitcher />
+
+      {/* Right: Search + Actions */}
+      <div className="flex items-center gap-2">
+
+        {/* Global Search — compact */}
+        <div
+          className="hidden md:flex items-center gap-2 h-8 px-3 bg-muted rounded-md w-44 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors group"
+          onClick={() => {/* TODO: open search modal */}}
+          title="Buscar (⌘K)"
+        >
+          <Search className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
+          <span className="flex-1">Buscar...</span>
+          <kbd className="text-[10px] bg-background text-muted-foreground px-1 rounded border border-border hidden lg:inline">
+            ⌘K
+          </kbd>
         </div>
 
-        {/* Organization Switcher (Master Only) */}
-        <OrganizationSwitcher />
-
-        {/* Center - Search (hidden on small screens) */}
-        <div className="hidden md:block flex-1 max-w-md mx-4">
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input
-              type="text"
-              placeholder="Buscar actividad..."
-              className="pl-10 h-10 bg-muted/20 border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-primary focus-visible:border-primary rounded-xl transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Right side - Actions */}
+        {/* Dark mode + Notifications */}
         <HeaderActions />
+
+        {/* User Avatar */}
+        <div className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted cursor-pointer transition-colors">
+          <div className="w-7 h-7 rounded-md bg-accent flex items-center justify-center flex-shrink-0 border border-border">
+            <span className="text-xs font-semibold text-primary">{userInitials}</span>
+          </div>
+          <div className="hidden md:block min-w-0">
+            <p className="text-xs font-medium text-foreground leading-none truncate max-w-[100px]">{userName}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5 leading-none">{getRoleLabel()}</p>
+          </div>
+        </div>
       </div>
     </header>
   );

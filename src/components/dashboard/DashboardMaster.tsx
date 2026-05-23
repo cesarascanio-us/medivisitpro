@@ -127,7 +127,7 @@ export default function DashboardMaster() {
               <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
               <span>Sistemas Operativos</span>
             </div>
-            <EliteButton variant="secondary" onClick={() => window.print()} className="h-14 rounded-2xl" icon={Globe}>
+            <EliteButton variant="secondary" onClick={() => window.print()} icon={Globe}>
               {t.export}
             </EliteButton>
           </div>

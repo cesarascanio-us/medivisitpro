@@ -252,7 +252,6 @@ export default function DashboardManager({ organizationId }: { organizationId: s
               variant="secondary" 
               size="sm" 
               onClick={() => window.print()} 
-              className="gap-2 text-xs h-12 px-6 rounded-2xl font-black uppercase tracking-wider shadow-premium-sm"
               icon={Printer}
             >
               {t.export}
@@ -626,7 +625,7 @@ export default function DashboardManager({ organizationId }: { organizationId: s
             <p className="text-xs text-muted-foreground mt-3 font-bold">Lugar: Farmacias Mundo Total (Av. Bolívar)</p>
             <p className="text-xs text-muted-foreground font-bold">Regente: Dr. David Romero · 0414-5892156</p>
           </div>
-          <EliteButton variant="secondary" className="w-full mt-6 h-12 text-xs font-black uppercase tracking-widest bg-destructive hover:bg-destructive/95 text-destructive-foreground rounded-xl shadow-premium-sm transition-all hover:scale-105 active:scale-95">
+          <EliteButton variant="secondary" className="w-full mt-4 bg-destructive hover:bg-destructive/90 text-destructive-foreground border-0">
             Ver Protocolo →
           </EliteButton>
         </EliteCard>
