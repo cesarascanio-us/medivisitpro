@@ -5,7 +5,7 @@ import {
     Shield, Users, Building2, Plus, 
     RefreshCw, Search, Edit, ShieldAlert, 
     ShieldCheck, Activity, Database, Zap,
-    ChevronRight, ExternalLink
+    ChevronRight, ExternalLink, Trash2
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -97,6 +97,18 @@ export default function MasterPanel() {
     const [newUserLastName, setNewUserLastName] = useState('');
     const [isCreatingUser, setIsCreatingUser] = useState(false);
 
+    // Active tab
+    const [activeTab, setActiveTab] = useState('users');
+
+    // Organization CRUD state
+    const [orgDialogOpen, setOrgDialogOpen] = useState(false);
+    const [editingOrg, setEditingOrg] = useState<OrganizationData | null>(null);
+    const [orgName, setOrgName] = useState('');
+    const [orgSlug, setOrgSlug] = useState('');
+    const [orgPlanTier, setOrgPlanTier] = useState('starter');
+    const [orgStatus, setOrgStatus] = useState('active');
+    const [isSavingOrg, setIsSavingOrg] = useState(false);
+
     useEffect(() => { 
         loadData(); 
     }, []);
@@ -177,6 +189,80 @@ export default function MasterPanel() {
             toast({ title: "Error de Despliegue", description: error.message, variant: "destructive" }); 
         } finally { 
             setIsCreatingUser(false); 
+        }
+    };
+
+    const handleSaveOrganization = async () => {
+        if (!orgName || !orgSlug) {
+            toast({ title: "Validación Fallida", description: "El nombre y el slug son obligatorios.", variant: "destructive" });
+            return;
+        }
+        setIsSavingOrg(true);
+        try {
+            const payload = {
+                name: orgName,
+                slug: orgSlug.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                plan_tier: orgPlanTier,
+                subscription_status: orgStatus,
+                onboarding_completed: true,
+                settings: {
+                    features: {
+                        basic_visits: true,
+                        advanced_reports: orgPlanTier !== 'starter',
+                        smart_agenda: true,
+                        sample_tracking: orgPlanTier === 'enterprise' || orgPlanTier === 'pro',
+                        export_data: orgPlanTier === 'enterprise',
+                        offline_sync: true
+                    }
+                }
+            };
+
+            if (editingOrg) {
+                // Update
+                const { error } = await supabase
+                    .from('organizations')
+                    .update(payload)
+                    .eq('id', editingOrg.id);
+
+                if (error) throw error;
+                toast({ title: "SaaS Tenant Actualizado", description: `La organización ${orgName} ha sido guardada.` });
+            } else {
+                // Create
+                const { error } = await supabase
+                    .from('organizations')
+                    .insert({
+                        ...payload,
+                        id: crypto.randomUUID()
+                    });
+
+                if (error) throw error;
+                toast({ title: "SaaS Tenant Creado", description: `La organización ${orgName} ha sido inicializada.` });
+            }
+            setOrgDialogOpen(false);
+            setEditingOrg(null);
+            setOrgName('');
+            setOrgSlug('');
+            loadData();
+        } catch (error: any) {
+            toast({ title: "Falla al Guardar", description: error.message, variant: "destructive" });
+        } finally {
+            setIsSavingOrg(false);
+        }
+    };
+
+    const handleDeleteOrganization = async (orgId: string, name: string) => {
+        if (!confirm(`¿Estás completamente seguro de eliminar permanentemente la organización "${name}"? Esto borrará el inquilino y podría fallar si existen registros dependientes.`)) return;
+        try {
+            const { error } = await supabase
+                .from('organizations')
+                .delete()
+                .eq('id', orgId);
+
+            if (error) throw error;
+            toast({ title: "SaaS Tenant Eliminado", description: `La organización ${name} ha sido removida del núcleo.` });
+            loadData();
+        } catch (error: any) {
+            toast({ title: "Falla al Eliminar", description: error.message, variant: "destructive" });
         }
     };
 
@@ -275,17 +361,29 @@ export default function MasterPanel() {
             )
         },
         {
-            header: "Frecuencia Sinc",
+            header: "Estado Operativo",
             key: "subscription_status",
-            render: (o) => (
-                <div className="flex items-center gap-2">
-                    <Activity size={14} className="text-emerald-500" />
-                    <span className="text-xs font-black text-emerald-500 uppercase tracking-tight">{o.subscription_status}</span>
-                </div>
-            )
+            render: (o) => {
+                const status = o.subscription_status || 'inactive';
+                const statusColors: Record<string, string> = {
+                    active: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+                    inactive: 'bg-destructive/10 text-destructive border-destructive/20',
+                    trialing: 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                };
+                const statusLabels: Record<string, string> = {
+                    active: 'Activo',
+                    inactive: 'Suspendido',
+                    trialing: 'Prueba (Trial)'
+                };
+                return (
+                    <Badge className={cn("text-[10px] font-black uppercase px-3 py-1 border rounded-full tracking-widest", statusColors[status] || "bg-muted text-muted-foreground")}>
+                        {statusLabels[status] || status}
+                    </Badge>
+                );
+            }
         },
         {
-            header: "Acceso Rep",
+            header: "Acceso & Configuración",
             key: "actions",
             render: (o) => (
                 <div className="flex justify-end gap-2">
@@ -299,6 +397,29 @@ export default function MasterPanel() {
                         className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all"
                     >
                         <ExternalLink size={14} /> Inspeccionar
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => {
+                            setEditingOrg(o);
+                            setOrgName(o.name);
+                            setOrgSlug(o.slug);
+                            setOrgPlanTier(o.plan_tier || 'starter');
+                            setOrgStatus(o.subscription_status || 'active');
+                            setOrgDialogOpen(true);
+                        }}
+                        className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all"
+                    >
+                        <Edit size={14} /> Editar
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleDeleteOrganization(o.id, o.name)}
+                        className="gap-2 text-[9px] font-black uppercase tracking-widest border border-destructive/20 hover:bg-destructive/10 text-destructive rounded-xl transition-all"
+                    >
+                        <Trash2 size={14} /> Eliminar
                     </Button>
                 </div>
             ),
@@ -325,12 +446,28 @@ export default function MasterPanel() {
                         >
                             <RefreshCw size={24} className={cn("group-hover:rotate-180 transition-transform duration-500", loading && "animate-spin text-primary")} />
                         </Button>
-                        <Button 
-                            onClick={() => setUserDialogOpen(true)} 
-                            className="bg-primary hover:bg-primary/90 text-white h-16 shadow-premium-md rounded-2xl px-8 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
-                        >
-                            <Plus size={20} /> Nuevo Enlace Maestro
-                        </Button>
+                        {activeTab === 'users' ? (
+                            <Button 
+                                onClick={() => setUserDialogOpen(true)} 
+                                className="bg-primary hover:bg-primary/90 text-white h-16 shadow-premium-md rounded-2xl px-8 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
+                            >
+                                <Plus size={20} /> Nuevo Enlace Maestro
+                            </Button>
+                        ) : activeTab === 'organizations' ? (
+                            <Button 
+                                onClick={() => {
+                                    setEditingOrg(null);
+                                    setOrgName('');
+                                    setOrgSlug('');
+                                    setOrgPlanTier('starter');
+                                    setOrgStatus('active');
+                                    setOrgDialogOpen(true);
+                                }} 
+                                className="bg-primary hover:bg-primary/90 text-white h-16 shadow-premium-md rounded-2xl px-8 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
+                            >
+                                <Plus size={20} /> Nueva Organización
+                            </Button>
+                        ) : null}
                     </div>
                 }
             />
@@ -362,7 +499,7 @@ export default function MasterPanel() {
                 />
             </div>
 
-            <Tabs defaultValue="users" className="w-full space-y-8">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
                 <EliteTabsList>
                     <EliteTabsTrigger 
                         value="users" 
@@ -527,6 +664,99 @@ export default function MasterPanel() {
                             >
                                 {isCreatingUser ? <RefreshCw className="animate-spin h-4 w-4" /> : <Zap className="h-4 w-4" />}
                                 Desplegar Invitación
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* CREATE / EDIT ORGANIZATION DIALOG */}
+            <Dialog open={orgDialogOpen} onOpenChange={(open) => {
+                setOrgDialogOpen(open);
+                if (!open) {
+                    setEditingOrg(null);
+                    setOrgName('');
+                    setOrgSlug('');
+                }
+            }}>
+                <DialogContent className="max-w-xl bg-card rounded-[3rem] border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
+                    <div className="bg-muted/20 p-10 border-b border-border">
+                         <div className="flex items-center gap-4">
+                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-border">
+                                 {editingOrg ? <Edit className="h-6 w-6 text-primary" /> : <Plus className="h-6 w-6 text-primary" />}
+                             </div>
+                             <div>
+                                 <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">
+                                     {editingOrg ? 'Editar SaaS Tenant' : 'Nuevo SaaS Tenant'}
+                                 </DialogTitle>
+                                 <DialogDescription className="text-muted-foreground font-black uppercase text-[9px] tracking-widest mt-1">
+                                     {editingOrg ? 'Modificando parámetros de la organización' : 'Inicializando nueva entidad en la nube'}
+                                 </DialogDescription>
+                             </div>
+                         </div>
+                    </div>
+                    <div className="p-12 space-y-8">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="col-span-2 space-y-3">
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre Comercial</Label>
+                                <Input 
+                                    value={orgName} 
+                                    onChange={(e) => {
+                                        setOrgName(e.target.value);
+                                        if (!editingOrg) {
+                                            setOrgSlug(e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''));
+                                        }
+                                    }} 
+                                    placeholder="Ej: Laboratorios Roche"
+                                    className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-semibold text-sm shadow-inner text-foreground placeholder:text-muted-foreground/30" 
+                                />
+                            </div>
+                            <div className="col-span-2 space-y-3">
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Slug Identificador (único)</Label>
+                                <Input 
+                                    value={orgSlug} 
+                                    onChange={(e) => setOrgSlug(e.target.value)} 
+                                    placeholder="ej: laboratorios-roche"
+                                    className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-semibold text-sm shadow-inner text-foreground placeholder:text-muted-foreground/30" 
+                                    disabled={!!editingOrg}
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Plan de Suscripción</Label>
+                                <Select value={orgPlanTier} onValueChange={setOrgPlanTier}>
+                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-semibold text-xs shadow-inner text-foreground">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-xl border-border font-semibold text-xs">
+                                        <SelectItem value="starter">Starter</SelectItem>
+                                        <SelectItem value="pro">Pro</SelectItem>
+                                        <SelectItem value="enterprise">Enterprise</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Estado Operativo</Label>
+                                <Select value={orgStatus} onValueChange={setOrgStatus}>
+                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-semibold text-xs shadow-inner text-foreground">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-xl border-border font-semibold text-xs">
+                                        <SelectItem value="active">Activo</SelectItem>
+                                        <SelectItem value="inactive">Suspendido</SelectItem>
+                                        <SelectItem value="trialing">En Prueba (Trial)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-4 pt-8 border-t border-border/40">
+                            <Button variant="ghost" onClick={() => setOrgDialogOpen(false)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/30">Cancelar</Button>
+                            <Button 
+                                onClick={handleSaveOrganization} 
+                                disabled={isSavingOrg} 
+                                className="h-14 px-12 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95 flex items-center gap-3 min-w-[220px]"
+                            >
+                                {isSavingOrg ? <RefreshCw className="animate-spin h-4 w-4" /> : <Zap className="h-4 w-4" />}
+                                {editingOrg ? 'Actualizar Tenant' : 'Crear Tenant'}
                             </Button>
                         </div>
                     </div>

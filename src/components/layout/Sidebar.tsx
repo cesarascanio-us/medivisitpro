@@ -29,7 +29,8 @@ import {
   Palette,
   Globe,
   ChevronLeft,
-  ChevronDown
+  ChevronDown,
+  Database
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -92,12 +93,20 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   const filteredNav = [
     {
+      title: "Administración SaaS",
+      items: [
+        { name: "Consola Sentinel", href: "/master-panel", icon: Crown, visible: canSeeMaster },
+        { name: "Planes & Capacidad", href: "/master/plans", icon: Shield, visible: canSeeMaster },
+        { name: "Cobros & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
+        { name: "Auditoría Global", href: "/master/logs", icon: Database, visible: canSeeMaster },
+        { name: "Soporte Técnico", href: "/master/tickets", icon: ClipboardList, visible: canSeeMaster },
+        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
+      ]
+    },
+    {
       title: "Panel de Control",
       items: [
-        { name: texts.dashboard_title, href: "/dashboard-master", icon: BarChart3, visible: canSeeMaster },
         { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
-        { name: "Consola de Administración", href: "/master-panel", icon: Crown, visible: canSeeMaster },
-        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
         { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: isMaster || (canSeeAnalytics && theme.enable_finance_monitor) },
         { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: isMaster || isAdmin },
         { name: texts.documents_title, href: "/documentos", icon: FileText, visible: true },
