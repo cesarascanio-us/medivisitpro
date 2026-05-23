@@ -290,7 +290,9 @@ export function useSubscriptionStatus(): {
 
 // Hook to check if user has access to a feature
 export function useFeatureAccess(feature: string): boolean {
-    const { organization, planFeatures } = useOrganization();
+    const { organization, planFeatures, isMaster } = useOrganization();
+
+    if (isMaster) return true;
 
     if (!organization) return false;
 

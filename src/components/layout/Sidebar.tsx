@@ -98,7 +98,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
         { name: "Consola de Administración", href: "/master-panel", icon: Crown, visible: canSeeMaster },
         { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
-        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: canSeeAnalytics && theme.enable_finance_monitor },
+        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: isMaster || (canSeeAnalytics && theme.enable_finance_monitor) },
         { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: isMaster || isAdmin },
         { name: texts.documents_title, href: "/documentos", icon: FileText, visible: true },
       ]
@@ -107,10 +107,10 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       title: "Gestión Médica",
       items: [
         { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: true },
-        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: theme.enable_sample_tracking },
+        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: isMaster || theme.enable_sample_tracking },
         { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: true },
         { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: true },
-        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: theme.enable_geolocation },
+        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: isMaster || theme.enable_geolocation },
       ]
     },
     {
@@ -120,7 +120,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR },
         { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
         { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: canSeeZones },
-        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: theme.enable_pmbok },
+        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: isMaster || theme.enable_pmbok },
       ]
     },
     {
@@ -130,7 +130,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: true },
         { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: true },
         { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: true },
-        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: canSeeManagement && theme.enable_coverage_map },
+        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: isMaster || (canSeeManagement && theme.enable_coverage_map) },
       ]
     }
   ]

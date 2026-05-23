@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useOrganization } from "@/hooks/useOrganization";
 import { 
     Shield, Users, Building2, Plus, 
     RefreshCw, Search, Edit, ShieldAlert, 
@@ -75,6 +76,8 @@ const ROLE_COLORS: Record<string, string> = {
 export default function MasterPanel() {
     const { isMaster } = useAuth();
     const { toast } = useToast();
+    const navigate = useNavigate();
+    const { switchOrganization } = useOrganization();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState<SystemStats>({
         totalUsers: 0, activeUsers: 0, totalOrganizations: 0, totalVisits: 0
@@ -286,7 +289,15 @@ export default function MasterPanel() {
             key: "actions",
             render: (o) => (
                 <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all">
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={async () => {
+                            await switchOrganization(o.id);
+                            navigate("/dashboard");
+                        }}
+                        className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all"
+                    >
                         <ExternalLink size={14} /> Inspeccionar
                     </Button>
                 </div>
