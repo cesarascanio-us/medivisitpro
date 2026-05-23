@@ -165,6 +165,11 @@
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     @apply min-h-screen overflow-x-hidden;
+    transition: filter 0.3s ease;
+  }
+
+  html:not(.dark) body {
+    filter: brightness(0.75);
   }
 
   /* Typography System — Inter */
