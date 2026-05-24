@@ -74,8 +74,11 @@ export default function DrugstoresElite() {
     });
 
     const { toast } = useToast();
-    const { user, organizationId, organizationName } = useAuth();
+    const { user, isMaster, organizationId, organizationName } = useAuth();
     const navigate = useNavigate();
+
+    // Permissions logic
+    const canManageDrugstores = isMaster || ["admin", "manager"].includes(user?.app_metadata?.role || user?.user_metadata?.role || user?.role || "representative");
 
     const [formDialogOpen, setFormDialogOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -104,12 +107,13 @@ export default function DrugstoresElite() {
         }
 
         try {
+            const { contact_type, ...dbPayload } = formData;
             if (isEditing && selectedDrugstore) {
-                const { error } = await (supabase as any).from('drugstores').update({ ...formData, contact_type: 'drugstore' as any, updated_at: new Date().toISOString() }).eq('id', selectedDrugstore.id);
+                const { error } = await (supabase as any).from('drugstores').update({ ...dbPayload, updated_at: new Date().toISOString() }).eq('id', selectedDrugstore.id);
                 if (error) throw error;
                 toast({ title: "Sincronización Exitosa", description: "Registro actualizado en el directorio central." });
             } else {
-                const { error } = await (supabase as any).from('drugstores').insert({ ...formData, contact_type: 'drugstore' as any, user_id: user?.id, organization_id: organizationId });
+                const { error } = await (supabase as any).from('drugstores').insert({ ...dbPayload, user_id: user?.id, organization_id: organizationId });
                 if (error) throw error;
                 toast({ title: "Registro Comercial Completado", description: "Nueva droguería registrada en red." });
             }
@@ -189,16 +193,18 @@ export default function DrugstoresElite() {
                         <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
                             <Download className="mr-3 h-4 w-4 text-primary" /> Exportar Inteligencia
                         </Button>
-                        <Button
-                            onClick={() => {
-                                setIsEditing(false);
-                                setFormData({ name: "", rif: "", owner_name: "", sanitary_permits: false, address: "", city: "", phone: "", email: "", contact_type: "drugstore" });
-                                setFormDialogOpen(true);
-                            }}
-                            className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95 flex items-center gap-3"
-                        >
-                            <Plus className="h-6 w-6" /> Nueva Droguería
-                        </Button>
+                        {canManageDrugstores && (
+                            <Button
+                                onClick={() => {
+                                    setIsEditing(false);
+                                    setFormData({ name: "", rif: "", owner_name: "", sanitary_permits: false, address: "", city: "", phone: "", email: "", contact_type: "drugstore" });
+                                    setFormDialogOpen(true);
+                                }}
+                                className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-[10px] shadow-premium-md transition-all active:scale-95 flex items-center gap-3"
+                            >
+                                <Plus className="h-6 w-6" /> Nueva Droguería
+                            </Button>
+                        )}
                     </div>
                 }
             />
@@ -298,28 +304,32 @@ export default function DrugstoresElite() {
                                                     </Button>
                                                 }
                                             />
-                                            <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleEditDrugstore(store); }} className="h-12 w-12 p-0 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all border border-transparent hover:border-primary/20 shadow-inner">
-                                                <Edit className="h-5 w-5" />
-                                            </Button>
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button variant="ghost" onClick={(e) => e.stopPropagation()} className="h-12 w-12 p-0 rounded-2xl hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-all border border-transparent hover:border-rose-500/20 shadow-inner">
-                                                        <Trash2 className="h-5 w-5" />
+                                            {canManageDrugstores && (
+                                                <>
+                                                    <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleEditDrugstore(store); }} className="h-12 w-12 p-0 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all border border-transparent hover:border-primary/20 shadow-inner">
+                                                        <Edit className="h-5 w-5" />
                                                     </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent className="rounded-[3rem] border-border/40 shadow-premium-2xl bg-card font-display p-10">
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Eliminar Registro?</AlertDialogTitle>
-                                                        <AlertDialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-70 mt-2">
-                                                            ESTA ACCIÓN ELIMINARÁ PERMANENTEMENTE A <strong className="text-primary">{store.name}</strong> DEL DIRECTORIO OPERATIVO.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter className="mt-10 gap-4">
-                                                        <AlertDialogCancel className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">Ignorar</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDeleteDrugstore(store.id)} className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20">Confirmar Eliminación</AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button variant="ghost" onClick={(e) => e.stopPropagation()} className="h-12 w-12 p-0 rounded-2xl hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-all border border-transparent hover:border-rose-500/20 shadow-inner">
+                                                                <Trash2 className="h-5 w-5" />
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent className="rounded-[3rem] border-border/40 shadow-premium-2xl bg-card font-display p-10">
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle className="text-3xl font-black text-foreground uppercase tracking-tighter">¿Eliminar Registro?</AlertDialogTitle>
+                                                                <AlertDialogDescription className="text-muted-foreground font-black uppercase text-[10px] tracking-widest opacity-70 mt-2">
+                                                                    ESTA ACCIÓN ELIMINARÁ PERMANENTEMENTE A <strong className="text-primary">{store.name}</strong> DEL DIRECTORIO OPERATIVO.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter className="mt-10 gap-4">
+                                                                <AlertDialogCancel className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">Ignorar</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => handleDeleteDrugstore(store.id)} className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20">Confirmar Eliminación</AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </>
+                                            )}
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -342,6 +352,9 @@ export default function DrugstoresElite() {
                                 <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em] opacity-70 mt-1">Expediente Comercial</p>
                             </div>
                         </DialogTitle>
+                        <DialogDescription className="hidden">
+                            Detalles operativos de la droguería seleccionada.
+                        </DialogDescription>
                     </DialogHeader>
 
                     {selectedDrugstore && (
@@ -399,9 +412,11 @@ export default function DrugstoresElite() {
                                             <Button onClick={handleRegisterVisit} className="w-full bg-white text-primary shadow-xl font-black uppercase tracking-[0.2em] text-[10px] h-16 rounded-[1.5rem] transition-all hover:bg-muted active:scale-95 flex items-center justify-center">
                                                 <Navigation className="mr-3 h-5 w-5" /> Iniciar Visita
                                             </Button>
-                                            <Button variant="ghost" className="w-full border border-white/30 text-white hover:bg-white/10 h-16 rounded-[1.5rem] uppercase font-black tracking-[0.2em] text-[10px] shadow-sm flex items-center justify-center" onClick={() => handleEditDrugstore(selectedDrugstore)}>
-                                                <Edit className="mr-3 h-4 w-4" /> Editar Registro
-                                            </Button>
+                                            {canManageDrugstores && (
+                                                <Button variant="ghost" className="w-full border border-white/30 text-white hover:bg-white/10 h-16 rounded-[1.5rem] uppercase font-black tracking-[0.2em] text-[10px] shadow-sm flex items-center justify-center" onClick={() => handleEditDrugstore(selectedDrugstore)}>
+                                                    <Edit className="mr-3 h-4 w-4" /> Editar Registro
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

@@ -261,7 +261,7 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2rem] border-none shadow-2xl p-0">
+                <DialogContent aria-describedby={undefined} className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2rem] border-none shadow-2xl p-0">
                     <DialogHeader className="sr-only">
                         <DialogTitle>{deal.title}</DialogTitle>
                         <DialogDescription>Detalle de oportunidad de venta</DialogDescription>
@@ -511,7 +511,7 @@ export function DealDetailDialog({ deal, open, onOpenChange, onDealUpdated }: De
 
             {/* Lost Reason Sub-Dialog */}
             <Dialog open={showLostDialog} onOpenChange={setShowLostDialog}>
-                <DialogContent className="rounded-[2rem] border-none shadow-2xl max-w-md">
+                <DialogContent aria-describedby={undefined} className="rounded-[2rem] border-none shadow-2xl max-w-md">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-black text-slate-800">¿Por qué se perdió?</DialogTitle>
                         <DialogDescription>Registra la razón para mejorar tu estrategia futura.</DialogDescription>

@@ -205,7 +205,7 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-card shadow-premium-2xl font-display max-h-[95vh]">
+      <DialogContent aria-describedby={undefined} className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-card shadow-premium-2xl font-display max-h-[95vh]">
         <div className="bg-muted/5 px-10 py-8 text-foreground relative border-b border-border/40">
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-6">

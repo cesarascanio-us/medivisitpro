@@ -66,9 +66,9 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                     </DialogTrigger>
                 )
             )}
-            <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
+            <DialogContent aria-describedby={undefined} className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
                 {/* Header Section */}
-                <div className="bg-primary px-8 py-10 text-white relative overflow-hidden">
+                <div className="bg-primary px-8 py-10 text-white relative overflow-hidden shrink-0">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <Building2 className="w-32 h-32" />
                     </div>
@@ -87,43 +87,27 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row h-[600px]">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
-                        {/* Sidebar Navigation */}
-                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-card border-r border-border/40 p-4 h-auto md:w-64 space-y-1">
-                            <TabsTrigger
-                                value="basico"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Info className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Información Básica</span>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col w-full min-h-0">
+                    <div className="px-8 pt-4 pb-2 border-b border-border/40 shrink-0 bg-background">
+                        <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 bg-muted/50 p-1 rounded-xl">
+                            <TabsTrigger value="basico" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Info className="w-3.5 h-3.5" /> <span className="hidden md:inline">Información Básica</span><span className="md:hidden">Básico</span>
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="contacto"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Phone className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Contacto Detalle</span>
+                            <TabsTrigger value="contacto" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Phone className="w-3.5 h-3.5" /> <span className="hidden md:inline">Contacto Detalle</span><span className="md:hidden">Contacto</span>
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="segmentacion"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Target className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Segmentación</span>
+                            <TabsTrigger value="segmentacion" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Target className="w-3.5 h-3.5" /> <span className="hidden md:inline">Segmentación</span><span className="md:hidden">Segment.</span>
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="seguimiento"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Activity className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Seguimiento</span>
+                            <TabsTrigger value="seguimiento" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Activity className="w-3.5 h-3.5" /> <span className="hidden md:inline">Seguimiento</span><span className="md:hidden">Seguim.</span>
                             </TabsTrigger>
                         </TabsList>
+                    </div>
 
-                        <div className="flex-1 overflow-y-auto bg-card">
+                    <div className="px-8 py-6 overflow-y-auto custom-scrollbar flex-1 bg-card">
                             {/* Tab 1: Información Básica */}
-                            <TabsContent value="basico" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="basico" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 mb-4">
                                         <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
@@ -254,7 +238,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             </TabsContent>
 
                             {/* Tab 2: Contacto */}
-                            <TabsContent value="contacto" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="contacto" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2">
                                         <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
@@ -357,7 +341,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             </TabsContent>
 
                             {/* Tab 3: Segmentación */}
-                            <TabsContent value="segmentacion" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="segmentacion" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-8">
                                     <div className="flex items-center gap-2">
                                         <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
@@ -433,7 +417,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             </TabsContent>
 
                             {/* Tab 4: Seguimiento */}
-                            <TabsContent value="seguimiento" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="seguimiento" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2">
                                         <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
@@ -476,10 +460,9 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                 </section>
                             </TabsContent>
                         </div>
-                    </Tabs>
-                </div>
+                </Tabs>
 
-                <div className="bg-muted/10 border-t border-border/40 px-8 py-6 flex items-center justify-between gap-4">
+                <div className="bg-muted/10 border-t border-border/40 px-8 py-6 flex items-center justify-between gap-4 shrink-0">
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}

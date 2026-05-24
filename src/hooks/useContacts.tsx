@@ -96,26 +96,18 @@ export function useContacts(options: UseContactsOptions = {}) {
                 // [STRICT] Always filter by organization
                 query = query.eq('organization_id', organizationId);
 
-                // Filtros de Territorio Industrial
-                if (adminFilters.region && adminFilters.region !== 'all') query = query.eq('region', adminFilters.region);
-                if (adminFilters.state && adminFilters.state !== 'all') query = query.eq('state', adminFilters.state);
-
                 // Apply role-based filtering
                 if (isSupervisor && zoneId) {
                     if (adminFilters.userId && adminFilters.userId !== 'all') {
                         query = query.eq('user_id', adminFilters.userId);
-                    } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                        query = query.eq('zone_id', adminFilters.zoneId);
-                    } else {
-                        query = query.eq('zone_id', zoneId);
                     }
+                    // Removed zone_id, state and region filters because unified_contacts view 
+                    // doesn't have these columns. Security is handled by RLS.
                 } else if (!canViewAllData) {
                     query = query.eq('user_id', user.id);
                 } else {
                     if (adminFilters.userId && adminFilters.userId !== 'all') {
                         query = query.eq('user_id', adminFilters.userId);
-                    } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                        query = query.eq('zone_id', adminFilters.zoneId);
                     }
                 }
 

@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ShoppingCart, User, Building, MapPin, Phone, Mail, Globe, ShieldCheck, X, Truck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CommerceFormDialogProps {
     open: boolean;
@@ -41,9 +42,9 @@ export function CommerceFormDialog({
 }: CommerceFormDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl p-0 overflow-hidden border-none shadow-3xl rounded-[2.5rem] bg-card font-outfit">
+            <DialogContent aria-describedby={undefined} className="max-w-2xl p-0 overflow-hidden border-none shadow-3xl rounded-[2.5rem] bg-card font-outfit max-h-[90vh] flex flex-col">
                 {/* Retail Header with Gradient */}
-                <div className="bg-gradient-to-br from-emerald-600 via-emerald-800 to-slate-900 px-8 py-12 text-white relative">
+                <div className="bg-gradient-to-br from-emerald-600 via-emerald-800 to-slate-900 px-8 py-12 text-white relative shrink-0">
                     <div className="flex items-center gap-5">
                         <div className="w-16 h-16 rounded-[1.5rem] bg-background/10 backdrop-blur-2xl border border-white/20 flex items-center justify-center shadow-2xl rotate-3">
                             <ShoppingCart className="h-8 w-8 text-white" />
@@ -59,137 +60,148 @@ export function CommerceFormDialog({
                     </div>
                 </div>
 
-                <div className="px-10 py-10 space-y-10 max-h-[65vh] overflow-y-auto custom-scrollbar bg-card text-foreground">
-                    {/* Section 1: Business Profile */}
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-3">
-                            <div className="w-2 h-10 bg-emerald-600 rounded-full text-white" />
-                            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Identidad del Establecimiento</h3>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Nombre Comercial *</Label>
-                                <div className="relative group">
-                                    <Building className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                    <Input
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="Ej: Automercado El Plaza"
-                                        className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">RIF / ID Fiscal *</Label>
-                                <div className="relative group">
-                                    <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                    <Input
-                                        value={formData.rif}
-                                        onChange={(e) => setFormData({ ...formData, rif: e.target.value })}
-                                        placeholder="J-00000000-0"
-                                        className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-mono font-bold transition-all shadow-inner"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Gerente de Tienda / Buyer</Label>
-                                <div className="relative group">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                    <Input
-                                        value={formData.owner_name}
-                                        onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })}
-                                        placeholder="Nombre del responsable"
-                                        className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex items-center h-full pt-6">
-                                <label
-                                    htmlFor="permits"
-                                    className="flex items-center gap-4 p-5 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl cursor-pointer hover:border-emerald-500/30 transition-all w-full shadow-sm"
-                                >
-                                    <Checkbox
-                                        id="permits"
-                                        checked={formData.sanitary_permits}
-                                        onCheckedChange={(checked) => setFormData({ ...formData, sanitary_permits: checked })}
-                                        className="w-6 h-6 rounded-lg data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 border-emerald-500/30"
-                                    />
-                                    <span className="text-xs font-black uppercase tracking-tight text-emerald-600 dark:text-emerald-400">Permisos de Retail al Día</span>
-                                </label>
-                            </div>
-                        </div>
+                <Tabs defaultValue="perfil" className="flex-1 flex flex-col w-full min-h-0">
+                    <div className="px-10 pt-4 pb-2 border-b border-border/40 shrink-0 bg-background">
+                        <TabsList className="w-full grid grid-cols-2 bg-muted/50 p-1 rounded-xl">
+                            <TabsTrigger value="perfil" className="rounded-lg font-bold text-[11px] uppercase tracking-wider">Identidad del Establecimiento</TabsTrigger>
+                            <TabsTrigger value="logistica" className="rounded-lg font-bold text-[11px] uppercase tracking-wider">Logística & Ubicación</TabsTrigger>
+                        </TabsList>
                     </div>
 
-                    <Separator className="bg-border/50" />
+                    <div className="px-10 py-10 overflow-y-auto custom-scrollbar flex-1 bg-card text-foreground">
+                        <TabsContent value="perfil" className="m-0 space-y-8 mt-0">
+                            <div className="space-y-8">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2 h-10 bg-emerald-600 rounded-full text-white" />
+                                    <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Identidad del Establecimiento</h3>
+                                </div>
 
-                    {/* Section 2: Contact & Logistics */}
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-3">
-                            <div className="w-2 h-10 bg-emerald-400 rounded-full" />
-                            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Logística & Ubicación</h3>
-                        </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Nombre Comercial *</Label>
+                                        <div className="relative group">
+                                            <Building className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                            <Input
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                placeholder="Ej: Automercado El Plaza"
+                                                className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">RIF / ID Fiscal *</Label>
+                                        <div className="relative group">
+                                            <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                            <Input
+                                                value={formData.rif}
+                                                onChange={(e) => setFormData({ ...formData, rif: e.target.value })}
+                                                placeholder="J-00000000-0"
+                                                className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-mono font-bold transition-all shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Dirección de Despacho Retail</Label>
-                            <div className="relative group">
-                                <MapPin className="absolute left-4 top-6 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                <Input
-                                    value={formData.address}
-                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    placeholder="Ubicación exacta del comercio..."
-                                    className="h-18 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Ciudad</Label>
-                                <div className="relative group">
-                                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                    <Input
-                                        value={formData.city}
-                                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                        placeholder="Ej: Valencia"
-                                        className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
-                                    />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Gerente de Tienda / Buyer</Label>
+                                        <div className="relative group">
+                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                            <Input
+                                                value={formData.owner_name}
+                                                onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })}
+                                                placeholder="Nombre del responsable"
+                                                className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center h-full pt-6">
+                                        <label
+                                            htmlFor="permits"
+                                            className="flex items-center gap-4 p-5 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl cursor-pointer hover:border-emerald-500/30 transition-all w-full shadow-sm"
+                                        >
+                                            <Checkbox
+                                                id="permits"
+                                                checked={formData.sanitary_permits}
+                                                onCheckedChange={(checked) => setFormData({ ...formData, sanitary_permits: checked })}
+                                                className="w-6 h-6 rounded-lg data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 border-emerald-500/30"
+                                            />
+                                            <span className="text-xs font-black uppercase tracking-tight text-emerald-600 dark:text-emerald-400">Permisos de Retail al Día</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Línea Máster de Contacto</Label>
-                                <div className="relative group">
-                                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                    <Input
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        placeholder="+58 000 0000"
-                                        className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
-                                    />
+                        </TabsContent>
+
+                        <Separator className="bg-border/50 hidden" />
+
+                        <TabsContent value="logistica" className="m-0 space-y-8 mt-0">
+                            <div className="space-y-8">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2 h-10 bg-emerald-400 rounded-full" />
+                                    <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Logística & Ubicación</h3>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Dirección de Despacho Retail</Label>
+                                    <div className="relative group">
+                                        <MapPin className="absolute left-4 top-6 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                        <Input
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                            placeholder="Ubicación exacta del comercio..."
+                                            className="h-18 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Ciudad</Label>
+                                        <div className="relative group">
+                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                            <Input
+                                                value={formData.city}
+                                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                                placeholder="Ej: Valencia"
+                                                className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Línea Máster de Contacto</Label>
+                                        <div className="relative group">
+                                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                            <Input
+                                                value={formData.phone}
+                                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                                placeholder="+58 000 0000"
+                                                className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">E-mail de Compras</Label>
+                                    <div className="relative group">
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
+                                        <Input
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            placeholder="compras@cadena.com"
+                                            className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">E-mail de Compras</Label>
-                            <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors" />
-                                <Input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    placeholder="compras@cadena.com"
-                                    className="h-15 pl-12 bg-muted/20 border-border rounded-2xl focus:ring-emerald-500/10 focus:border-emerald-500 font-bold transition-all shadow-inner"
-                                />
-                            </div>
-                        </div>
+                        </TabsContent>
                     </div>
-                </div>
+                </Tabs>
 
-                <DialogFooter className="bg-muted/10 border-t border-border px-10 py-10 flex items-center justify-between gap-6">
+                <DialogFooter className="bg-muted/10 border-t border-border px-10 py-10 flex items-center justify-between gap-6 shrink-0">
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}

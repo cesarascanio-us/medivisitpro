@@ -92,11 +92,11 @@ export function DrugstoreInventoryDialog({ drugstoreId, drugstoreName, trigger }
                 .from('inventario_droguerias' as any)
                 .select(`
                     id,
-                    product_id,
+                    producto_id,
                     cantidad,
                     precio_venta_farmacia,
                     updated_at,
-                    products (
+                    products!inventario_droguerias_producto_id_fkey (
                         name
                     )
                 `)
@@ -106,7 +106,7 @@ export function DrugstoreInventoryDialog({ drugstoreId, drugstoreName, trigger }
 
             const formatted: InventoryItem[] = (data || []).map((item: any) => ({
                 id: item.id,
-                product_id: item.product_id,
+                product_id: item.producto_id,
                 product_name: item.products?.name || 'Producto Desconocido',
                 quantity: item.cantidad,
                 price: item.precio_venta_farmacia,
@@ -153,27 +153,45 @@ export function DrugstoreInventoryDialog({ drugstoreId, drugstoreName, trigger }
                 // Get all products to map names to IDs
                 const { data: productsData } = await supabase
                     .from('products')
-                    .select('id, name');
+                    .select('id, name, product_code');
 
                 const productMap = new Map();
+                const productCodeMap = new Map();
                 productsData?.forEach(p => {
                     productMap.set(p.name.toLowerCase().trim(), p.id);
+                    if (p.product_code) {
+                        productCodeMap.set(p.product_code.toString().toLowerCase().trim(), p.id);
+                    }
                 });
 
                 let processedCount = 0;
                 let errorCount = 0;
 
                 for (const row of jsonData) {
-                    // Expected columns: Producto, Precio, Cantidad
+                    // Expected columns: Producto/Descripcion, Precio, Cantidad/Existencia
                     // We try to be flexible with column names
-                    const productName = row['Producto'] || row['producto'] || row['Nombre'] || row['nombre'];
-                    const price = parseFloat(row['Precio'] || row['precio'] || row['PVP'] || '0');
-                    const quantity = parseInt(row['Cantidad'] || row['cantidad'] || row['Stock'] || '0');
+                    const productName = row['Descripcion'] || row['Descripción'] || row['Producto'] || row['producto'] || row['Nombre'] || row['nombre'];
+                    const productCode = row['Codigo_Barra'] || row['Codigo'] || row['codigo'] || row['codigo_barra'];
+                    const price = parseFloat(row['Precio_Final'] || row['Precio_Mayo'] || row['Precio'] || row['precio'] || row['PVP'] || '0');
+                    const quantity = parseInt(row['Existencia'] || row['Cantidad'] || row['cantidad'] || row['Stock'] || '0');
 
-                    if (!productName) continue;
+                    if (!productName && !productCode) continue;
 
-                    const normalizedName = productName.toString().toLowerCase().trim();
-                    const productId = productMap.get(normalizedName);
+                    let productId = null;
+                    
+                    if (productCode) {
+                        const normalizedCode = productCode.toString().toLowerCase().trim();
+                        if (productCodeMap.has(normalizedCode)) {
+                            productId = productCodeMap.get(normalizedCode);
+                        }
+                    }
+                    
+                    if (!productId && productName) {
+                        const normalizedName = productName.toString().toLowerCase().trim();
+                        if (productMap.has(normalizedName)) {
+                            productId = productMap.get(normalizedName);
+                        }
+                    }
 
                     if (productId) {
                         // Upsert inventory
@@ -346,7 +364,7 @@ export function DrugstoreInventoryDialog({ drugstoreId, drugstoreName, trigger }
                 </div>
 
                 <div className="text-xs text-muted-foreground mt-4 pt-2 border-t">
-                    <p>Consejo: El archivo Excel debe tener las columnas "Producto", "Precio" y "Cantidad". El nombre del producto debe coincidir exactamente con el catálogo.</p>
+                    <p>Consejo: El archivo Excel debe tener las columnas "Descripcion" o "Producto", "Precio_Final" o "Precio", y "Existencia" o "Cantidad". Si tienes "Codigo_Barra", se usará para mayor precisión.</p>
                 </div>
             </DialogContent>
         </Dialog>

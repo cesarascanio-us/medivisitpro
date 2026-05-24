@@ -72,12 +72,13 @@ export default function NaturalStores() {
         }
 
         try {
+            const { contact_type, ...dbPayload } = formData;
             if (isEditing && selectedStore) {
-                const { error } = await supabase.from('natural_stores').update({ ...formData, updated_at: new Date().toISOString() }).eq('id', selectedStore.id);
+                const { error } = await supabase.from('natural_stores').update({ ...dbPayload, updated_at: new Date().toISOString() }).eq('id', selectedStore.id);
                 if (error) throw error;
                 toast({ title: "Sincronización Exitosa", description: "Establecimiento actualizado en red." });
             } else {
-                const { error } = await supabase.from('natural_stores').insert({ ...formData, user_id: user?.id, organization_id: organizationId });
+                const { error } = await supabase.from('natural_stores').insert({ ...dbPayload, user_id: user?.id, organization_id: organizationId });
                 if (error) throw error;
                 toast({ title: "Alta Completada", description: "Nuevo activo registrado en el Canal Naturista." });
             }

@@ -44,6 +44,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/badge";
 import { Separator } from "@/components/ui/separator";
+import { BarcodeScanner } from "@/components/shared/BarcodeScanner";
+import { ScanLine } from "lucide-react";
 
 // -- High Contrast Wrappers --
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof BaseInput>>((props, ref) => (
@@ -89,6 +91,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
     const open = isControlled ? constrainedOpen : internalOpen;
     const setOpen = isControlled ? onOpenChange : setInternalOpen;
     const [activeTab, setActiveTab] = useState("basic");
+    const [scannerOpen, setScannerOpen] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [uploadingImage, setUploadingImage] = useState(false);
@@ -329,9 +332,9 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
+            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
                 {/* Product Header */}
-                <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-8 py-10 text-white relative overflow-hidden">
+                <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-8 py-10 text-white relative overflow-hidden shrink-0">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <Package className="w-32 h-32" />
                     </div>
@@ -354,10 +357,10 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row h-[650px]">
+                <div className="flex flex-col md:flex-row flex-1 overflow-hidden min-h-0">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
                         {/* Sidebar */}
-                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1 text-slate-900">
+                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1 text-slate-900 overflow-y-auto shrink-0">
                             <TabsTrigger
                                 value="basic"
                                 className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-card data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all"
@@ -420,7 +423,23 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">GTIN / SKU</Label>
-                                                <Input value={formData.sku} onChange={(e) => handleChange("sku", e.target.value)} placeholder="00000000" />
+                                                <div className="relative group/sku">
+                                                    <Input 
+                                                        value={formData.sku} 
+                                                        onChange={(e) => handleChange("sku", e.target.value)} 
+                                                        placeholder="00000000" 
+                                                        className="pr-12"
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => setScannerOpen(true)}
+                                                        className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-xl transition-all"
+                                                    >
+                                                        <ScanLine className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">PVP Sugerido ($)</Label>
@@ -579,7 +598,7 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                     </Tabs>
                 </div>
 
-                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4 text-slate-900">
+                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4 text-slate-900 shrink-0">
                     <Button variant="ghost" onClick={() => setOpen(false)} className="h-12 px-6 font-bold text-slate-500 rounded-xl">Cerrar</Button>
                     <Button type="submit" form="product-form" disabled={loading} className="h-12 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02]">
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -587,6 +606,14 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
                     </Button>
                 </div>
             </DialogContent>
+
+            <BarcodeScanner 
+                open={scannerOpen}
+                onOpenChange={setScannerOpen}
+                onScan={(code) => {
+                    handleChange("sku", code);
+                }}
+            />
         </Dialog>
     );
 }

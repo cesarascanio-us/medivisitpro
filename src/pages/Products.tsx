@@ -48,6 +48,9 @@ export default function Products() {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const demoData = useDemoData();
 
+  const canManageCatalog = isMaster || ["admin", "manager"].includes(user?.app_metadata?.role || user?.user_metadata?.role || "representative"); // Simplified role check based on typical usage, or just use the hook
+
+
   useEffect(() => {
     loadProducts();
   }, [organizationId]);
@@ -150,24 +153,66 @@ export default function Products() {
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-          if (!jsonData || jsonData.length === 0) throw new Error("El archivo está vacío.");
+          const parsedProducts = jsonData.map((row: any) => {
+            // Flexible name detection for user's specific catalog format
+            let productName = '';
+            let assignedCategory = 'General';
 
-          const productsToInsert = jsonData.map((row: any) => ({
-            user_id: user?.id,
-            organization_id: organizationId,
-            product_code: row['Codigo'] || row['codigo'] || row['ID_Producto'] || null,
-            name: row['Nombre'] || row['nombre'] || '',
-            active_ingredients: row['Principios Activos'] || row['principios_activos'] || null,
-            presentation: row['Presentacion'] || row['presentacion'] || null,
-            category: row['Categoria'] || row['categoria'] || 'General',
-            indications: row['Indicaciones'] || row['indicaciones'] || null,
-            therapeutic_area: row['Area Terapeutica'] || row['area_terapeutica'] || null,
-            price: row['Precio'] ? parseFloat(String(row['Precio']).replace(/[^0-9.]/g, '')) : null,
-          })).filter(p => p.name);
+            if (row['LÍNEA GASTRICA']) { productName = row['LÍNEA GASTRICA']; assignedCategory = 'Línea Gástrica'; }
+            else if (row['LÍNEA PEDIÁTRICA']) { productName = row['LÍNEA PEDIÁTRICA']; assignedCategory = 'Línea Pediátrica'; }
+            else if (row['ESPECIALIDADES FARMACÉUTICAS']) { productName = row['ESPECIALIDADES FARMACÉUTICAS']; assignedCategory = 'Especialidades Farmacéuticas'; }
+            else if (row['LIÍNEA OFICINALES']) { productName = row['LIÍNEA OFICINALES']; assignedCategory = 'Línea Oficinal'; }
+            else if (row['LÍNEA COSMETICA / CUIDADO PERSONAL']) { productName = row['LÍNEA COSMETICA / CUIDADO PERSONAL']; assignedCategory = 'Cuidado Personal'; }
+            else if (row['LÍNEA DE ALCOHOL']) { productName = row['LÍNEA DE ALCOHOL']; assignedCategory = 'Línea de Alcohol'; }
+            else if (row['COMPLEMENTOS NUTRICIONALES']) { productName = row['COMPLEMENTOS NUTRICIONALES']; assignedCategory = 'Nutracéutica'; }
+            else {
+              productName = row['Descripcion'] || row['Descripción'] || row['Producto'] || row['Nombre'] || row['nombre'] || '';
+              assignedCategory = row['Categoria'] || row['categoria'] || 'General';
+            }
 
-          if (productsToInsert.length === 0) throw new Error("No se encontraron productos válidos.");
+            const productCode = row['CODIGO DE BARRA'] || row['Codigo de Barra'] || row['Codigo_Barra'] || row['Codigo'] || row['CODIGO'] || row['codigo'] || row['ID_Producto'] || null;
+            
+            return {
+              user_id: user?.id,
+              organization_id: organizationId,
+              product_code: productCode,
+              name: productName,
+              active_ingredients: row['Principios Activos'] || row['principios_activos'] || null,
+              presentation: row['Presentacion'] || row['presentacion'] || null,
+              category: assignedCategory,
+              indications: row['DESCRIPCIÓN'] || row['Indicaciones'] || row['indicaciones'] || null,
+              therapeutic_area: row['Area Terapeutica'] || row['area_terapeutica'] || null,
+              price: row['P.U'] || row['Precio_Final'] || row['Precio_Mayo'] || row['Precio'] ? parseFloat(String(row['P.U'] || row['Precio_Final'] || row['Precio_Mayo'] || row['Precio']).replace(/[^0-9.]/g, '')) : null,
+            };
+          }).filter(p => p.name);
 
-          const { error } = await supabase.from('products').insert(productsToInsert);
+          if (parsedProducts.length === 0) throw new Error("No se encontraron productos válidos.");
+
+          // Deduplicate by name to prevent "ON CONFLICT DO UPDATE command cannot affect row a second time"
+          const uniqueProductsMap = new Map();
+          const seenCodes = new Set();
+          
+          parsedProducts.forEach(product => {
+            const key = product.name.trim().toLowerCase();
+            
+            // Check for duplicate barcodes to prevent 'products_product_code_key' unique constraint errors
+            if (product.product_code) {
+              const codeStr = String(product.product_code).trim();
+              if (seenCodes.has(codeStr)) {
+                // Duplicate barcode found! Nullify to prevent DB crash, but still import the product by name.
+                product.product_code = null;
+              } else {
+                seenCodes.add(codeStr);
+              }
+            }
+            
+            uniqueProductsMap.set(key, product);
+          });
+          const productsToInsert = Array.from(uniqueProductsMap.values());
+
+          const { error } = await supabase
+            .from('products')
+            .upsert(productsToInsert, { onConflict: 'name, organization_id' });
           if (error) throw error;
 
           toast({ title: "Importación completa", description: `Se han importado ${productsToInsert.length} productos.` });
@@ -182,6 +227,28 @@ export default function Products() {
       reader.readAsArrayBuffer(file);
     } catch (error) {
       setImporting(false);
+    }
+  };
+
+  const handleClearCatalog = async () => {
+    if (!confirm("¿Estás seguro de que deseas eliminar TODOS los productos del catálogo? Esta acción no se puede deshacer y también eliminará el inventario asociado en las droguerías.")) return;
+    
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('organization_id', organizationId);
+        
+      if (error) throw error;
+      
+      toast({ title: "Catálogo limpio", description: "Se han eliminado todos los productos exitosamente." });
+      setProducts([]);
+      setFilteredProducts([]);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -207,14 +274,16 @@ export default function Products() {
         statusColor="bg-emerald-500"
         rightContent={
           <div className="flex items-center gap-4">
-            <ProductFormDialog
-              onSuccess={loadProducts}
-              trigger={
-                <Button className="btn-elite-primary h-12 px-8">
-                  <Plus className="h-5 w-5 mr-2" /> Alta de Producto
-                </Button>
-              }
-            />
+            {canManageCatalog && (
+              <ProductFormDialog
+                onSuccess={loadProducts}
+                trigger={
+                  <Button className="btn-elite-primary h-12 px-8">
+                    <Plus className="h-5 w-5 mr-2" /> Alta de Producto
+                  </Button>
+                }
+              />
+            )}
             <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-12 h-12 rounded-xl hover:bg-amber-50 text-amber-500 transition-all">
               <Lightbulb className="h-6 w-6" />
             </Button>
@@ -253,9 +322,16 @@ export default function Products() {
               </SelectContent>
             </Select>
             <div className="h-8 w-[1px] bg-border/40 mx-2 hidden xl:block" />
-            <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 border-border/40 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all shadow-premium-sm flex items-center gap-3">
-              {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />} Importar
-            </Button>
+            {canManageCatalog && (
+              <>
+                <Button variant="outline" onClick={handleClearCatalog} disabled={loading || products.length === 0} className="h-14 px-6 border-red-200 text-red-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all shadow-premium-sm flex items-center gap-2">
+                  <Trash2 className="h-5 w-5" /> Vaciar
+                </Button>
+                <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 border-border/40 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all shadow-premium-sm flex items-center gap-3">
+                  {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />} Importar
+                </Button>
+              </>
+            )}
             <Button variant="outline" onClick={handleExport} className="h-14 px-8 border-border/40 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all shadow-premium-sm flex items-center gap-3">
               <Download className="h-5 w-5" /> Exportar
             </Button>

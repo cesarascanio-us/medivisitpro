@@ -56,10 +56,11 @@ export default function Commerces() {
     const handleFormSubmit = async () => {
         if (!formData.name || !formData.rif) return;
         try {
+            const { contact_type, ...dbPayload } = formData;
             if (isEditing && selectedCommerce) {
-                await (supabase as any).from('commerces').update({ ...formData, updated_at: new Date().toISOString() }).eq('id', selectedCommerce.id);
+                await (supabase as any).from('commerces').update({ ...dbPayload, updated_at: new Date().toISOString() }).eq('id', selectedCommerce.id);
             } else {
-                await (supabase as any).from('commerces').insert({ ...formData, user_id: user?.id, organization_id: organizationId });
+                await (supabase as any).from('commerces').insert({ ...dbPayload, user_id: user?.id, organization_id: organizationId });
             }
             setFormDialogOpen(false); loadCommerces();
             toast({ title: "Registro Completado", description: "Canal Comercio sincronizado." });

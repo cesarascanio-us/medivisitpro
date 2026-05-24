@@ -11,7 +11,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
     ListTree, Plus, Search, Edit2, Trash2, Save, X, FlaskConical,
     Package, TrendingDown, TrendingUp, DollarSign, RefreshCw, Filter,
-    ChevronDown, AlertTriangle, CheckCircle2, Award, BarChart2
+    ChevronDown, AlertTriangle, CheckCircle2, Award, BarChart2, Upload, Download
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,6 +53,9 @@ interface Baremo {
     drugstore?: { id: string; name: string; city?: string };
     product?: { id: string; name: string; category?: string; price?: number };
 }
+
+import { BaremoImportDialog } from "@/components/baremos/BaremoImportDialog";
+import { exportToCSV } from "@/utils/exportUtils";
 
 interface Drugstore {
     id: string;
@@ -127,11 +130,12 @@ export default function Baremos() {
     const [drugstoreFilter, setDrugstoreFilter] = useState("all");
 
     const [formOpen, setFormOpen] = useState(false);
+    const [importOpen, setImportOpen] = useState(false);
     const [editTarget, setEditTarget] = useState<Baremo | null>(null);
     const [form, setForm] = useState<BaremoFormData>(EMPTY_FORM);
     const [saving, setSaving] = useState(false);
 
-    const canEdit = isMaster || ["admin", "manager"].includes(role || "");
+    const canEdit = isMaster || ["admin", "manager", "representative"].includes(role || "");
 
     // -------------------------------------------------------
     // Load data
@@ -272,6 +276,24 @@ export default function Baremos() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (!baremos.length) return;
+        
+        const exportData = baremos.map(b => ({
+            id_baremo: b.id,
+            drugstore_id: b.drugstore_id,
+            nombre_drogueria: b.drugstore?.name || '',
+            product_id: b.product_id,
+            nombre_producto: b.product?.name || '',
+            price: b.price,
+            discount_percentage: b.discount_percentage,
+            min_quantity: b.min_quantity,
+            notes: b.notes || ''
+        }));
+        
+        exportToCSV(exportData, 'inventario_baremos_alpha');
+    };
+
     // -------------------------------------------------------
     // Render
     // -------------------------------------------------------
@@ -286,12 +308,28 @@ export default function Baremos() {
                 statusColor="bg-violet-500"
                 rightContent={
                     canEdit && (
-                        <Button
-                            onClick={openCreate}
-                            className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-premium-md flex items-center gap-2 active:scale-95 transition-all"
-                        >
-                            <Plus className="h-4 w-4" /> Nuevo Baremo
-                        </Button>
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={handleExportCSV}
+                                className="h-12 px-6 border-border/40 bg-card text-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+                            >
+                                <Download className="h-4 w-4 text-primary" /> Exportar
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setImportOpen(true)}
+                                className="h-12 px-6 border-border/40 bg-card text-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+                            >
+                                <Upload className="h-4 w-4 text-indigo-500" /> Importar CSV
+                            </Button>
+                            <Button
+                                onClick={openCreate}
+                                className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-premium-md flex items-center gap-2 active:scale-95 transition-all"
+                            >
+                                <Plus className="h-4 w-4" /> Nuevo Baremo
+                            </Button>
+                        </div>
                     )
                 }
             />
@@ -681,6 +719,13 @@ export default function Baremos() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <BaremoImportDialog
+                open={importOpen}
+                onOpenChange={setImportOpen}
+                organizationId={organizationId}
+                onSuccess={loadBaremos}
+            />
         </div>
     );
 }

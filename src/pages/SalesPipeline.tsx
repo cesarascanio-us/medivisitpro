@@ -436,7 +436,7 @@ export default function SalesPipeline() {
 
             {/* CREATE DIALOG - INDUSTRIAL STYLE */}
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-                <DialogContent className="rounded-[3.5rem] border border-border/40 shadow-premium-2xl bg-card p-0 overflow-hidden max-w-lg">
+                <DialogContent aria-describedby={undefined} className="rounded-[3.5rem] border border-border/40 shadow-premium-2xl bg-card p-0 overflow-hidden max-w-lg">
                     <div className="bg-primary p-12 text-white relative">
                          <div className="absolute top-0 right-0 p-12 opacity-10">
                             <Zap className="w-40 h-40" />

@@ -22,6 +22,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -223,44 +224,91 @@ export default function HealthCenters() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-slate-950 font-outfit shadow-3xl text-white">
-          <div className="bg-slate-900 px-10 py-10 text-white relative">
+        <DialogContent aria-describedby={undefined} className="max-w-2xl p-0 overflow-hidden border-none shadow-3xl rounded-[2.5rem] bg-card font-outfit max-h-[90vh] flex flex-col">
+          <div className="bg-gradient-to-br from-indigo-600 via-indigo-800 to-slate-900 px-10 py-10 text-white relative shrink-0">
             <div className="flex items-center gap-6 relative z-10">
-              <div className="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-2xl text-white">
+              <div className="w-16 h-16 rounded-2xl bg-background/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl text-white">
                 <Building2 className="h-8 w-8 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-black uppercase  tracking-tighter">Registro Institucional</DialogTitle>
-                <p className="text-indigo-400 text-[9px] font-black uppercase tracking-[0.3em] mt-2">Sincronización de Infraestructura Maestra</p>
+                <DialogTitle className="text-2xl font-black uppercase tracking-tighter text-white m-0">Registro Institucional</DialogTitle>
+                <p className="text-indigo-200/70 text-[9px] font-black uppercase tracking-[0.3em] mt-2">Sincronización de Infraestructura Maestra</p>
               </div>
             </div>
           </div>
-          <div className="p-10 space-y-8 text-white">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nombre Institucional</Label>
-                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="h-14 bg-slate-900 border-white/5 rounded-xl font-bold uppercase px-6 text-white" />
-              </div>
-              <div className="space-y-3">
-                <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Potencial Estratégico</Label>
-                <Select value={formData.potential} onValueChange={v => setFormData({...formData, potential: v})}>
-                  <SelectTrigger className="h-14 bg-slate-900 border-white/5 rounded-xl font-bold uppercase  text-white"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-white/5 text-white font-bold uppercase ">
-                    <SelectItem value="Alto">ALTO IMPACTO</SelectItem>
-                    <SelectItem value="Medio">IMPACTO MEDIO</SelectItem>
-                    <SelectItem value="Bajo">ESTÁNDAR BAJO</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
+          <Tabs defaultValue="perfil" className="flex-1 flex flex-col w-full min-h-0">
+            <div className="px-10 pt-4 pb-2 border-b border-border/40 shrink-0 bg-background">
+              <TabsList className="w-full grid grid-cols-2 bg-muted/50 p-1 rounded-xl">
+                <TabsTrigger value="perfil" className="rounded-lg font-bold text-[11px] uppercase tracking-wider">Identidad Institucional</TabsTrigger>
+                <TabsTrigger value="localizacion" className="rounded-lg font-bold text-[11px] uppercase tracking-wider">Localización</TabsTrigger>
+              </TabsList>
             </div>
-            <div className="space-y-3">
-              <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Dirección de Sede</Label>
-              <Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="h-14 bg-slate-900 border-white/5 rounded-xl font-bold uppercase px-6 text-white" />
+
+            <div className="px-10 py-8 overflow-y-auto custom-scrollbar flex-1 bg-card text-foreground">
+              <TabsContent value="perfil" className="m-0 space-y-8 mt-0">
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Nombre Institucional</Label>
+                      <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase px-6 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Tipo de Facilidad</Label>
+                      <Select value={formData.facility_type} onValueChange={v => setFormData({...formData, facility_type: v})}>
+                        <SelectTrigger className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase shadow-inner"><SelectValue /></SelectTrigger>
+                        <SelectContent className="rounded-xl border-border/40 bg-card font-bold uppercase">
+                          <SelectItem value="Hospital">HOSPITAL</SelectItem>
+                          <SelectItem value="Clínica">CLÍNICA</SelectItem>
+                          <SelectItem value="Ambulatorio">AMBULATORIO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Potencial Estratégico</Label>
+                      <Select value={formData.potential} onValueChange={v => setFormData({...formData, potential: v})}>
+                        <SelectTrigger className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase shadow-inner"><SelectValue /></SelectTrigger>
+                        <SelectContent className="rounded-xl border-border/40 bg-card font-bold uppercase">
+                          <SelectItem value="Alto">ALTO IMPACTO</SelectItem>
+                          <SelectItem value="Medio">IMPACTO MEDIO</SelectItem>
+                          <SelectItem value="Bajo">ESTÁNDAR BAJO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Teléfono</Label>
+                      <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase px-6 tabular-nums focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" />
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="localizacion" className="m-0 space-y-8 mt-0">
+                <div className="space-y-8">
+                  <div className="space-y-3">
+                    <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Dirección de Sede</Label>
+                    <Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase px-6 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Ciudad</Label>
+                      <Input value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase px-6 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground ml-1 tracking-widest">Estado</Label>
+                      <Input value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} className="h-14 bg-muted/20 border-border rounded-xl font-bold uppercase px-6 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" />
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
             </div>
-            <div className="flex gap-4 mt-10">
-              <Button variant="ghost" onClick={() => setDialogOpen(false)} className="h-14 px-8 font-black uppercase text-rose-500 hover:bg-rose-500/10 rounded-2xl">CANCELAR</Button>
-              <Button onClick={handleSubmit} className="flex-1 h-14 bg-card text-slate-950 font-black uppercase  rounded-2xl hover:bg-slate-100 shadow-2xl">CONFIRMAR REGISTRO</Button>
-            </div>
+          </Tabs>
+
+          <div className="bg-muted/10 border-t border-border px-10 py-8 flex items-center justify-between gap-6 shrink-0">
+            <Button variant="ghost" onClick={() => setDialogOpen(false)} className="h-14 px-8 font-black uppercase text-muted-foreground hover:text-foreground hover:bg-muted/30 rounded-2xl transition-all tracking-[0.2em] text-[11px]">CANCELAR</Button>
+            <Button onClick={handleSubmit} className="flex-1 h-14 bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-white font-black uppercase rounded-2xl shadow-3xl shadow-indigo-500/30 transition-all tracking-[0.2em] text-[11px] hover:scale-[1.03] active:scale-[0.98]">CONFIRMAR REGISTRO</Button>
           </div>
         </DialogContent>
       </Dialog>

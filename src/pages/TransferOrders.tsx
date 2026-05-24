@@ -672,7 +672,7 @@ export default function TransferOrders() {
                 CREATE TRANSFER ORDER DIALOG
                 ============================================================ */}
             <Dialog open={formOpen} onOpenChange={v => !saving && setFormOpen(v)}>
-                <DialogContent className="max-w-3xl bg-card border-border/40 rounded-[2rem] shadow-premium-2xl font-display p-0 overflow-hidden max-h-[92vh] flex flex-col">
+                <DialogContent aria-describedby={undefined} className="max-w-3xl bg-card border-border/40 rounded-[2rem] shadow-premium-2xl font-display p-0 overflow-hidden max-h-[92vh] flex flex-col">
                     <DialogHeader className="p-8 border-b border-border/40 bg-muted/5 flex-shrink-0">
                         <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
@@ -855,7 +855,7 @@ export default function TransferOrders() {
 
             {/* Detail Dialog */}
             <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
-                <DialogContent className="max-w-lg bg-card border-border/40 rounded-[2rem] shadow-premium-2xl font-display p-0 overflow-hidden">
+                <DialogContent aria-describedby={undefined} className="max-w-lg bg-card border-border/40 rounded-[2rem] shadow-premium-2xl font-display p-0 overflow-hidden">
                     {selectedOrder && (
                         <>
                             <DialogHeader className="p-8 border-b border-border/40 bg-muted/5">

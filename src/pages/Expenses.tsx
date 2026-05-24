@@ -79,7 +79,7 @@ export default function Expenses() {
             setLoading(true);
             let query: any = supabase
                 .from('expenses')
-                .select('*, profiles(first_name, last_name)');
+                .select('*');
 
             if (isSupervisor && zoneId) {
                 query = query.eq('zone_id', zoneId);
@@ -297,8 +297,8 @@ export default function Expenses() {
                                     <Plus className="mr-3 h-4 w-4" /> Registrar Movimiento
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[500px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-hidden bg-card">
-                                <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative">
+                            <DialogContent className="sm:max-w-[500px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-hidden bg-card max-h-[90vh] flex flex-col">
+                                <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative shrink-0">
                                     <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
                                     <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase mb-2 font-display">Declarar Gasto</DialogTitle>
                                     <DialogDescription className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-70">
@@ -306,7 +306,19 @@ export default function Expenses() {
                                     </DialogDescription>
                                 </DialogHeader>
                                 
-                                <div className="space-y-8 p-10">
+                                <Tabs defaultValue="basico" className="flex-1 flex flex-col w-full min-h-0">
+                                    <div className="px-10 pt-4 pb-2 border-b border-border/40 shrink-0 bg-background">
+                                        <TabsList className="w-full grid grid-cols-2 bg-muted/50 p-1 rounded-xl">
+                                            <TabsTrigger value="basico" className="rounded-lg font-bold text-[11px] uppercase tracking-wider">
+                                                Datos Básicos
+                                            </TabsTrigger>
+                                            <TabsTrigger value="detalles" className="rounded-lg font-bold text-[11px] uppercase tracking-wider">
+                                                Detalles & Soporte
+                                            </TabsTrigger>
+                                        </TabsList>
+                                    </div>
+                                    <div className="px-10 py-6 overflow-y-auto custom-scrollbar flex-1 bg-card">
+                                        <TabsContent value="basico" className="m-0 space-y-6 mt-0 animate-in fade-in slide-in-from-right-2">
                                     <div className="space-y-3">
                                         <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Clasificación de Recurso *</Label>
                                         <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
@@ -400,8 +412,10 @@ export default function Expenses() {
                                         </div>
                                     )}
 
-                                    <div className="space-y-4">
-                                        <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Detalles de Operación</Label>
+                                        </TabsContent>
+                                        <TabsContent value="detalles" className="m-0 space-y-6 mt-0 animate-in fade-in slide-in-from-right-2">
+                                            <div className="space-y-4">
+                                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Detalles de Operación</Label>
                                         <Input
                                             value={formData.vendor}
                                             onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
@@ -424,16 +438,17 @@ export default function Expenses() {
                                                 />
                                             </div>
                                         </div>
+                                            </div>
+                                        </TabsContent>
                                     </div>
-
-                                    <div className="flex gap-4 pt-6">
-                                        <Button variant="outline" onClick={() => setDialogOpen(false)} className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">
-                                            Abortar
-                                        </Button>
-                                        <Button onClick={handleSubmit} className="flex-1 bg-primary hover:bg-primary/90 text-white font-black h-14 rounded-2xl shadow-premium-md transition-all active:scale-95 uppercase text-[10px] tracking-widest">
-                                            Finalizar Transmisión
-                                        </Button>
-                                    </div>
+                                </Tabs>
+                                <div className="bg-muted/10 border-t border-border/40 px-10 py-6 flex gap-4 shrink-0">
+                                    <Button variant="outline" onClick={() => setDialogOpen(false)} className="h-14 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40">
+                                        Abortar
+                                    </Button>
+                                    <Button onClick={handleSubmit} className="flex-1 bg-primary hover:bg-primary/90 text-white font-black h-14 rounded-2xl shadow-premium-md transition-all active:scale-95 uppercase text-[10px] tracking-widest">
+                                        Finalizar Transmisión
+                                    </Button>
                                 </div>
                             </DialogContent>
                         </Dialog>

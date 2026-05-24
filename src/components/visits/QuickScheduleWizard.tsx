@@ -84,7 +84,9 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess, visitData }
     useEffect(() => {
         if (open) {
             loadContacts();
-            loadResources();
+            if (organizationId) {
+                loadResources();
+            }
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             setScheduledDate(tomorrow.toISOString().split('T')[0]);
@@ -97,7 +99,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess, visitData }
                 setCurrentStep(1);
             }
         }
-    }, [open, visitType, visitData]);
+    }, [open, visitType, visitData, organizationId]);
 
     const loadContacts = async () => {
         if (!user) return;
@@ -164,7 +166,7 @@ export function QuickScheduleWizard({ open, onOpenChange, onSuccess, visitData }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] shadow-premium-2xl bg-card font-display max-h-[90vh] flex flex-col text-foreground">
+            <DialogContent aria-describedby={undefined} className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] shadow-premium-2xl bg-card font-display max-h-[90vh] flex flex-col text-foreground">
                 <div className="bg-muted/5 px-10 py-8 border-b border-border/40 relative">
                     <div className="flex items-center gap-6 relative z-10">
                         <div className="w-16 h-16 rounded-2xl bg-primary text-white flex items-center justify-center shadow-premium-md border border-primary/20">
