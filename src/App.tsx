@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ModuleGuard } from "@/components/guards/ModuleGuard";
 import { OrganizationProvider } from "./hooks/useOrganization";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { DemoDataSeeder } from "@/components/demo/DemoDataSeeder";
@@ -93,6 +94,12 @@ const OnboardingWizard = lazy(() => import("./components/onboarding/OnboardingWi
 
 const WarehouseLayout = lazy(() => import("@/components/warehouse/WarehouseLayout"));
 
+// Lazy loaded placeholder components
+const Quotes = lazy(() => import("./pages/Quotes"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const Baremos = lazy(() => import("./pages/Baremos"));
+const Cycles = lazy(() => import("./pages/Planning/Cycles"));
+
 // Loading fallback component
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -140,52 +147,72 @@ const AppContent = () => (
     } />
     <Route path="agenda" element={
       <ProtectedRoute>
-        <Layout><Agenda /></Layout>
+        <ModuleGuard moduleKey="agenda">
+          <Layout><Agenda /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="planner" element={
       <ProtectedRoute>
-        <Layout><Planner /></Layout>
+        <ModuleGuard moduleKey="agenda">
+          <Layout><Planner /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="events" element={
       <ProtectedRoute>
-        <Layout><Events /></Layout>
+        <ModuleGuard moduleKey="agenda">
+          <Layout><Events /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="contacts" element={
       <ProtectedRoute>
-        <Layout><Contacts /></Layout>
+        <ModuleGuard moduleKey="contacts">
+          <Layout><Contacts /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="doctors" element={
       <ProtectedRoute>
-        <Layout><Doctors /></Layout>
+        <ModuleGuard moduleKey="doctors">
+          <Layout><Doctors /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="pharmacies" element={
       <ProtectedRoute>
-        <Layout><Pharmacies /></Layout>
+        <ModuleGuard moduleKey="pharmacies">
+          <Layout><Pharmacies /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="natural-stores" element={
       <ProtectedRoute>
-        <Layout><NaturalStores /></Layout>
+        <ModuleGuard moduleKey="pharmacies">
+          <Layout><NaturalStores /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="commerces" element={
       <ProtectedRoute>
-        <Layout><Commerces /></Layout>
+        <ModuleGuard moduleKey="pharmacies">
+          <Layout><Commerces /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="specialties" element={
       <ProtectedRoute>
-        <Layout><Specialties /></Layout>
+        <ModuleGuard moduleKey="doctors">
+          <Layout><Specialties /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="drugstores" element={
       <ProtectedRoute>
-        <Layout><Drugstores /></Layout>
+        <ModuleGuard moduleKey="pharmacies">
+          <Layout><Drugstores /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
 
@@ -197,7 +224,9 @@ const AppContent = () => (
 
     <Route path="visits" element={
       <ProtectedRoute>
-        <Layout><Visits /></Layout>
+        <ModuleGuard moduleKey="visits">
+          <Layout><Visits /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="products" element={
@@ -207,32 +236,64 @@ const AppContent = () => (
     } />
     <Route path="muestras" element={
       <ProtectedRoute>
-        <Layout><Samples /></Layout>
+        <ModuleGuard moduleKey="sample_banks">
+          <Layout><Samples /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="material-pop" element={
       <ProtectedRoute>
-        <Layout><MaterialPOP /></Layout>
+        <ModuleGuard moduleKey="sample_banks">
+          <Layout><MaterialPOP /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="sample-banks" element={
       <ProtectedRoute>
-        <Layout><SampleBanks /></Layout>
+        <ModuleGuard moduleKey="sample_banks">
+          <Layout><SampleBanks /></Layout>
+        </ModuleGuard>
+      </ProtectedRoute>
+    } />
+    <Route path="quotes" element={
+      <ProtectedRoute>
+        <Layout><Quotes /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="faq" element={
+      <ProtectedRoute>
+        <Layout><FAQ /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="baremos" element={
+      <ProtectedRoute>
+        <Layout><Baremos /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="cycles" element={
+      <ProtectedRoute>
+        <Layout><Cycles /></Layout>
       </ProtectedRoute>
     } />
     <Route path="objectives" element={
       <ProtectedRoute>
-        <Layout><Objectives /></Layout>
+        <ModuleGuard moduleKey="objectives">
+          <Layout><Objectives /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="expenses" element={
       <ProtectedRoute>
-        <Layout><Expenses /></Layout>
+        <ModuleGuard moduleKey="expenses">
+          <Layout><Expenses /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="reports" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'coordinator', 'supervisor']}>
-        <Layout><Reports /></Layout>
+        <ModuleGuard moduleKey="reports">
+          <Layout><Reports /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="health-centers" element={
@@ -242,7 +303,9 @@ const AppContent = () => (
     } />
     <Route path="work-processes" element={
       <ProtectedRoute>
-        <Layout><WorkProcesses /></Layout>
+        <ModuleGuard moduleKey="pmbok">
+          <Layout><WorkProcesses /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="notifications" element={
@@ -257,28 +320,38 @@ const AppContent = () => (
     } />
     <Route path="zones" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-        <Layout><Zones /></Layout>
+        <ModuleGuard moduleKey="zones">
+          <Layout><Zones /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="hr" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-        <Layout><HumanResources /></Layout>
+        <ModuleGuard moduleKey="hr">
+          <Layout><HumanResources /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="admin/hr/recruitment" element={
       <ProtectedRoute allowedRoles={['master']}>
-        <Layout><HRRecruitment /></Layout>
+        <ModuleGuard moduleKey="hr">
+          <Layout><HRRecruitment /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="admin/pmbok-master" element={
       <ProtectedRoute allowedRoles={['master']}>
-        <Layout><PMBOKMaster /></Layout>
+        <ModuleGuard moduleKey="pmbok">
+          <Layout><PMBOKMaster /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="admin/crm" element={<Navigate to="/sales-pipeline" replace />} />
     <Route path="sales-pipeline" element={
       <ProtectedRoute>
-        <Layout><SalesPipeline /></Layout>
+        <ModuleGuard moduleKey="sales_pipeline">
+          <Layout><SalesPipeline /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="master-panel" element={
@@ -298,12 +371,16 @@ const AppContent = () => (
     } />
     <Route path="finance-monitor" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-        <Layout><FinanceMonitor /></Layout>
+        <ModuleGuard moduleKey="finance">
+          <Layout><FinanceMonitor /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="documentos" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-        <Layout><DocumentCenter /></Layout>
+        <ModuleGuard moduleKey="documents">
+          <Layout><DocumentCenter /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="settings" element={
@@ -318,17 +395,23 @@ const AppContent = () => (
     } />
     <Route path="transfer-orders" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing', 'coordinator', 'supervisor', 'representative']}>
-        <Layout><TransferOrders /></Layout>
+        <ModuleGuard moduleKey="transfers">
+          <Layout><TransferOrders /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="coverage-map" element={
       <ProtectedRoute>
-        <Layout><CoverageMap /></Layout>
+        <ModuleGuard moduleKey="coverage_map">
+          <Layout><CoverageMap /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="promotional-cycles" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
-        <Layout><PromotionalCycles /></Layout>
+        <ModuleGuard moduleKey="cycles">
+          <Layout><PromotionalCycles /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="planning/cycles" element={<Navigate to="/promotional-cycles" replace />} />
@@ -339,7 +422,9 @@ const AppContent = () => (
     } />
     <Route path="billing" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
-        <Layout><Billing /></Layout>
+        <ModuleGuard moduleKey="finance">
+          <Layout><Billing /></Layout>
+        </ModuleGuard>
       </ProtectedRoute>
     } />
     <Route path="logs" element={

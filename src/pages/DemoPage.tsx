@@ -13,6 +13,8 @@ import { Loader2, Rocket, CheckCircle2, Sparkles, ArrowLeft } from 'lucide-react
 import { loginToDemo, createDemoWelcomeToast } from '@/lib/demoUtils';
 import { useToast } from '@/hooks/use-toast';
 import { DemoRegistrationForm } from '@/components/demo/DemoRegistrationForm';
+import { Button } from '@/components/ui/button';
+
 
 export default function DemoPage() {
     const navigate = useNavigate();

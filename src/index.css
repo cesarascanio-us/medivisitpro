@@ -18,55 +18,48 @@
 @layer base {
 
   :root {
-    /* 1. SURFACES */
+    /* Fondos */
     --background:        0 0% 97%;        /* #F7F8FA — gris página */
     --foreground:        215 32% 16%;     /* #1A2332 — texto principal */
-
     --card:              0 0% 100%;       /* #FFFFFF — superficie card */
     --card-foreground:   215 32% 16%;
-
     --popover:           0 0% 100%;
     --popover-foreground:215 32% 16%;
 
-    --surface: 210 20% 98%;
-    --surface-foreground: 215 32% 16%;
-
-    /* 2. BRAND — Azul petróleo farmacéutico */
+    /* Acento principal — azul petróleo farmacéutico */
     --primary:           192 83% 23%;     /* #0B5C6E */
     --primary-foreground:0 0% 100%;
 
-    /* 3. ACENTO SECUNDARIO — Verde salud */
+    /* Acento secundario — verde salud */
     --secondary:         158 68% 36%;     /* #1D9E75 */
     --secondary-foreground:0 0% 100%;
 
-    /* 4. MUTED */
+    /* Muted */
     --muted:             210 20% 95%;     /* #EEF1F5 */
     --muted-foreground:  215 20% 45%;     /* #6B7A8D */
 
-    /* 5. ACENTO UI */
+    /* Acento UI */
     --accent:            192 50% 94%;     /* #E6F4F7 — hover primario */
     --accent-foreground: 192 83% 23%;     /* #0B5C6E */
 
-    /* 6. SEMÁNTICOS */
+    /* Semánticos */
     --destructive:       0 72% 35%;       /* #991B1B */
     --destructive-foreground:0 0% 100%;
     --warning:           32 95% 35%;      /* #B45309 */
     --warning-foreground:0 0% 100%;
     --success:           158 68% 36%;     /* #1D9E75 */
     --success-foreground:0 0% 100%;
-    --info:              199 89% 40%;
-    --info-foreground:   0 0% 100%;
 
-    /* 7. BORDES */
+    /* Bordes */
     --border:            215 20% 88%;     /* #E2E6EA */
     --input:             215 20% 88%;
     --ring:              192 83% 23%;
 
-    /* 8. RADIO */
+    /* Radios */
     --radius: 7px;
 
     /* 9. SHADOWS */
-    --shadow-soft: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
     --shadow-card: 0 2px 8px -2px rgba(0, 0, 0, 0.06), 0 1px 4px -1px rgba(0, 0, 0, 0.04);
     --shadow-card-hover: 0 8px 20px -4px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
     --shadow-premium-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
@@ -84,73 +77,20 @@
     --font-display: 'Inter', system-ui, sans-serif;
 
     /* 12. CHART COLORS */
-    --chart-1: 192 83% 23%;             /* Azul petróleo primario */
-    --chart-2: 158 68% 36%;             /* Verde salud */
-    --chart-3: 32 95% 45%;              /* Ámbar */
-    --chart-4: 262 60% 55%;             /* Púrpura suave */
-    --chart-5: 199 70% 48%;             /* Celeste */
+    --chart-1: 192 83% 23%;
+    /* Azul petróleo primario */
+    --chart-2: 158 68% 36%;
+    /* Verde salud */
+    --chart-3: 32 95% 45%;
+    /* Ámbar */
+    --chart-4: 262 60% 55%;
+    /* Púrpura suave */
+    --chart-5: 199 70% 48%;
+    /* Celeste */
   }
 
-  /* Modo oscuro — elegante carbón cálido */
-  .dark {
-    --background:        215 32% 10%;     /* #111827 carbón cálido */
-    --foreground:        210 20% 92%;     /* #E8ECF0 */
+  /* Dark mode ha sido removido por instrucción de rediseño Light-First Farmacéutico corporativo */
 
-    --card:              215 28% 14%;     /* #1C2535 */
-    --card-foreground:   210 20% 92%;
-
-    --popover:           215 28% 14%;
-    --popover-foreground:210 20% 92%;
-
-    --surface: 215 28% 17%;
-    --surface-foreground: 210 20% 92%;
-
-    --primary:           192 70% 42%;     /* #1A8FA6 — más claro en dark */
-    --primary-foreground:0 0% 100%;
-
-    --secondary:         158 55% 42%;     /* #2DB885 */
-    --secondary-foreground:0 0% 100%;
-
-    --muted:             215 25% 18%;     /* #242E3F */
-    --muted-foreground:  215 15% 58%;     /* #8A96A8 */
-
-    --accent:            192 40% 18%;     /* #1A3540 */
-    --accent-foreground: 192 70% 65%;
-
-    --destructive:       0 62% 52%;       /* #D93535 */
-    --destructive-foreground:0 0% 100%;
-
-    --warning:           32 85% 55%;      /* #E07A20 */
-    --warning-foreground:0 0% 100%;
-
-    --success:           158 55% 42%;
-    --success-foreground:0 0% 100%;
-
-    --info:              199 70% 52%;
-    --info-foreground:   0 0% 100%;
-
-    --border:            215 20% 22%;     /* #2E3A4E */
-    --input:             215 20% 22%;
-    --ring:              192 70% 42%;
-
-    --shadow-soft: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.25), 0 1px 4px rgba(0, 0, 0, 0.15);
-    --shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
-    --shadow-premium-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-premium-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
-    --shadow-premium-lg: 0 10px 24px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
-    --shadow-premium-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
-
-    --glass-bg: rgba(28, 37, 53, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-blur: 16px;
-
-    --chart-1: 192 70% 52%;
-    --chart-2: 158 55% 52%;
-    --chart-3: 32 85% 60%;
-    --chart-4: 262 60% 65%;
-    --chart-5: 199 70% 58%;
-  }
 
   /* ────────────────────────────────────────────────────────────────────
      GLOBAL RESETS
@@ -165,23 +105,35 @@
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     @apply min-h-screen overflow-x-hidden;
-    transition: filter 0.3s ease;
-  }
-
-  html:not(.dark) body {
-    filter: brightness(0.75);
   }
 
   /* Typography System — Inter */
-  h1, h2, h3, h4, h5, h6, .font-display {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
     font-family: var(--font-display);
     @apply font-semibold tracking-tight text-foreground;
   }
 
-  h1 { @apply text-[clamp(1.15rem,3vw,1.5rem)] leading-tight font-semibold; }
-  h2 { @apply text-[clamp(1rem,2.5vw,1.25rem)] leading-snug font-semibold; }
-  h3 { @apply text-[clamp(0.9rem,2vw,1.05rem)] leading-snug font-medium; }
-  h4 { @apply text-[clamp(0.8rem,1.5vw,0.9rem)] font-medium; }
+  h1 {
+    @apply text-[clamp(1.15rem,3vw,1.5rem)] leading-tight font-semibold;
+  }
+
+  h2 {
+    @apply text-[clamp(1rem,2.5vw,1.25rem)] leading-snug font-semibold;
+  }
+
+  h3 {
+    @apply text-[clamp(0.9rem,2vw,1.05rem)] leading-snug font-medium;
+  }
+
+  h4 {
+    @apply text-[clamp(0.8rem,1.5vw,0.9rem)] font-medium;
+  }
 
   /* Container fluid responsivo */
   .container-responsive {
@@ -203,30 +155,61 @@
 @layer components {
 
   /* ─── Rounding Scale ─── */
-  .rounded-elite-sm { @apply rounded-md; }
-  .rounded-elite-md { @apply rounded-lg; }
-  .rounded-elite-lg { @apply rounded-xl; }
-  .rounded-elite-xl { @apply rounded-2xl; }
+  .rounded-elite-sm {
+    @apply rounded-md;
+  }
+
+  .rounded-elite-md {
+    @apply rounded-lg;
+  }
+
+  .rounded-elite-lg {
+    @apply rounded-xl;
+  }
+
+  .rounded-elite-xl {
+    @apply rounded-2xl;
+  }
 
   /* ─── Typography ─── */
-  .text-elite-xs  { @apply text-[0.625rem] font-semibold uppercase tracking-[0.08em]; }
-  .text-elite-sm  { @apply text-[0.7rem] font-medium uppercase tracking-[0.06em]; }
-  .text-elite-md  { @apply text-xs font-medium uppercase tracking-[0.04em]; }
-  .text-elite-title { @apply text-sm font-semibold; }
+  .text-elite-xs {
+    @apply text-[0.625rem] font-semibold uppercase tracking-[0.08em];
+  }
+
+  .text-elite-sm {
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.06em];
+  }
+
+  .text-elite-md {
+    @apply text-xs font-medium uppercase tracking-[0.04em];
+  }
+
+  .text-elite-title {
+    @apply text-sm font-semibold;
+  }
 
   /* ─── Premium Cards ─── */
   .card-elite {
-    @apply bg-card border border-border rounded-lg shadow-premium-sm transition-all duration-200 overflow-hidden;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
   }
+
   .card-elite:hover {
-    @apply shadow-premium-md border-border;
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.07), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+    border-color: hsl(var(--primary) / 0.25);
+    transform: translateY(-2px);
   }
 
   /* ─── Sidebar Links ─── */
   .sidebar-link {
-    @apply flex items-center px-2 py-1.5 text-sm rounded-md transition-all duration-150;
+    @apply flex items-center px-2.5 py-1.5 text-sm rounded-md transition-all duration-150;
     @apply text-muted-foreground hover:bg-muted hover:text-foreground;
   }
+
   .sidebar-link-active {
     @apply bg-accent text-accent-foreground font-medium;
     @apply hover:bg-accent hover:text-accent-foreground;
@@ -234,45 +217,120 @@
 
   /* ─── Glass ─── */
   .glass-elite {
-    @apply backdrop-blur-md border border-border/50 shadow-premium-md;
+    @apply backdrop-blur-md border shadow-premium-md;
     background: var(--glass-bg);
+    border-color: hsl(var(--border) / 0.5);
   }
 
   /* ─── Corporate Buttons ─── */
   .btn-elite {
-    @apply h-9 px-4 rounded-md font-medium text-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+    @apply h-9 px-4 rounded-md font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 select-none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
   .btn-elite-primary {
-    @apply btn-elite bg-primary text-primary-foreground hover:bg-primary/90 shadow-premium-sm;
+    @apply btn-elite text-primary-foreground shadow-premium-sm;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.9) 100%);
   }
+  
+  .btn-elite-primary:hover {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, hsl(var(--primary)) 100%);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.15), var(--shadow-premium-sm);
+    transform: translateY(-1px);
+  }
+
+  .btn-elite-primary:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   .btn-elite-secondary {
-    @apply btn-elite bg-background text-foreground border border-border hover:bg-muted;
+    @apply btn-elite bg-card text-foreground shadow-sm;
+    border: 1px solid hsl(var(--border));
   }
+
+  .btn-elite-secondary:hover {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.25);
+    transform: translateY(-1px);
+  }
+
+  .btn-elite-secondary:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   .btn-elite-ghost {
     @apply btn-elite bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground;
   }
 
   /* ─── Inputs ─── */
   .input-elite {
-    @apply h-9 bg-background border border-border rounded-md px-3 text-sm text-foreground;
-    @apply placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all;
+    @apply h-9 bg-card px-3 text-sm text-foreground;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .input-elite::placeholder {
+    color: hsl(var(--muted-foreground) / 0.45);
+  }
+
+  .input-elite:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.02);
   }
 
   /* ─── Status Badges ─── */
   .badge-elite {
-    @apply font-medium text-xs px-2 py-0.5 rounded border flex items-center gap-1;
+    @apply font-semibold text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded border flex items-center gap-1.5;
   }
-  .badge-elite-success { @apply badge-elite bg-green-50 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800; }
-  .badge-elite-warning { @apply badge-elite bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800; }
-  .badge-elite-error   { @apply badge-elite bg-red-50 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800; }
-  .badge-elite-info    { @apply badge-elite bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800; }
+
+  .badge-elite-success {
+    @apply badge-elite bg-emerald-50/80 text-emerald-700 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/30;
+  }
+
+  .badge-elite-warning {
+    @apply badge-elite bg-amber-50/80 text-amber-700 border-amber-200/60 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/30;
+  }
+
+  .badge-elite-error {
+    @apply badge-elite bg-rose-50/80 text-rose-700 border-rose-200/60 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800/30;
+  }
+
+  .badge-elite-info {
+    @apply badge-elite bg-sky-50/80 text-sky-700 border-sky-200/60 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-800/30;
+  }
 
   /* ─── Icon Containers ─── */
   .icon-box-elite {
-    @apply w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 border;
+    @apply w-9 h-9 rounded-lg flex items-center justify-center select-none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .icon-box-primary { @apply icon-box-elite bg-accent text-primary border-accent; }
-  .icon-box-success { @apply icon-box-elite bg-green-50 text-green-700 border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800/30; }
+
+  .icon-box-primary {
+    @apply icon-box-elite;
+    background-color: hsl(var(--primary) / 0.06);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.12);
+  }
+
+  .icon-box-primary:hover {
+    background-color: hsl(var(--primary) / 0.12);
+    border-color: hsl(var(--primary) / 0.25);
+    transform: scale(1.05);
+  }
+
+  .icon-box-success {
+    @apply icon-box-elite bg-emerald-50 text-emerald-600 border-emerald-100;
+  }
+  
+  .icon-box-success:hover {
+    background-color: hsl(158 68% 36% / 0.12);
+    border-color: hsl(158 68% 36% / 0.25);
+    transform: scale(1.05);
+  }
 
   /* ─── Gradient (eliminado — fondo plano light) ─── */
   .mesh-gradient-primary {
@@ -307,12 +365,15 @@
   width: 5px;
   height: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   @apply bg-border rounded-full;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-muted-foreground/30;
 }
@@ -323,6 +384,7 @@
 .font-sans {
   font-family: var(--font-sans);
 }
+
 .font-display {
   font-family: var(--font-display);
 }

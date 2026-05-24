@@ -32,7 +32,9 @@ export const exportToCSV = (filename: string, data: any[]) => {
         try {
           const date = new Date(val);
           if (!isNaN(date.getTime())) return `"${date.toLocaleString()}"`;
-        } catch(e) {}
+        } catch (_) {
+          // ignore parsing error
+        }
       }
       if (typeof val === 'object' && val !== null) {
         return `"${JSON.stringify(val).replace(/"/g, '""')}"`;

@@ -147,52 +147,59 @@ export default function BillingManager() {
                     <div className="flex items-center gap-3">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
-                                <Button className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-black text-white shadow-lg shadow-slate-200 dark:shadow-none transition-all hover:-translate-y-0.5 active:translate-y-0 font-bold uppercase text-[10px] tracking-widest">
+                                <Button className="btn-elite-primary shadow-premium-md">
                                     <Plus className="w-4 h-4 mr-3" />
                                     Generar Factura
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-card border-none shadow-2xl rounded-[2.5rem] max-w-md p-0 overflow-hidden">
-                                <div className="bg-slate-900 p-8 text-white">
-                                    <DialogTitle className="text-2xl font-black uppercase tracking-tight">Nueva Factura Manual</DialogTitle>
-                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Sincronización con Pasarela de Pagos</p>
+                            <DialogContent className="bg-card rounded-2xl border border-border shadow-premium-2xl max-w-md p-0 overflow-hidden font-display">
+                                <div className="bg-muted/30 p-6 border-b border-border/80">
+                                     <div className="flex items-center gap-4">
+                                         <div className="w-10 h-10 rounded-xl bg-card flex items-center justify-center shadow-soft border border-border">
+                                             <CreditCard className="h-5 w-5 text-primary" />
+                                         </div>
+                                         <div>
+                                             <DialogTitle className="text-lg font-bold text-foreground tracking-tight">Nueva Factura Manual</DialogTitle>
+                                             <p className="text-xs text-muted-foreground mt-0.5">Sincronización con Pasarela de Pagos</p>
+                                         </div>
+                                     </div>
                                 </div>
-                                <div className="p-8 space-y-6">
+                                <div className="p-8 space-y-4 bg-card">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Cliente / Organización</label>
+                                        <label className="text-xs font-semibold text-foreground/80 ml-1">Cliente / Organización</label>
                                         <Select value={selectedOrg} onValueChange={setSelectedOrg}>
-                                            <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-slate-200 text-slate-900">
+                                            <SelectTrigger className="input-elite h-11 w-full text-sm bg-card text-foreground">
                                                 <SelectValue placeholder="Seleccionar organización..." />
                                             </SelectTrigger>
-                                            <SelectContent className="rounded-xl border-slate-100 shadow-xl">
+                                            <SelectContent className="rounded-xl border-border text-sm">
                                                 {organizations.map(org => (
-                                                    <SelectItem key={org.id} value={org.id} className="font-medium">{org.name}</SelectItem>
+                                                    <SelectItem key={org.id} value={org.id} className="text-xs font-medium">{org.name}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400">N° Factura</label>
+                                            <label className="text-xs font-semibold text-foreground/80 ml-1">N° Factura</label>
                                             <Input
                                                 value={invoiceNumber}
                                                 onChange={e => setInvoiceNumber(e.target.value)}
-                                                className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 text-slate-900"
+                                                className="input-elite h-11 w-full text-sm bg-card text-foreground"
                                                 placeholder="INV-001"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400">Monto ($)</label>
+                                            <label className="text-xs font-semibold text-foreground/80 ml-1">Monto ($)</label>
                                             <Input
                                                 type="number"
                                                 value={amount}
                                                 onChange={e => setAmount(e.target.value)}
-                                                className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-indigo-500 text-slate-900"
+                                                className="input-elite h-11 w-full text-sm bg-card text-foreground"
                                                 placeholder="0.00"
                                             />
                                         </div>
                                     </div>
-                                    <Button onClick={handleCreateInvoice} className="w-full h-14 bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-indigo-100 mt-4 transition-all">
+                                    <Button onClick={handleCreateInvoice} className="btn-elite-primary w-full mt-4">
                                         Emitir Comprobante
                                     </Button>
                                 </div>

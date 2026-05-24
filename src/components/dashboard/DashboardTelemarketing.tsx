@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { EliteHeader, EliteKPICard, EliteCard, EliteButton, EliteInput } from "@/components/layout/DesignSystem";
 
 export default function DashboardTelemarketing() {
-    const { user, organizationName } = useAuth();
+    const { user, profile, organizationName } = useAuth();
     const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
@@ -14,7 +14,7 @@ export default function DashboardTelemarketing() {
         return () => clearInterval(timer);
     }, []);
 
-    const userName = user?.email?.split('@')[0] || "Agente";
+    const userName = profile?.first_name || user?.user_metadata?.first_name || user?.email?.split('@')[0] || "Agente";
 
     return (
         <div className="space-y-10 pb-10">

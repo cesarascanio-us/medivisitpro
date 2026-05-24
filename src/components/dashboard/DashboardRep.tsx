@@ -43,7 +43,7 @@ interface DailyMetrics {
 }
 
 export default function DashboardRep() {
-  const { user, organizationName } = useAuth();
+  const { user, profile, organizationName } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ export default function DashboardRep() {
   const { isOnline } = useOfflineSync();
   const { data: kpis } = useKpiSummary(user?.id || '');
 
-  const userName = user?.user_metadata?.first_name || user?.email?.split("@")[0] || "Representante";
+  const userName = profile?.first_name || user?.user_metadata?.first_name || user?.email?.split("@")[0] || "Representante";
   const pendingCount = visits.filter((v) => v.status === "pending").length;
 
   const loadDashboardData = useCallback(async () => {

@@ -139,10 +139,10 @@ export interface ThemeConfig {
 }
 
 const DEFAULT_THEME: ThemeConfig = {
-  primary_color: "#10b981", // Emerald default
-  secondary_color: "#059669",
-  accent_color: "#f59e0b",
-  background_style: "dark",
+  primary_color: "#0B5C6E", // Azul petróleo farmacéutico
+  secondary_color: "#1D9E75", // Verde salud
+  accent_color: "#E6F4F7", // Acento UI Light
+  background_style: "light",
   logo_url: "",
   favicon_url: "/favicon.ico",
   app_name: "MediVisitPro",

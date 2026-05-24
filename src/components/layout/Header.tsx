@@ -6,7 +6,7 @@
  ======================================================================== */
 
 import { useState } from "react";
-import { Bell, Search, Sun, Moon } from "lucide-react";
+import { Bell, Search, Sun, Moon, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
@@ -15,6 +15,14 @@ import { NotificationBadge } from "@/components/layout/NotificationBadge";
 import { OrganizationSwitcher } from "@/components/organization/OrganizationSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { OnlineStatusIndicator } from "@/components/common/OnlineStatusIndicator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Page title map from pathname
 function usePageTitle() {
@@ -74,11 +82,18 @@ export function HeaderActions() {
 
 export function Header() {
   const navigate = useNavigate();
-  const { isSystemAdmin, user, role } = useAuth();
+  const { isSystemAdmin, user, profile, role, signOut } = useAuth();
   const pageTitle = usePageTitle();
 
-  const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || "Usuario";
-  const userInitials = userName.substring(0, 2).toUpperCase();
+  const userName = profile?.first_name 
+    ? `${profile.first_name} ${profile.last_name || ''}`.trim()
+    : user?.user_metadata?.first_name 
+      || user?.email?.split('@')[0] 
+      || "Usuario";
+      
+  const userInitials = profile?.first_name 
+    ? `${profile.first_name.charAt(0)}${(profile.last_name || '').charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}`.toUpperCase()
+    : userName.substring(0, 2).toUpperCase();
 
   const getRoleLabel = () => {
     const roleLabels: Record<string, string> = {
@@ -131,16 +146,33 @@ export function Header() {
         {/* Dark mode + Notifications */}
         <HeaderActions />
 
-        {/* User Avatar */}
-        <div className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted cursor-pointer transition-colors">
-          <div className="w-7 h-7 rounded-md bg-accent flex items-center justify-center flex-shrink-0 border border-border">
-            <span className="text-xs font-semibold text-primary">{userInitials}</span>
-          </div>
-          <div className="hidden md:block min-w-0">
-            <p className="text-xs font-medium text-foreground leading-none truncate max-w-[100px]">{userName}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5 leading-none">{getRoleLabel()}</p>
-          </div>
-        </div>
+        {/* User Avatar with Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted cursor-pointer transition-colors outline-none">
+              <div className="w-7 h-7 rounded-md bg-accent flex items-center justify-center flex-shrink-0 border border-border">
+                <span className="text-xs font-semibold text-primary">{userInitials}</span>
+              </div>
+              <div className="hidden md:block min-w-0 text-left">
+                <p className="text-xs font-medium text-foreground leading-none truncate max-w-[100px]">{userName}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5 leading-none">{getRoleLabel()}</p>
+              </div>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 font-sans">
+            <DropdownMenuLabel className="font-bold">Mi Cuenta</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              <span>Perfil y Configuración</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-destructive focus:text-destructive">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Cerrar Sesión</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

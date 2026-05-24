@@ -5,427 +5,281 @@ import {
     Shield, Users, Building2, Plus, 
     RefreshCw, Search, Edit, ShieldAlert, 
     ShieldCheck, Activity, Database, Zap,
-    ChevronRight, ExternalLink, Trash2
+    ChevronRight, ExternalLink, Trash2, Key, DollarSign,
+    CheckCircle2, XCircle, Pencil, LayoutGrid, PauseCircle, PlayCircle
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth, UserRole } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { EliteHeader, EliteKPICard, EliteTabsList, EliteTabsTrigger } from "@/components/layout/DesignSystem";
 import { EliteTable, EliteColumn } from "@/components/layout/EliteTable";
 
-interface UserData {
-    user_id: string;
-    email: string;
-    role: UserRole;
-    organization_id: string | null;
-    company_id: string | null;
-    is_active: boolean;
-}
-
-interface OrganizationData {
-    id: string;
-    name: string;
-    slug: string;
-    plan_tier: string;
-    subscription_status: string;
-}
-
-interface SystemStats {
-    totalUsers: number;
-    activeUsers: number;
-    totalOrganizations: number;
-    totalVisits: number;
-}
-
-const ROLE_LABELS: Record<UserRole, string> = {
-    master: 'Sentinel Master',
-    organization_admin: 'SaaS Admin',
-    admin: 'Empresa Admin',
-    manager: 'Gerente Operativo',
-    chief: 'Jefe de Ventas',
-    coordinator: 'Coordinador',
-    supervisor: 'Supervisor',
-    telemarketing: 'Telemarketing',
-    representative: 'Visitador Médico',
-    doctor: 'Médico Especialista',
-    pharmacist: 'Farmacéutico',
-    service_chief: 'Jefe de Servicio',
-    store_manager: 'Gerente Tienda',
-    admin_saas: 'SaaS Alpha',
-    soporte_saas: 'SaaS Support',
-    desarrollo_saas: 'SaaS Core Dev'
-};
-
-const ROLE_COLORS: Record<string, string> = {
-    master: 'status-active',
-    admin_saas: 'status-destructive',
-    admin: 'status-info',
-    manager: 'status-active',
-    representative: 'status-pending'
-};
-
 export default function MasterPanel() {
-    const { isMaster } = useAuth();
+    const { isMaster, profile } = useAuth();
     const { toast } = useToast();
     const navigate = useNavigate();
     const { switchOrganization } = useOrganization();
     const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState<SystemStats>({
-        totalUsers: 0, activeUsers: 0, totalOrganizations: 0, totalVisits: 0
-    });
-    const [users, setUsers] = useState<UserData[]>([]);
-    const [organizations, setOrganizations] = useState<OrganizationData[]>([]);
-    const [editingUser, setEditingUser] = useState<string | null>(null);
-    const [newRole, setNewRole] = useState<UserRole>('representative');
-    const [newUserOrgIdEdit, setNewUserOrgIdEdit] = useState<string>('');
-    const [userDialogOpen, setUserDialogOpen] = useState(false);
     
-    // New User State
-    const [newUserEmail, setNewUserEmail] = useState('');
-    const [newUserRole, setNewUserRole] = useState<UserRole>('representative');
-    const [newUserOrgId, setNewUserOrgId] = useState<string>('');
-    const [newUserFirstName, setNewUserFirstName] = useState('');
-    const [newUserLastName, setNewUserLastName] = useState('');
-    const [isCreatingUser, setIsCreatingUser] = useState(false);
+    // ACTIVE TAB
+    const [activeTab, setActiveTab] = useState('organizations');
 
-    // Active tab
-    const [activeTab, setActiveTab] = useState('users');
+    // STATES
+    const [organizations, setOrganizations] = useState<any[]>([]);
+    const [billingPlans, setBillingPlans] = useState<any[]>([]);
+    const [payments, setPayments] = useState<any[]>([]);
+    const [systemRoles, setSystemRoles] = useState<any[]>([]);
 
-    // Organization CRUD state
-    const [orgDialogOpen, setOrgDialogOpen] = useState(false);
-    const [editingOrg, setEditingOrg] = useState<OrganizationData | null>(null);
-    const [orgName, setOrgName] = useState('');
-    const [orgSlug, setOrgSlug] = useState('');
-    const [orgPlanTier, setOrgPlanTier] = useState('starter');
-    const [orgStatus, setOrgStatus] = useState('active');
-    const [isSavingOrg, setIsSavingOrg] = useState(false);
+    const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = useState(false);
+    const [editingOrg, setEditingOrg] = useState<any>(null);
+    const [managingUsersOrg, setManagingUsersOrg] = useState<any>(null);
+    const [managingModulesOrg, setManagingModulesOrg] = useState<any>(null);
+    
+    const [orgUsers, setOrgUsers] = useState<any[]>([]);
+    const [orgFormData, setOrgFormData] = useState({ name: '', slug: '', plan_id: '', rif: '', phone: '' });
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteRole, setInviteRole] = useState('representative');
 
     useEffect(() => { 
         loadData(); 
-    }, []);
-
-    if (!isMaster) return <Navigate to="/" replace />;
+        
+        // Auto-fix para forzar la Identidad Corporativa (eliminar tema anaranjado/oscuro residual en BD)
+        const enforceCorporateTheme = async () => {
+            if (isMaster) {
+                const { data } = await supabase.from('organizations').select('settings').eq('id', '00000000-0000-0000-0000-000000000000').single();
+                if (data && data.settings && Object.keys(data.settings).length > 0) {
+                    // Resetear a null para forzar que tome el DEFAULT_THEME (Light-First Corporate)
+                    await supabase.from('organizations').update({ settings: null }).eq('id', '00000000-0000-0000-0000-000000000000');
+                    toast({ title: "Identidad Corporativa Aplicada", description: "El tema residual ha sido limpiado. Refresca la página con F5.", variant: "default" });
+                }
+            }
+        };
+        enforceCorporateTheme();
+    }, [activeTab, isMaster]);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            const [usersRes, organizationsRes] = await Promise.all([
-                supabase.from('user_roles').select('*'),
-                supabase.from('organizations').select('*')
-            ]);
-
-            const userRoles = (usersRes.data || []) as any[];
-            const orgs = (organizationsRes.data || []) as any[];
-            
-            setStats({
-                totalUsers: userRoles.length,
-                activeUsers: userRoles.filter(u => u.is_active).length,
-                totalOrganizations: orgs.length,
-                totalVisits: 0 
-            });
-
-            setOrganizations(orgs);
-
-            if (userRoles.length > 0) {
-                const { data: profiles } = await supabase
-                    .from('profiles')
-                    .select('user_id, email')
-                    .in('user_id', userRoles.map(u => u.user_id));
-
-                const hydratedUsers = userRoles.map(ur => {
-                    const p = profiles?.find(p => p.user_id === ur.user_id);
-                    return { ...ur, email: p?.email || 'N/A' };
-                });
-                setUsers(hydratedUsers);
+            if (activeTab === 'organizations') {
+                const { data } = await supabase.from('organizations').select(`
+                    id, name, slug, plan_tier, subscription_status, trial_ends_at, plan_id,
+                    plan:billing_plans(name, tier)
+                `);
+                setOrganizations(data || []);
+                const { data: plansData } = await supabase.from('billing_plans').select('*');
+                setBillingPlans(plansData || []);
             }
-        } catch (error) { 
-            toast({ title: "Error de Núcleo", description: "No se pudo sincronizar la matriz master.", variant: "destructive" }); 
+            if (activeTab === 'roles') {
+                // Mock system roles for matrix
+                setSystemRoles([
+                    { id: '1', role: 'admin', name: 'SaaS Admin', users: 12 },
+                    { id: '2', role: 'manager', name: 'Gerente Operativo', users: 45 },
+                    { id: '3', role: 'representative', name: 'Visitador Médico', users: 340 },
+                ]);
+            }
+        } catch (error: any) { 
+            toast({ title: "Error de Núcleo", description: error.message, variant: "destructive" }); 
         } finally { 
             setLoading(false); 
         }
     };
 
-    const handleUpdateUser = async () => {
-        if (!editingUser) return;
-        try {
-            const updatePayload = {
-                role: newRole,
-                organization_id: newUserOrgIdEdit === 'none' ? null : newUserOrgIdEdit
-            };
-            await supabase.from('user_roles').update(updatePayload).eq('user_id', editingUser);
-            toast({ title: "Acceso Industrial Actualizado", description: "Protocolos de seguridad refrescados." });
-            setEditingUser(null);
-            loadData();
-        } catch (error: any) { 
-            toast({ title: "Falla de Sistema", description: error.message, variant: "destructive" }); 
-        }
+    const openCreateOrg = () => {
+        setOrgFormData({ name: '', slug: '', plan_id: '', rif: '', phone: '' });
+        setIsCreateOrgModalOpen(true);
     };
 
-    const handleInviteUser = async () => {
-        setIsCreatingUser(true);
+    const openEditOrg = (org: any) => {
+        setOrgFormData({ name: org.name, slug: org.slug, plan_id: org.plan_id || '', rif: org.rif || '', phone: org.phone || '' });
+        setEditingOrg(org);
+    };
+
+    const loadOrgUsers = async (orgId: string) => {
+        const { data } = await supabase
+            .from('user_roles')
+            .select('*, profile:profiles(*)')
+            .eq('organization_id', orgId);
+        setOrgUsers(data || []);
+    };
+
+    useEffect(() => {
+        if (managingUsersOrg) {
+            loadOrgUsers(managingUsersOrg.id);
+        }
+    }, [managingUsersOrg]);
+
+    const handleCreateOrg = async () => {
         try {
-            await supabase.functions.invoke('invite-user', {
-                body: { 
-                    email: newUserEmail, 
-                    firstName: newUserFirstName, 
-                    lastName: newUserLastName, 
-                    role: newUserRole, 
-                    organizationId: newUserOrgId === 'none' ? null : newUserOrgId 
-                }
+            const { error } = await supabase.from('organizations').insert({
+                name: orgFormData.name,
+                slug: orgFormData.slug.toLowerCase().replace(/\s+/g, '-'),
+                plan_id: orgFormData.plan_id || null,
+                subscription_status: 'trialing',
+                trial_ends_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                rif: orgFormData.rif,
+                phone: orgFormData.phone,
             });
-            toast({ title: "Enlace Invitado", description: "Credenciales de acceso enviadas al terminal remoto." });
-            setUserDialogOpen(false);
-            loadData();
-        } catch (error: any) { 
-            toast({ title: "Error de Despliegue", description: error.message, variant: "destructive" }); 
-        } finally { 
-            setIsCreatingUser(false); 
-        }
-    };
-
-    const handleSaveOrganization = async () => {
-        if (!orgName || !orgSlug) {
-            toast({ title: "Validación Fallida", description: "El nombre y el slug son obligatorios.", variant: "destructive" });
-            return;
-        }
-        setIsSavingOrg(true);
-        try {
-            const payload = {
-                name: orgName,
-                slug: orgSlug.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-                plan_tier: orgPlanTier,
-                subscription_status: orgStatus,
-                onboarding_completed: true,
-                settings: {
-                    features: {
-                        basic_visits: true,
-                        advanced_reports: orgPlanTier !== 'starter',
-                        smart_agenda: true,
-                        sample_tracking: orgPlanTier === 'enterprise' || orgPlanTier === 'pro',
-                        export_data: orgPlanTier === 'enterprise',
-                        offline_sync: true
-                    }
-                }
-            };
-
-            if (editingOrg) {
-                // Update
-                const { error } = await supabase
-                    .from('organizations')
-                    .update(payload)
-                    .eq('id', editingOrg.id);
-
-                if (error) throw error;
-                toast({ title: "SaaS Tenant Actualizado", description: `La organización ${orgName} ha sido guardada.` });
-            } else {
-                // Create
-                const { error } = await supabase
-                    .from('organizations')
-                    .insert({
-                        ...payload,
-                        id: crypto.randomUUID()
-                    });
-
-                if (error) throw error;
-                toast({ title: "SaaS Tenant Creado", description: `La organización ${orgName} ha sido inicializada.` });
-            }
-            setOrgDialogOpen(false);
-            setEditingOrg(null);
-            setOrgName('');
-            setOrgSlug('');
-            loadData();
-        } catch (error: any) {
-            toast({ title: "Falla al Guardar", description: error.message, variant: "destructive" });
-        } finally {
-            setIsSavingOrg(false);
-        }
-    };
-
-    const handleDeleteOrganization = async (orgId: string, name: string) => {
-        if (!confirm(`¿Estás completamente seguro de eliminar permanentemente la organización "${name}"? Esto borrará el inquilino y podría fallar si existen registros dependientes.`)) return;
-        try {
-            const { error } = await supabase
-                .from('organizations')
-                .delete()
-                .eq('id', orgId);
-
             if (error) throw error;
-            toast({ title: "SaaS Tenant Eliminado", description: `La organización ${name} ha sido removida del núcleo.` });
+            toast({ title: "Éxito", description: "Organización creada", variant: "default" });
+            setIsCreateOrgModalOpen(false);
             loadData();
         } catch (error: any) {
-            toast({ title: "Falla al Eliminar", description: error.message, variant: "destructive" });
+            toast({ title: "Error", description: error.message, variant: "destructive" });
         }
     };
 
-    if (loading) return (
-        <div className="h-screen flex flex-col items-center justify-center bg-background space-y-8">
-            <div className="w-24 h-24 rounded-[2.5rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner animate-pulse">
-                <Zap className="h-12 w-12 text-primary animate-pulse" />
-            </div>
-            <div className="text-muted-foreground font-black uppercase tracking-[0.5em] font-display text-[10px]">Sincronizando Matriz Master...</div>
-        </div>
-    );
-
-    const userColumns: EliteColumn<UserData>[] = [
-        { 
-            header: "Identidad Digital", 
-            key: "email",
-            render: (u) => (
-                <div className="flex flex-col">
-                    <span className="font-black text-foreground text-base tracking-tight uppercase font-display">{u.email}</span>
-                    <span className="text-[10px] text-muted-foreground font-black tracking-widest uppercase">UID: {u.user_id.slice(0, 16)}...</span>
-                </div>
-            )
-        },
-        { 
-            header: "Nivel de Rango", 
-            key: "role",
-            render: (u) => (
-                <Badge className={cn("text-[10px] font-black uppercase px-4 py-1.5 rounded-full border tracking-widest", ROLE_COLORS[u.role] || "status-pending")}>
-                    {ROLE_LABELS[u.role]}
-                </Badge>
-            )
-        },
-        {
-            header: "Tenant SaaS",
-            key: "organization_id",
-            render: (u) => {
-                const org = organizations.find(o => o.id === u.organization_id);
-                return (
-                    <div className="flex items-center gap-3">
-                         <div className={cn("h-2 w-2 rounded-full", u.organization_id ? "bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" : "bg-muted-foreground/20")} />
-                         <span className="text-[11px] font-black text-foreground uppercase tracking-tight">{org?.name || 'Sistémico / Global'}</span>
-                    </div>
-                );
-            }
-        },
-        { 
-            header: "Aislamiento Operativo", 
-            key: "company_id",
-            render: (u) => (
-                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{u.company_id || 'Global Core'}</span>
-            ),
-            className: "text-right"
-        },
-        {
-            header: "Acción",
-            key: "actions",
-            render: (u) => (
-                <div className="flex justify-end gap-2">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-10 w-10 rounded-xl text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
-                        onClick={() => { setEditingUser(u.user_id); setNewRole(u.role); setNewUserOrgIdEdit(u.organization_id || 'none'); }}
-                    >
-                        <Edit size={18} />
-                    </Button>
-                </div>
-            ),
-            className: "text-right"
+    const handleUpdateOrg = async () => {
+        try {
+            const { error } = await supabase.from('organizations').update({
+                name: orgFormData.name,
+                plan_id: orgFormData.plan_id || null,
+                rif: orgFormData.rif,
+                phone: orgFormData.phone,
+            }).eq('id', editingOrg.id);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Organización actualizada", variant: "default" });
+            setEditingOrg(null);
+            loadData();
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
         }
-    ];
+    };
 
-    const orgColumns: EliteColumn<OrganizationData>[] = [
+    const toggleOrgStatus = async (org: any) => {
+        const newStatus = org.subscription_status === 'active' ? 'inactive' : 'active';
+        try {
+            const { error } = await supabase.from('organizations').update({ subscription_status: newStatus }).eq('id', org.id);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Estado actualizado", variant: "default" });
+            loadData();
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    };
+
+    const updateUserRole = async (userId: string, newRole: string, orgId: string) => {
+        try {
+            const { error } = await supabase.from('user_roles').update({ role: newRole }).eq('user_id', userId).eq('organization_id', orgId);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Rol actualizado", variant: "default" });
+            loadOrgUsers(orgId);
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    };
+
+    const inviteUser = async () => {
+        if (!inviteEmail || !managingUsersOrg) return;
+        try {
+            const { data: existingProfile } = await supabase.from('profiles').select('user_id').eq('email', inviteEmail).maybeSingle();
+            
+            if (existingProfile) {
+                const { error } = await supabase.from('user_roles').upsert({
+                    user_id: existingProfile.user_id,
+                    organization_id: managingUsersOrg.id,
+                    role: inviteRole,
+                    is_active: true,
+                });
+                if (error) throw error;
+            } else {
+                const { error } = await supabase.auth.admin.inviteUserByEmail(inviteEmail, {
+                    data: { organization_id: managingUsersOrg.id, role: inviteRole }
+                });
+                if (error) throw error;
+            }
+            toast({ title: "Éxito", description: "Usuario invitado", variant: "default" });
+            setInviteEmail('');
+            loadOrgUsers(managingUsersOrg.id);
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    };
+
+    if (!isMaster) return <Navigate to="/" replace />;
+
+    const orgColumns: EliteColumn<any>[] = [
         {
-            header: "Entidad Corporativa",
+            header: "Tenant Corporativo",
             key: "name",
             render: (o) => (
                 <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 transition-transform group-hover:scale-110 shadow-inner">
-                        <Building2 className="h-6 w-6 text-primary" />
+                    <div className="icon-box-primary w-12 h-12 !rounded-2xl">
+                        <Building2 className="h-6 w-6" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-black text-foreground text-base uppercase font-display tracking-tight">{o.name}</span>
-                        <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">TENANT: {o.slug}</span>
+                        <span className="font-black text-foreground text-sm uppercase font-display tracking-tight">{o.name}</span>
+                        <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{o.slug}</span>
                     </div>
                 </div>
             )
         },
         {
-            header: "Plan Maestro",
-            key: "plan_tier",
+            header: "Suscripción",
+            key: "plan",
             render: (o) => (
-                <Badge className="status-info text-[10px] font-black uppercase tracking-widest px-4 py-1.5 border-none">
-                    {o.plan_tier || 'ENTERPRISE'}
+                <Badge className="badge-elite-info text-[10px] font-black uppercase tracking-widest px-4 py-1.5 border-none">
+                    {o.plan?.name || o.plan_tier || 'N/A'}
                 </Badge>
             )
         },
         {
-            header: "Estado Operativo",
-            key: "subscription_status",
-            render: (o) => {
-                const status = o.subscription_status || 'inactive';
-                const statusColors: Record<string, string> = {
-                    active: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-                    inactive: 'bg-destructive/10 text-destructive border-destructive/20',
-                    trialing: 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                };
-                const statusLabels: Record<string, string> = {
-                    active: 'Activo',
-                    inactive: 'Suspendido',
-                    trialing: 'Prueba (Trial)'
-                };
-                return (
-                    <Badge className={cn("text-[10px] font-black uppercase px-3 py-1 border rounded-full tracking-widest", statusColors[status] || "bg-muted text-muted-foreground")}>
-                        {statusLabels[status] || status}
-                    </Badge>
-                );
-            }
+            header: "Estado",
+            key: "status",
+            render: (o) => (
+                <Badge className={cn("text-[10px] font-black uppercase px-4 py-1.5 border-none", 
+                    o.subscription_status === 'active' ? "badge-elite-success" : 
+                    o.subscription_status === 'trialing' ? "badge-elite-warning" : "badge-elite-error"
+                )}>
+                    {o.subscription_status}
+                </Badge>
+            )
         },
         {
-            header: "Acceso & Configuración",
+            header: "Acciones",
             key: "actions",
             render: (o) => (
-                <div className="flex justify-end gap-2">
-                    <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={async () => {
-                            await switchOrganization(o.id);
-                            navigate("/dashboard");
-                        }}
-                        className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all"
-                    >
-                        <ExternalLink size={14} /> Inspeccionar
+                <div className="flex items-center justify-end gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => openEditOrg(o)}>
+                        <Pencil className="w-3.5 h-3.5 mr-1.5" /> Editar
                     </Button>
-                    <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => {
-                            setEditingOrg(o);
-                            setOrgName(o.name);
-                            setOrgSlug(o.slug);
-                            setOrgPlanTier(o.plan_tier || 'starter');
-                            setOrgStatus(o.subscription_status || 'active');
-                            setOrgDialogOpen(true);
-                        }}
-                        className="gap-2 text-[9px] font-black uppercase tracking-widest border border-border rounded-xl hover:bg-muted/30 text-muted-foreground hover:text-primary transition-all"
-                    >
-                        <Edit size={14} /> Editar
+                    <Button variant="ghost" size="sm" onClick={() => setManagingUsersOrg(o)}>
+                        <Users className="w-3.5 h-3.5 mr-1.5" /> Usuarios
                     </Button>
-                    <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => handleDeleteOrganization(o.id, o.name)}
-                        className="gap-2 text-[9px] font-black uppercase tracking-widest border border-destructive/20 hover:bg-destructive/10 text-destructive rounded-xl transition-all"
+                    <Button variant="ghost" size="sm" onClick={() => setManagingModulesOrg(o)}>
+                        <LayoutGrid className="w-3.5 h-3.5 mr-1.5" /> Módulos
+                    </Button>
+                    <Button
+                        variant="ghost" size="sm"
+                        className={o.subscription_status === 'active' ? "text-destructive hover:text-destructive" : "text-green-600 hover:text-green-600"}
+                        onClick={() => toggleOrgStatus(o)}>
+                        {o.subscription_status === 'active'
+                        ? <><PauseCircle className="w-3.5 h-3.5 mr-1.5" />Suspender</>
+                        : <><PlayCircle className="w-3.5 h-3.5 mr-1.5" />Activar</>
+                        }
+                    </Button>
+                     <Button 
+                        variant="ghost" size="sm" 
+                        onClick={async () => { await switchOrganization(o.id); navigate("/dashboard"); }}
+                        className="btn-elite-ghost h-8 px-4 text-[9px] font-bold uppercase"
                     >
-                        <Trash2 size={14} /> Eliminar
+                        Impersonar <ExternalLink size={12} className="ml-2" />
                     </Button>
                 </div>
             ),
             className: "text-right"
         }
     ];
+
+    // Removido planColumns y billingColumns porque ya existen en sus propios módulos avanzados (/master/plans y /master/billing)
 
     return (
         <div className="space-y-10 pb-10 p-1 animate-in fade-in duration-700">
@@ -434,335 +288,180 @@ export default function MasterPanel() {
                 subtitle="Administración Suprema SaaS Matriz"
                 icon={Shield}
                 badgeText="CÉSAR ASCANIO CORE"
-                statusText="PROTOCOL: DUAL-ID ACTIVE"
+                statusText="PROTOCOL: MASTER ACTIVE"
                 statusColor="bg-primary"
                 rightContent={
-                    <div className="flex items-center gap-4">
-                        <Button 
-                            onClick={loadData} 
-                            size="icon"
-                            variant="ghost" 
-                            className="h-14 w-14 rounded-2xl bg-card border border-border text-muted-foreground hover:text-primary transition-all shadow-sm group"
-                        >
-                            <RefreshCw size={24} className={cn("group-hover:rotate-180 transition-transform duration-500", loading && "animate-spin text-primary")} />
-                        </Button>
-                        {activeTab === 'users' ? (
-                            <Button 
-                                onClick={() => setUserDialogOpen(true)} 
-                                className="bg-primary hover:bg-primary/90 text-white h-16 shadow-premium-md rounded-2xl px-8 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
-                            >
-                                <Plus size={20} /> Nuevo Enlace Maestro
-                            </Button>
-                        ) : activeTab === 'organizations' ? (
-                            <Button 
-                                onClick={() => {
-                                    setEditingOrg(null);
-                                    setOrgName('');
-                                    setOrgSlug('');
-                                    setOrgPlanTier('starter');
-                                    setOrgStatus('active');
-                                    setOrgDialogOpen(true);
-                                }} 
-                                className="bg-primary hover:bg-primary/90 text-white h-16 shadow-premium-md rounded-2xl px-8 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
-                            >
-                                <Plus size={20} /> Nueva Organización
-                            </Button>
-                        ) : null}
-                    </div>
+                    <Button onClick={loadData} size="icon" variant="ghost" className="btn-elite-secondary h-12 w-12 group">
+                        <RefreshCw size={24} className={cn("group-hover:rotate-180 transition-transform duration-500 text-muted-foreground group-hover:text-primary", loading && "animate-spin text-primary")} />
+                    </Button>
                 }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <EliteKPICard 
-                    title="Usuarios Totales"
-                    value={stats.totalUsers}
-                    icon={Users}
-                    color="indigo"
-                />
-                <EliteKPICard 
-                    title="SaaS Tenants"
-                    value={stats.totalOrganizations}
-                    icon={Building2}
-                    color="blue"
-                />
-                <EliteKPICard 
-                    title="Salud del Núcleo"
-                    value="100%"
-                    icon={ShieldCheck}
-                    color="emerald"
-                />
-                <EliteKPICard 
-                    title="Alertas Globales"
-                    value="0"
-                    icon={ShieldAlert}
-                    color="rose"
-                />
-            </div>
-
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
-                <EliteTabsList>
-                    <EliteTabsTrigger 
-                        value="users" 
-                        label="Usuarios Atómicos"
-                        icon={Users}
-                    />
-                    <EliteTabsTrigger 
-                        value="organizations" 
-                        label="Gestión de Tenants"
-                        icon={Building2}
-                    />
-                    <EliteTabsTrigger 
-                        value="system" 
-                        label="Logs del Núcleo"
-                        icon={Database}
-                    />
+                <EliteTabsList className="grid-cols-3">
+                    <EliteTabsTrigger value="organizations" label="Organizaciones" icon={Building2} />
+                    <EliteTabsTrigger value="roles" label="Roles Globales" icon={Key} />
+                    <EliteTabsTrigger value="analytics" label="Analítica" icon={Activity} />
                 </EliteTabsList>
 
-                <TabsContent value="users" className="animate-in fade-in zoom-in-95 duration-500">
-                    <EliteTable 
-                        data={users} 
-                        columns={userColumns} 
-                        searchKey="email" 
-                        searchPlaceholder="Localizar ID de Usuario o Email..."
-                    />
-                </TabsContent>
-
-                <TabsContent value="organizations" className="animate-in slide-in-from-right-10 duration-500">
-                    <EliteTable 
-                        data={organizations} 
-                        columns={orgColumns} 
-                        searchKey="name" 
-                        searchPlaceholder="Localizar Organización SaaS..."
-                    />
-                </TabsContent>
-
-                <TabsContent value="system" className="animate-in slide-in-from-left-10 duration-500">
-                    <div className="bg-muted/10 border border-dashed border-border rounded-[3rem] p-24 text-center">
-                        <div className="w-20 h-20 rounded-[2rem] bg-card shadow-soft border border-border flex items-center justify-center mx-auto mb-8">
-                             <Database className="h-10 w-10 text-muted-foreground/30" />
+                <TabsContent value="organizations" className="animate-in fade-in zoom-in-95 duration-500">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="text-lg font-black uppercase tracking-tight text-foreground">Tenants Corporativos</h3>
+                            <p className="text-xs text-muted-foreground font-semibold">Administra todos los inquilinos y suscripciones</p>
                         </div>
-                        <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-3 font-display">Auditoría del Núcleo</h3>
-                        <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest max-w-sm mx-auto leading-relaxed">
-                            Esta sección está actualmente encriptada. Solo disponible en auditorías de nivel Sentinel Alpha con protocolos de seguridad Biométricos.
+                        <Button className="btn-elite-primary h-10 px-6 rounded-xl font-black text-[10px]" onClick={openCreateOrg}>
+                            <Plus size={16} className="mr-2" /> Nueva Organización
+                        </Button>
+                    </div>
+                    <EliteTable data={organizations} columns={orgColumns} searchKey="name" searchPlaceholder="Localizar Organización SaaS..." />
+                </TabsContent>
+
+                {/* Las pestañas de Planes y Facturación fueron removidas para evitar duplicidad con /master/plans y /master/billing */}
+
+                <TabsContent value="roles" className="animate-in slide-in-from-right-10 duration-500">
+                    <div className="card-elite p-8">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="icon-box-primary w-12 h-12 !rounded-xl"><Key className="w-6 h-6" /></div>
+                            <div>
+                                <h3 className="text-lg font-black uppercase text-foreground">Matriz de Permisos Base</h3>
+                                <p className="text-xs text-muted-foreground font-semibold">app_permissions base por cada app_role global</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {systemRoles.map((role: any) => (
+                                <Card key={role.id} className="border border-border/50 bg-background/50 hover:border-primary/30 transition-colors">
+                                    <CardContent className="p-6">
+                                        <h4 className="font-black text-sm uppercase mb-1">{role.name}</h4>
+                                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4">SLUG: {role.role}</p>
+                                        <Badge className="bg-primary/10 text-primary border-none">{role.users} usuarios</Badge>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="analytics" className="animate-in slide-in-from-left-10 duration-500">
+                    <div className="card-elite p-16 text-center max-w-2xl mx-auto mt-8">
+                        <div className="icon-box-primary w-20 h-20 !rounded-[2rem] mx-auto mb-8">
+                             <Activity className="h-10 w-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-3 font-display">Telemetría Global</h3>
+                        <p className="text-muted-foreground font-medium text-sm max-w-sm mx-auto leading-relaxed">
+                            KPIs consumidos desde las funciones RPC de Supabase. Conexión de sockets en progreso.
                         </p>
                     </div>
                 </TabsContent>
             </Tabs>
 
-            {/* EDIT USER DIALOG */}
-            <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
-                <DialogContent className="max-w-lg bg-card rounded-[3rem] border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-muted/20 p-10 border-b border-border">
-                         <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-border">
-                                 <RefreshCw className="h-6 w-6 text-primary" />
-                             </div>
-                             <div>
-                                 <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Refactorizar Acceso</DialogTitle>
-                                 <DialogDescription className="text-muted-foreground font-black uppercase text-[9px] tracking-widest mt-1">Modificando parámetros de seguridad de rango</DialogDescription>
-                             </div>
-                         </div>
-                    </div>
-                    <div className="p-12 space-y-8">
-                        <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Nivel de Rango Sentinel</Label>
-                            <Select value={newRole} onValueChange={(v) => setNewRole(v as UserRole)}>
-                                <SelectTrigger className="h-16 bg-muted/20 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-border font-black uppercase text-[10px] tracking-widest">
-                                    {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                                        <SelectItem key={val} value={val} className="hover:bg-primary/10">{label}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Enlace SaaS Tenant</Label>
-                            <Select value={newUserOrgIdEdit} onValueChange={setNewUserOrgIdEdit}>
-                                <SelectTrigger className="h-16 bg-muted/20 border-none focus:ring-primary rounded-2xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-border font-black uppercase text-[10px] tracking-widest">
-                                    <SelectItem value="none">Sistémico / Global</SelectItem>
-                                    {organizations.map(org => (
-                                        <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex justify-end gap-4 pt-6">
-                            <Button variant="ghost" onClick={() => setEditingUser(null)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/30">Abortar</Button>
-                            <Button onClick={handleUpdateUser} className="h-14 px-10 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95">Actualizar Matriz</Button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* NEW USER DIALOG */}
-            <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
-                <DialogContent className="max-w-xl bg-card rounded-[3rem] border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-muted/20 p-10 border-b border-border">
-                         <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-border">
-                                 <Plus className="h-6 w-6 text-primary" />
-                             </div>
-                             <div>
-                                 <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">Nuevo Enlace Maestro</DialogTitle>
-                                 <DialogDescription className="text-muted-foreground font-black uppercase text-[9px] tracking-widest mt-1">Generando credenciales de acceso Sentinel Alpha</DialogDescription>
-                             </div>
-                         </div>
-                    </div>
-                    <div className="p-12 space-y-8">
-                        <div className="grid grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre</Label>
-                                <Input value={newUserFirstName} onChange={(e) => setNewUserFirstName(e.target.value)} className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-foreground placeholder:text-muted-foreground/30" />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Apellido</Label>
-                                <Input value={newUserLastName} onChange={(e) => setNewUserLastName(e.target.value)} className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-foreground placeholder:text-muted-foreground/30" />
-                            </div>
-                            <div className="col-span-2 space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Terminal Email Corporativo</Label>
-                                <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-black uppercase text-xs tracking-tight shadow-inner text-foreground placeholder:text-muted-foreground/30" />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Rango Sentinel</Label>
-                                <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
-                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
-                                        {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                                            <SelectItem key={val} value={val}>{label}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Tenant SaaS</Label>
-                                <Select value={newUserOrgId} onValueChange={setNewUserOrgId}>
-                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-black uppercase text-xs tracking-tight shadow-inner text-foreground">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-border font-black uppercase text-[10px] tracking-widest">
-                                        <SelectItem value="none">Sistémico / Global</SelectItem>
-                                        {organizations.map(org => (
-                                            <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <div className="flex justify-end gap-4 pt-8 border-t border-border/40">
-                            <Button variant="ghost" onClick={() => setUserDialogOpen(false)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/30">Cancelar</Button>
-                            <Button 
-                                onClick={handleInviteUser} 
-                                disabled={isCreatingUser} 
-                                className="h-14 px-12 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95 flex items-center gap-3 min-w-[220px]"
-                            >
-                                {isCreatingUser ? <RefreshCw className="animate-spin h-4 w-4" /> : <Zap className="h-4 w-4" />}
-                                Desplegar Invitación
-                            </Button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* CREATE / EDIT ORGANIZATION DIALOG */}
-            <Dialog open={orgDialogOpen} onOpenChange={(open) => {
-                setOrgDialogOpen(open);
+            {/* Modal: Crear / Editar Organización */}
+            <Dialog open={isCreateOrgModalOpen || !!editingOrg} onOpenChange={(open) => {
                 if (!open) {
+                    setIsCreateOrgModalOpen(false);
                     setEditingOrg(null);
-                    setOrgName('');
-                    setOrgSlug('');
                 }
             }}>
-                <DialogContent className="max-w-xl bg-card rounded-[3rem] border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
-                    <div className="bg-muted/20 p-10 border-b border-border">
-                         <div className="flex items-center gap-4">
-                             <div className="w-14 h-14 rounded-2xl bg-card flex items-center justify-center shadow-soft border border-border">
-                                 {editingOrg ? <Edit className="h-6 w-6 text-primary" /> : <Plus className="h-6 w-6 text-primary" />}
-                             </div>
-                             <div>
-                                 <DialogTitle className="text-2xl font-black text-foreground uppercase tracking-tighter">
-                                     {editingOrg ? 'Editar SaaS Tenant' : 'Nuevo SaaS Tenant'}
-                                 </DialogTitle>
-                                 <DialogDescription className="text-muted-foreground font-black uppercase text-[9px] tracking-widest mt-1">
-                                     {editingOrg ? 'Modificando parámetros de la organización' : 'Inicializando nueva entidad en la nube'}
-                                 </DialogDescription>
-                             </div>
-                         </div>
-                    </div>
-                    <div className="p-12 space-y-8">
-                        <div className="grid grid-cols-2 gap-8">
-                            <div className="col-span-2 space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Nombre Comercial</Label>
-                                <Input 
-                                    value={orgName} 
-                                    onChange={(e) => {
-                                        setOrgName(e.target.value);
-                                        if (!editingOrg) {
-                                            setOrgSlug(e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''));
-                                        }
-                                    }} 
-                                    placeholder="Ej: Laboratorios Roche"
-                                    className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-semibold text-sm shadow-inner text-foreground placeholder:text-muted-foreground/30" 
-                                />
-                            </div>
-                            <div className="col-span-2 space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Slug Identificador (único)</Label>
-                                <Input 
-                                    value={orgSlug} 
-                                    onChange={(e) => setOrgSlug(e.target.value)} 
-                                    placeholder="ej: laboratorios-roche"
-                                    className="h-14 bg-muted/20 border-none focus-visible:ring-primary rounded-xl px-6 font-semibold text-sm shadow-inner text-foreground placeholder:text-muted-foreground/30" 
-                                    disabled={!!editingOrg}
-                                />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Plan de Suscripción</Label>
-                                <Select value={orgPlanTier} onValueChange={setOrgPlanTier}>
-                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-semibold text-xs shadow-inner text-foreground">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-border font-semibold text-xs">
-                                        <SelectItem value="starter">Starter</SelectItem>
-                                        <SelectItem value="pro">Pro</SelectItem>
-                                        <SelectItem value="enterprise">Enterprise</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Estado Operativo</Label>
-                                <Select value={orgStatus} onValueChange={setOrgStatus}>
-                                    <SelectTrigger className="h-14 bg-muted/20 border-none focus:ring-primary rounded-xl font-semibold text-xs shadow-inner text-foreground">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-xl border-border font-semibold text-xs">
-                                        <SelectItem value="active">Activo</SelectItem>
-                                        <SelectItem value="inactive">Suspendido</SelectItem>
-                                        <SelectItem value="trialing">En Prueba (Trial)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>{editingOrg ? 'Editar Organización' : 'Nueva Organización'}</DialogTitle>
+                        <DialogDescription>Configura los detalles del tenant corporativo.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label>Nombre</Label>
+                            <Input value={orgFormData.name} onChange={e => setOrgFormData({...orgFormData, name: e.target.value})} />
                         </div>
-                        <div className="flex justify-end gap-4 pt-8 border-t border-border/40">
-                            <Button variant="ghost" onClick={() => setOrgDialogOpen(false)} className="h-14 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/30">Cancelar</Button>
-                            <Button 
-                                onClick={handleSaveOrganization} 
-                                disabled={isSavingOrg} 
-                                className="h-14 px-12 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-premium-md font-black uppercase text-[10px] tracking-widest transition-all active:scale-95 flex items-center gap-3 min-w-[220px]"
-                            >
-                                {isSavingOrg ? <RefreshCw className="animate-spin h-4 w-4" /> : <Zap className="h-4 w-4" />}
-                                {editingOrg ? 'Actualizar Tenant' : 'Crear Tenant'}
-                            </Button>
+                        <div className="grid gap-2">
+                            <Label>Slug (Subdominio)</Label>
+                            <Input disabled={!!editingOrg} value={orgFormData.slug} onChange={e => setOrgFormData({...orgFormData, slug: e.target.value})} placeholder="mi-empresa" />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Plan Base</Label>
+                            <Select value={orgFormData.plan_id} onValueChange={v => setOrgFormData({...orgFormData, plan_id: v})}>
+                                <SelectTrigger><SelectValue placeholder="Seleccionar Plan" /></SelectTrigger>
+                                <SelectContent>
+                                    {billingPlans.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>RIF / Tax ID</Label>
+                            <Input value={orgFormData.rif} onChange={e => setOrgFormData({...orgFormData, rif: e.target.value})} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Teléfono</Label>
+                            <Input value={orgFormData.phone} onChange={e => setOrgFormData({...orgFormData, phone: e.target.value})} />
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <Button variant="outline" onClick={() => { setIsCreateOrgModalOpen(false); setEditingOrg(null); }}>Cancelar</Button>
+                        <Button onClick={editingOrg ? handleUpdateOrg : handleCreateOrg}>Guardar</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Modal: Gestión de Usuarios */}
+            <Dialog open={!!managingUsersOrg} onOpenChange={(open) => !open && setManagingUsersOrg(null)}>
+                <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Usuarios de {managingUsersOrg?.name}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="flex gap-2 items-end">
+                            <div className="grid gap-2 flex-1">
+                                <Label>Email del usuario</Label>
+                                <Input value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="usuario@email.com" />
+                            </div>
+                            <div className="grid gap-2 w-[150px]">
+                                <Label>Rol</Label>
+                                <Select value={inviteRole} onValueChange={setInviteRole}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="manager">Manager</SelectItem>
+                                        <SelectItem value="representative">Representante</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button onClick={inviteUser}>Invitar</Button>
+                        </div>
+                        
+                        <div className="border rounded-md mt-4">
+                            {orgUsers.map(u => (
+                                <div key={u.user_id} className="flex items-center justify-between p-3 border-b last:border-0">
+                                    <div>
+                                        <p className="font-semibold text-sm">{u.profile?.full_name || u.profile?.email || 'Usuario'}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Select value={u.role} onValueChange={(r) => updateUserRole(u.user_id, r, managingUsersOrg.id)}>
+                                            <SelectTrigger className="w-[120px] h-8"><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="admin">Admin</SelectItem>
+                                                <SelectItem value="manager">Manager</SelectItem>
+                                                <SelectItem value="representative">Representante</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <Button variant="ghost" size="icon" className="text-destructive h-8 w-8"><Trash2 size={14} /></Button>
+                                    </div>
+                                </div>
+                            ))}
+                            {orgUsers.length === 0 && <p className="text-center p-4 text-muted-foreground text-sm">No hay usuarios en esta organización.</p>}
                         </div>
                     </div>
                 </DialogContent>
             </Dialog>
+
+            {/* Modal: Gestión de Módulos (Placeholder) */}
+            <Dialog open={!!managingModulesOrg} onOpenChange={(open) => !open && setManagingModulesOrg(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Módulos de {managingModulesOrg?.name}</DialogTitle>
+                        <DialogDescription>Los módulos se administran según el plan {managingModulesOrg?.plan?.name}. (WIP)</DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
         </div>
     );
 }
-

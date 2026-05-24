@@ -2,11 +2,11 @@ import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { Stethoscope, Pill, Calendar, Activity } from 'lucide-react';
+import { Stethoscope, Pill, Calendar, Activity, Syringe, Clock } from 'lucide-react';
+import { EliteHeader, EliteCard, EliteKPICard, EliteButton } from '@/components/layout/DesignSystem';
 
 // Fallback data for when Supabase queries fail or return empty
 const FALLBACK_VISITAS = [
@@ -20,7 +20,7 @@ const FALLBACK_DONUT = [
 ];
 
 export default function DashboardDoctor({ organizationId, doctorId }: { organizationId: string, doctorId: string | undefined }) {
-  const { profile, organizationName, user } = useAuth();
+  const { organizationName, user } = useAuth();
 
   // Buscar el doctor que corresponde a este usuario autenticado
   const { data: doctor } = useQuery({
@@ -133,112 +133,95 @@ export default function DashboardDoctor({ organizationId, doctorId }: { organiza
   }).length || 0;
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-background space-y-4 p-4 md:p-6 pb-24 max-w-[1200px] mx-auto">
+    <div className="flex flex-col w-full min-h-screen bg-background space-y-6 p-4 md:p-6 pb-24 max-w-[1200px] mx-auto">
       
       {/* SECCIÓN 1 — Saludo */}
-      <div className="flex items-center gap-4 bg-card p-4 rounded-lg shadow-premium-md border border-border/40">
-        <div className="bg-primary/10 p-3 rounded-lg border border-primary/20">
-          <Stethoscope className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-sm font-bold font-sans text-foreground">Portal Médico — {organizationName}</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {doctor?.name ? `Dr. ${doctor.name}` : `Dr. ${user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Médico'}`}
-            {doctor?.specialty && <span className="text-primary ml-2 font-medium">· {doctor.specialty}</span>}
-          </p>
-        </div>
-      </div>
+      <EliteHeader
+        title={`Portal Médico — ${organizationName}`}
+        subtitle={`${doctor?.name ? `Dr. ${doctor.name}` : `Dr. ${user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Médico'}`} ${doctor?.specialty ? `· ${doctor.specialty}` : ''}`}
+        icon={Stethoscope}
+        rightContent={
+          <EliteButton variant="primary" icon={Syringe}>
+            Solicitar Muestras
+          </EliteButton>
+        }
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-primary rounded-lg">
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase font-medium">Visitas Recibidas (Mes)</p>
-            <h3 className="text-sm font-bold mt-1 text-foreground">{visitasEsteMes}</h3>
-          </CardContent>
-        </Card>
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-chart-2 rounded-lg">
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase font-medium">Muestras en Banco</p>
-            <h3 className="text-sm font-bold mt-1 text-foreground">{inventarioMuestras.reduce((s, m) => s + m.quantity, 0)}</h3>
-          </CardContent>
-        </Card>
-        <Card className="bg-card border border-border/40 shadow-premium-md border-l-2 border-l-amber-500 rounded-lg">
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground uppercase font-medium">Próxima Visita</p>
-            <h3 className="text-xs font-bold mt-1 truncate text-foreground">Por agendar</h3>
-          </CardContent>
-        </Card>
+        <EliteKPICard
+          title="Visitas Recibidas (Mes)"
+          value={visitasEsteMes}
+          icon={Calendar}
+          color="primary"
+        />
+        <EliteKPICard
+          title="Muestras en Banco"
+          value={inventarioMuestras.reduce((s, m) => s + m.quantity, 0)}
+          icon={Pill}
+          color="secondary"
+        />
+        <EliteKPICard
+          title="Próxima Visita"
+          value="Por agendar"
+          icon={Clock}
+          color="warning"
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* SECCIÓN 2 — Historial de visitas */}
-        <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg flex flex-col">
-          <CardContent className="p-4 flex flex-col flex-1">
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Historial de Atención</h4>
-            </div>
-            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/40 before:to-transparent">
-              {visitasRecientes.map((v, i) => (
-                <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-background bg-card shadow-premium-sm text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 border-border/40">
-                    <Activity className="w-4 h-4" />
-                  </div>
-                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-lg border border-border/40 shadow-sm bg-card hover:bg-muted/30 transition-colors">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="text-xs font-semibold text-foreground">{v.date}</div>
-                      <Badge variant="outline" className="text-xs font-normal border-border/40 bg-muted/40">{v.duration}</Badge>
-                    </div>
-                    <div className="text-xs text-muted-foreground">Rep: {v.rep}</div>
-                    <div className="text-xs mt-2 text-primary/80 truncate">Prod: {v.products}</div>
-                  </div>
+        <EliteCard title="Historial de Atención" icon={Calendar} className="h-full">
+          <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/40 before:to-transparent mt-4">
+            {visitasRecientes.map((v, i) => (
+              <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-background bg-card shadow-premium-sm text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 border-border/40 z-10">
+                  <Activity className="w-4 h-4" />
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-lg border border-border shadow-sm bg-card hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-sm font-semibold text-foreground">{v.date}</div>
+                    <Badge variant="outline" className="text-xs font-normal border-border bg-muted/40">{v.duration}</Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">Rep: {v.rep}</div>
+                  <div className="text-xs mt-2 text-primary/80 truncate font-medium">Prod: {v.products}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </EliteCard>
 
         {/* SECCIÓN 3 y 4 — Inventario y Gráfico */}
-        <div className="flex flex-col gap-4">
-          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Pill className="w-4 h-4 text-primary" />
-                <h4 className="text-sm font-semibold text-foreground">Mi Banco de Muestras</h4>
-              </div>
-              <ScrollArea className="h-[150px]">
-                <div className="space-y-2">
-                  {inventarioMuestras.map((m, i) => (
-                    <div key={i} className="flex justify-between items-center p-2 rounded-lg bg-muted/20 border border-border/40 hover:bg-muted/40 transition-colors">
-                      <div>
-                        <p className="text-xs font-bold text-foreground">{m.name}</p>
-                        <p className={`text-xs ${m.alert ? 'text-destructive font-bold' : 'text-muted-foreground'}`}>
-                          Exp: {m.expires}
-                        </p>
-                      </div>
-                      <Badge variant={m.alert ? "destructive" : "secondary"} className="text-xs font-normal">{m.quantity} u.</Badge>
+        <div className="flex flex-col gap-6">
+          <EliteCard title="Portal de Muestras" icon={Pill} action={<EliteButton variant="ghost" size="sm">Ver Todo</EliteButton>}>
+            <ScrollArea className="h-[150px] mt-4 pr-3">
+              <div className="space-y-2">
+                {inventarioMuestras.map((m, i) => (
+                  <div key={i} className="flex justify-between items-center p-3 rounded-lg bg-muted/20 border border-border hover:bg-muted/40 transition-colors">
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{m.name}</p>
+                      <p className={`text-xs mt-0.5 ${m.alert ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+                        Vence: {m.expires}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
-            <CardContent className="p-4">
-              <h4 className="text-sm font-semibold mb-2 text-foreground">Productos Frecuentes</h4>
-              <div className="h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={donutData} innerRadius={40} outerRadius={60} paddingAngle={5} dataKey="value" stroke="none">
-                      {donutData.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
-                  </PieChart>
-                </ResponsiveContainer>
+                    <Badge variant={m.alert ? "destructive" : "secondary"} className="text-xs font-medium px-2 py-1">{m.quantity} u.</Badge>
+                  </div>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+            </ScrollArea>
+          </EliteCard>
+
+          <EliteCard title="Productos Frecuentes">
+            <div className="h-48 mt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={donutData} innerRadius={50} outerRadius={75} paddingAngle={5} dataKey="value" stroke="none">
+                    {donutData.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))', boxShadow: 'var(--shadow-premium-md)' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </EliteCard>
         </div>
       </div>
 

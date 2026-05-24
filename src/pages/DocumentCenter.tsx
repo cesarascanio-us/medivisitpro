@@ -76,22 +76,6 @@ export default function DocumentCenter() {
         return matchesSearch && matchesTab;
     });
 
-    if (!isMaster && !isAdmin && !isManager) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-                <div className="p-6 bg-rose-500/10 rounded-full">
-                    <ShieldAlert className="h-16 w-16 text-rose-500" />
-                </div>
-                <div className="text-center space-y-2">
-                    <h1 className="text-2xl font-bold text-foreground">Acceso Restringido</h1>
-                    <p className="text-muted-foreground max-w-xs mx-auto">Esta sección requiere permisos de nivel gerencial o superior para visualizar documentos sensibles.</p>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => window.history.back()}>
-                    Regresar
-                </Button>
-            </div>
-        );
-    }
 
     return (
         <div className="space-y-8 animate-in fade-in duration-700">

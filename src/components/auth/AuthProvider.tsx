@@ -38,6 +38,8 @@ export type UserRole =
 export interface UserProfile {
     id: string;
     email: string;
+    first_name?: string;
+    last_name?: string;
     role: UserRole;
     organization_id: string | null;
     company_id: string | null;
@@ -45,6 +47,7 @@ export interface UserProfile {
     state: string | null;
     region: string | null;
     is_master: boolean;
+    org_role_id?: string | null;
 }
 
 interface AuthContextType {
@@ -204,6 +207,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
+                first_name: 'Demo',
+                last_name: 'User',
                 role: demoRole,
                 organization_id: DEMO_ORG_ID,
                 company_id: DEMO_ORG_ID, // In demo, both match
@@ -286,6 +291,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
+                first_name: (profileData as any)?.first_name || '',
+                last_name: (profileData as any)?.last_name || '',
                 role: finalRole,
                 organization_id: finalOrgId,
                 company_id: (roleData as any)?.company_id || (profileData as any)?.company_id || null,

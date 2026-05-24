@@ -113,7 +113,6 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                 .select('user_id, supervisor_id, region, state');
 
             const members = (profilesData || [])
-                .filter(p => (p.user_id !== profile?.id || isMaster))
                 .map(p => {
                     const roleInfo = rolesData?.find(r => r.user_id === p.user_id);
                     return {
@@ -209,22 +208,19 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
     }
 
     return (
-        <Card className="mb-12 border border-border/40 shadow-premium-lg bg-card transition-all duration-700 overflow-hidden rounded-[3rem] group/filter pb-1 border-b-4 border-b-primary/10">
-            <div className="px-10 py-10 flex items-center justify-between bg-card border-b border-border/40 relative overflow-hidden">
-                {/* Subtle decorator - Corporate Glow */}
-                <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/5 rounded-full blur-[100px] opacity-0 group-hover/filter:opacity-100 transition-opacity duration-1000" />
-                
-                <div className="flex items-center gap-8 relative z-10">
-                    <div className="w-20 h-20 rounded-[2rem] bg-muted/20 flex items-center justify-center shadow-inner border border-border/40 group transition-all duration-500 hover:bg-card hover:border-primary/30 hover:shadow-premium-md hover:-rotate-3">
-                        <Filter className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-500" />
+        <Card className="mb-6 border border-border shadow-sm bg-card rounded-2xl overflow-hidden group/filter">
+            <div className="px-6 py-4 flex items-center justify-between bg-muted/20 border-b border-border/40">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <Filter className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter font-display leading-[0.8]">
-                            Mando de<br />Territorio
+                        <h3 className="text-lg font-bold text-foreground tracking-tight">
+                            Mando de Territorio
                         </h3>
-                        <div className="flex items-center gap-4 mt-4">
-                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-[0.4em] font-display">Nivel de Acceso:</span>
-                            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[9px] h-7 px-5 font-black uppercase tracking-[0.2em] rounded-full shadow-sm">
+                        <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Nivel de Acceso:</span>
+                            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[9px] h-5 px-2 font-bold uppercase rounded-md">
                                 {getViewLabel()}
                             </Badge>
                         </div>
@@ -235,21 +231,20 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                         variant="ghost"
                         size="sm"
                         onClick={clearFilters}
-                        className="h-14 px-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 font-black text-[10px] rounded-2xl transition-all uppercase tracking-[0.25em] gap-3 relative z-10 border border-transparent hover:border-rose-100 shadow-premium-sm"
+                        className="h-9 px-4 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 font-bold text-xs rounded-lg transition-all gap-2"
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-3.5 w-3.5" />
                         Reset Operativo
                     </Button>
                 )}
             </div>
 
-            {/* Filter Content Dynamism */}
-            <div className="p-12 bg-muted/5 backdrop-blur-md">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+            <div className="p-6 bg-card">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {/* Región */}
-                    <div className="space-y-5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-2 flex items-center gap-3 font-display">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                    <div className="space-y-2.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <Globe className="w-3.5 h-3.5 text-primary/60" />
                             Región Estratégica
                         </label>
                         <Select
@@ -257,31 +252,27 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             onValueChange={(val) => updateFilters('region', val)}
                             disabled={isRegionLocked}
                         >
-                            <SelectTrigger className="h-18 bg-background border-border/60 text-foreground focus:ring-primary/20 hover:border-primary/40 hover:shadow-premium-md transition-all duration-300 rounded-[1.5rem] font-black uppercase tracking-widest px-8 shadow-premium-sm border-2">
-                                <div className="flex items-center gap-4">
-                                    <Globe className="w-5 h-5 text-slate-300" />
-                                    <SelectValue placeholder="Global" />
-                                </div>
+                            <SelectTrigger className="h-11 bg-background border-border hover:border-primary/40 transition-all rounded-xl font-semibold text-sm px-4">
+                                <SelectValue placeholder="Global" />
                             </SelectTrigger>
-                            <SelectContent className="bg-card border-border shadow-premium-2xl rounded-[2rem] p-3 border-2">
-                                <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todas las regiones</SelectItem>
+                            <SelectContent className="rounded-xl">
+                                <SelectItem value="all" className="font-semibold text-muted-foreground text-xs py-2.5">Todas las regiones</SelectItem>
                                 {Array.from(new Set(Object.values(REGION_MAPPING))).map(r => (
-                                    <SelectItem key={r} value={r} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{r}</SelectItem>
+                                    <SelectItem key={r} value={r} className="font-semibold text-foreground text-xs py-2.5">{r}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {isRegionLocked && (
-                            <div className="flex items-center gap-3 px-3 py-2 bg-amber-500/5 rounded-xl border border-amber-500/10">
-                                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                                <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest font-display">Bloqueo Regional Vigente</span>
-                            </div>
+                            <p className="text-[9px] font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5 mt-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" /> Bloqueo Regional
+                            </p>
                         )}
                     </div>
 
                     {/* Estado */}
-                    <div className="space-y-5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-2 flex items-center gap-3 font-display">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                    <div className="space-y-2.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <MapPin className="w-3.5 h-3.5 text-primary/60" />
                             Jurisdicción / Entidad
                         </label>
                         <Select
@@ -289,31 +280,27 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             onValueChange={(val) => updateFilters('state', val)}
                             disabled={isStateLocked}
                         >
-                            <SelectTrigger className="h-18 bg-background border-border/60 text-foreground focus:ring-primary/20 hover:border-primary/40 hover:shadow-premium-md transition-all duration-300 rounded-[1.5rem] font-black uppercase tracking-widest px-8 shadow-premium-sm border-2">
-                                <div className="flex items-center gap-4">
-                                    <MapPin className="w-5 h-5 text-slate-300" />
-                                    <SelectValue placeholder="Estado" />
-                                </div>
+                            <SelectTrigger className="h-11 bg-background border-border hover:border-primary/40 transition-all rounded-xl font-semibold text-sm px-4">
+                                <SelectValue placeholder="Estado" />
                             </SelectTrigger>
-                            <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
-                                <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todos los estados</SelectItem>
+                            <SelectContent className="rounded-xl">
+                                <SelectItem value="all" className="font-semibold text-muted-foreground text-xs py-2.5">Todos los estados</SelectItem>
                                 {visibleStates.map(s => (
-                                    <SelectItem key={s} value={s} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{s}</SelectItem>
+                                    <SelectItem key={s} value={s} className="font-semibold text-foreground text-xs py-2.5">{s}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {isStateLocked && (
-                            <div className="flex items-center gap-3 px-3 py-2 bg-amber-500/5 rounded-xl border border-amber-500/10">
-                                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                                <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest font-display">Anclaje de Entidad OK</span>
-                            </div>
+                            <p className="text-[9px] font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5 mt-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" /> Anclaje de Entidad
+                            </p>
                         )}
                     </div>
 
                     {/* Zona */}
-                    <div className="space-y-5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-2 flex items-center gap-3 font-display">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                    <div className="space-y-2.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <Layers className="w-3.5 h-3.5 text-primary/60" />
                             Zona Operativa
                         </label>
                         <Select
@@ -321,31 +308,27 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             onValueChange={(val) => updateFilters('zoneId', val)}
                             disabled={isZoneLocked}
                         >
-                            <SelectTrigger className="h-18 bg-background border-border/60 text-foreground focus:ring-primary/20 hover:border-primary/40 hover:shadow-premium-md transition-all duration-300 rounded-[1.5rem] font-black uppercase tracking-widest px-8 shadow-premium-sm border-2">
-                                <div className="flex items-center gap-4">
-                                    <Layers className="w-5 h-5 text-slate-300" />
-                                    <SelectValue placeholder="Sector" />
-                                </div>
+                            <SelectTrigger className="h-11 bg-background border-border hover:border-primary/40 transition-all rounded-xl font-semibold text-sm px-4">
+                                <SelectValue placeholder="Sector" />
                             </SelectTrigger>
-                            <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
-                                <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todas las zonas</SelectItem>
+                            <SelectContent className="rounded-xl">
+                                <SelectItem value="all" className="font-semibold text-muted-foreground text-xs py-2.5">Todas las zonas</SelectItem>
                                 {visibleZones.map(z => (
-                                    <SelectItem key={z.id} value={z.id} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{z.name}</SelectItem>
+                                    <SelectItem key={z.id} value={z.id} className="font-semibold text-foreground text-xs py-2.5">{z.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {isZoneLocked && (
-                            <div className="flex items-center gap-3 px-3 py-2 bg-primary/5 rounded-xl border border-primary/10">
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse text-white" />
-                                <span className="text-[9px] font-black text-primary uppercase tracking-widest font-display">Segmentación Industrial</span>
-                            </div>
+                            <p className="text-[9px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5 mt-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> Segmentación
+                            </p>
                         )}
                     </div>
 
                     {/* Colaborador */}
-                    <div className="space-y-5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-2 flex items-center gap-3 font-display">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                    <div className="space-y-2.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <User className="w-3.5 h-3.5 text-primary/60" />
                             Operador Designado
                         </label>
                         <Select
@@ -353,68 +336,52 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                             onValueChange={(val) => updateFilters('userId', val)}
                             disabled={isUserLocked}
                         >
-                            <SelectTrigger className="h-18 bg-background border-border/60 text-foreground focus:ring-primary/20 hover:border-primary/40 hover:shadow-premium-md transition-all duration-300 rounded-[1.5rem] font-black uppercase tracking-widest px-8 shadow-premium-sm border-2">
-                                <div className="flex items-center gap-4">
-                                    <User className="w-5 h-5 text-slate-300" />
-                                    <SelectValue placeholder="Operador" />
-                                </div>
+                            <SelectTrigger className="h-11 bg-background border-border hover:border-primary/40 transition-all rounded-xl font-semibold text-sm px-4">
+                                <SelectValue placeholder="Operador" />
                             </SelectTrigger>
-                            <SelectContent className="bg-card border-slate-100 shadow-premium-2xl rounded-[2rem] p-3 border-2">
-                                <SelectItem value="all" className="font-black text-slate-400 uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-slate-50">Todos los colaboradores</SelectItem>
+                            <SelectContent className="rounded-xl">
+                                <SelectItem value="all" className="font-semibold text-muted-foreground text-xs py-2.5">Todos los operadores</SelectItem>
                                 {visibleMembers.map(m => (
-                                    <SelectItem key={m.id} value={m.id} className="font-black text-foreground uppercase tracking-widest text-[11px] py-5 rounded-xl focus:bg-primary/5 focus:text-primary">{m.name}</SelectItem>
+                                    <SelectItem key={m.id} value={m.id} className="font-semibold text-foreground text-xs py-2.5">{m.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {isUserLocked && (
-                            <div className="flex items-center gap-3 px-3 py-2 bg-primary/5 rounded-xl border border-primary/10">
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse text-white" />
-                                <span className="text-[9px] font-black text-primary uppercase tracking-widest font-display">Perfil Individual Activo</span>
-                            </div>
+                            <p className="text-[9px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5 mt-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> Perfil Activo
+                            </p>
                         )}
                     </div>
                 </div>
 
-                {/* Active Filter Summary Elite */}
-                <div className="mt-16 pt-12 border-t border-slate-100 flex flex-wrap items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-1000">
-                    <div className="flex items-center gap-4 mr-8">
-                        <div className="w-3 h-12 bg-primary rounded-full shadow-premium-sm shadow-primary/20 text-white" />
-                        <div>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] font-display block">Análisis</span>
-                            <span className="text-[14px] font-black text-foreground uppercase tracking-tighter font-display block -mt-1">Criterios Activos</span>
-                        </div>
-                    </div>
-                    
-                    {!hasActiveFilters ? (
-                        <div className="flex items-center gap-4 bg-slate-100/50 px-8 py-4 rounded-2xl border border-dashed border-slate-200">
-                            <div className="w-2 h-2 rounded-full bg-slate-300" />
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-display">Visualización Global de Activos</span>
-                        </div>
-                    ) : (
-                        <div className="flex flex-wrap gap-4">
+                {/* Active Filter Summary */}
+                {hasActiveFilters && (
+                    <div className="mt-6 pt-5 border-t border-border flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-500">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-2">Criterios:</span>
+                        <div className="flex flex-wrap gap-2">
                             {filters.region !== 'all' && (
-                                <Badge className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-6 py-3 font-black rounded-xl uppercase tracking-widest shadow-premium-sm">
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 text-[10px] px-3 py-1 font-semibold rounded-lg uppercase">
                                     REG: {filters.region}
                                 </Badge>
                             )}
                             {filters.state !== 'all' && (
-                                <Badge className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-6 py-3 font-black rounded-xl uppercase tracking-widest shadow-premium-sm">
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 text-[10px] px-3 py-1 font-semibold rounded-lg uppercase">
                                     EST: {filters.state}
                                 </Badge>
                             )}
                             {filters.zoneId && filters.zoneId !== 'all' && (
-                                <Badge className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-6 py-3 font-black rounded-xl uppercase tracking-widest shadow-premium-sm">
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 text-[10px] px-3 py-1 font-semibold rounded-lg uppercase">
                                     ZONA: {zones.find(z => z.id === filters.zoneId)?.name}
                                 </Badge>
                             )}
                             {filters.userId && filters.userId !== 'all' && (
-                                <Badge className="bg-primary/5 text-primary border border-primary/20 text-[10px] px-6 py-3 font-black rounded-xl uppercase tracking-widest shadow-premium-sm">
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 text-[10px] px-3 py-1 font-semibold rounded-lg uppercase">
                                     USER: {members.find(m => m.id === filters.userId)?.name}
                                 </Badge>
                             )}
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </Card>
     );

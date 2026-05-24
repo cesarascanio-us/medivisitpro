@@ -114,7 +114,7 @@ export default {
 			fontFamily: {
 				sans:    ['Inter', 'system-ui', 'sans-serif'],
 				display: ['Inter', 'system-ui', 'sans-serif'],
-				mono:    ['JetBrains Mono', 'Consolas', 'monospace'],
+				mono:    ['JetBrains Mono', 'monospace'],
 			},
 			fontSize: {
 				'2xs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px

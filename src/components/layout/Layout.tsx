@@ -10,6 +10,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Header, HeaderActions } from './Header';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
+import { SubscriptionBanner } from '../common/SubscriptionBanner';
 import { useAuth } from '@/hooks/useAuth';
 import { Rocket, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -44,9 +45,8 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-background text-foreground flex flex-col relative font-sans transition-colors duration-300">
-
-      {/* Demo Mode Banner — only on /demo/* routes */}
+    <div className="flex flex-col h-screen overflow-hidden bg-background">
+      {/* Demo Mode Banner */}
       {location.pathname.startsWith('/demo/') && (
         <div className="bg-primary text-primary-foreground px-4 py-1.5 flex items-center justify-between z-50 shrink-0">
           <div className="flex items-center gap-2">
@@ -80,23 +80,18 @@ export const Layout = ({ children }: LayoutProps) => {
         </div>
       )}
 
-      {/* Main: sidebar + content */}
+      {/* Main Layout */}
       <div className="flex flex-1 overflow-hidden">
+        {/* SIDEBAR */}
+        <Sidebar className="hidden lg:flex" />
 
-        {/* Sidebar — only on lg+ */}
-        <Sidebar className="hidden lg:flex relative z-40 h-full" />
-
-        {/* Content area */}
-        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-
+        {/* CONTENIDO */}
+        <div className="flex flex-col flex-1 overflow-hidden">
           {/* Mobile/Tablet header */}
-          <div className="lg:hidden px-3 py-2 border-b border-border flex items-center justify-between bg-card sticky top-0 z-40">
+          <div className="lg:hidden h-13 px-4 border-b border-border flex items-center justify-between bg-card sticky top-0 z-40">
             <div className="flex items-center gap-2">
               <MobileNav />
-              <div
-                className="flex items-center gap-1.5 cursor-pointer"
-                onClick={() => navigate('/')}
-              >
+              <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/')}>
                 <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
                   <span className="text-xs font-semibold text-white">M</span>
                 </div>
@@ -111,8 +106,9 @@ export const Layout = ({ children }: LayoutProps) => {
             <Header />
           </div>
 
-          {/* Main content */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden bg-background p-4 md:p-6">
+          <SubscriptionBanner />
+
+          <main className="flex-1 overflow-y-auto bg-background p-6">
             {children}
           </main>
         </div>

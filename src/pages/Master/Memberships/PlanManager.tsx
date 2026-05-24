@@ -305,32 +305,39 @@ export default function PlanManager() {
                             if (!open) resetForm();
                         }}>
                             <DialogTrigger asChild>
-                                <Button variant="default" size="default" className="shadow-premium-md font-bold">
+                                <Button className="btn-elite-primary">
                                     <Plus className="mr-2 h-4 w-4" />
                                     Crear Nuevo Plan
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-card border border-border/40 shadow-premium-2xl rounded-lg max-w-md p-6">
-                                <DialogHeader>
-                                    <DialogTitle className="text-xl font-bold tracking-tight">
-                                        {editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}
-                                    </DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4 py-4">
+                            <DialogContent className="bg-card rounded-2xl border border-border shadow-premium-2xl max-w-md p-0 overflow-hidden font-display">
+                                <div className="bg-muted/30 p-6 border-b border-border/80">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-card flex items-center justify-center shadow-soft border border-border">
+                                            {editingPlan ? <Edit2 className="h-5 w-5 text-primary" /> : <Plus className="h-5 w-5 text-primary" />}
+                                        </div>
+                                        <div>
+                                            <DialogTitle className="text-lg font-bold text-foreground tracking-tight">
+                                                {editingPlan ? 'Editar Plan' : 'Nuevo Plan de Suscripción'}
+                                            </DialogTitle>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-8 space-y-4 bg-card">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Nombre del Plan</label>
+                                        <label className="text-xs font-semibold text-foreground/80 ml-1">Nombre del Plan</label>
                                         <Input
-                                            className="font-semibold bg-muted border-input"
+                                            className="input-elite w-full font-semibold"
                                             placeholder="Ej: Enterprise"
                                             value={newPlanName}
                                             onChange={(e) => setNewPlanName(e.target.value)}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Precio Mensual ($)</label>
+                                        <label className="text-xs font-semibold text-foreground/80 ml-1">Precio Mensual ($)</label>
                                         <Input
                                             type="number"
-                                            className="font-semibold bg-muted border-input"
+                                            className="input-elite w-full font-semibold"
                                             placeholder="99.99"
                                             value={newPlanPrice}
                                             onChange={(e) => setNewPlanPrice(e.target.value)}
@@ -338,24 +345,24 @@ export default function PlanManager() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Características</label>
+                                        <label className="text-xs font-semibold text-foreground/80 ml-1">Características</label>
                                         <div className="flex gap-2">
                                             <Input
-                                                className="font-medium bg-muted border-input"
+                                                className="input-elite flex-grow font-medium"
                                                 placeholder="Nueva característica..."
                                                 value={featureInput}
                                                 onChange={(e) => setFeatureInput(e.target.value)}
                                                 onKeyDown={(e) => e.key === 'Enter' && addFeature()}
                                             />
-                                            <Button size="icon" variant="default" onClick={addFeature} className="w-10 h-10 shrink-0">
+                                            <Button size="icon" onClick={addFeature} className="btn-elite-primary w-10 h-10 shrink-0">
                                                 <Plus className="w-4 h-4" />
                                             </Button>
                                         </div>
                                         <div className="max-h-40 overflow-y-auto space-y-2 mt-4 p-1">
                                             {newPlanFeatures.map((feat, idx) => (
-                                                <div key={idx} className="flex items-center justify-between bg-muted p-2 rounded-lg border border-border/40">
-                                                    <span className="text-xs font-bold text-muted-foreground truncate mr-2">{feat}</span>
-                                                    <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg">
+                                                <div key={idx} className="flex items-center justify-between bg-muted/40 p-2 px-3 rounded-lg border border-border/80">
+                                                    <span className="text-xs font-semibold text-foreground/80 truncate mr-2">{feat}</span>
+                                                    <Button variant="ghost" size="sm" onClick={() => removeFeature(idx)} className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-md">
                                                         <X className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -363,7 +370,7 @@ export default function PlanManager() {
                                         </div>
                                     </div>
 
-                                    <Button variant="default" onClick={handleSavePlan} className="w-full font-bold shadow-premium-md">
+                                    <Button onClick={handleSavePlan} className="btn-elite-primary w-full mt-2">
                                         {editingPlan ? 'Actualizar Plan' : 'Guardar Plan'}
                                     </Button>
                                 </div>
@@ -371,13 +378,11 @@ export default function PlanManager() {
                         </Dialog>
 
                         <Button
-                            variant="outline"
-                            size="default"
                             onClick={resetToOfficialPlans}
                             disabled={loading}
-                            className="shadow-sm font-bold"
+                            className="btn-elite-secondary"
                         >
-                            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin text-primary' : ''}`} />
+                            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin text-primary' : ''}`} />
                             Sincronizar Cloud
                         </Button>
                     </div>

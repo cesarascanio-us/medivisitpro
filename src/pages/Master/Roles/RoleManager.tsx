@@ -303,7 +303,7 @@ export default function RoleManager() {
                     <h2 className="text-2xl font-bold tracking-tight text-foreground">Perfiles y Niveles de Acceso</h2>
                     <p className="text-slate-500">Configure los roles de usuario y sus permisos dentro de la plataforma.</p>
                 </div>
-                <Button onClick={handleCreateClick} className="bg-slate-900 hover:bg-slate-800 text-white">
+                <Button onClick={handleCreateClick} className="btn-elite-primary">
                     <Plus className="mr-2 h-4 w-4" />
                     Crear Nuevo Perfil
                 </Button>

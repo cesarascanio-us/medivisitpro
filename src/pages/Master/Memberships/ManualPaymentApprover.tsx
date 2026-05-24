@@ -181,8 +181,8 @@ export default function ManualPaymentApprover() {
     };
 
     return (
-        <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden text-white">
-            <CardHeader className="border-b border-slate-800 bg-slate-800/20">
+        <Card className="card-elite overflow-hidden">
+            <CardHeader className="border-b border-border bg-muted/20">
                 <div className="flex justify-between items-center">
                     <div>
                         <CardTitle className="text-white flex items-center gap-2">
@@ -197,42 +197,41 @@ export default function ManualPaymentApprover() {
             </CardHeader>
             <CardContent className="p-0">
                 <Table>
-                    <TableHeader className="bg-slate-800/30">
-                        <TableRow className="border-slate-800 hover:bg-transparent">
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Cliente / Org</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Plan</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Método</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Referencia</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Monto</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Fecha</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Comprobante</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px]">Estado</TableHead>
-                            <TableHead className="text-slate-500 font-bold uppercase text-[10px] text-right">Acción</TableHead>
+                    <TableHeader className="bg-muted/30">
+                        <TableRow className="border-border">
+                            <TableHead className="text-muted-foreground">Cliente / Org</TableHead>
+                            <TableHead className="text-muted-foreground">Plan</TableHead>
+                            <TableHead className="text-muted-foreground">Método</TableHead>
+                            <TableHead className="text-muted-foreground">Referencia</TableHead>
+                            <TableHead className="text-muted-foreground">Monto</TableHead>
+                            <TableHead className="text-muted-foreground">Fecha</TableHead>
+                            <TableHead className="text-muted-foreground">Comprobante</TableHead>
+                            <TableHead className="text-muted-foreground">Estado</TableHead>
+                            <TableHead className="text-right text-muted-foreground">Acción</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {loading ? (
                             <TableRow>
                                 <TableCell colSpan={9} className="text-center py-20">
-                                    <Loader2 className="w-8 h-8 animate-spin text-emerald-500 mx-auto" />
+                                    <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
                                 </TableCell>
                             </TableRow>
                         ) : reports.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={9} className="text-center py-20 text-slate-500 ">
+                                <TableCell colSpan={9} className="text-center py-20 text-muted-foreground">
                                     No hay reportes de pago registrados.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             reports.map((report) => (
-                                <TableRow key={report.id} className="border-slate-800/50 hover:bg-background/5 transition-colors group">
+                                <TableRow key={report.id} className="border-border">
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="text-white font-medium text-sm">{report.organizations?.name}</span>
-                                            <span className="text-slate-500 text-xs">{report.profiles?.email}</span>
+                                            <span className="font-semibold text-white">{report.organizations?.name || 'No Org'}</span>
+                                            <span className="text-xs text-muted-foreground">{report.profiles?.email || 'Sin Correo'}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell>
                                         <Badge variant="outline" className="border-slate-700 text-slate-300">
                                             {report.plan_id}
                                         </Badge>

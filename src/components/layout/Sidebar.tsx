@@ -38,6 +38,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/context/ThemeContext";
 import { useTexts } from "@/hooks/useTexts";
 import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/hooks/usePermissions";
 
 interface SidebarProps {
   className?: string;
@@ -47,6 +48,7 @@ interface SidebarProps {
 export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const {
     user,
+    profile,
     signOut,
     role,
     isMaster,
@@ -62,6 +64,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const texts = useTexts();
   const navigate = useNavigate();
   const location = useLocation();
+  const { canAccessModule } = usePermissions();
 
   const [isExpanded, setIsExpanded] = useState(theme?.sidebar_default !== "collapsed");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
@@ -73,8 +76,15 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   const handleSignOut = async () => { await signOut(); };
 
-  const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U";
-  const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || "Usuario";
+  const userName = profile?.first_name 
+    ? `${profile.first_name} ${profile.last_name || ''}`.trim()
+    : user?.user_metadata?.first_name 
+      || user?.email?.split('@')[0] 
+      || "Usuario";
+      
+  const userInitials = profile?.first_name 
+    ? `${profile.first_name.charAt(0)}${(profile.last_name || '').charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}`.toUpperCase()
+    : user?.email?.substring(0, 2).toUpperCase() || "U";
 
   const getRoleLabel = () => {
     if (isMaster) return 'Master';
@@ -90,6 +100,11 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const canSeeAnalytics   = isMaster || isAdmin || isManager;
   const canSeeZones       = isMaster || isAdmin || isManager;
   const canSeeHR          = isMaster || isAdmin || isManager;
+
+  // Mock states for visual design specs
+  const pendingVisits = role === 'representative' ? 3 : 0;
+  const pendingTransfers = (isManager || role === 'representative') ? 5 : 0;
+  const hasActiveVisit = role === 'representative';
 
   const filteredNav = [
     {
@@ -107,39 +122,48 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       title: "Panel de Control",
       items: [
         { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
-        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: isMaster || (canSeeAnalytics && theme.enable_finance_monitor) },
+        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: isMaster || (canSeeAnalytics && theme.enable_finance_monitor && canAccessModule('finance')) },
         { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: isMaster || isAdmin },
-        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: true },
+        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: canAccessModule('documents') },
+        { name: "Mis Eventos", href: "/events", icon: Calendar, visible: true },
+        { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
+        { name: "Preguntas y Respuestas", href: "/faq", icon: ShieldCheck, visible: true },
       ]
     },
     {
       title: "Gestión Médica",
       items: [
-        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: true },
-        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: isMaster || theme.enable_sample_tracking },
-        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: true },
-        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: true },
-        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: isMaster || theme.enable_geolocation },
+        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: canAccessModule('visits'), badge: pendingVisits, badgeColor: "bg-destructive" },
+        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: (isMaster || theme.enable_sample_tracking) && canAccessModule('sample_banks') },
+        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: canAccessModule('doctors') },
+        { name: "Especialidades", href: "/specialties", icon: Users, visible: canAccessModule('doctors') },
+        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: canAccessModule('agenda') },
+        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
+        { name: "Ciclos Promocionales", href: "/cycles", icon: GitBranch, visible: true },
       ]
     },
     {
       title: "Gestión Comercial",
       items: [
         { name: texts.users_title, href: "/users", icon: Users, visible: canSeeManagement },
-        { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR },
-        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
-        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: canSeeZones },
-        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: isMaster || theme.enable_pmbok },
+        { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR && canAccessModule('hr') },
+        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: canAccessModule('sales_pipeline') },
+        { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: true },
+        { name: "Catálogo Interactivo", href: "/products", icon: ShoppingCart, visible: true },
+        { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: true },
+        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: canSeeZones && canAccessModule('zones') },
+        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: (isMaster || theme.enable_pmbok) && canAccessModule('pmbok') },
       ]
     },
     {
       title: "Logística y Cobertura",
       items: [
-        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: true },
+        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: canAccessModule('transfers'), badge: pendingTransfers, badgeColor: "bg-amber-500" },
         { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: true },
-        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: true },
-        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: true },
-        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: isMaster || (canSeeManagement && theme.enable_coverage_map) },
+        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: canAccessModule('pharmacies') },
+        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: canAccessModule('pharmacies') },
+        { name: "Gestión de Baremos", href: "/baremos", icon: FileText, visible: true },
+        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: isMaster || (canSeeManagement && theme.enable_coverage_map && canAccessModule('coverage_map')) },
       ]
     }
   ]
@@ -235,7 +259,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                           "flex items-center rounded-md transition-all duration-150 group relative",
                           isExpanded ? "px-2 py-1.5 gap-2.5" : "px-0 py-1.5 justify-center",
                           isActive
-                            ? "bg-accent text-accent-foreground font-medium"
+                            ? "bg-accent text-primary font-medium"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         )}
                       >
@@ -247,7 +271,16 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                           strokeWidth={1.5}
                         />
                         {isExpanded && (
-                          <span className="text-xs truncate">{item.name}</span>
+                          <span className="text-xs truncate flex-1 text-left">{item.name}</span>
+                        )}
+                        {/* Badges */}
+                        {isExpanded && item.badge > 0 && (
+                          <span className={cn("px-1.5 py-0.5 rounded-full text-[9px] font-bold text-white", item.badgeColor || "bg-primary")}>
+                            {item.badge}
+                          </span>
+                        )}
+                        {!isExpanded && item.badge > 0 && (
+                          <span className={cn("absolute top-1 right-1 w-2 h-2 rounded-full", item.badgeColor || "bg-primary")} />
                         )}
                         {/* Active indicator */}
                         {isActive && (
@@ -270,16 +303,24 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       )}>
         <div className={cn(
           "flex items-center rounded-md p-2 hover:bg-muted transition-colors",
-          isExpanded ? "gap-2.5 w-full" : "w-10 h-10 justify-center"
+          isExpanded ? "gap-2.5 w-full" : "w-10 h-10 justify-center relative"
         )}>
           {/* Avatar */}
-          <div className="w-7 h-7 rounded-md bg-accent flex items-center justify-center flex-shrink-0 border border-border">
+          <div className="w-7 h-7 rounded-md bg-accent flex items-center justify-center flex-shrink-0 border border-border relative">
             <span className="text-xs font-semibold text-primary">{userInitials}</span>
+            {!isExpanded && hasActiveVisit && (
+               <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-card animate-pulse" />
+            )}
           </div>
 
           {isExpanded && (
             <div className="min-w-0 flex-1 animate-in fade-in duration-200">
-              <p className="text-xs font-medium text-foreground truncate leading-tight">{userName}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-xs font-medium text-foreground truncate leading-tight">{userName}</p>
+                {hasActiveVisit && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse flex-shrink-0" title="Visita en curso" />
+                )}
+              </div>
               <p className="text-[10px] text-muted-foreground truncate mt-0.5">{getRoleLabel()}</p>
             </div>
           )}
