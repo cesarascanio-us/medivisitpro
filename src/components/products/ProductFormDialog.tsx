@@ -326,13 +326,17 @@ export function ProductFormDialog({ trigger, productToEdit, onSuccess, open: con
     const categories = [
         "Cardiovascular", "Neurológico", "Oncológico", "Endocrinología",
         "Gastroenterología", "Respiratorio", "Dermatología", "Pediatría",
-        "Ginecología", "Urología", "Inmunología", "Oftalmología"
+        "Ginecología", "Urología", "Inmunología", "Oftalmología",
+        "Línea Gástrica", "Línea Pediátrica", "Especialidades Farmacéuticas",
+        "Línea Oficinal", "Cuidado Personal", "Línea de Alcohol", "Nutracéutica", "General"
     ];
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
+            <DialogContent 
+                aria-describedby={undefined}
+                className="max-w-5xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
                 {/* Product Header */}
                 <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-8 py-10 text-white relative overflow-hidden shrink-0">
                     <div className="absolute top-0 right-0 p-8 opacity-10">

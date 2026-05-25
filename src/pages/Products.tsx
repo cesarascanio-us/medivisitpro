@@ -154,35 +154,41 @@ export default function Products() {
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
           const parsedProducts = jsonData.map((row: any) => {
-            // Flexible name detection for user's specific catalog format
-            let productName = '';
-            let assignedCategory = 'General';
+            // Flexible name detection
+            let productName = row['Nombre'] || row['nombre'] || row['Producto'] || row['Descripcion'] || row['Descripción'] || '';
+            let assignedTherapeuticArea = row['Área Terapéutica'] || row['Area Terapeutica'] || row['Categoria'] || row['categoria'] || null;
 
-            if (row['LÍNEA GASTRICA']) { productName = row['LÍNEA GASTRICA']; assignedCategory = 'Línea Gástrica'; }
-            else if (row['LÍNEA PEDIÁTRICA']) { productName = row['LÍNEA PEDIÁTRICA']; assignedCategory = 'Línea Pediátrica'; }
-            else if (row['ESPECIALIDADES FARMACÉUTICAS']) { productName = row['ESPECIALIDADES FARMACÉUTICAS']; assignedCategory = 'Especialidades Farmacéuticas'; }
-            else if (row['LIÍNEA OFICINALES']) { productName = row['LIÍNEA OFICINALES']; assignedCategory = 'Línea Oficinal'; }
-            else if (row['LÍNEA COSMETICA / CUIDADO PERSONAL']) { productName = row['LÍNEA COSMETICA / CUIDADO PERSONAL']; assignedCategory = 'Cuidado Personal'; }
-            else if (row['LÍNEA DE ALCOHOL']) { productName = row['LÍNEA DE ALCOHOL']; assignedCategory = 'Línea de Alcohol'; }
-            else if (row['COMPLEMENTOS NUTRICIONALES']) { productName = row['COMPLEMENTOS NUTRICIONALES']; assignedCategory = 'Nutracéutica'; }
-            else {
-              productName = row['Descripcion'] || row['Descripción'] || row['Producto'] || row['Nombre'] || row['nombre'] || '';
-              assignedCategory = row['Categoria'] || row['categoria'] || 'General';
+            // Fallback for old format
+            if (!productName) {
+              if (row['LÍNEA GASTRICA']) { productName = row['LÍNEA GASTRICA']; assignedTherapeuticArea = 'Línea Gástrica'; }
+              else if (row['LÍNEA PEDIÁTRICA']) { productName = row['LÍNEA PEDIÁTRICA']; assignedTherapeuticArea = 'Línea Pediátrica'; }
+              else if (row['ESPECIALIDADES FARMACÉUTICAS']) { productName = row['ESPECIALIDADES FARMACÉUTICAS']; assignedTherapeuticArea = 'Especialidades Farmacéuticas'; }
+              else if (row['LIÍNEA OFICINALES']) { productName = row['LIÍNEA OFICINALES']; assignedTherapeuticArea = 'Línea Oficinal'; }
+              else if (row['LÍNEA COSMETICA / CUIDADO PERSONAL']) { productName = row['LÍNEA COSMETICA / CUIDADO PERSONAL']; assignedTherapeuticArea = 'Cuidado Personal'; }
+              else if (row['LÍNEA DE ALCOHOL']) { productName = row['LÍNEA DE ALCOHOL']; assignedTherapeuticArea = 'Línea de Alcohol'; }
+              else if (row['COMPLEMENTOS NUTRICIONALES']) { productName = row['COMPLEMENTOS NUTRICIONALES']; assignedTherapeuticArea = 'Nutracéutica'; }
             }
 
-            const productCode = row['CODIGO DE BARRA'] || row['Codigo de Barra'] || row['Codigo_Barra'] || row['Codigo'] || row['CODIGO'] || row['codigo'] || row['ID_Producto'] || null;
+            // The user's Excel file has separate columns:
+            // "Código PRD" (e.g., AC2418U) -> maps to product_code
+            // "GTIN / SKU" (e.g., 7591616002418) -> maps to sku
+            const productCode = row['Código PRD'] || row['Codigo PRD'] || row['Codigo'] || row['CODIGO'] || row['ID_Producto'] || null;
+            const skuValue = row['GTIN / SKU'] || row['GTIN'] || row['SKU'] || row['CODIGO DE BARRA'] || row['Codigo de Barra'] || row['Codigo_Barra'] || null;
             
             return {
               user_id: user?.id,
               organization_id: organizationId,
-              product_code: productCode,
+              product_code: productCode ? String(productCode).trim() : null,
+              sku: skuValue ? String(skuValue).trim() : null,
               name: productName,
               active_ingredients: row['Principios Activos'] || row['principios_activos'] || null,
-              presentation: row['Presentacion'] || row['presentacion'] || null,
-              category: assignedCategory,
-              indications: row['DESCRIPCIÓN'] || row['Indicaciones'] || row['indicaciones'] || null,
-              therapeutic_area: row['Area Terapeutica'] || row['area_terapeutica'] || null,
+              presentation: row['Presentacion'] || row['presentacion'] || row['U.M'] || null,
+              category: assignedTherapeuticArea || 'General',
+              description: row['DESCRIPCIÓN'] || row['Descripción'] || row['descripcion'] || row['Indicaciones'] || row['indicaciones'] || null,
+              indications: row['DESCRIPCIÓN'] || row['Descripción'] || row['descripcion'] || row['Indicaciones'] || row['indicaciones'] || null,
+              therapeutic_area: null,
               price: row['P.U'] || row['Precio_Final'] || row['Precio_Mayo'] || row['Precio'] ? parseFloat(String(row['P.U'] || row['Precio_Final'] || row['Precio_Mayo'] || row['Precio']).replace(/[^0-9.]/g, '')) : null,
+              image_url: row['Imagen'] || row['imagen'] || row['Image'] || row['image_url'] || null,
             };
           }).filter(p => p.name);
 
@@ -191,18 +197,29 @@ export default function Products() {
           // Deduplicate by name to prevent "ON CONFLICT DO UPDATE command cannot affect row a second time"
           const uniqueProductsMap = new Map();
           const seenCodes = new Set();
+          const seenSkus = new Set();
           
           parsedProducts.forEach(product => {
             const key = product.name.trim().toLowerCase();
             
-            // Check for duplicate barcodes to prevent 'products_product_code_key' unique constraint errors
+            // Check for duplicate product_codes to prevent 'products_product_code_key' unique constraint errors
             if (product.product_code) {
               const codeStr = String(product.product_code).trim();
               if (seenCodes.has(codeStr)) {
-                // Duplicate barcode found! Nullify to prevent DB crash, but still import the product by name.
+                // Duplicate product code found! Nullify to prevent DB crash, but still import the product by name.
                 product.product_code = null;
               } else {
                 seenCodes.add(codeStr);
+              }
+            }
+
+            // Check for duplicate SKUs (barcodes) to prevent possible sku unique constraint errors
+            if (product.sku) {
+              const skuStr = String(product.sku).trim();
+              if (seenSkus.has(skuStr)) {
+                product.sku = null;
+              } else {
+                seenSkus.add(skuStr);
               }
             }
             
@@ -213,10 +230,16 @@ export default function Products() {
           const { error } = await supabase
             .from('products')
             .upsert(productsToInsert, { onConflict: 'name, organization_id' });
-          if (error) throw error;
 
-          toast({ title: "Importación completa", description: `Se han importado ${productsToInsert.length} productos.` });
+          if (error) {
+            console.error("Supabase Import Error:", error);
+            // Mostrar un alert gigante para capturar el error exacto que la base de datos está arrojando
+            alert(`🚨 ERROR DE BASE DE DATOS 🚨\n\nMensaje: ${error.message}\nDetalles: ${error.details || 'Ninguno'}\nHint: ${error.hint || 'Ninguno'}\nCódigo: ${error.code}\n\nPor favor, tómale captura a este mensaje.`);
+            throw new Error(`Error al importar a base de datos: ${error.message}`);
+          }
+          
           loadProducts();
+          toast({ title: "Importación completa", description: `Se han importado ${productsToInsert.length} productos.` });
         } catch (error: any) {
           toast({ title: "Error de Importación", description: error.message, variant: "destructive" });
         } finally {
@@ -263,7 +286,7 @@ export default function Products() {
 
   return (
     <div className="space-y-8 pb-10">
-      <input type="file" ref={fileInputRef} onChange={handleImport} accept=".csv" className="hidden" />
+      <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx, .xls, .csv" className="hidden" />
 
       <EliteHeader
         title="Vademécum Alpha"
@@ -408,7 +431,11 @@ function ProductCard({ product, loadProducts, isFavorite, toggleFavorite }: any)
             <div className="flex gap-2">
               <Dialog>
                 <DialogTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary"><Eye className="h-4 w-4" /></Button></DialogTrigger>
-                <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]"><ProductDetailView productId={product.id} onBack={() => {}} /></DialogContent>
+                <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]">
+                  <DialogTitle className="sr-only">Detalles del Producto</DialogTitle>
+                  <DialogDescription className="sr-only">Información detallada del producto</DialogDescription>
+                  <ProductDetailView productId={product.id} onBack={() => {}} />
+                </DialogContent>
               </Dialog>
               <ProductSamplesDialog trigger={<Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary"><Package className="h-4 w-4" /></Button>} productData={product} />
             </div>
@@ -440,7 +467,11 @@ function ProductListItem({ product, loadProducts }: any) {
               <ProductSamplesDialog trigger={<Button variant="outline" className="h-10 px-6 border-border/40 rounded-xl font-black uppercase text-[9px] tracking-widest">Muestras</Button>} productData={product} />
               <Dialog>
                 <DialogTrigger asChild><Button className="h-10 w-10 bg-primary text-white rounded-xl shadow-premium-md flex items-center justify-center"><Eye className="h-4 w-4" /></Button></DialogTrigger>
-                <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]"><ProductDetailView productId={product.id} onBack={() => {}} /></DialogContent>
+                <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]">
+                  <DialogTitle className="sr-only">Detalles del Producto</DialogTitle>
+                  <DialogDescription className="sr-only">Información detallada del producto</DialogDescription>
+                  <ProductDetailView productId={product.id} onBack={() => {}} />
+                </DialogContent>
               </Dialog>
             </div>
           </div>

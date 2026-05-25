@@ -1,0 +1,2249 @@
+[
+  {
+    "Id_QyA": 1,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuáles son los principios activos (Acetaminofén, Clorfeniramina)? ¿Cómo actúan?",
+    "Respuesta Técnica del Visitador Médico": "Los principios activos son Acetaminofén y Clorfeniramina Maleato. El Acetaminofén es un analgésico y antipirético (alivia el dolor y la fiebre). La Clorfeniramina Maleato es un antihistamínico que ayuda a reducir síntomas alérgicos como secreción nasal, estornudos y picor."
+  },
+  {
+    "Id_QyA": 2,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la concentración de cada principio activo por dosis?",
+    "Respuesta Técnica del Visitador Médico": "Cada dosis de 5 mL de Acetaclor Jarabe contiene **125 mg de Acetaminofén** y **0.5 mg de Clorfeniramina Maleato**."
+  },
+  {
+    "Id_QyA": 3,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Contiene otros componentes como azúcar?",
+    "Respuesta Técnica del Visitador Médico": "Contiene sacarosa y vehículo. (Indicar si contiene azúcar u otros edulcorantes específicos, colorantes, conservantes, según la ficha técnica completa)."
+  },
+  {
+    "Id_QyA": 4,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado este jarabe? ¿Qué síntomas del resfriado alivia?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento sintomático del resfriado común. Ayuda a aliviar síntomas como [Basarse en la acción de los activos y síntomas comunes del resfriado: fiebre, dolor (ej. dolor de cabeza, muscular), congestión nasal, secreción nasal, estornudos]."
+  },
+  {
+    "Id_QyA": 5,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Es de uso pediátrico exclusivo o también se puede usar en adultos?",
+    "Respuesta Técnica del Visitador Médico": "Es de **Uso Pediátrico**. Las dosis están formuladas para esta población."
+  },
+  {
+    "Id_QyA": 6,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para niños? ¿Por edad o peso? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "[Indicar la dosis exacta en volumen (mL) o según la tabla de dosificación por edad/peso del laboratorio, y la frecuencia según la ficha técnica, ej: cada 4-6 horas]. (La imagen no especifica la dosificación exacta por edad/peso, solo la concentración)."
+  },
+  {
+    "Id_QyA": 7,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios? ¿Somnolencia (por Clorfeniramina)?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar somnolencia debido a la Clorfeniramina. Otros efectos pueden incluir [Mencionar si aplica: sequedad de boca, visión borrosa, molestias gastrointestinales (por Acetaminofén)]."
+  },
+  {
+    "Id_QyA": 8,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene interacciones relevantes?",
+    "Respuesta Técnica del Visitador Médico": "Puede potenciar el efecto sedante de otros depresores del SNC (alcohol, tranquilizantes). El Acetaminofén interactúa con ciertos medicamentos (ver Acetaten Forte)."
+  },
+  {
+    "Id_QyA": 9,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación (asma, problemas respiratorios)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad a los componentes. Precaución en niños con problemas respiratorios preexistentes (asma) debido al antihistamínico. No usar con otros productos que contengan Acetaminofén para evitar sobredosis."
+  },
+  {
+    "Id_QyA": 10,
+    "Nombre del Producto": "Acetaclor Jarabe",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentación Jarabe con contenido neto de 120 mL."
+  },
+  {
+    "Id_QyA": 11,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la concentración de Acetaminofén?",
+    "Respuesta Técnica del Visitador Médico": "La concentración es de 180 mg de Acetaminofén por cada 5 mL de suspensión."
+  },
+  {
+    "Id_QyA": 12,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza Acetaten Forte? ¿Alivio del dolor o la fiebre?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el alivio del dolor leve a moderado y la fiebre."
+  },
+  {
+    "Id_QyA": 13,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Es seguro y efectivo en niños?",
+    "Respuesta Técnica del Visitador Médico": "Sí, es conocido por su perfil de seguridad y eficacia, lo que lo hace ampliamente utilizado, incluso en niños. La dosificación está formulada para permitir un ajuste preciso."
+  },
+  {
+    "Id_QyA": 14,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada? ¿Se basa en la edad o el peso?",
+    "Respuesta Técnica del Visitador Médico": "La dosis se basa generalmente en el peso del paciente para asegurar la precisión, aunque las guías también suelen ofrecer dosis por edad. [Indicar la dosis estándar en mg/kg para dolor/fiebre según fichas técnicas generales, ej: 10-15 mg/kg por dosis]. El volumen en mL se calcula según la concentración (180 mg/5mL). (Dosificación específica por edad/peso no detallada en archivos)."
+  },
+  {
+    "Id_QyA": 15,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Con qué frecuencia se puede administrar?",
+    "Respuesta Técnica del Visitador Médico": "La frecuencia de administración es típicamente cada 4 a 6 horas, según sea necesario para controlar el dolor o la fiebre, sin exceder la dosis diaria máxima recomendada [Basado en guías de uso de Acetaminofén]."
+  },
+  {
+    "Id_QyA": 16,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios? ¿Riesgo hepático?",
+    "Respuesta Técnica del Visitador Médico": "A las dosis recomendadas, el Acetaminofén es generalmente seguro. El riesgo más grave es la hepatotoxicidad, que ocurre con la sobredosis. Otros efectos secundarios son raros a dosis terapéuticas [Basado en guías de uso de Acetaminofén]."
+  },
+  {
+    "Id_QyA": 17,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna contraindicación o precaución importante?",
+    "Respuesta Técnica del Visitador Médico": "La principal contraindicación es la hipersensibilidad al Acetaminofén. Se debe usar con precaución en pacientes con enfermedad hepática o renal preexistente [Basado en guías de uso de Acetaminofén]."
+  },
+  {
+    "Id_QyA": 18,
+    "Nombre del Producto": "Acetafen Forte",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentación Suspensión con contenido neto de 120 mL."
+  },
+  {
+    "Id_QyA": 19,
+    "Nombre del Producto": "Ácido Bórico (Polvo Uso Externo)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Ácido Bórico USP en polvo? ¿Cómo actúa como antiséptico tópico?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Ácido Bórico USP. USP indica que cumple con los estándares de pureza de la Farmacopea de Estados Unidos. Tiene propiedades antisépticas y astringentes suaves."
+  },
+  {
+    "Id_QyA": 20,
+    "Nombre del Producto": "Ácido Bórico (Polvo Uso Externo)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Preparación de agua boricada? ¿Lavados? ¿Tratamiento del acné?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como antiséptico de uso tópico. Se usa para la preparación de agua boricada para lavados vaginales y la limpieza de la cutis en el tratamiento del acné."
+  },
+  {
+    "Id_QyA": 21,
+    "Nombre del Producto": "Ácido Bórico (Polvo Uso Externo)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se prepara el agua boricada? ¿Cuál es la concentración recomendada?",
+    "Respuesta Técnica del Visitador Médico": "Para preparar agua boricada, se disuelve el polvo en agua [Indicar la proporción o concentración recomendada si se especifica en el producto, ej: una cucharadita en un litro de agua hervida y tibia]. Usar según indicación para lavados o limpieza de cutis."
+  },
+  {
+    "Id_QyA": 22,
+    "Nombre del Producto": "Ácido Bórico (Polvo Uso Externo)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Es seguro usarlo tópicamente? ¿Riesgos por absorción?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente seguro para uso tópico en piel intacta y mucosas. **Es crucial evitar su uso en piel lesionada, quemada o en grandes extensiones, especialmente en niños pequeños, debido al riesgo de absorción sistémica y toxicidad.** Evitar la ingestión."
+  },
+  {
+    "Id_QyA": 23,
+    "Nombre del Producto": "Ácido Bórico (Polvo Uso Externo)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación importante?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad al ácido bórico. **No usar en piel dañada, quemaduras, heridas abiertas ni en el área del pañal en bebés.** Evitar la ingestión."
+  },
+  {
+    "Id_QyA": 24,
+    "Nombre del Producto": "Ácido Bórico (Polvo Uso Externo)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué cantidad contiene el sobre?",
+    "Respuesta Técnica del Visitador Médico": "Viene en sobre con contenido neto de 20 g."
+  },
+  {
+    "Id_QyA": 25,
+    "Nombre del Producto": "Aceite de Almendras Dulces",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Aceite de almendras dulces? ¿Cuál es su principio activo?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Aceite de almendras dulces. Es un aceite vegetal rico en ácidos grasos (principalmente oleico y linoleico)."
+  },
+  {
+    "Id_QyA": 26,
+    "Nombre del Producto": "Aceite de Almendras Dulces",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cómo actúa como emoliente y humectante? ¿Para qué tipo de piel es útil?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como emoliente y humectante. Ayuda a suavizar, hidratar y nutrir la piel, mejorando su elasticidad y apariencia. Es útil para pieles secas, deshidratadas o sensibles."
+  },
+  {
+    "Id_QyA": 27,
+    "Nombre del Producto": "Aceite de Almendras Dulces",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar directamente sobre la piel limpia y seca, masajeando suavemente hasta su absorción. Puede usarse según necesidad, varias veces al día."
+  },
+  {
+    "Id_QyA": 28,
+    "Nombre del Producto": "Aceite de Almendras Dulces",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios o contraindicaciones? ¿Puede causar alergias?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente es bien tolerado. En personas con alergia a los frutos secos, podría haber riesgo de reacción alérgica cutánea. Evitar el contacto con ojos."
+  },
+  {
+    "Id_QyA": 29,
+    "Nombre del Producto": "Aceite de Almendras Dulces",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 30,
+    "Nombre del Producto": "Aceite Mineral",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Aceite mineral? ¿Cuál es su composición?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Aceite mineral NF. Es una mezcla de hidrocarburos líquidos derivados del petróleo, altamente refinados para uso farmacéutico/cosmético. NF significa que cumple con los estándares del National Formulary."
+  },
+  {
+    "Id_QyA": 31,
+    "Nombre del Producto": "Aceite Mineral",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cómo actúa como emoliente y suavizante? ¿Y como vehículo farmacéutico?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como emoliente y suavizante de manos y piel, lubricante y vehículo farmacéutico. Forma una capa oclusiva sobre la piel que reduce la pérdida de agua. Como vehículo, se usa para disolver o dispersar otros ingredientes en formulaciones tópicas."
+  },
+  {
+    "Id_QyA": 32,
+    "Nombre del Producto": "Aceite Mineral",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Es para uso interno o externo?",
+    "Respuesta Técnica del Visitador Médico": "Es principalmente para uso externo como emoliente. [Si está indicado como lubricante o para otra vía, especificar según ficha técnica. Tradicionalmente el aceite mineral también se usa como laxante, pero aquí no está listado como indicación]. Aplicar sobre la piel según necesidad."
+  },
+  {
+    "Id_QyA": 33,
+    "Nombre del Producto": "Aceite Mineral",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Puede obstruir los poros (comedogénico)?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerado. Puede ser comedogénico (obstruir poros) en algunas personas, especialmente si se usa en exceso en pieles propensas al acné. [Confirmar si es de bajo grado de comedogenicidad según el laboratorio]."
+  },
+  {
+    "Id_QyA": 34,
+    "Nombre del Producto": "Aceite Mineral",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 35,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Aceite de Ricino? ¿Cuál es su principio activo?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Aceite de castor NF. NF significa que cumple con los estándares del National Formulary. Es un aceite vegetal obtenido de la semilla de ricino, cuyo principal componente activo es el ácido ricinoleico."
+  },
+  {
+    "Id_QyA": 36,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cómo actúa como laxante? ¿Es fuerte? ¿Para qué tipo de estreñimiento?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como laxante natural y digestivo. Actúa irritando la mucosa intestinal y estimulando la motilidad, lo que produce un efecto laxante rápido y potente. Se usa para el alivio del estreñimiento ocasional."
+  },
+  {
+    "Id_QyA": 37,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cómo se emplea en tratamientos capilares y cuidado de la barba/pestañas?",
+    "Respuesta Técnica del Visitador Médico": "Tradicionalmente se ha usado tópicamente en tratamientos capilares y para el cuidado de la barba y el crecimiento de las pestañas. Se cree que sus ácidos grasos pueden ayudar a hidratar y nutrir el folículo piloso, aunque la evidencia científica es limitada para estas indicaciones."
+  },
+  {
+    "Id_QyA": 38,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma como laxante? ¿Cuál es la dosis? ¿Y cómo se aplica tópicamente?",
+    "Respuesta Técnica del Visitador Médico": "Como laxante: [Indicar la dosis oral usual para adultos y niños mayores, según sepa del producto o prácticas comunes. Es una dosis única]. Tiene un sabor fuerte. Para uso tópico capilar/pestañas: aplicar una pequeña cantidad en el área deseada, masajeando si es en cuero cabelludo/barba."
+  },
+  {
+    "Id_QyA": 39,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los efectos secundarios? ¿Dolor abdominal? ¿Uso crónico?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar calambres abdominales, náuseas y diarrea. **No debe usarse de forma crónica** como laxante, ya que puede generar dependencia intestinal, pérdida de electrolitos y dañar la función intestinal."
+  },
+  {
+    "Id_QyA": 40,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones importantes? ¿Embarazo?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en obstrucción intestinal, apendicitis, dolor abdominal de origen desconocido, enfermedad inflamatoria intestinal (Crohn, Colitis ulcerosa). **No debe usarse durante el embarazo** ya que puede inducir contracciones uterinas. Evitar en niños pequeños a menos que sea específicamente indicado y bajo supervisión médica estricta."
+  },
+  {
+    "Id_QyA": 41,
+    "Nombre del Producto": "Aceite de Ricino",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 42,
+    "Nombre del Producto": "Alcohol Absoluto (98° GL)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Alcohol Absoluto? ¿Cuál es su concentración?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Alcohol etílico desnaturalizado al **98° GL**. \\Absoluto\\\" se refiere a su alta concentración"
+  },
+  {
+    "Id_QyA": 43,
+    "Nombre del Producto": "Alcohol Absoluto (98° GL)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Cicatrizante? ¿Astringente? ¿Ombligo de neonatos?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como cicatrizante y astringente. Se emplea en la rápida y efectiva cicatrización del ombligo en neonatos. Su acción astringente ayuda a secar tejidos y la cicatrizante promueve el cierre."
+  },
+  {
+    "Id_QyA": 44,
+    "Nombre del Producto": "Alcohol Absoluto (98° GL)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica en el ombligo del neonato? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar directamente sobre la base del cordón umbilical en cada cambio de pañal o según indicación médica [Basarse en prácticas comunes para el cuidado del cordigo umbilical]. Asegurarse de cubrir bien la zona."
+  },
+  {
+    "Id_QyA": 45,
+    "Nombre del Producto": "Alcohol Absoluto (98° GL)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación de la piel? ¿Es seguro en neonatos?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación o sequedad en la piel circundante si se usa en exceso. Es importante usar la concentración adecuada (98°) para esta indicación. A pesar de ser alcohol de alta concentración, su uso tópico y localizado en el cordón umbilical es una práctica común y generalmente segura si se usa correctamente. Evitar el contacto con ojos y mucosas."
+  },
+  {
+    "Id_QyA": 46,
+    "Nombre del Producto": "Alcohol Absoluto (98° GL)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Es inflamable? ¿Hay que tener precauciones?",
+    "Respuesta Técnica del Visitador Médico": "Sí, es altamente inflamable. Mantener alejado del fuego, chispas y fuentes de calor. No usar cerca de llamas abiertas."
+  },
+  {
+    "Id_QyA": 47,
+    "Nombre del Producto": "Alcohol Absoluto (98° GL)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volúmenes tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Disponible en presentaciones de 60 mL, 120 mL, 240 mL, 500 mL y 1000 mL (1 L)."
+  },
+  {
+    "Id_QyA": 48,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Alcohol Yodado? ¿Cuál es su composición (Yodo y Alcohol)?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Alcohol etílico desnaturalizado al 70% V/V y Yodo metaloide-Yoduro de potasio. Es una combinación de yodo al 2% con alcohol etílico al 70%. El alcohol potencia la acción del yodo."
+  },
+  {
+    "Id_QyA": 49,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cómo actúa como antiséptico? ¿Contra qué microorganismos es efectivo?",
+    "Respuesta Técnica del Visitador Médico": "Actúa como antiséptico de elección con amplio espectro. El yodo libera lentamente yodo libre, que oxida componentes celulares de los microorganismos. Es activo contra bacterias Gram positivas y Gram negativas y hongos."
+  },
+  {
+    "Id_QyA": 50,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Preparación de la piel antes de cirugía? ¿Curación de heridas?",
+    "Respuesta Técnica del Visitador Médico": "Se emplea para el tratamiento y cuidado de heridas y en la preparación de la zona operatoria de la piel. Ayuda a desinfectar la piel antes de procedimientos invasivos o al tratar heridas superficiales."
+  },
+  {
+    "Id_QyA": 51,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Es para uso externo solamente?",
+    "Respuesta Técnica del Visitador Médico": "Es para uso **externo** únicamente. Aplicar sobre la piel limpia y seca en el área a desinfectar. Dejar secar al aire. No cubrir con vendajes oclusivos hasta que esté seco."
+  },
+  {
+    "Id_QyA": 52,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Puede irritar la piel? ¿Mancha? ¿Riesgo de toxicidad por Yodo?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación, sequedad o reacciones alérgicas en pieles sensibles. Tiñe la piel de color pardo. La absorción sistémica de yodo es posible con uso prolongado o en grandes áreas de piel, con riesgo de afectar la función tiroidea, especialmente en personas sensibles o con trastornos tiroideos preexistentes. Es tóxico si se ingiere."
+  },
+  {
+    "Id_QyA": 53,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones importantes (problemas tiroideos)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad al yodo o alcohol. Evitar el uso repetido en grandes áreas de piel, en quemaduras extensas, o en piel lesionada debido al riesgo de absorción de yodo. Usar con precaución en pacientes con trastornos tiroideos. **No ingerir.**"
+  },
+  {
+    "Id_QyA": 54,
+    "Nombre del Producto": "Alcohol Yodado (2% Yodo en Alcohol 70%)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volúmenes tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frascos con contenido neto de 60 mL y 120 mL."
+  },
+  {
+    "Id_QyA": 55,
+    "Nombre del Producto": "Alumbre en Polvo",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Alumbre potásico en polvo? ¿Cómo actúa?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Alumbre potásico. Es una sal con propiedades astringentes (seca tejidos), antisépticas y antitranspirantes suaves."
+  },
+  {
+    "Id_QyA": 56,
+    "Nombre del Producto": "Alumbre en Polvo",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Astringente? ¿Antitranspirante? ¿Duchas vaginales? ¿Sudoración?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como antiséptico, astringente y antitranspirante. Es empleado en duchas vaginales y en soluciones para el control de la sudoración. Ayuda a reducir la humedad y controlar el mal olor."
+  },
+  {
+    "Id_QyA": 57,
+    "Nombre del Producto": "Alumbre en Polvo",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se prepara la solución para duchas vaginales o para la sudoración?",
+    "Respuesta Técnica del Visitador Médico": "Disolver el polvo en agua para preparar la solución [Indicar la proporción o concentración recomendada si se especifica en el producto]. Usar según indicación para duchas vaginales externas o aplicar en las áreas afectadas para controlar la sudoración."
+  },
+  {
+    "Id_QyA": 58,
+    "Nombre del Producto": "Alumbre en Polvo",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación o sequedad en pieles sensibles o mucosas si se usa en concentraciones altas."
+  },
+  {
+    "Id_QyA": 59,
+    "Nombre del Producto": "Alumbre en Polvo",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad al alumbre. Evitar el contacto con ojos y mucosas. No usar en piel lesionada."
+  },
+  {
+    "Id_QyA": 60,
+    "Nombre del Producto": "Alumbre en Polvo",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué cantidad contiene el sobre?",
+    "Respuesta Técnica del Visitador Médico": "Viene en sobre con contenido neto de 20 g."
+  },
+  {
+    "Id_QyA": 61,
+    "Nombre del Producto": "Azul de Metileno",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Azul de Metileno? ¿Cuál es su composición?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Azul de metileno y Agua purificada. Es un colorante con propiedades antisépticas y cicatrizantes suaves."
+  },
+  {
+    "Id_QyA": 62,
+    "Nombre del Producto": "Azul de Metileno",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de lesiones o gérmenes está indicado? ¿Uso tópico? ¿Cicatrizante?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como antiséptico, cicatrizante y vermicida. Se usa tópicamente en el tratamiento de [Mencionar si hay indicaciones más específicas aparte de antiséptico/cicatrizante, si el laboratorio las proporciona]. Ayuda a desinfectar lesiones menores y favorecer la cicatrización."
+  },
+  {
+    "Id_QyA": 63,
+    "Nombre del Producto": "Azul de Metileno",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar directamente sobre el área afectada [Indicar frecuencia según indicaciones específicas del producto o prácticas comunes, ej: 1-2 veces al día]. Tiñe la piel de color azul."
+  },
+  {
+    "Id_QyA": 64,
+    "Nombre del Producto": "Azul de Metileno",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Mancha la piel/ropa?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerado. El efecto secundario más notorio es la tinción azul de la piel y la ropa. Evitar el contacto con ojos y mucosas."
+  },
+  {
+    "Id_QyA": 65,
+    "Nombre del Producto": "Azul de Metileno",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad al Azul de Metileno. Usar con precaución en pieles sensibles."
+  },
+  {
+    "Id_QyA": 66,
+    "Nombre del Producto": "Azul de Metileno",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 67,
+    "Nombre del Producto": "Azufre en Polvo (Azufre precipitado)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Azufre precipitado micronizado? ¿Cómo actúa en la piel?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Azufre precipitado resublimado micronizado. Tiene propiedades queratolíticas, antifúngicas, antibacterianas y parasiticidas suaves. La micronización mejora su dispersión y actividad."
+  },
+  {
+    "Id_QyA": 68,
+    "Nombre del Producto": "Azufre en Polvo (Azufre precipitado)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Pediculosis? ¿Escabiosis? ¿Acné? ¿Cómo se prepara?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento de la pediculosis (piojos), escabiosis (sarna) y el acné. Se emplea incorporado en un vehículo adecuado como crema fría o vaselina para su aplicación tópica."
+  },
+  {
+    "Id_QyA": 69,
+    "Nombre del Producto": "Azufre en Polvo (Azufre precipitado)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la concentración de Azufre precipitado a usar en la preparación?",
+    "Respuesta Técnica del Visitador Médico": "[Indicar la concentración recomendada de Azufre precipitado a incorporar en la base, si se especifica en el producto o según prácticas farmacéuticas comunes, ej: al 5% o 10%]. La base (crema fría o vaselina) y la concentración varían según la indicación."
+  },
+  {
+    "Id_QyA": 70,
+    "Nombre del Producto": "Azufre en Polvo (Azufre precipitado)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Olor? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación, enrojecimiento o sequedad de la piel. Tiene un olor característico a azufre. Evitar el contacto con ojos y mucosas. No usar en piel lesionada."
+  },
+  {
+    "Id_QyA": 71,
+    "Nombre del Producto": "Azufre en Polvo (Azufre precipitado)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad al azufre. Usar con precaución en pieles sensibles. No usar en grandes extensiones de piel."
+  },
+  {
+    "Id_QyA": 72,
+    "Nombre del Producto": "Azufre en Polvo (Azufre precipitado)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué cantidad contiene el sobre?",
+    "Respuesta Técnica del Visitador Médico": "Viene en sobre con contenido neto de 20 g."
+  },
+  {
+    "Id_QyA": 73,
+    "Nombre del Producto": "Bicarbonato de Sodio",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Bicarbonato de Sodio? ¿Cómo actúa para el alivio de la acidez?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Bicarbonato de Sodio. Es un antiácido sistémico que actúa neutralizando el ácido clorhídrico en el estómago para formar cloruro de sodio, agua y dióxido de carbono."
+  },
+  {
+    "Id_QyA": 74,
+    "Nombre del Producto": "Bicarbonato de Sodio",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza principalmente? ¿Alivio de la acidez estomacal?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el alivio de la acidez estomacal. Proporciona un alivio rápido y temporal de la pirosis (ardor de estómago) y la indigestión ácida."
+  },
+  {
+    "Id_QyA": 75,
+    "Nombre del Producto": "Bicarbonato de Sodio",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma? ¿Cuál es la dosis? ¿Se disuelve?",
+    "Respuesta Técnica del Visitador Médico": "Disolver el contenido del sobre en agua y tomar oralmente. [Indicar la dosis recomendada y el volumen de agua según sepa del producto, ej: disolver en medio vaso de agua]. Se toma según necesidad, después de las comidas o al sentir acidez."
+  },
+  {
+    "Id_QyA": 76,
+    "Nombre del Producto": "Bicarbonato de Sodio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Eructos? ¿Riesgo de alcalosis? ¿Sodio?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar eructos debido a la producción de dióxido de carbono en el estómago. El uso frecuente o a dosis altas puede causar alcalosis metabólica (aumento del pH sanguíneo) y una carga significativa de sodio, lo que puede ser problemático en pacientes con hipertensión o problemas cardíacos/renales."
+  },
+  {
+    "Id_QyA": 77,
+    "Nombre del Producto": "Bicarbonato de Sodio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación importante (Hipertensión, problemas renales)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad, alcalosis metabólica o respiratoria, hipocalcemia, hipoclorhidria. Usar con extrema precaución en pacientes con **hipertensión, insuficiencia cardíaca, enfermedad renal o edema** debido a su alto contenido de sodio. No usar por periodos prolongados."
+  },
+  {
+    "Id_QyA": 78,
+    "Nombre del Producto": "Bicarbonato de Sodio",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué cantidad contiene la papelata?",
+    "Respuesta Técnica del Visitador Médico": "Viene en papelata con contenido neto de 20 g."
+  },
+  {
+    "Id_QyA": 79,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué aporta el Citrato tricálcico comparado con otras sales de calcio?",
+    "Respuesta Técnica del Visitador Médico": "El Citrato tricálcico es una sal de calcio que generalmente ofrece buena absorción, incluso en pacientes con baja acidez gástrica, y suele ser mejor tolerada a nivel gastrointestinal comparada con el carbonato de calcio. Cada porción de 10 mL contiene **175 mg de Calcio elemental**, lo que representa una concentración de **17.5 mg de Calcio elemental por mL** de suspensión."
+  },
+  {
+    "Id_QyA": 80,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la función de la Vitamina D3 (Colecalciferol) en esta fórmula?",
+    "Respuesta Técnica del Visitador Médico": "La Vitamina D3 (Colecalciferol) es crucial para la absorción intestinal de calcio y fósforo, y su incorporación a los huesos. Cada porción de 10 mL contiene **5 µg (200 UI) de Vitamina D3**, con una concentración de **0.5 µg/mL**. Su presencia en Calzinc D asegura que el calcio administrado se absorba y utilice eficazmente."
+  },
+  {
+    "Id_QyA": 81,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Por qué se incluye Óxido de zinc? ¿Qué papel juega el zinc con el calcio/hueso?",
+    "Respuesta Técnica del Visitador Médico": "El zinc es un mineral importante para la salud ósea, participando en la síntesis de colágeno y la mineralización ósea. Su inclusión complementa la acción del calcio y la vitamina D3 en el metabolismo óseo y el crecimiento. Cada porción de 10 mL contiene **7.5 mg de Zinc elemental** (como Óxido de zinc), con una concentración de **0.75 mg de Zinc elemental por mL**."
+  },
+  {
+    "Id_QyA": 82,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿En qué casos de osteoporosis está indicado? ¿Prevención o tratamiento?",
+    "Respuesta Técnica del Visitador Médico": "Calzinc D está indicado como coadyuvante en la prevención y el tratamiento de la osteoporosis, ayudando a asegurar un aporte adecuado de calcio y Vitamina D3, esenciales para mantener la densidad mineral ósea."
+  },
+  {
+    "Id_QyA": 83,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Por qué está indicado en embarazo, lactancia y crecimiento infantil?",
+    "Respuesta Técnica del Visitador Médico": "Estas son etapas fisiológicas con necesidades aumentadas de calcio, Vitamina D y zinc para el desarrollo óseo y general. Calzinc D ayuda a cubrir estos requerimientos para un adecuado crecimiento infantil y para preservar la salud ósea materna."
+  },
+  {
+    "Id_QyA": 84,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para cada indicación (osteoporosis, embarazo, niños)?",
+    "Respuesta Técnica del Visitador Médico": "Para suplementación en pediatría, la dosis de Calcio elemental puede calcularse según el peso: **30 mg de Calcio elemental por kg de peso corporal al día**, hasta un tope de aproximadamente 1000 mg/día. Puede usar la fórmula: Volumen (mL) = (Mg de Ca totales) / 17.5 mg/mL. O referirse a ejemplos prácticos. La dosis para adultos (osteoporosis, embarazo/lactancia) es [Indicar la dosis específica para adultos en mL o número de porciones según la ficha técnica completa del laboratorio, si difiere del cálculo pediátrico máximo]."
+  },
+  {
+    "Id_QyA": 85,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se administra la suspensión? ¿Agitar antes de usar? ¿Con comidas? ¿Se reparte la dosis?",
+    "Respuesta Técnica del Visitador Médico": "Es una suspensión, por lo que debe **agitarse bien antes de cada uso**. Se recomienda administrar **con las comidas** para mejorar la absorción del calcio y la vitamina D. La dosis diaria puede repartirse en 1-2 tomas (p. ej. mañana y tarde)."
+  },
+  {
+    "Id_QyA": 86,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se mide una porción\" o los mL exactos? ¿Viene con dosificador?\"",
+    "Respuesta Técnica del Visitador Médico": "Sí, el frasco incluye una cucharita/jeringa dosificadora para medir los 10 mL que equivalen a una porción. Permite medir el volumen exacto requerido según el cálculo por peso."
+  },
+  {
+    "Id_QyA": 87,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios (GI, etc.)?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente es bien tolerado. Ocasionalmente pueden presentarse molestias gastrointestinales leves como estreñimiento o sensación de pesadez estomacal. La forma de citrato de calcio tiende a ser menos constipante que otras sales de calcio."
+  },
+  {
+    "Id_QyA": 88,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene interacciones relevantes (tiroideas, antibióticos, etc.)?",
+    "Respuesta Técnica del Visitador Médico": "Sí, el calcio puede interactuar con ciertos medicamentos (Tetraciclinas, Quinolonas, Levotiroxina, Bifosfonatos). Se recomienda separar la administración. El zinc también puede interactuar con antibióticos y otros minerales (ver Zincosol)."
+  },
+  {
+    "Id_QyA": 89,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones (hipercalcemia, litiasis renal)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en casos de hipercalcemia, hipercalciuria, litiasis renal cálcica, insuficiencia renal grave. Usar con precaución en pacientes con antecedentes de cálculos renales."
+  },
+  {
+    "Id_QyA": 90,
+    "Nombre del Producto": "Calzinc D",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Para cuánto dura?",
+    "Respuesta Técnica del Visitador Médico": "Viene en un envase de 240 mL. La duración depende de la dosis prescrita según el peso del niño o la indicación en adultos."
+  },
+  {
+    "Id_QyA": 91,
+    "Nombre del Producto": "Cápsulas Ácido Bórico",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Ácido bórico USP? ¿Cómo actúa en infecciones vaginales?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Ácido bórico USP (grado farmacéutico, indicando pureza). Actúa creando un ambiente ácido en la vagina, lo que ayuda a restaurar el pH vaginal normal y a inhibir el crecimiento de ciertos hongos y bacterias que causan infecciones."
+  },
+  {
+    "Id_QyA": 92,
+    "Nombre del Producto": "Cápsulas Ácido Bórico",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de infecciones vaginales está indicado? ¿Hongos, levaduras, Vaginosis Bacteriana?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento de infecciones vaginales causadas por [Mencionar según catálogo: hongos y levaduras]. Es particularmente útil para la candidiasis vaginal recurrente o resistente a tratamientos convencionales. [Confirmar si también cubre Vaginosis Bacteriana según laboratorio]."
+  },
+  {
+    "Id_QyA": 93,
+    "Nombre del Producto": "Cápsulas Ácido Bórico",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se usan las cápsulas? ¿Cuántas veces al día? ¿Por cuánto tiempo?",
+    "Respuesta Técnica del Visitador Médico": "Son cápsulas vaginales. La dosis habitual es [Indicar dosis y frecuencia según ficha técnica, ej: 1 cápsula insertada profundamente en la vagina, 1-2 veces al día]. La duración del tratamiento varía según la infección [Indicar duración típica, ej: 7-14 días para candidiasis, o más tiempo para casos recurrentes]. Insertar preferiblemente al acostarse."
+  },
+  {
+    "Id_QyA": 94,
+    "Nombre del Producto": "Cápsulas Ácido Bórico",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación vaginal? ¿Riesgos por absorción?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación, ardor o enrojecimiento vaginal leve en algunas usuarias. **Es crucial no ingerir las cápsulas bajo ninguna circunstancia.** La absorción sistémica de ácido bórico es posible, por lo que no debe usarse en embarazo, lactancia, ni en caso de heridas o úlceras vaginales."
+  },
+  {
+    "Id_QyA": 95,
+    "Nombre del Producto": "Cápsulas Ácido Bórico",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones importantes (embarazo)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en el **embarazo y la lactancia** debido al riesgo potencial para el feto/bebé. No usar si hay heridas abiertas, úlceras o laceraciones vaginales. Contraindicado en hipersensibilidad al ácido bórico."
+  },
+  {
+    "Id_QyA": 96,
+    "Nombre del Producto": "Cápsulas Ácido Bórico",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Cuántas cápsulas vienen en la presentación?",
+    "Respuesta Técnica del Visitador Médico": "La presentación es de 10 cápsulas."
+  },
+  {
+    "Id_QyA": 97,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Citrato de Potasio? ¿Cuál es su composición?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Citrato de potasio y Ácido cítrico. Es una sal de potasio alcalinizante."
+  },
+  {
+    "Id_QyA": 98,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la concentración de Citrato de Potasio en la solución?",
+    "Respuesta Técnica del Visitador Médico": "La concentración es de 10 g de Citrato de potasio y 1 g de Ácido cítrico por cada 100 ml de solución edulcorada."
+  },
+  {
+    "Id_QyA": 99,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Hipokalemia? ¿Litiasis Renal? ¿Acidosis Metabólica?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para la Hipokalemia (deficiencia de potasio), Acidosis metabólica y Litiasis renal (cálculos renales). Como regulador del equilibrio electrolítico y pH urinario."
+  },
+  {
+    "Id_QyA": 100,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma? ¿Cuál es la dosis? ¿Se disuelve?",
+    "Respuesta Técnica del Visitador Médico": "Es una solución oral edulcorada. (Dosis no especificada en archivos, consultar ficha técnica completa). La dosis se ajusta según la condición a tratar y los niveles de potasio/pH urinario. Suele tomarse diluido en agua y repartido en varias tomas al día."
+  },
+  {
+    "Id_QyA": 101,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Molestias gastrointestinales? ¿Hiperkalemia?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar molestias gastrointestinales como náuseas, vómitos o diarrea. El riesgo más importante es la Hiperkalemia (niveles altos de potasio en sangre), especialmente en pacientes con insuficiencia renal o que toman medicamentos que retienen potasio."
+  },
+  {
+    "Id_QyA": 102,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna contraindicación o precaución importante (problemas renales, cardíacos)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en casos de Hiperkalemia, insuficiencia renal grave, obstrucción intestinal, úlcera péptica activa. Usar con precaución en enfermedad cardíaca, deshidratación, o uso concomitante de diuréticos ahorradores de potasio. [Basado en información general de Citrato de Potasio]."
+  },
+  {
+    "Id_QyA": 103,
+    "Nombre del Producto": "Citrato de Potasio",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volúmenes tiene la solución? ¿Es edulcorada?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentaciones de 500 ml y 1L de solución edulcorada. Presentaciones económicas para tratamientos prolongados."
+  },
+  {
+    "Id_QyA": 104,
+    "Nombre del Producto": "Cloruro de Magnesio",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Cloruro de Magnesio USP? ¿Cuál es su concentración?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Cloruro de magnesio USP. USP indica grado farmacéutico. La concentración es de 3.33 g% (3.33 g por 100 ml de solución)."
+  },
+  {
+    "Id_QyA": 105,
+    "Nombre del Producto": "Cloruro de Magnesio",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Déficit de magnesio? ¿Salud ósea? ¿Colesterol? ¿Función renal?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para la Deficiencia de magnesio. También se menciona que reduce los niveles del LDL Colesterol y mejora la densidad ósea. Multibeneficios: desde salud ósea hasta equilibrio mental y función renal."
+  },
+  {
+    "Id_QyA": 106,
+    "Nombre del Producto": "Cloruro de Magnesio",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma? ¿Cuál es la dosis?",
+    "Respuesta Técnica del Visitador Médico": "Es una solución oral con sabor a fresa. (Dosis no especificada en archivos para déficit o otras indicaciones, consultar ficha técnica completa). La dosis dependerá de la indicación y severidad de la deficiencia."
+  },
+  {
+    "Id_QyA": 107,
+    "Nombre del Producto": "Cloruro de Magnesio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Diarrea? ¿Hipermagnesemia?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar diarrea. El riesgo más importante es la Hipermagnesemia (niveles altos de magnesio), especialmente en pacientes con insuficiencia renal, ya que no excretan el magnesio adecuadamente. [Basado en información general de Cloruro de Magnesio]."
+  },
+  {
+    "Id_QyA": 108,
+    "Nombre del Producto": "Cloruro de Magnesio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna contraindicación o precaución importante (problemas renales)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en casos de **insuficiencia renal grave** debido al riesgo de hipermagnesemia. Usar con precaución en enfermedad renal leve a moderada. [Basado en información general de Cloruro de Magnesio]."
+  },
+  {
+    "Id_QyA": 109,
+    "Nombre del Producto": "Cloruro de Magnesio",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volúmenes tiene la solución? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentaciones de 500 ml y 1L. Tiene sabor a fresa para mejor adherencia."
+  },
+  {
+    "Id_QyA": 110,
+    "Nombre del Producto": "Crema Fría",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Crema Fría?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Aceite de parafina y Cera de abejas."
+  },
+  {
+    "Id_QyA": 111,
+    "Nombre del Producto": "Crema Fría",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza la Crema Fría?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como crema desmaquillante y humectante hipoalergénica. Ayuda a limpiar e hidratar la piel sensible."
+  },
+  {
+    "Id_QyA": 112,
+    "Nombre del Producto": "Crema Fría",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar sobre la piel limpia y seca, según necesidad [Basado en uso común]. Puede usarse para retirar maquillaje suavemente."
+  },
+  {
+    "Id_QyA": 113,
+    "Nombre del Producto": "Crema Fría",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios o contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente muy bien tolerada por su composición simple. Es hipoalergénica. Uso externo."
+  },
+  {
+    "Id_QyA": 114,
+    "Nombre del Producto": "Crema Fría",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en tarro con contenido neto de 50 g."
+  },
+  {
+    "Id_QyA": 115,
+    "Nombre del Producto": "Crema para Panalitis (Pasta Lassar)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Crema para Panalitis?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Óxido de zinc, Alcoholes grasos y Vitamina E."
+  },
+  {
+    "Id_QyA": 116,
+    "Nombre del Producto": "Crema para Panalitis (Pasta Lassar)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza esta crema? ¿Panalitis (dermatitis del pañal)? ¿Quemaduras leves?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como antiséptico y astringente cutáneo para la irritación causada por el pañal (dermatitis del pañal) y en quemaduras leves. El Óxido de Zinc forma una barrera protectora."
+  },
+  {
+    "Id_QyA": 117,
+    "Nombre del Producto": "Crema para Panalitis (Pasta Lassar)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica la crema?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar sobre la piel limpia y seca del área afectada [Basado en uso común], típicamente en cada cambio de pañal si se usa para prevención o tratamiento de dermatitis del pañal. Uso externo."
+  },
+  {
+    "Id_QyA": 118,
+    "Nombre del Producto": "Crema para Panalitis (Pasta Lassar)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios o contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerada. Contraindicada en hipersensibilidad a los componentes. Uso externo."
+  },
+  {
+    "Id_QyA": 119,
+    "Nombre del Producto": "Crema para Panalitis (Pasta Lassar)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en tarro con contenido neto de 50 g."
+  },
+  {
+    "Id_QyA": 120,
+    "Nombre del Producto": "Emulsión de hígado de bacalao",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es la Emulsión de hígado de bacalao? ¿Qué vitaminas aporta?",
+    "Respuesta Técnica del Visitador Médico": "Es un complemento alimenticio a base de Aceite de hígado de bacalao. Aporta principalmente Vitaminas A y D."
+  },
+  {
+    "Id_QyA": 121,
+    "Nombre del Producto": "Emulsión de hígado de bacalao",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué condiciones está indicada? ¿Crecimiento? ¿Desnutrición? ¿Embarazo?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada en estados en que se requiera mayor aporte de vitaminas A y D, como el crecimiento, la dentición, el embarazo, la lactancia y en casos de desnutrición. También en casos de Hipovitaminosis A y D."
+  },
+  {
+    "Id_QyA": 122,
+    "Nombre del Producto": "Emulsión de hígado de bacalao",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada?",
+    "Respuesta Técnica del Visitador Médico": "Es una emulsión oral con sabor a naranja. (Dosis no especificada en archivos, consultar ficha técnica completa)."
+  },
+  {
+    "Id_QyA": 123,
+    "Nombre del Producto": "Emulsión de hígado de bacalao",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Riesgo de sobredosis de vitaminas?",
+    "Respuesta Técnica del Visitador Médico": "A dosis normales, es segura. El riesgo principal es la hipervitaminosis (exceso de vitaminas A y D) con dosis muy altas o uso prolongado. Consultar dosis recomendada."
+  },
+  {
+    "Id_QyA": 124,
+    "Nombre del Producto": "Emulsión de hígado de bacalao",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 120 mL. Tiene sabor a naranja."
+  },
+  {
+    "Id_QyA": 125,
+    "Nombre del Producto": "Enjuague Bucal Denti-OL",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué principios activos tiene el Enjuague Bucal Denti-OL?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Alcohol etílico, Timol, Ácido benzoico, Mentol, Eucaliptol y Salicilato de metilo."
+  },
+  {
+    "Id_QyA": 126,
+    "Nombre del Producto": "Enjuague Bucal Denti-OL",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Antiséptico bucal? ¿Mal aliento?",
+    "Respuesta Técnica del Visitador Médico": "Es un enjuague bucal y antiséptico orofaríngeo. Ayuda a combatir el mal aliento, controlar la placa bacteriana y prevenir la gingivitis."
+  },
+  {
+    "Id_QyA": 127,
+    "Nombre del Producto": "Enjuague Bucal Denti-OL",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se usa? ¿Cuántas veces al día?",
+    "Respuesta Técnica del Visitador Médico": "Es para enjuague bucal. (Dosis en volumen y frecuencia no especificadas en archivos, consultar ficha técnica completa). Generalmente se usa una cantidad medida para enjuagar la boca por un tiempo y luego escupir. No ingerir."
+  },
+  {
+    "Id_QyA": 128,
+    "Nombre del Producto": "Enjuague Bucal Denti-OL",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Es seguro si se ingiere accidentalmente?",
+    "Respuesta Técnica del Visitador Médico": "A dosis normales de uso (enjuague y escupir), es seguro. La ingestión en grandes cantidades, especialmente por niños, puede ser perjudicial debido al alcohol. Evitar su ingestión."
+  },
+  {
+    "Id_QyA": 129,
+    "Nombre del Producto": "Enjuague Bucal Denti-OL",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 250 mL."
+  },
+  {
+    "Id_QyA": 130,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué aporta el Bisglicinato Ferroso comparado con otras sales de hierro?",
+    "Respuesta Técnica del Visitador Médico": "El Bisglicinato Ferroso es una forma de hierro aminoquelado, unido al aminoácido glicina. Esto le confiere mejor tolerancia gastrointestinal y potencialmente mejor absorción comparado con sales simples como el sulfato ferroso. Cada porción de 10 mL contiene **18 mg de hierro elemental**."
+  },
+  {
+    "Id_QyA": 131,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la concentración de hierro elemental en Feryfol?",
+    "Respuesta Técnica del Visitador Médico": "La concentración es de **1.8 mg de hierro elemental por mL** de jarabe."
+  },
+  {
+    "Id_QyA": 132,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué aporta la Vitamina B9 (Ácido Fólico) en esta fórmula?",
+    "Respuesta Técnica del Visitador Médico": "La Vitamina B9 o Ácido Fólico es esencial para la formación de glóbulos rojos y la síntesis de ADN. Su combinación con hierro ayuda a tratar o prevenir anemias nutricionales."
+  },
+  {
+    "Id_QyA": 133,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado Feryfol? ¿Anemia ferropénica? ¿Embarazo?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento y la prevención de las anemias ferropénicas (por deficiencia de hierro). También como apoyo durante el embarazo y la lactancia, etapas con alta demanda de hierro y ácido fólico."
+  },
+  {
+    "Id_QyA": 134,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para niños (por peso)?",
+    "Respuesta Técnica del Visitador Médico": "Para niños menores de 12 años, la dosis se calcula según el peso: **3 mg de Fe elemental por kg de peso corporal al día**, con un tope de 60 mg/día para tratamiento de anemia. La fórmula de cálculo en mL es: Volumen (mL) = (mg de Fe totales) / 1.8 mg/mL."
+  },
+  {
+    "Id_QyA": 135,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis para niños mayores de 12 años y adultos?",
+    "Respuesta Técnica del Visitador Médico": "Para niños mayores de 12 años y adultos, la dosis recomendada es una porción de 10 mL al día, lo que aporta 18 mg de hierro elemental."
+  },
+  {
+    "Id_QyA": 136,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma el jarabe? ¿Con o sin comidas? ¿Se reparte la dosis?",
+    "Respuesta Técnica del Visitador Médico": "Se recomienda tomar Feryfol **entre las comidas** para mejorar la absorción del hierro. La dosis diaria puede repartirse en 1-2 tomas (p.ej. mañana y tarde)."
+  },
+  {
+    "Id_QyA": 137,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios gastrointestinales? ¿Es mejor tolerado que otros hierros?",
+    "Respuesta Técnica del Visitador Médico": "Gracias a la forma de Bisglicinato ferroso, Feryfol tiende a tener una **mejor tolerancia gastrointestinal** comparado con otras sales de hierro como el sulfato ferroso. Los efectos como náuseas, estreñimiento o diarrea son menos frecuentes o intensos."
+  },
+  {
+    "Id_QyA": 138,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene interacciones con otros medicamentos?",
+    "Respuesta Técnica del Visitador Médico": "Sí, el hierro puede interactuar con ciertos medicamentos como Tetraciclinas, Quinolonas, Antiácidos y Levotiroxina. Se recomienda separar la administración [Indicar tiempo según ficha técnica, usualmente 2-3 horas]."
+  },
+  {
+    "Id_QyA": 139,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en casos de hipersensibilidad, anemias no ferropénicas (ej. megaloblásticas por déficit de B12 sin corregir, hemolíticas), hemocromatosis o hemosiderosis."
+  },
+  {
+    "Id_QyA": 140,
+    "Nombre del Producto": "Feryfol",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en envase de 120 mL. Tiene sabor a Avellana, diseñado para mejorar la aceptabilidad."
+  },
+  {
+    "Id_QyA": 141,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es el principio activo y su concentración en este gel?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Alcohol etílico desnaturalizado al **70% v/v**. Esta concentración es la recomendada por autoridades sanitarias por su eficacia para eliminar gérmenes."
+  },
+  {
+    "Id_QyA": 142,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cómo actúa este gel para eliminar gérmenes en las manos?",
+    "Respuesta Técnica del Visitador Médico": "El alcohol al 70% actúa desnaturalizando las proteínas de los microorganismos (bacterias, virus y hongos), dañando su estructura y eliminándolos eficazmente."
+  },
+  {
+    "Id_QyA": 143,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza principalmente? ¿Elimina hasta el 99.9% de los gérmenes?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado específicamente para la **limpieza de manos**. Es un antiséptico y antibacterial de uso tópico. Elimina hasta el 99.9% de los gérmenes instantáneamente."
+  },
+  {
+    "Id_QyA": 144,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Sustituye el lavado de manos con agua y jabón?",
+    "Respuesta Técnica del Visitador Médico": "Es una alternativa eficaz y conveniente para la higiene de manos cuando no se dispone de agua y jabón, o como complemento. El lavado con agua y jabón es preferible si las manos están visiblemente sucias."
+  },
+  {
+    "Id_QyA": 145,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Qué cantidad?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar una cantidad suficiente en la palma de la mano para cubrir todas las superficies de ambas manos. Frotar vigorosamente hasta que estén completamente secas. No necesita enjuague."
+  },
+  {
+    "Id_QyA": 146,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Puede resecar la piel con el uso frecuente? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "El uso frecuente puede causar sequedad de la piel debido al alcohol. [Mencionar si el producto contiene emolientes (como glicerina o aloe vera) que ayuden a mitigar la sequedad, si esta información está en el catálogo aunque no se vea en la imagen]."
+  },
+  {
+    "Id_QyA": 147,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Es inflamable? ¿Hay que tener precauciones?",
+    "Respuesta Técnica del Visitador Médico": "Sí, es altamente inflamable. Mantener alejado del fuego, chispas y fuentes de calor. No usar cerca de llamas abiertas. Dejar secar completamente en las manos antes de manipular fuentes de ignición."
+  },
+  {
+    "Id_QyA": 148,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones? ¿Uso en niños?",
+    "Respuesta Técnica del Visitador Médico": "Solo para uso externo. No ingerir. Usar en niños bajo supervisión de un adulto. Evitar el contacto con ojos y mucosas. No aplicar sobre piel lesionada."
+  },
+  {
+    "Id_QyA": 149,
+    "Nombre del Producto": "Gel Antibacterial (Alcohol Antiséptico)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volúmenes tiene el envase? ¿Cómo son los dispensadores?",
+    "Respuesta Técnica del Visitador Médico": "Disponible en presentaciones de 60 mL, 120 mL, 240 mL (con tapa flip top), 500 mL y 1 L (con válvula dispensadora)."
+  },
+  {
+    "Id_QyA": 150,
+    "Nombre del Producto": "Jarabe de Berro",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene el Jarabe de Berro?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Extracto de Berro y Aceite esencial de hojas de Eucalipto. En el manual se menciona Extracto hidroalcohólico de Berro y Aceite esencial de hojas de Eucalipto."
+  },
+  {
+    "Id_QyA": 151,
+    "Nombre del Producto": "Jarabe de Berro",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Es un expectorante? ¿Ayuda a descongestionar?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como coadyuvante en la fluidificación de las secreciones bronquiales, expectorante, antiinflamatorio, antiviral y descongestionante. También se menciona como expectorante, antiviral y descongestionante en gripes o bronquitis leves."
+  },
+  {
+    "Id_QyA": 152,
+    "Nombre del Producto": "Jarabe de Berro",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada?",
+    "Respuesta Técnica del Visitador Médico": "Es un jarabe oral. (Dosis en volumen y frecuencia no especificadas en archivos, consultar ficha técnica completa)."
+  },
+  {
+    "Id_QyA": 153,
+    "Nombre del Producto": "Jarabe de Berro",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios?",
+    "Respuesta Técnica del Visitador Médico": "No disponible en archivos (consultar ficha técnica). Suele ser bien tolerado por ser a base de extractos naturales, pero siempre consultar posibles reacciones individuales."
+  },
+  {
+    "Id_QyA": 154,
+    "Nombre del Producto": "Jarabe de Berro",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco de 120 mL. El manual menciona Jarabe de 180 ml, sabor herbal-refrescante. Confirmar presentaciones disponibles con el laboratorio."
+  },
+  {
+    "Id_QyA": 155,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuáles son los principios activos (Jengibre, Zinc, Vitamina C)? ¿Qué aporta cada uno?",
+    "Respuesta Técnica del Visitador Médico": "Los principios activos son Extracto de raíz de Zingiber officinate (jengibre), bisglicinato de zinc y ácido ascórbico (vitamina C). En el manual se menciona Miel + Jengibre + Vitamina C + Zinc. El Jengibre es conocido por sus propiedades antioxidantes, antiinflamatorias y beneficios digestivos. El Zinc es esencial para el sistema inmune y tiene acción antioxidante. La Vitamina C es un potente antioxidante y es crucial para la función inmune."
+  },
+  {
+    "Id_QyA": 156,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿En qué forma está el Zinc y la Vitamina C? ¿Cuál es la cantidad de cada activo por dosis?",
+    "Respuesta Técnica del Visitador Médico": "El Zinc está en forma de bisglicinato de zinc, una forma con buena biodisponibilidad. La Vitamina C es ácido ascórbico. [Indicar la cantidad exacta en mg o mcg de Extracto de jengibre, Zinc elemental (proveniente del bisglicinato) y Vitamina C por dosis/porción, según la ficha técnica completa del laboratorio. La imagen/manual no detallan las cantidades exactas por ingrediente]. En el manual se menciona Miel. Confirmar si la miel es parte del principio activo o solo un componente de la formulación."
+  },
+  {
+    "Id_QyA": 157,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado este jarabe? ¿Cómo fortalece el sistema inmune y el proceso digestivo?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como complemento alimenticio con antioxidantes, que fortalecen el sistema inmune y al proceso digestivo. También como refuerzo inmunológico y prevención de deficiencias nutricionales en niños."
+  },
+  {
+    "Id_QyA": 158,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada? ¿Para quiénes (edad)? ¿Cómo se toma?",
+    "Respuesta Técnica del Visitador Médico": "Es un jarabe oral. (Dosis no especificada en archivos, consultar ficha técnica completa). El manual lo asigna a Pediatría/Nutrición, sugiriendo su uso en niños. La dosis dependerá de la edad y el estado nutricional."
+  },
+  {
+    "Id_QyA": 159,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Molestias digestivas (por jengibre)? ¿Interacciones?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerado. El jengibre podría causar molestias digestivas leves en algunas personas. Las dosis altas de Vitamina C pueden causar efectos GI. El Zinc puede interactuar con ciertos medicamentos. [Mencionar efectos secundarios e interacciones relevantes según la ficha técnica completa]."
+  },
+  {
+    "Id_QyA": 160,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones (embarazo, lactancia, niños pequeños)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad a los componentes. [Mencionar precauciones específicas si existen, ej: en pacientes con cálculos biliares por el jengibre, o si no está indicado en embarazo/lactancia/niños muy pequeños]."
+  },
+  {
+    "Id_QyA": 161,
+    "Nombre del Producto": "Jarabe de Jengibre Zinc Vitamina C",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentación Jarabe con contenido neto de 180 mL. El manual menciona Sabores familiares para niños\".\""
+  },
+  {
+    "Id_QyA": 162,
+    "Nombre del Producto": "Jarabe Lamedor Compuesto",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene el Jarabe Lamedor Compuesto?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Extracto fluido de Bálsamo de Talú, Extracto fluido de polígala, Aceite de Ricino, Eucaliptol, Mentol. El manual menciona Extracto fluido de Bálsamo de Tolú + Extracto fluido de polígala + Aceite de ricino + Eucaliptol + Mentol. Es una fórmula multicomponente."
+  },
+  {
+    "Id_QyA": 163,
+    "Nombre del Producto": "Jarabe Lamedor Compuesto",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de tos está indicado? ¿Es un expectorante?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento sintomático de la tos causada por afecciones bronquiales y resfriado común. También como expectorante para tos productiva por afecciones bronquiales y resfriados."
+  },
+  {
+    "Id_QyA": 164,
+    "Nombre del Producto": "Jarabe Lamedor Compuesto",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada?",
+    "Respuesta Técnica del Visitador Médico": "Es un jarabe oral. (Dosis en volumen y frecuencia no especificadas en archivos, consultar ficha técnica completa)."
+  },
+  {
+    "Id_QyA": 165,
+    "Nombre del Producto": "Jarabe Lamedor Compuesto",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios?",
+    "Respuesta Técnica del Visitador Médico": "No disponible en archivos (consultar ficha técnica). Al contener Ricino y Eucaliptol/Mentol, puede tener efectos GI o precauciones respiratorias en niños muy pequeños."
+  },
+  {
+    "Id_QyA": 166,
+    "Nombre del Producto": "Jarabe Lamedor Compuesto",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco de 120 mL. El manual menciona sabor tradicional."
+  },
+  {
+    "Id_QyA": 167,
+    "Nombre del Producto": "Leche de Magnesia",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Leche de Magnesia? ¿Cuál es su concentración?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Pasta de hidróxido de magnesio. La concentración es de 8.5 g% (8.5 gramos por 100 ml de suspensión)."
+  },
+  {
+    "Id_QyA": 168,
+    "Nombre del Producto": "Leche de Magnesia",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Es un antiácido y laxante?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como Antiácido y laxante suave. Ayuda a neutralizar el exceso de ácido en el estómago y a aliviar el estreñimiento ocasional."
+  },
+  {
+    "Id_QyA": 169,
+    "Nombre del Producto": "Leche de Magnesia",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada? ¿Es la misma para antiácido y laxante?",
+    "Respuesta Técnica del Visitador Médico": "Es una suspensión oral. (Dosis para cada indicación no especificada en archivos, consultar ficha técnica completa). La dosis suele ser diferente si se usa como antiácido (dosis menor, más frecuente) que como laxante (dosis mayor, única o menos frecuente)."
+  },
+  {
+    "Id_QyA": 170,
+    "Nombre del Producto": "Leche de Magnesia",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Diarrea? ¿Interacciones?",
+    "Respuesta Técnica del Visitador Médico": "El efecto secundario principal es la diarrea, especialmente a dosis laxantes. Puede interactuar con ciertos medicamentos (separar la administración). Riesgo de acumulación en insuficiencia renal."
+  },
+  {
+    "Id_QyA": 171,
+    "Nombre del Producto": "Leche de Magnesia",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones importantes (problemas renales, dolor abdominal)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en insuficiencia renal grave (riesgo de hipermagnesemia), obstrucción intestinal, dolor abdominal de origen desconocido. Usar con precaución en niños (especialmente como laxante). [Basado en información general de Leche de Magnesia]."
+  },
+  {
+    "Id_QyA": 172,
+    "Nombre del Producto": "Leche de Magnesia",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en suspensión de 120 mL. Tiene sabor a menta u original. Sabores adaptados para todas las edades."
+  },
+  {
+    "Id_QyA": 173,
+    "Nombre del Producto": "Limonada Laxante Citrato de Magnesio",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Citrato de Magnesio? ¿Cómo actúa como laxante?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Citrato de Magnesio. Es un laxante salino osmótico que atrae agua hacia el intestino, ablandando las heces y estimulando la motilidad. También tiene un efecto colagogo (basado en Sal de Epsom). Es una solución oral."
+  },
+  {
+    "Id_QyA": 174,
+    "Nombre del Producto": "Limonada Laxante Citrato de Magnesio",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de estreñimiento está indicado? ¿Ocasional? ¿Constipación abdominal? ¿Preparación intestinal?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el estreñimiento ocasional. También para el alivio temporal de la constipación abdominal y preparación intestinal antes de procedimientos."
+  },
+  {
+    "Id_QyA": 175,
+    "Nombre del Producto": "Limonada Laxante Citrato de Magnesio",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para cada indicación (estreñimiento, preparación)? ¿Es dosis única? ¿Se toma diluida?",
+    "Respuesta Técnica del Visitador Médico": "Es una solución oral en frasco de 240 mL. (Dosis no especificada en archivos para cada indicación o edad, consultar ficha técnica completa). Para estreñimiento ocasional suele ser dosis única. Para preparación intestinal, la pauta es específica."
+  },
+  {
+    "Id_QyA": 176,
+    "Nombre del Producto": "Limonada Laxante Citrato de Magnesio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios? ¿Diarrea, calambres? ¿Riesgo de deshidratación? ¿Hipermagnesemia?",
+    "Respuesta Técnica del Visitador Médico": "Efectos comunes: diarrea, calambres, náuseas. Riesgo de deshidratación. Riesgo de hipermagnesemia, especialmente en insuficiencia renal [Basado en información general de sales de magnesio]."
+  },
+  {
+    "Id_QyA": 177,
+    "Nombre del Producto": "Limonada Laxante Citrato de Magnesio",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones importantes (insuficiencia renal, obstrucción intestinal)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en insuficiencia renal grave, obstrucción intestinal, dolor abdominal intenso. Precaución en insuficiencia renal leve, enfermedad cardíaca. Interacciones (separar la toma)."
+  },
+  {
+    "Id_QyA": 178,
+    "Nombre del Producto": "Limonada Laxante Citrato de Magnesio",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Tiene sabor a Limonada?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 240 mL. El nombre sugiere sabor a Limonada."
+  },
+  {
+    "Id_QyA": 179,
+    "Nombre del Producto": "Loción Calamina",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Loción Calamina? ¿Cuál es su concentración?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Calamina al 8%."
+  },
+  {
+    "Id_QyA": 180,
+    "Nombre del Producto": "Loción Calamina",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Alivio del picor? ¿Irritaciones cutáneas?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada para irritaciones cutáneas (dermatitis, picaduras). Proporciona efecto refrescante y ayuda a aliviar el picor."
+  },
+  {
+    "Id_QyA": 181,
+    "Nombre del Producto": "Loción Calamina",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Es una loción para uso externo. Aplicar sobre el área afectada según necesidad [Basado en uso común]. Agitar antes de usar."
+  },
+  {
+    "Id_QyA": 182,
+    "Nombre del Producto": "Loción Calamina",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerada. Puede causar sequedad o irritación leve en algunas personas. Uso externo."
+  },
+  {
+    "Id_QyA": 183,
+    "Nombre del Producto": "Loción Calamina",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 110 mL o 180 mL."
+  },
+  {
+    "Id_QyA": 184,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Crema)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contienen estos productos (Mentol, Salicilato de Metilo)? ¿Cómo actúan?",
+    "Respuesta Técnica del Visitador Médico": "Los principios activos son Mentol y Salicilato de Metilo. El Mentol refresca y alivia ligeramente. El Salicilato de Metilo calienta y alivia el dolor muscular (analgésico/antiinflamatorio tópico)."
+  },
+  {
+    "Id_QyA": 185,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Crema)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza esta línea? ¿Antes o después de ejercicio? ¿Dolor muscular?",
+    "Respuesta Técnica del Visitador Médico": "Indicada para la adecuación previa y la relajación posterior a actividades físicas/deportivas. Ayuda en el dolor y la tensión muscular."
+  },
+  {
+    "Id_QyA": 186,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Crema)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica la Crema?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar sobre el área deseada antes o después de la actividad. Se puede acompañar de masajes. Uso externo."
+  },
+  {
+    "Id_QyA": 187,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Crema)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación local, enrojecimiento, sensación de quemazón. Evitar ojos/mucosas/piel lesionada. Contraindicado en hipersensibilidad. Precaución en niños pequeños."
+  },
+  {
+    "Id_QyA": 188,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Crema)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene la Crema?",
+    "Respuesta Técnica del Visitador Médico": "Viene en Crema 40 mL."
+  },
+  {
+    "Id_QyA": 189,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Spray)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contienen estos productos (Mentol, Salicilato de Metilo)? ¿Cómo actúan?",
+    "Respuesta Técnica del Visitador Médico": "Los principios activos son Mentol y Salicilato de Metilo. El Mentol refresca y alivia ligeramente. El Salicilato de Metilo calienta y alivia el dolor muscular (analgésico/antiinflamatorio tópico)."
+  },
+  {
+    "Id_QyA": 190,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Spray)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza esta línea? ¿Antes o después de ejercicio? ¿Dolor muscular?",
+    "Respuesta Técnica del Visitador Médico": "Indicada para la adecuación previa y la relajación posterior a actividades físicas/deportivas. Ayuda en el dolor y la tensión muscular."
+  },
+  {
+    "Id_QyA": 191,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Spray)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica el Spray?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar sobre el área deseada antes o después de la actividad. Uso externo."
+  },
+  {
+    "Id_QyA": 192,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Spray)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación local, enrojecimiento, sensación de quemazón. Evitar ojos/mucosas/piel lesionada. Contraindicado en hipersensibilidad. Precaución en niños pequeños. Inflamable."
+  },
+  {
+    "Id_QyA": 193,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Spray)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene el Spray?",
+    "Respuesta Técnica del Visitador Médico": "Viene en Spray 120 mL."
+  },
+  {
+    "Id_QyA": 194,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Roll-on)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contienen estos productos (Mentol, Salicilato de Metilo)? ¿Cómo actúan?",
+    "Respuesta Técnica del Visitador Médico": "Los principios activos son Mentol y Salicilato de Metilo. El Mentol refresca y alivia ligeramente. El Salicilato de Metilo calienta y alivia el dolor muscular (analgésico/antiinflamatorio tópico)."
+  },
+  {
+    "Id_QyA": 195,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Roll-on)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza esta línea? ¿Antes o después de ejercicio? ¿Dolor muscular?",
+    "Respuesta Técnica del Visitador Médico": "Indicada para la adecuación previa y la relajación posterior a actividades físicas/deportivas. Ayuda en el dolor y la tensión muscular."
+  },
+  {
+    "Id_QyA": 196,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Roll-on)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica el Roll-on?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar sobre el área deseada antes o después de la actividad. Uso externo."
+  },
+  {
+    "Id_QyA": 197,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Roll-on)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación local, enrojecimiento, sensación de quemazón. Evitar ojos/mucosas/piel lesionada. Contraindicado en hipersensibilidad. Precaución en niños pequeños."
+  },
+  {
+    "Id_QyA": 198,
+    "Nombre del Producto": "Línea MENTOL con Salicilato de Metilo (Roll-on)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene el Roll-on?",
+    "Respuesta Técnica del Visitador Médico": "Viene en Roll-on 80 mL."
+  },
+  {
+    "Id_QyA": 199,
+    "Nombre del Producto": "Miel de Borax",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué aportan el Alumbre potásico y el Borato de sodio? ¿Cómo actúan?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Alumbre potásico y Borato de sodio (Bórax). Alumbre es astringente/antiséptico. Borato es antiséptico/antifúngico suave."
+  },
+  {
+    "Id_QyA": 200,
+    "Nombre del Producto": "Miel de Borax",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de afecciones de la mucosa bucal está indicada? ¿Aftas, irritaciones?",
+    "Respuesta Técnica del Visitador Médico": "Indicada como antiséptico y desinfectante de uso tópico en mucosa bucal, tratamiento de aftas y otras lesiones. Ayuda a evitar sobreinfección y acelerar curación."
+  },
+  {
+    "Id_QyA": 201,
+    "Nombre del Producto": "Miel de Borax",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica en la boca? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar pequeña cantidad directamente sobre la lesión en mucosa bucal. Evitar ingestión excesiva."
+  },
+  {
+    "Id_QyA": 202,
+    "Nombre del Producto": "Miel de Borax",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Puede irritar? ¿Riesgo si se ingiere?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerada uso tópico. Ingestión grandes cantidades de borato de sodio puede ser tóxica. Usar solo tópicamente."
+  },
+  {
+    "Id_QyA": 203,
+    "Nombre del Producto": "Miel de Borax",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación? ¿Uso en niños?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicada en hipersensibilidad a componentes. Precaución en niños pequeños (evitar ingestión). No usar en heridas abiertas/extensas mucosa bucal."
+  },
+  {
+    "Id_QyA": 204,
+    "Nombre del Producto": "Miel de Borax",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 205,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Albendazol? ¿Cómo actúa como antihelmíntico?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Albendazol. Es un antihelmíntico de amplio espectro, ovicida y vermicida. Actúa interfiriendo el metabolismo energético de los parásitos."
+  },
+  {
+    "Id_QyA": 206,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la concentración de Albendazol en la suspensión?",
+    "Respuesta Técnica del Visitador Médico": "La concentración es de 400 mg de Albendazol por cada 10 mL de suspensión."
+  },
+  {
+    "Id_QyA": 207,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué parasitosis está indicado? ¿Es efectivo en giardiasis?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento de parasitosis intestinales (oxiuros, tenias) y giardiasis en niños de 2 a 10 años. Útil para parasitosis simples y múltiples."
+  },
+  {
+    "Id_QyA": 208,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada? ¿Es dosis única? ¿Para niños y adultos?",
+    "Respuesta Técnica del Visitador Médico": "Para la mayoría de parasitosis comunes: 400 mg (10 mL) en dosis única. Para giardiasis en niños 2-10 años: 400 mg al día por [Indicar duración - no especificado en archivos]."
+  },
+  {
+    "Id_QyA": 209,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerado. Rara vez: molestias gastrointestinales, dolor de cabeza, mareos. Con tratamientos prolongados: alteraciones hepáticas, hematológicas."
+  },
+  {
+    "Id_QyA": 210,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones importantes (embarazo, edad)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad al Albendazol. **No usar durante el embarazo**. No recomendado en niños menores de 2 años (excepto indicación específica). Precaución en enfermedad hepática."
+  },
+  {
+    "Id_QyA": 211,
+    "Nombre del Producto": "Nemazol",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en suspensión de 10 mL. Tiene sabor a banana para facilitar administración pediátrica."
+  },
+  {
+    "Id_QyA": 212,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuáles son los principios activos y qué aporta cada uno (Fosfatidilcolina, Fosfatidilserina, L-Tirosina, etc.)?",
+    "Respuesta Técnica del Visitador Médico": "Neuro Vital Kid contiene una combinación de activos: Fosfatidilcolina y Fosfatidilserina (componentes clave de las membranas neuronales), L-Tirosina y L-Glutamina (aminoácidos precursores de neurotransmisores), Vitaminas B6, Niacina, Ácido Pantoténico (esenciales para metabolismo energético neuronal), Extracto seco de Ginkgo Biloba (mejora circulación cerebral, antioxidante). También menciona Inositol."
+  },
+  {
+    "Id_QyA": 213,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado Neuro Vital Kid? ¿Cómo ayuda al rendimiento mental y aprendizaje?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para: fortalecer y mejorar el funcionamiento mental, mejorar la memoria y la capacidad de aprendizaje, promover la estimulación de la concentración y la atención, y apoyar la regeneración nerviosa y el estado de ánimo. Mejora de función cerebral, memoria y estado de ánimo en niños."
+  },
+  {
+    "Id_QyA": 214,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Hay evidencia clínica que respalde la eficacia de esta combinación en niños?",
+    "Respuesta Técnica del Visitador Médico": "El manual menciona ingredientes clínicamente respaldados\". [Mencionar si el laboratorio tiene estudios específicos con Neuro Vital Kid o evidencia robusta sobre los componentes individuales].\""
+  },
+  {
+    "Id_QyA": 215,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para niños? ¿Por edad o peso? ¿Cómo se toma?",
+    "Respuesta Técnica del Visitador Médico": "Es una Emulsión oral en frasco de 180 mL. (Dosis no especificada en archivos, consultar ficha técnica completa). El manual lo asigna a Pediatría, sugiriendo su uso en niños."
+  },
+  {
+    "Id_QyA": 216,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Son seguros los componentes en niños?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerado. Efectos secundarios poco comunes/leves. Componentes individuales suelen ser seguros a dosis recomendadas en niños. "
+  },
+  {
+    "Id_QyA": 217,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene interacciones relevantes?",
+    "Respuesta Técnica del Visitador Médico": "[Mencionar si hay interacciones conocidas con los componentes, ej: Ginkgo Biloba con anticoagulantes (menos probable a dosis de suplemento)]. "
+  },
+  {
+    "Id_QyA": 218,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones (alergias, condiciones médicas)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad a cualquier componente. Precaución en [Mencionar si aplica: trastornos coagulación por Ginkgo]. "
+  },
+  {
+    "Id_QyA": 219,
+    "Nombre del Producto": "Neuro Vital Kid",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentación Emulsión con contenido neto de 180 mL. [Si el manual/etiqueta menciona sabor, incluirlo]."
+  },
+  {
+    "Id_QyA": 220,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contienen NeutroX? ¿Cómo actúan los Hidróxidos de Magnesio y Aluminio como antiácidos?",
+    "Respuesta Técnica del Visitador Médico": "Los principios activos son Hidróxido de magnesio e Hidróxido de aluminio. Son antiácidos que neutralizan el exceso de ácido clorhídrico en el estómago. La combinación busca equilibrar el efecto laxante del Magnesio y el constipante del Aluminio."
+  },
+  {
+    "Id_QyA": 221,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la concentración de cada hidróxido por dosis?",
+    "Respuesta Técnica del Visitador Médico": "Cada 5 mL de suspensión antiácida contienen 85 mg de Hidróxido de aluminio y 200 mg de Hidróxido de magnesio."
+  },
+  {
+    "Id_QyA": 222,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado NeutroX? ¿Hiperacidez? ¿Reflujo?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado para el tratamiento de la hiperacidez gástrica y reflujo. Alivia el ardor de estómago y la indigestión ácida."
+  },
+  {
+    "Id_QyA": 223,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Es sin azúcar? ¿Es importante para algún tipo de paciente?",
+    "Respuesta Técnica del Visitador Médico": "Sí, el manual lo menciona como Sin azúcar"
+  },
+  {
+    "Id_QyA": 224,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada y con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Es una suspensión oral. (Dosis no especificada en archivos, consultar ficha técnica completa). La dosis usual es [Indicar dosis en volumen, ej: 5-10 mL] después de las comidas y al acostarse, según necesidad. Agitar antes de usar."
+  },
+  {
+    "Id_QyA": 225,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios? ¿Constipación o diarrea?",
+    "Respuesta Técnica del Visitador Médico": "La combinación de Magnesio y Aluminio busca minimizar los efectos GI opuestos. Aún así, pueden ocurrir cambios en el tránsito intestinal. El Aluminio puede causar constipación, el Magnesio diarrea. El uso crónico de antiácidos puede afectar la absorción de otros medicamentos."
+  },
+  {
+    "Id_QyA": 226,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna contraindicación o precaución importante (problemas renales)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad. Precaución en insuficiencia renal (riesgo de acumulación de Aluminio y Magnesio). Interacciones con otros medicamentos (separar la toma). [Basado en información general de antiácidos de Al/Mg]."
+  },
+  {
+    "Id_QyA": 227,
+    "Nombre del Producto": "NeutroX Antiácido",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentaciones tiene? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en suspensión de 180 ml y 240 ml. Tiene sabor a Menta. Frasco con Agite antes de usar\".\""
+  },
+  {
+    "Id_QyA": 228,
+    "Nombre del Producto": "Pasta al Agua (Antiescaras)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene Pasta al Agua?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Óxido de zinc y Glicerina."
+  },
+  {
+    "Id_QyA": 229,
+    "Nombre del Producto": "Pasta al Agua (Antiescaras)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Antiescaras? ¿Lesiones por pañal? ¿Seca lesiones?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como desinfectante y desecante de las lesiones exudativas, como escaras y lesiones ocasionadas por el pañal. El Óxido de Zinc tiene acción astringente y antiséptica, la Glicerina humecta levemente."
+  },
+  {
+    "Id_QyA": 230,
+    "Nombre del Producto": "Pasta al Agua (Antiescaras)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar una capa fina sobre las lesiones [Basado en uso común]. Uso externo."
+  },
+  {
+    "Id_QyA": 231,
+    "Nombre del Producto": "Pasta al Agua (Antiescaras)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente bien tolerada. Contraindicada en hipersensibilidad. Uso externo. No usar en heridas abiertas profundas o infecciones extendidas."
+  },
+  {
+    "Id_QyA": 232,
+    "Nombre del Producto": "Pasta al Agua (Antiescaras)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en tarro con contenido neto de 100 g."
+  },
+  {
+    "Id_QyA": 233,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Pomada de Azufre? ¿Es azufre precipitado?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Azufre micronizado. En el polvo se menciona Azufre precipitado resublimado micronizado, asumo que la pomada usa una forma similar de azufre."
+  },
+  {
+    "Id_QyA": 234,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cómo actúa el Azufre en las afecciones de la piel?",
+    "Respuesta Técnica del Visitador Médico": "El Azufre tiene propiedades queratolíticas (ayuda a descamar la piel), antifúngicas, antibacterianas y parasiticidas suaves. [Basado en información de Azufre en Polvo]."
+  },
+  {
+    "Id_QyA": 235,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Escabiosis? ¿Acné? ¿Soriasis?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada para el tratamiento de escabiosis (sarna), soriasis y otras afecciones de la piel como rosácea, dermatitis seborreica y acné juvenil."
+  },
+  {
+    "Id_QyA": 236,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica la pomada? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Se emplea incorporado en un vehículo (crema fría o vaselina) (Esto aplica más a la preparación con Azufre en Polvo. Para la pomada ya preparada: Aplicar una capa fina sobre las áreas afectadas, frotando suavemente. La frecuencia depende de la indicación, consultar ficha técnica completa)."
+  },
+  {
+    "Id_QyA": 237,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación? ¿Olor?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación, enrojecimiento, sequedad. Tiene un olor característico a azufre. Evitar ojos/mucosas. No usar en piel lesionada."
+  },
+  {
+    "Id_QyA": 238,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicada en hipersensibilidad al azufre. Uso externo."
+  },
+  {
+    "Id_QyA": 239,
+    "Nombre del Producto": "Pomada de Azufre (Azufre Pomada)",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en tarro con contenido neto de 50 g (bajo el nombre Azufre Pomada)."
+  },
+  {
+    "Id_QyA": 240,
+    "Nombre del Producto": "Pomada Mentolada",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Pomada Mentolada? ¿Cómo actúan sus componentes?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Mentol, Eucaliptol y Petrolato. El Mentol y Eucaliptol proporcionan sensación refrescante y vapores que ayudan a descongestionar. El Petrolato es la base ungüento."
+  },
+  {
+    "Id_QyA": 241,
+    "Nombre del Producto": "Pomada Mentolada",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Congestión nasal? ¿Picaduras?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada para la congestión nasal y picaduras de insectos. Ayuda a aliviar la sensación de nariz tapada y el picor de picaduras."
+  },
+  {
+    "Id_QyA": 242,
+    "Nombre del Producto": "Pomada Mentolada",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar una capa fina en el pecho y cuello, frotando suavemente [Basado en uso común]. Para picaduras, aplicar sobre la lesión. Uso externo."
+  },
+  {
+    "Id_QyA": 243,
+    "Nombre del Producto": "Pomada Mentolada",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación? ¿Precauciones en niños?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación local. **Precaución extrema en niños pequeños**, especialmente en la zona nasal o facial, debido al riesgo de laringoespasmo/broncoespasmo por los vapores mentolados. Uso externo. Inflamable."
+  },
+  {
+    "Id_QyA": 244,
+    "Nombre del Producto": "Pomada Mentolada",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en tarro con contenido neto de 50 g."
+  },
+  {
+    "Id_QyA": 245,
+    "Nombre del Producto": "Rábano Yodado",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene el Jarabe Rábano Yodado?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Extracto de Rábano, Jengibre, Naranja y Tintura de Canela. También se menciona Extracto de Rábano + Extracto de Jengibre + Extracto de Naranja + Tintura de Canela. Es una fórmula con extractos naturales y yodo vegetal."
+  },
+  {
+    "Id_QyA": 246,
+    "Nombre del Producto": "Rábano Yodado",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Expectorante? ¿Problemas tiroideos? ¿Anemia?",
+    "Respuesta Técnica del Visitador Médico": "Indicado como expectorante y coadyuvante en estados bronquiales. También como apoyo en alteraciones de la tiroides por trastornos en la absorción de yodo, escorbuto y anemias. Depurativo natural con yodo vegetal, complemento para tiroides, anemia y resfriados."
+  },
+  {
+    "Id_QyA": 247,
+    "Nombre del Producto": "Rábano Yodado",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada?",
+    "Respuesta Técnica del Visitador Médico": "Es un jarabe oral con sabor cítrico-especiado. (Dosis no especificada en archivos, consultar ficha técnica completa)."
+  },
+  {
+    "Id_QyA": 248,
+    "Nombre del Producto": "Rábano Yodado",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Hay precauciones por el yodo?",
+    "Respuesta Técnica del Visitador Médico": "Precaución en trastornos tiroideos debido al componente yodo. Hipersensibilidad a componentes."
+  },
+  {
+    "Id_QyA": 249,
+    "Nombre del Producto": "Rábano Yodado",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco de 120 mL. El manual menciona Jarabe de 150 ml, sabor cítrico-especiado. Confirmar presentación con el laboratorio."
+  },
+  {
+    "Id_QyA": 250,
+    "Nombre del Producto": "Sal de Epsom / Higuera",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es la Sal de Epsom / Higuera? ¿Cuál es su principio activo?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Sulfato de Magnesio heptahidratado. Comúnmente conocido como Sal de Epsom. Es una sal mineral de magnesio."
+  },
+  {
+    "Id_QyA": 251,
+    "Nombre del Producto": "Sal de Epsom / Higuera",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cómo actúa como laxante y catártico? ¿Y como colagogo? ¿Qué significa eso?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado como laxante y catártico suave. Actúa como laxante osmótico, atrayendo agua al intestino. Como colagogo, estimula producción/secreción de bilis, induciendo depuración hepato-biliar."
+  },
+  {
+    "Id_QyA": 252,
+    "Nombre del Producto": "Sal de Epsom / Higuera",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma? ¿Cuál es la dosis para el efecto laxante? ¿Se disuelve?",
+    "Respuesta Técnica del Visitador Médico": "Se disuelve el contenido del sobre en agua y se toma oralmente. [Indicar la dosis oral usual, ej: disolver el sobre en un vaso grande de agua]. Se toma generalmente en ayunas."
+  },
+  {
+    "Id_QyA": 253,
+    "Nombre del Producto": "Sal de Epsom / Higuera",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Diarrea? ¿Dolor abdominal? ¿Uso crónico?",
+    "Respuesta Técnica del Visitador Médico": "Efecto más común: diarrea. Puede causar calambres, náuseas. **No usar de forma crónica** como laxante (riesgo dependencia, pérdida electrolitos)."
+  },
+  {
+    "Id_QyA": 254,
+    "Nombre del Producto": "Sal de Epsom / Higuera",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones importantes (problemas renales)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en obstrucción intestinal, apendicitis, dolor abdominal de origen desconocido, enfermedad inflamatoria intestinal. **No usar durante el embarazo**. Evitar en niños pequeños. Precaución en insuficiencia renal grave."
+  },
+  {
+    "Id_QyA": 255,
+    "Nombre del Producto": "Sal de Epsom / Higuera",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué cantidad contiene la papelata?",
+    "Respuesta Técnica del Visitador Médico": "Viene en papelata con contenido neto de 20 g."
+  },
+  {
+    "Id_QyA": 256,
+    "Nombre del Producto": "Solución Fisiológica 30mL",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Solución Fisiológica? ¿Cuál es su composición?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Cloruro de sodio y Agua destilada. Es una solución isotónica de cloruro de sodio al 0.9%."
+  },
+  {
+    "Id_QyA": 257,
+    "Nombre del Producto": "Solución Fisiológica 30mL",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza principalmente en esta presentación de 30 mL? ¿Descongestión nasal?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como descongestionante nasal. Ayuda a fluidificar y limpiar secreciones. También puede usarse para limpieza de ojos o heridas menores [Si aplica según sepa del producto]."
+  },
+  {
+    "Id_QyA": 258,
+    "Nombre del Producto": "Solución Fisiológica 30mL",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica como descongestionante nasal? ¿Con qué frecuencia? ¿Es segura en bebés?",
+    "Respuesta Técnica del Visitador Médico": "Para descongestión nasal: aplicar [Indicar si gotas/chorro y cantidad] en cada fosa nasal, según necesidad. Segura para bebés y niños (no causa rebote). Viene con gotero."
+  },
+  {
+    "Id_QyA": 259,
+    "Nombre del Producto": "Solución Fisiológica 30mL",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios o contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Muy segura y bien tolerada. No tiene efectos secundarios relevantes. Precaución: mantener higiene del gotero."
+  },
+  {
+    "Id_QyA": 260,
+    "Nombre del Producto": "Solución Fisiológica 30mL",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 261,
+    "Nombre del Producto": "Sulfatiazol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es el Sulfatiazol? ¿Cómo actúa como antimicrobiano?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Sulfatiazol puro, una sulfonamida. Actúa como antimicrobiano de acción rápida inhibiendo el crecimiento bacteriano."
+  },
+  {
+    "Id_QyA": 262,
+    "Nombre del Producto": "Sulfatiazol",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de infecciones está indicado? ¿Es solo para uso externo?",
+    "Respuesta Técnica del Visitador Médico": "Está indicado exclusivamente en infecciones dérmicas. Se emplea incorporado en un vehículo (crema fría o vaselina). Uso **tópico** únicamente."
+  },
+  {
+    "Id_QyA": 263,
+    "Nombre del Producto": "Sulfatiazol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se prepara la pomada/crema con el Sulfatiazol? ¿Cuál es la concentración?",
+    "Respuesta Técnica del Visitador Médico": "Incorporar Sulfatiazol puro del sobre en base adecuada (crema fría o vaselina). [Indicar concentración recomendada, ej: 5% o 10%]. Aplicar sobre las lesiones según indicación."
+  },
+  {
+    "Id_QyA": 264,
+    "Nombre del Producto": "Sulfatiazol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Reacciones alérgicas? ¿Absorción sistémica?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar hipersensibilidad local. Absorción sistémica baja uso tópico intacto, puede aumentar en piel lesionada. Riesgo de efectos sistémicos."
+  },
+  {
+    "Id_QyA": 265,
+    "Nombre del Producto": "Sulfatiazol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación (alergia a sulfonamidas)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad a sulfonamidas. Precaución en antecedentes de alergias. No aplicar en grandes áreas, heridas profundas, quemaduras extensas. No recomendado en embarazo/lactancia (salvo estricta indicación)."
+  },
+  {
+    "Id_QyA": 266,
+    "Nombre del Producto": "Sulfatiazol",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué cantidad contiene el sobre?",
+    "Respuesta Técnica del Visitador Médico": "Viene en sobre con contenido neto de 5 g."
+  },
+  {
+    "Id_QyA": 267,
+    "Nombre del Producto": "Talco Boricado",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene Talco Boricado?",
+    "Respuesta Técnica del Visitador Médico": "Contiene Mentol, Alcanfor, Ácido Bórico y Talco USP."
+  },
+  {
+    "Id_QyA": 268,
+    "Nombre del Producto": "Talco Boricado",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Control de sudoración? ¿Mal olor?",
+    "Respuesta Técnica del Visitador Médico": "Es desodorante, antisudoral, antibacterial, refrescante. Ayuda a controlar la sudoración excesiva y el mal olor corporal."
+  },
+  {
+    "Id_QyA": 269,
+    "Nombre del Producto": "Talco Boricado",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar sobre la piel limpia y seca en las áreas propensas a la sudoración/mal olor. Uso externo."
+  },
+  {
+    "Id_QyA": 270,
+    "Nombre del Producto": "Talco Boricado",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Precauciones por Ácido Bórico?",
+    "Respuesta Técnica del Visitador Médico": "Precaución por el contenido de Ácido Bórico, especialmente en niños pequeños (riesgo de absorción o toxicidad por inhalación). Evitar inhalación. Uso externo."
+  },
+  {
+    "Id_QyA": 271,
+    "Nombre del Producto": "Talco Boricado",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en talquera con contenido neto de 90 g y 200 g."
+  },
+  {
+    "Id_QyA": 272,
+    "Nombre del Producto": "Tintura de Árnica",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es la Tintura de Árnica? ¿Cuál es su principio activo?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Tintura de Árnica (extracto hidroalcohólico de Arnica montana)."
+  },
+  {
+    "Id_QyA": 273,
+    "Nombre del Producto": "Tintura de Árnica",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Golpes, moretones, inflamación? ¿Es de uso externo?",
+    "Respuesta Técnica del Visitador Médico": "Indicada para uso externo como antiinflamatorio y analgésico local. Para golpes, contusiones, moretones (equimosis), esguinces leves, dolor muscular y articular superficial."
+  },
+  {
+    "Id_QyA": 274,
+    "Nombre del Producto": "Tintura de Árnica",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica la tintura? ¿Se diluye? ¿Cuántas veces al día?",
+    "Respuesta Técnica del Visitador Médico": "Es para uso **externo** únicamente. Puede aplicarse directamente (si piel intacta), diluida en agua para compresas, o frotando. [Indicar frecuencia, ej: varias veces al día]. No aplicar sobre heridas abiertas/piel irritada."
+  },
+  {
+    "Id_QyA": 275,
+    "Nombre del Producto": "Tintura de Árnica",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Irritación de la piel? ¿Es tóxica por vía oral?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación, enrojecimiento, picor, dermatitis alérgica. **Es tóxica por vía oral (NUNCA debe ingerirse)**. Evitar contacto ojos/mucosas."
+  },
+  {
+    "Id_QyA": 276,
+    "Nombre del Producto": "Tintura de Árnica",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay contraindicaciones o precauciones? ¿Piel lesionada? ¿Embarazo?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicada en hipersensibilidad a Árnica. **No aplicar sobre heridas abiertas, piel lesionada, quemaduras o mucosas.** No recomendada en embarazo/lactancia."
+  },
+  {
+    "Id_QyA": 277,
+    "Nombre del Producto": "Tintura de Árnica",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco? ¿Viene con gotero?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL. Incluye gotero."
+  },
+  {
+    "Id_QyA": 278,
+    "Nombre del Producto": "Tintura de Valeriana",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es la Tintura de Valeriana? ¿Cuál es su principio activo?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Tintura de Valeriana (extracto hidroalcohólico de Valeriana officinalis)."
+  },
+  {
+    "Id_QyA": 279,
+    "Nombre del Producto": "Tintura de Valeriana",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Ansiedad, insomnio, nerviosismo?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como sedante, tranquilizante y auxiliar en el tratamiento del insomnio, nerviosismo, y estados de ansiedad leve a moderada. Ayuda a calmar el sistema nervioso."
+  },
+  {
+    "Id_QyA": 280,
+    "Nombre del Producto": "Tintura de Valeriana",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se toma la tintura? ¿Cuál es la dosis? ¿Cuántas veces al día?",
+    "Respuesta Técnica del Visitador Médico": "La dosis recomendada es [Indicar dosis en gotas y frecuencia]. Diluir en agua. Para insomnio, dosis antes de acostarse. [Indicar frecuencia según ficha técnica]. Viene con gotero."
+  },
+  {
+    "Id_QyA": 281,
+    "Nombre del Producto": "Tintura de Valeriana",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Somnolencia diurna? ¿Interacciones con sedantes?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar somnolencia, mareos, molestias GI leves. Puede potenciar efecto de sedantes, tranquilizantes, alcohol. Evitar operar maquinaria/conducir hasta conocer respuesta."
+  },
+  {
+    "Id_QyA": 282,
+    "Nombre del Producto": "Tintura de Valeriana",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna contraindicación o precaución (embarazo, niños)?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicada en hipersensibilidad. No recomendada en embarazo/lactancia. Precaución en niños (ajustar dosis) y con otros sedantes."
+  },
+  {
+    "Id_QyA": 283,
+    "Nombre del Producto": "Tintura de Valeriana",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco? ¿Viene con gotero?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL. Incluye un gotero."
+  },
+  {
+    "Id_QyA": 284,
+    "Nombre del Producto": "Vaselina",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué contiene la Vaselina?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Petrolato puro."
+  },
+  {
+    "Id_QyA": 285,
+    "Nombre del Producto": "Vaselina",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué se utiliza? ¿Hidratante? ¿Protector de piel irritada?",
+    "Respuesta Técnica del Visitador Médico": "Está indicada como hidratante y protección para piel irritada. Actúa como barrera oclusiva para evitar pérdida de humedad."
+  },
+  {
+    "Id_QyA": 286,
+    "Nombre del Producto": "Vaselina",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar una capa fina sobre la piel limpia y seca. Usar según necesidad. Uso externo."
+  },
+  {
+    "Id_QyA": 287,
+    "Nombre del Producto": "Vaselina",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios o contraindicaciones?",
+    "Respuesta Técnica del Visitador Médico": "Generalmente muy segura y bien tolerada. Puede ser comedogénica en pieles propensas al acné si se usa en exceso. Uso externo."
+  },
+  {
+    "Id_QyA": 288,
+    "Nombre del Producto": "Vaselina",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué presentación tiene?",
+    "Respuesta Técnica del Visitador Médico": "Viene en tarro con contenido neto de 25 g y 85 g."
+  },
+  {
+    "Id_QyA": 289,
+    "Nombre del Producto": "Violeta de Genciana",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es la Violeta de Genciana? ¿Cuál es su composición?",
+    "Respuesta Técnica del Visitador Médico": "La composición incluye Violeta de genciana, Alcohol etílico desnaturalizado y Agua purificada. Es un colorante de anilina."
+  },
+  {
+    "Id_QyA": 290,
+    "Nombre del Producto": "Violeta de Genciana",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué tipo de infecciones o gérmenes está indicada? ¿Uso tópico?",
+    "Respuesta Técnica del Visitador Médico": "Indicada como antiséptico, antimicótico y germicida de uso externo. Útil en infecciones cutáneas y de mucosas por bacterias Gram-positivas y hongos (Cándida)."
+  },
+  {
+    "Id_QyA": 291,
+    "Nombre del Producto": "Violeta de Genciana",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se aplica? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Aplicar directamente sobre el área afectada [Indicar frecuencia]. Usar en pequeñas cantidades. Uso externo."
+  },
+  {
+    "Id_QyA": 292,
+    "Nombre del Producto": "Violeta de Genciana",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios? ¿Puede irritar la piel? ¿Mancha la ropa/piel?",
+    "Respuesta Técnica del Visitador Médico": "Puede causar irritación/sensibilización. Tiñe piel y ropa de violeta intenso. Evitar ojos/mucosas."
+  },
+  {
+    "Id_QyA": 293,
+    "Nombre del Producto": "Violeta de Genciana",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna precaución o contraindicación? ¿Uso en heridas abiertas?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicada en hipersensibilidad. No usar en heridas profundas/extensas (retrasar cicatrización)."
+  },
+  {
+    "Id_QyA": 294,
+    "Nombre del Producto": "Violeta de Genciana",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el frasco?",
+    "Respuesta Técnica del Visitador Médico": "Viene en frasco con contenido neto de 30 mL."
+  },
+  {
+    "Id_QyA": 295,
+    "Nombre del Producto": "Vitacon B Complex",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué vitaminas del complejo B contiene? ¿Cuál es la cantidad de cada una por dosis?",
+    "Respuesta Técnica del Visitador Médico": "El principio activo es Vitaminas del complejo B. [Indicar qué vitaminas B y sus cantidades por dosis, según ficha técnica]. Son vitaminas hidrosolubles esenciales."
+  },
+  {
+    "Id_QyA": 296,
+    "Nombre del Producto": "Vitacon B Complex",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado este jarabe? ¿Cómo ayuda al crecimiento y desarrollo?",
+    "Respuesta Técnica del Visitador Médico": "Asociación de vitaminas hidrosolubles esenciales para crecimiento, desarrollo, cicatrización, integridad vascular, funciones inmunitarias, etc.. Suplemento para prevenir/tratar deficiencias complejo B."
+  },
+  {
+    "Id_QyA": 297,
+    "Nombre del Producto": "Vitacon B Complex",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Es solo para niños o también se usa en adultos?",
+    "Respuesta Técnica del Visitador Médico": "Suplemento vitamínico útil en diversas poblaciones con riesgo de deficiencia. [Confirmar si es solo para niños o todas las edades según laboratorio]."
+  },
+  {
+    "Id_QyA": 298,
+    "Nombre del Producto": "Vitacon B Complex",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada? ¿Para quiénes? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Jarabe oral 120 mL sabor Naranja. (Dosis no especificada en archivos)."
+  },
+  {
+    "Id_QyA": 299,
+    "Nombre del Producto": "Vitacon B Complex",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios?",
+    "Respuesta Técnica del Visitador Médico": "A dosis recomendadas, vitaminas B suelen ser muy seguras. Exceso se excreta por orina. Rara vez reacciones alérgicas."
+  },
+  {
+    "Id_QyA": 300,
+    "Nombre del Producto": "Vitacon B Complex",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentación Jarabe con contenido neto de 120 mL. Tiene sabor a Naranja."
+  },
+  {
+    "Id_QyA": 301,
+    "Nombre del Producto": "Vitapetit",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué vitaminas del complejo B y Lisina contiene? ¿Cuál es la cantidad de cada una?",
+    "Respuesta Técnica del Visitador Médico": "Principios activos: Vitaminas del complejo B y Lisina. Contiene asociación de vitaminas B esenciales más Lisina. Lisina: aminoácido esencial, importante para construcción masa muscular."
+  },
+  {
+    "Id_QyA": 302,
+    "Nombre del Producto": "Vitapetit",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Para qué está indicado este jarabe? ¿Cómo ayuda al crecimiento y la masa muscular?",
+    "Respuesta Técnica del Visitador Médico": "Asociación vitaminas hidrosolubles esenciales para crecimiento y desarrollo. Lisina añadida esencial para construcción masa muscular y crecimiento/desarrollo infantil. Soporte para niños en crecimiento."
+  },
+  {
+    "Id_QyA": 303,
+    "Nombre del Producto": "Vitapetit",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Es principalmente para niños?",
+    "Respuesta Técnica del Visitador Médico": "Sí, diseñado para crecimiento y desarrollo infantil, con énfasis en construcción masa muscular."
+  },
+  {
+    "Id_QyA": 304,
+    "Nombre del Producto": "Vitapetit",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para niños? ¿Por edad o peso? ¿Con qué frecuencia?",
+    "Respuesta Técnica del Visitador Médico": "Jarabe oral 180 mL sabor Naranja. (Dosis no especificada en archivos)."
+  },
+  {
+    "Id_QyA": 305,
+    "Nombre del Producto": "Vitapetit",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene efectos secundarios?",
+    "Respuesta Técnica del Visitador Médico": "A dosis recomendadas, suele ser muy bien tolerado. Efectos secundarios poco comunes."
+  },
+  {
+    "Id_QyA": 306,
+    "Nombre del Producto": "Vitapetit",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Tiene sabor?",
+    "Respuesta Técnica del Visitador Médico": "Viene en presentación Jarabe con contenido neto de 180 mL. Tiene sabor a Naranja."
+  },
+  {
+    "Id_QyA": 307,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Qué es exactamente el Sulfato de zinc heptahidratado?",
+    "Respuesta Técnica del Visitador Médico": "Es una sal inorgánica de zinc, en su forma más común y estable, que contiene siete moléculas de agua (ZnSO₄·7H₂O). Es una fuente fiable de zinc."
+  },
+  {
+    "Id_QyA": 308,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cuál es la cantidad de zinc elemental que proveen esos 15 mg por porción?",
+    "Respuesta Técnica del Visitador Médico": "Cada porción de 7.5 mL contiene **15 mg de zinc elemental**, en forma de sulfato de zinc."
+  },
+  {
+    "Id_QyA": 309,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Cómo se compara la biodisponibilidad del sulfato de zinc heptahidratado con otras formas?",
+    "Respuesta Técnica del Visitador Médico": "El sulfato de zinc es una forma bien establecida y generalmente considerada con buena absorción intestinal. Es una forma eficaz para suplementar zinc."
+  },
+  {
+    "Id_QyA": 310,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Composición y Farmacología",
+    "Pregunta del Médico": "¿Contiene algún otro componente o excipiente relevante (azúcar, alérgenos)?",
+    "Respuesta Técnica del Visitador Médico": "La base es un jarabe con sabor a uva. Contiene sacarosa. [Indicar otros excipientes si aplica]."
+  },
+  {
+    "Id_QyA": 311,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿En qué casos específicos de deficiencia de zinc está indicado?",
+    "Respuesta Técnica del Visitador Médico": "Indicado para corregir deficiencias de zinc (en caso de déficit de Zinc y retraso de crecimiento), y como apoyo al sistema inmunológico."
+  },
+  {
+    "Id_QyA": 312,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Cuál es la evidencia clínica que respalda el uso de zinc para el apoyo al sistema inmune?",
+    "Respuesta Técnica del Visitador Médico": "El zinc es esencial para desarrollo/función células inmunes. Suplementación ha demostrado [Mencionar evidencia: reducir duración/severidad resfriado si inicio temprano, apoyar función inmune en desnutridos]. [Si hay estudios específicos laboratorio, mencionarlos]."
+  },
+  {
+    "Id_QyA": 313,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Indicaciones y Eficacia Clínica",
+    "Pregunta del Médico": "¿Es útil en alguna patología particular (ej. diarrea aguda en niños)?",
+    "Respuesta Técnica del Visitador Médico": "Sí, útil en manejo diarrea aguda en niños. Suplementación zinc recomendada OMS/UNICEF para reducir duración/severidad episodios diarreicos. Reduce incidencia diarreas, infecciones resp. agudas, paludismo."
+  },
+  {
+    "Id_QyA": 314,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cuál es la dosis recomendada para niños (por peso)? ¿Y para adultos?",
+    "Respuesta Técnica del Visitador Médico": "Niños < 12 años: **1 mg Zn elemental por kg/día** (tope 20 mg/día). mL = (Dosis mg/kg * Peso kg) / 2 mg/mL. Adultos ($\\ge$ 12 años): una porción de 7.5 mL (15 mg Zn) al día."
+  },
+  {
+    "Id_QyA": 315,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se administra el jarabe? ¿Con o sin comidas? ¿Se reparte la dosis?",
+    "Respuesta Técnica del Visitador Médico": "Dosis diaria puede repartirse en 1-2 tomas. Tomar **entre las comidas**."
+  },
+  {
+    "Id_QyA": 316,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Dosificación y Administración",
+    "Pregunta del Médico": "¿Cómo se mide una porción\" o los mL exactos? ¿Viene con dosificador?\"",
+    "Respuesta Técnica del Visitador Médico": "Sí, frasco incluye dosificadora para medir 7.5 mL (una porción). Permite medir volumen exacto según cálculo por peso."
+  },
+  {
+    "Id_QyA": 317,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Sabor y Adherencia",
+    "Pregunta del Médico": "¿El sabor a uva es bien aceptado por los niños? ¿Ayuda con la adherencia?",
+    "Respuesta Técnica del Visitador Médico": "Sabor a uva seleccionado para mejorar palatabilidad/adherencia en niños/adultos, ayuda a enmascarar sabor metálico del zinc."
+  },
+  {
+    "Id_QyA": 318,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Cuáles son los posibles efectos secundarios, especialmente gastrointestinales?",
+    "Respuesta Técnica del Visitador Médico": "Comunes: GI leves (náuseas, dolor abdominal, diarrea), especialmente dosis altas/ayunas. Tomar entre comidas ayuda a reducirlos."
+  },
+  {
+    "Id_QyA": 319,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Tiene interacciones relevantes con otros medicamentos o minerales?",
+    "Respuesta Técnica del Visitador Médico": "Puede interferir absorción ciertos antibióticos (quinolonas, tetraciclinas), hierro, calcio. Separar administración. Altas dosis zinc largo plazo pueden afectar absorción cobre."
+  },
+  {
+    "Id_QyA": 320,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Efectos Secundarios y Seguridad",
+    "Pregunta del Médico": "¿Hay alguna contraindicación para su uso?",
+    "Respuesta Técnica del Visitador Médico": "Contraindicado en hipersensibilidad a sales de zinc. Precaución en insuficiencia renal grave."
+  },
+  {
+    "Id_QyA": 321,
+    "Nombre del Producto": "Zincosol",
+    "Tipo de Pregunta": "Presentación y Aspectos Prácticos",
+    "Pregunta del Médico": "¿Qué volumen tiene el envase? ¿Para cuánto dura?",
+    "Respuesta Técnica del Visitador Médico": "Viene en envase de 120 mL. Duración depende de dosis diaria."
+  }
+]

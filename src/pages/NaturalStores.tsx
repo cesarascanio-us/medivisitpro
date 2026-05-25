@@ -42,6 +42,7 @@ import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useNavigate } from "react-router-dom";
 import { EliteHeader, EliteKPICard, EliteTable } from "@/components/layout/DesignSystem";
 import { cn } from "@/lib/utils";
+import { ImportDialog } from "@/components/shared/ImportDialog";
 
 export default function NaturalStores() {
     const [adminFilters, setAdminFilters] = useState<any>({});
@@ -89,6 +90,51 @@ export default function NaturalStores() {
         }
     };
 
+    const handleImport = async (data: Record<string, any>[]) => {
+        try {
+            const itemsToInsert = data.map((row: any) => ({
+                user_id: user?.id, 
+                organization_id: organizationId,
+                contact_type: 'natural_store',
+                name: row['Nombre'] || row['nombre'] || row['Name'] || '',
+                rif: row['RIF'] || row['rif'] || '',
+                address: row['Dirección'] || row['direccion'] || row['address'] || '',
+                city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
+                phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
+                potential: 'Medio',
+                status: 'Activo'
+            })).filter(item => item.name);
+            
+            if (itemsToInsert.length > 0) {
+                const { error } = await supabase.from('natural_stores').insert(itemsToInsert);
+                if (error) throw error;
+                toast({ title: "Importación Exitosa", description: `Se importaron ${itemsToInsert.length} tiendas naturistas.` });
+                loadNaturalStores();
+            }
+        } catch (error: any) { 
+            console.error('Error:', error); 
+            toast({ title: "Error", description: `Hubo un error importando los datos: ${error.message || 'Error desconocido'}`, variant: "destructive" });
+        }
+    };
+
+    const handleEmptyAll = async () => {
+        try {
+            setLoading(true);
+            const { error } = await supabase
+                .from('natural_stores')
+                .delete()
+                .eq('contact_type', 'natural_store')
+                .eq('organization_id', organizationId);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Se han eliminado todas las tiendas naturistas." });
+            loadNaturalStores();
+        } catch (error: any) {
+            toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleEdit = (store: any) => {
         setSelectedStore(store);
         setFormData({
@@ -114,6 +160,20 @@ export default function NaturalStores() {
                     <div className="flex items-center gap-4">
                         <Button variant="outline" onClick={() => exportToCSV(naturalStores, 'tiendas_naturistas')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
                             <Download className="mr-3 h-4 w-4 text-primary" /> Exportar Inteligencia
+                        </Button>
+                        <ImportDialog
+                            onImport={handleImport}
+                            title="Importar Tiendas Naturistas"
+                            description="Selecciona un archivo para importar establecimientos naturistas."
+                            triggerText="Importar Datos"
+                            expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
+                        />
+                        <Button variant="destructive" onClick={() => {
+                            if(window.confirm('¿Estás seguro de vaciar todas las tiendas naturistas? Esta acción no se puede deshacer.')) {
+                                handleEmptyAll();
+                            }
+                        }} className="rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner">
+                            Vaciar Todo
                         </Button>
                         <Button
                             onClick={() => {

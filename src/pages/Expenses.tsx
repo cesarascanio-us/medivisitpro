@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { EliteHeader, EliteKPICard, EliteTable } from "@/components/layout/DesignSystem";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 interface AdminFilterState {

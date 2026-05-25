@@ -88,7 +88,6 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
             const { data: allProducts, error: prodError } = await (supabase as any)
                 .from('products')
                 .select('id, name')
-                .eq('status', 'Activo')
                 .order('name');
 
             if (prodError) throw prodError;
@@ -144,7 +143,6 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
             const { data, error } = await (supabase as any)
                 .from('products')
                 .select('id, name')
-                .eq('status', 'Activo')
                 .order('name');
             if (error) throw error;
             setProducts(data || []);

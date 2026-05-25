@@ -58,6 +58,7 @@ const Help = lazy(() => import("./pages/Help"));
 const Planner = lazy(() => import("./pages/Planner"));
 const Doctors = lazy(() => import("./pages/Doctors"));
 const Pharmacies = lazy(() => import("./pages/Pharmacies_Elite"));
+const RoutePlanner = lazy(() => import("./pages/RoutePlanner"));
 const NaturalStores = lazy(() => import("./pages/NaturalStores"));
 const Commerces = lazy(() => import("./pages/Commerces"));
 const Specialties = lazy(() => import("./pages/Specialties"));
@@ -97,6 +98,9 @@ const WarehouseLayout = lazy(() => import("@/components/warehouse/WarehouseLayou
 // Lazy loaded placeholder components
 const Quotes = lazy(() => import("./pages/Quotes"));
 const FAQ = lazy(() => import("./pages/FAQ"));
+const CoachingDashboard = lazy(() => import("./pages/CoachingDashboard"));
+const University = lazy(() => import("./pages/University"));
+const Rewards = lazy(() => import("./pages/Rewards"));
 const Baremos = lazy(() => import("./pages/Baremos"));
 const Cycles = lazy(() => import("./pages/Planning/Cycles"));
 
@@ -156,6 +160,13 @@ const AppContent = () => (
       <ProtectedRoute>
         <ModuleGuard moduleKey="agenda">
           <Layout><Planner /></Layout>
+        </ModuleGuard>
+      </ProtectedRoute>
+    } />
+    <Route path="route-planner" element={
+      <ProtectedRoute>
+        <ModuleGuard moduleKey="agenda">
+          <Layout><RoutePlanner /></Layout>
         </ModuleGuard>
       </ProtectedRoute>
     } />
@@ -258,6 +269,21 @@ const AppContent = () => (
     <Route path="quotes" element={
       <ProtectedRoute>
         <Layout><Quotes /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="coaching" element={
+      <ProtectedRoute>
+        <Layout><CoachingDashboard /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="university" element={
+      <ProtectedRoute>
+        <Layout><University /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="rewards" element={
+      <ProtectedRoute>
+        <Layout><Rewards /></Layout>
       </ProtectedRoute>
     } />
     <Route path="faq" element={

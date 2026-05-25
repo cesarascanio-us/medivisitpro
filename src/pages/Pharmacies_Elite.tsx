@@ -45,6 +45,7 @@ import { PharmacyFormDialog } from "@/components/pharma/PharmacyFormDialog";
 import { PharmacyInventoryDialog } from "@/components/pharma/PharmacyInventoryDialog";
 import { EliteTabsList, EliteTabsTrigger, EliteKPICard, EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
 import { useTheme } from "@/context/ThemeContext";
+import { ImportDialog } from "@/components/shared/ImportDialog";
 
 export default function PharmaciesElite() {
     const { theme } = useTheme();
@@ -79,14 +80,80 @@ export default function PharmaciesElite() {
         loadAllData();
     }, [adminFilters]);
 
+    const handleImport = async (data: Record<string, any>[]) => {
+        try {
+            const itemsToInsert = data.map((row: any) => ({
+                user_id: user?.id, 
+                organization_id: organizationId,
+                name: row['Nombre'] || row['nombre'] || row['Name'] || '',
+                rif: row['RIF'] || row['rif'] || '',
+                address: row['Dirección'] || row['direccion'] || row['address'] || '',
+                city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
+                phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
+                potential: 'Medio',
+                status: 'Activo'
+            })).filter(item => item.name);
+            
+            if (itemsToInsert.length > 0) {
+                const { error } = await supabase.from('pharmacies').insert(itemsToInsert);
+                if (error) throw error;
+                toast({ title: "Importación Exitosa", description: `Se importaron ${itemsToInsert.length} farmacias.` });
+                loadAllData();
+            }
+        } catch (error: any) { 
+            console.error('Error:', error); 
+            toast({ title: "Error", description: `Hubo un error importando los datos: ${error.message || 'Error desconocido'}`, variant: "destructive" });
+        }
+    };
+
+    const handleEmptyAll = async () => {
+        try {
+            setLoading(true);
+            const { error } = await supabase
+                .from('pharmacies')
+                .delete()
+                .eq('organization_id', organizationId);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Se han eliminado todas las farmacias." });
+            loadAllData();
+        } catch (error: any) {
+            toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const loadAllData = async () => {
         try {
             setLoading(true);
-            let query = supabase.from('contacts').select('*').eq('contact_type', 'pharmacy');
-            if (adminFilters.region && adminFilters.region !== 'all') query = query.eq('region', adminFilters.region);
-            if (adminFilters.state && adminFilters.state !== 'all') query = query.eq('state', adminFilters.state);
-            if (adminFilters.zoneId && adminFilters.zoneId !== 'all') query = query.eq('zone_id', adminFilters.zoneId);
-            if (adminFilters.userId && adminFilters.userId !== 'all') query = query.eq('user_id', adminFilters.userId);
+            let query = supabase.from('pharmacies').select('*');
+            
+            // Triangulate User IDs based on Region, State, or Zone
+            let filteredUserIds: string[] | null = null;
+            if ((adminFilters.region && adminFilters.region !== 'all') || 
+                (adminFilters.state && adminFilters.state !== 'all') || 
+                (adminFilters.zoneId && adminFilters.zoneId !== 'all')) {
+                
+                let userQuery = supabase.from('user_roles_plain').select('user_id');
+                if (adminFilters.region && adminFilters.region !== 'all') userQuery = userQuery.eq('region', adminFilters.region);
+                if (adminFilters.state && adminFilters.state !== 'all') userQuery = userQuery.eq('state', adminFilters.state);
+                if (adminFilters.zoneId && adminFilters.zoneId !== 'all') userQuery = userQuery.eq('zone_id', adminFilters.zoneId);
+                
+                const { data: usersData } = await userQuery;
+                filteredUserIds = usersData?.map(u => u.user_id) || [];
+            }
+
+            if (filteredUserIds !== null) {
+                if (filteredUserIds.length > 0) {
+                    query = query.in('user_id', filteredUserIds);
+                } else {
+                    query = query.eq('id', '00000000-0000-0000-0000-000000000000'); // Force empty if no users match
+                }
+            }
+
+            if (adminFilters.userId && adminFilters.userId !== 'all') {
+                query = query.eq('user_id', adminFilters.userId);
+            }
             
             const { data: pharmaData, error: pharmaError } = await query;
             if (pharmaError) throw pharmaError;
@@ -131,6 +198,20 @@ export default function PharmaciesElite() {
                     <div className="flex items-center gap-4">
                         <Button variant="outline" onClick={() => exportToCSV(pharmacies, 'farmacias')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
                             <Download className="mr-3 h-4 w-4 text-primary" /> Exportar Inteligencia
+                        </Button>
+                        <ImportDialog
+                            onImport={handleImport}
+                            title="Importar Farmacias"
+                            description="Selecciona un archivo para importar farmacias."
+                            triggerText="Importar Datos"
+                            expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
+                        />
+                        <Button variant="destructive" onClick={() => {
+                            if(window.confirm('¿Estás seguro de vaciar todas las farmacias? Esta acción no se puede deshacer.')) {
+                                handleEmptyAll();
+                            }
+                        }} className="rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner">
+                            Vaciar Todo
                         </Button>
                         <Button
                             onClick={() => {
@@ -245,6 +326,43 @@ export default function PharmaciesElite() {
                                             </TableCell>
                                             <TableCell className="text-right pr-8 py-8">
                                                 <div className="flex justify-end gap-3">
+                                                    <Button variant="ghost" className="h-12 w-12 p-0 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-indigo-600 transition-all border border-transparent hover:border-indigo-200 shadow-inner"
+                                                        onClick={() => {
+                                                            setEditingPharmacyId(pharma.id);
+                                                            setFormData({
+                                                                name: pharma.name || "",
+                                                                rif: pharma.rif || "",
+                                                                address: pharma.address || "",
+                                                                city: pharma.city || "",
+                                                                state: pharma.state || "",
+                                                                phone: pharma.phone || "",
+                                                                email: pharma.email || "",
+                                                                contact_name: pharma.contact_name || "",
+                                                                contact_position: pharma.contact_position || "",
+                                                                segmentation: pharma.segmentation || "C",
+                                                                potential: pharma.potential || "Medio",
+                                                                status: pharma.status || "Activo"
+                                                            });
+                                                            setDialogOpen(true);
+                                                        }}
+                                                    >
+                                                        <Edit className="h-5 w-5" />
+                                                    </Button>
+                                                    <Button variant="ghost" className="h-12 w-12 p-0 rounded-2xl hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-all border border-transparent hover:border-red-200 shadow-inner"
+                                                        onClick={async () => {
+                                                            if(window.confirm('¿Estás seguro de eliminar esta farmacia?')) {
+                                                                const { error } = await supabase.from('pharmacies').delete().eq('id', pharma.id);
+                                                                if(!error) {
+                                                                    toast({ title: "Farmacia Eliminada" });
+                                                                    loadAllData();
+                                                                } else {
+                                                                    toast({ title: "Error al eliminar", description: error.message, variant: "destructive" });
+                                                                }
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Trash2 className="h-5 w-5" />
+                                                    </Button>
                                                     <Button 
                                                         variant="outline" 
                                                         onClick={() => navigate(`/agenda?pharmacyId=${pharma.id}`)} 
@@ -331,8 +449,8 @@ export default function PharmaciesElite() {
                 onSubmit={async () => {
                     try {
                         const { error } = editingPharmacyId 
-                            ? await supabase.from('contacts').update(formData).eq('id', editingPharmacyId)
-                            : await supabase.from('contacts').insert([{ ...formData, contact_type: 'pharmacy', organization_id: organizationId }]);
+                            ? await supabase.from('pharmacies').update(formData).eq('id', editingPharmacyId)
+                            : await supabase.from('pharmacies').insert([{ ...formData, organization_id: organizationId }]);
                         
                         if (error) throw error;
                         

@@ -190,7 +190,7 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
                         </TabsContent>
 
                         <TabsContent value="training" className="mt-0 animate-in fade-in duration-200">
-                            <StaffTrainer />
+                            <StaffTrainer productName={product.name} />
                         </TabsContent>
                     </div>
                 </Tabs>

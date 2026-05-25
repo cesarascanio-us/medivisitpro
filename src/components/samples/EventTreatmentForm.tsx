@@ -188,6 +188,17 @@ export function EventTreatmentForm({ eventId, onSuccess }: EventTreatmentFormPro
                 return;
             }
 
+            // Validar que se reciba firma si es obligatoria
+            if (signatureRequired && signatureRef.current?.isEmpty()) {
+                toast({
+                    title: "Firma Requerida",
+                    description: "Debe obtener la firma del paciente antes de entregar muestras.",
+                    variant: "destructive"
+                });
+                setLoading(false);
+                return;
+            }
+
             let signatureUrl: string | null = null;
 
             // Upload signature if provided
@@ -212,14 +223,26 @@ export function EventTreatmentForm({ eventId, onSuccess }: EventTreatmentFormPro
                 }
             }
 
+            // Get FEFO batch
+            const { data: batches } = await supabase
+                .from('warehouse_batches')
+                .select('batch_number')
+                .eq('product_id', selectedProduct)
+                .not('expiration_date', 'is', null)
+                .order('expiration_date', { ascending: true })
+                .limit(1);
+
+            const batchNumber = batches && batches.length > 0 ? batches[0].batch_number : null;
+
             const { error } = await supabase.from('sample_movements').insert({
                 user_id: user?.id,
                 product_id: selectedProduct,
                 quantity: quantity,
                 movement_type: 'treatment_start',
                 event_id: eventId,
-                notes: pathology ? `Patología: ${pathology}` : 'Inicio de Tratamiento'
-                // signature_url: signatureUrl // Uncomment when column is added to DB
+                batch_number: batchNumber,
+                notes: pathology ? `Patología: ${pathology} | Lote: ${batchNumber || 'N/A'}` : `Inicio de Tratamiento | Lote: ${batchNumber || 'N/A'}`,
+                signature_url: signatureUrl
             });
 
             if (error) throw error;
@@ -279,7 +302,7 @@ export function EventTreatmentForm({ eventId, onSuccess }: EventTreatmentFormPro
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label>Producto</Label>
-                        <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+                        <Select value={selectedProduct} onValueChange={(val) => { setSelectedProduct(val); setSignatureRequired(true); }}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Seleccionar producto..." />
                             </SelectTrigger>
@@ -365,6 +388,7 @@ export function EventTreatmentForm({ eventId, onSuccess }: EventTreatmentFormPro
                                     <TableHead>Cant.</TableHead>
                                     <TableHead>Notas</TableHead>
                                     <TableHead className="w-[50px]"></TableHead>
+                                    <TableHead className="w-[50px]"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -411,6 +435,14 @@ export function EventTreatmentForm({ eventId, onSuccess }: EventTreatmentFormPro
                                                         </AlertDialogFooter>
                                                     </AlertDialogContent>
                                                 </AlertDialog>
+                                            </TableCell>
+                                            <TableCell>
+                                                {/* Mostrar link a firma si existe, pero typescript no lo sabe asi que casteamos a any */}
+                                                {(item as any).signature_url && (
+                                                    <a href={(item as any).signature_url} target="_blank" rel="noreferrer" className="text-primary hover:underline text-xs font-bold">
+                                                        Ver Firma
+                                                    </a>
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     ))

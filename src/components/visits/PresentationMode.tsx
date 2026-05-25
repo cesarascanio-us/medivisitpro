@@ -22,6 +22,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { deductSamplesFromInventory, checkSampleAvailability } from "@/services/inventoryService";
+import { StaffTrainer } from "../catalog/StaffTrainer";
 
 interface Product {
     id: string;
@@ -250,7 +251,10 @@ export function PresentationMode({
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className={`${isFullscreen ? 'max-w-full h-screen w-screen m-0 rounded-none' : 'max-w-5xl h-[90vh]'} p-0 overflow-hidden`}>
+            <DialogContent 
+                aria-describedby={undefined}
+                className={`${isFullscreen ? 'max-w-full h-screen w-screen m-0 rounded-none' : 'max-w-5xl h-[90vh]'} p-0 overflow-hidden`}>
+                <DialogTitle className="sr-only">Modo Presentación</DialogTitle>
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary to-primary/80 text-white">
                     <div>
@@ -443,6 +447,12 @@ export function PresentationMode({
                                         <p className="text-red-700 text-sm">{currentProduct.contraindications}</p>
                                     </div>
                                 )}
+
+                                {/* Pitch / FAQs */}
+                                <div className="mt-8 border-t pt-8">
+                                    <h4 className="font-semibold text-sm text-muted-foreground mb-4">ARGUMENTARIO CLÍNICO / PREGUNTAS FRECUENTES</h4>
+                                    <StaffTrainer productName={currentProduct.name} />
+                                </div>
 
                                 {/* Samples Input */}
                                 <div className="flex items-center gap-4 pt-4 border-t">

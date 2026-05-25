@@ -22,6 +22,7 @@ import { getStatesInRegion } from "@/constants/regions";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { EliteKPICard, EliteHeader, EliteTable, EliteButton } from "@/components/layout/DesignSystem";
 import { useTheme } from "@/context/ThemeContext";
+import { ImportDialog } from "@/components/shared/ImportDialog";
 
 interface AdminFilterState {
     region?: string;
@@ -74,7 +75,6 @@ export default function Doctors() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState('all');
     const [importing, setImporting] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -110,8 +110,8 @@ export default function Doctors() {
             let triangulatedUserIds: string[] = [];
             
             if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                const { data: userData } = await (supabase as any).from('profiles').select('id').eq('zone_id', adminFilters.zoneId);
-                triangulatedUserIds = userData?.map((u: any) => u.id) || [];
+                const { data: userData } = await (supabase as any).from('user_roles_plain').select('user_id').eq('zone_id', adminFilters.zoneId);
+                triangulatedUserIds = userData?.map((u: any) => u.user_id) || [];
             }
 
             let query: any = supabase.from('doctors').select('*');
@@ -124,8 +124,8 @@ export default function Doctors() {
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
                 } else {
-                    const { data: zoneUsers } = await supabase.from('profiles').select('id').eq('zone_id', zoneId);
-                    const userIds = zoneUsers?.map(u => u.id) || [];
+                    const { data: zoneUsers } = await supabase.from('user_roles_plain').select('user_id').eq('zone_id', zoneId);
+                    const userIds = zoneUsers?.map(u => u.user_id) || [];
                     if (userIds.length > 0) {
                         query = query.or(`representative_id.in.(${userIds.join(',')}),user_id.in.(${userIds.join(',')})`);
                     } else {
@@ -198,29 +198,46 @@ export default function Doctors() {
         } catch (error) { console.error('Error:', error); }
     };
 
-    const triggerImport = () => fileInputRef.current?.click();
-
-    const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-        setImporting(true);
+    const handleImport = async (data: Record<string, any>[]) => {
         try {
-            const XLSX = await import('xlsx');
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const data = new Uint8Array(e.target?.result as ArrayBuffer);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                const doctorsToInsert = jsonData.map((row: any) => ({
-                    user_id: user?.id, organization_id: organizationId,
-                    name: row['Nombre'] || row['nombre'] || '',
-                    potential: 'Medio', status: 'Activo'
-                })).filter(d => d.name);
-                await supabase.from('doctors').insert(doctorsToInsert);
+            const doctorsToInsert = data.map((row: any) => ({
+                user_id: user?.id, 
+                organization_id: organizationId,
+                name: row['Nombre'] || row['nombre'] || row['Name'] || '',
+                specialty: row['Especialidad'] || row['especialidad'] || '',
+                city: row['Ciudad'] || row['ciudad'] || '',
+                health_center: row['Centro'] || row['centro'] || '',
+                potential: 'Medio', 
+                status: 'Activo'
+            })).filter(d => d.name);
+            
+            if (doctorsToInsert.length > 0) {
+                const { error } = await supabase.from('doctors').insert(doctorsToInsert);
+                if (error) throw error;
+                toast({ title: "Importación Exitosa", description: `Se importaron ${doctorsToInsert.length} médicos.` });
                 loadDoctors();
-            };
-            reader.readAsArrayBuffer(file);
-        } catch (error) { console.error('Error:', error); } finally { setImporting(false); }
+            }
+        } catch (error: any) { 
+            console.error('Error:', error); 
+            toast({ title: "Error", description: `Hubo un error importando los datos: ${error.message || 'Error desconocido'}`, variant: "destructive" });
+        }
+    };
+
+    const handleEmptyAll = async () => {
+        try {
+            setLoading(true);
+            const { error } = await supabase
+                .from('doctors')
+                .delete()
+                .eq('organization_id', organizationId);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Se han eliminado todos los médicos." });
+            loadDoctors();
+        } catch (error: any) {
+            toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getPriorityBadge = (priority: string | null) => {
@@ -243,7 +260,6 @@ export default function Doctors() {
 
     return (
         <div className="flex flex-col min-h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
-            <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx,.xls,.csv" className="hidden" />
 
             <EliteHeader 
                 title={theme?.texts?.doctors_title || "Directorio Alpha"}
@@ -257,9 +273,20 @@ export default function Doctors() {
                         <EliteButton variant="secondary" onClick={() => exportToCSV(filteredDoctors, 'medicos')} icon={Download}>
                             Exportar Inteligencia
                         </EliteButton>
-                        <EliteButton variant="secondary" onClick={triggerImport} disabled={importing} icon={importing ? RefreshCw : Upload}>
-                            {importing ? "Sincronizando..." : "Sincronizar Manifiesto"}
-                        </EliteButton>
+                        <ImportDialog
+                            onImport={handleImport}
+                            title="Importar Médicos"
+                            description="Selecciona un archivo para importar tu cartera médica."
+                            triggerText="Sincronizar Manifiesto"
+                            expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
+                        />
+                        <Button variant="destructive" onClick={() => {
+                            if(window.confirm('¿Estás seguro de vaciar todos los médicos? Esta acción no se puede deshacer.')) {
+                                handleEmptyAll();
+                            }
+                        }} className="rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner">
+                            Vaciar Todo
+                        </Button>
                         <EliteButton onClick={() => setDialogOpen(true)} icon={Plus}>
                             Nuevo Especialista
                         </EliteButton>

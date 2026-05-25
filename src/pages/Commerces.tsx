@@ -29,6 +29,7 @@ import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { EliteKPICard, EliteHeader } from "@/components/layout/DesignSystem";
+import { ImportDialog } from "@/components/shared/ImportDialog";
 
 export default function Commerces() {
     const [adminFilters, setAdminFilters] = useState<any>({});
@@ -67,6 +68,51 @@ export default function Commerces() {
         } catch (error) { console.error('Error:', error); }
     };
 
+    const handleImport = async (data: Record<string, any>[]) => {
+        try {
+            const itemsToInsert = data.map((row: any) => ({
+                user_id: user?.id, 
+                organization_id: organizationId,
+                contact_type: 'commerce',
+                name: row['Nombre'] || row['nombre'] || row['Name'] || '',
+                rif: row['RIF'] || row['rif'] || '',
+                address: row['Dirección'] || row['direccion'] || row['address'] || '',
+                city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
+                phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
+                potential: 'Medio',
+                status: 'Activo'
+            })).filter(item => item.name);
+            
+            if (itemsToInsert.length > 0) {
+                const { error } = await supabase.from('contacts').insert(itemsToInsert);
+                if (error) throw error;
+                toast({ title: "Importación Exitosa", description: `Se importaron ${itemsToInsert.length} comercios.` });
+                loadAllData();
+            }
+        } catch (error: any) { 
+            console.error('Error:', error); 
+            toast({ title: "Error", description: `Hubo un error importando los datos: ${error.message || 'Error desconocido'}`, variant: "destructive" });
+        }
+    };
+
+    const handleEmptyAll = async () => {
+        try {
+            setLoading(true);
+            const { error } = await supabase
+                .from('contacts')
+                .delete()
+                .eq('contact_type', 'commerce')
+                .eq('organization_id', organizationId);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Se han eliminado todos los comercios." });
+            loadAllData();
+        } catch (error: any) {
+            toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleEdit = (commerce: any) => {
         setSelectedCommerce(commerce); setIsEditing(true);
         setFormData({ ...commerce }); setFormDialogOpen(true);
@@ -85,6 +131,20 @@ export default function Commerces() {
                     <div className="flex items-center gap-4">
                         <Button variant="outline" onClick={() => exportToCSV(commerces, 'canal_comercio')} className="h-14 px-8 rounded-2xl border-border/40 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
                             <Download className="h-5 w-5 mr-3 text-primary" /> Exportar
+                        </Button>
+                        <ImportDialog
+                            onImport={handleImport}
+                            title="Importar Comercios"
+                            description="Selecciona un archivo para importar comercios."
+                            triggerText="Importar"
+                            expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
+                        />
+                        <Button variant="destructive" onClick={() => {
+                            if(window.confirm('¿Estás seguro de vaciar todos los comercios? Esta acción no se puede deshacer.')) {
+                                handleEmptyAll();
+                            }
+                        }} className="rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner">
+                            Vaciar Todo
                         </Button>
                         <Button onClick={() => { setIsEditing(false); setFormDialogOpen(true); }} className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
                             <Plus className="h-6 w-6" /> Registro Comercial

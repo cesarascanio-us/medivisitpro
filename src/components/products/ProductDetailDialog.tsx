@@ -25,7 +25,9 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        aria-describedby={undefined}
+        className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="bg-primary px-8 py-6 text-white rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

@@ -169,7 +169,9 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        aria-describedby={undefined}
+        className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="bg-slate-900 px-8 py-6 text-white rounded-t-2xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-background/10 backdrop-blur-md flex items-center justify-center">

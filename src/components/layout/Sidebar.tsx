@@ -23,9 +23,11 @@ import {
   FileText,
   Pill,
   ClipboardList,
+  GraduationCap,
   FlaskConical,
   LogOut,
   LayoutDashboard,
+  Gift,
   Palette,
   Globe,
   ChevronLeft,
@@ -138,13 +140,22 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: canAccessModule('doctors') },
         { name: "Especialidades", href: "/specialties", icon: Users, visible: canAccessModule('doctors') },
         { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: canAccessModule('agenda') },
-        { name: "Planificador de Rutas", href: "/planner", icon: MapPin, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
+        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
+        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
         { name: "Ciclos Promocionales", href: "/cycles", icon: GitBranch, visible: true },
+      ]
+    },
+    {
+      title: "Formación y Beneficios",
+      items: [
+        { name: "Universidad Biofarco", href: "/university", icon: GraduationCap, visible: true },
+        { name: "Tienda de Premios", href: "/rewards", icon: Gift, visible: true },
       ]
     },
     {
       title: "Gestión Comercial",
       items: [
+        { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: canSeeManagement },
         { name: texts.users_title, href: "/users", icon: Users, visible: canSeeManagement },
         { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR && canAccessModule('hr') },
         { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: canAccessModule('sales_pipeline') },
