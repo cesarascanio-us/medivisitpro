@@ -71,8 +71,8 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                     newFilters.state = userState;
                     shouldUpdate = true;
                 }
-                if (zoneId && filters.zoneId !== zoneId) {
-                    newFilters.zoneId = zoneId;
+                if (!filters.zoneId) {
+                    newFilters.zoneId = 'all';
                     shouldUpdate = true;
                 }
                 if (profile?.id && filters.userId !== profile.id) {
@@ -166,7 +166,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
         if (isRepresentative) {
             if (userRegion) resetFilters.region = userRegion;
             if (userState) resetFilters.state = userState;
-            if (zoneId) resetFilters.zoneId = zoneId;
+            resetFilters.zoneId = 'all';
             if (profile?.id) resetFilters.userId = profile.id;
         }
 
@@ -175,9 +175,9 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
     };
 
     const hasActiveFilters = filters.region !== 'all' || filters.state !== 'all' || (filters.zoneId && filters.zoneId !== 'all') || (filters.userId && filters.userId !== 'all');
-    const isRegionLocked = (isStrictSupervisor || isRepresentative) && !!userRegion;
-    const isStateLocked = isRepresentative && !!userState;
-    const isZoneLocked = isRepresentative && !!zoneId;
+    const isRegionLocked = isStrictSupervisor || isRepresentative;
+    const isStateLocked = isRepresentative;
+    const isZoneLocked = false;
     const isUserLocked = isRepresentative;
 
     const visibleStates = (isStrictSupervisor && userRegion)

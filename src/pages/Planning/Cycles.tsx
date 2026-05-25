@@ -26,6 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Cycle } from "@/types/planning";
+import { useAuth } from "@/hooks/useAuth";
 
 // Mock implementation until real service is fully integrated/debugged or custom hooks created
 const useCycles = () => {
@@ -56,6 +57,7 @@ const useCycles = () => {
 
 export default function CyclesPage() {
     const { cycles, loading, refetch } = useCycles();
+    const { organizationId } = useAuth();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -71,11 +73,18 @@ export default function CyclesPage() {
     const onSubmit = async (values: any) => {
         setIsSubmitting(true);
         try {
+            if (!values.start_date || !values.end_date) {
+                toast({ title: "Error", description: "Las fechas de inicio y fin son obligatorias.", variant: "destructive" });
+                setIsSubmitting(false);
+                return;
+            }
+
             const { error } = await supabase.from('cycles' as any).insert({
                 name: values.name,
-                start_date: values.start_date.toISOString(),
-                end_date: values.end_date.toISOString(),
-                status: values.status
+                start_date: new Date(values.start_date).toISOString(),
+                end_date: new Date(values.end_date).toISOString(),
+                status: values.status,
+                organization_id: organizationId
             });
 
             if (error) throw error;
@@ -105,7 +114,7 @@ export default function CyclesPage() {
                             <Plus className="mr-2 h-4 w-4" /> Nuevo Ciclo
                         </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent aria-describedby={undefined}>
                         <DialogHeader>
                             <DialogTitle>Crear Nuevo Ciclo</DialogTitle>
                         </DialogHeader>
