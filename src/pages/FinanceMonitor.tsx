@@ -93,8 +93,8 @@ export default function FinanceMonitor() {
             }
 
             if (zoneIds.length > 0) {
-                // Query the plain table instead of profiles
-                const { data: userData } = await supabase.from('user_roles_plain').select('user_id').in('zone_id', zoneIds);
+                // Query the roles table instead of profiles
+                const { data: userData } = await supabase.from('user_roles').select('user_id').in('zone_id', zoneIds);
                 userIds = userData?.map((u: any) => u.user_id) || [];
             }
 

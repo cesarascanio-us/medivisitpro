@@ -134,7 +134,7 @@ export default function PharmaciesElite() {
                 (adminFilters.state && adminFilters.state !== 'all') || 
                 (adminFilters.zoneId && adminFilters.zoneId !== 'all')) {
                 
-                let userQuery = supabase.from('user_roles_plain').select('user_id');
+                let userQuery = supabase.from('user_roles').select('user_id');
                 if (adminFilters.region && adminFilters.region !== 'all') userQuery = userQuery.eq('region', adminFilters.region);
                 if (adminFilters.state && adminFilters.state !== 'all') userQuery = userQuery.eq('state', adminFilters.state);
                 if (adminFilters.zoneId && adminFilters.zoneId !== 'all') userQuery = userQuery.eq('zone_id', adminFilters.zoneId);

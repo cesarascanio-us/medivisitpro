@@ -79,7 +79,7 @@ export default function CoachingDashboard() {
   const loadReps = async () => {
     try {
       // Cargar usuarios con rol representative en la misma org o bajo este supervisor
-      const { data, error } = await supabase.from('user_roles_plain').select('user_id, role');
+      const { data, error } = await supabase.from('user_roles').select('user_id, role');
       if (error) throw error;
       
       const repIds = data.filter(r => r.role === 'representative').map(r => r.user_id);

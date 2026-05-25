@@ -110,7 +110,7 @@ export default function Doctors() {
             let triangulatedUserIds: string[] = [];
             
             if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                const { data: userData } = await (supabase as any).from('user_roles_plain').select('user_id').eq('zone_id', adminFilters.zoneId);
+                const { data: userData } = await (supabase as any).from('user_roles').select('user_id').eq('zone_id', adminFilters.zoneId);
                 triangulatedUserIds = userData?.map((u: any) => u.user_id) || [];
             }
 
@@ -124,7 +124,7 @@ export default function Doctors() {
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
                 } else {
-                    const { data: zoneUsers } = await supabase.from('user_roles_plain').select('user_id').eq('zone_id', zoneId);
+                    const { data: zoneUsers } = await supabase.from('user_roles').select('user_id').eq('zone_id', zoneId);
                     const userIds = zoneUsers?.map(u => u.user_id) || [];
                     if (userIds.length > 0) {
                         query = query.or(`representative_id.in.(${userIds.join(',')}),user_id.in.(${userIds.join(',')})`);
