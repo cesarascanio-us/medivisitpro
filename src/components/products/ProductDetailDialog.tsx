@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Package, FileText, Download, Heart, Share2, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { DosageCalculator } from "./DosageCalculator";
 
 interface ProductDetailDialogProps {
   trigger: React.ReactNode;
@@ -100,12 +101,13 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
 
           {/* Product Details Tabs */}
           <Tabs defaultValue="composition" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="composition">Composición</TabsTrigger>
               <TabsTrigger value="indications">Indicaciones</TabsTrigger>
               <TabsTrigger value="contraindications">Contraindicaciones</TabsTrigger>
               <TabsTrigger value="effects">Efectos</TabsTrigger>
               <TabsTrigger value="documents">Documentos</TabsTrigger>
+              <TabsTrigger value="calculator">Dosificación</TabsTrigger>
             </TabsList>
 
             <TabsContent value="composition" className="space-y-4">
@@ -287,6 +289,10 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
                   </Button>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="calculator" className="space-y-4">
+              <DosageCalculator productName={productData.name} />
             </TabsContent>
           </Tabs>
 

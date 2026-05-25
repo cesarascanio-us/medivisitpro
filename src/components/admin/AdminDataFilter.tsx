@@ -47,6 +47,8 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
         loadMasterData();
     }, []);
 
+    const isStrictSupervisor = isSupervisor && !isManager;
+
     useEffect(() => {
         if (authLoading) return;
 
@@ -54,7 +56,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
             const newFilters: AdminFilterState = { ...filters };
             let shouldUpdate = false;
 
-            if (isSupervisor && userRegion) {
+            if (isStrictSupervisor && userRegion) {
                 if (filters.region !== userRegion) {
                     newFilters.region = userRegion;
                     shouldUpdate = true;
@@ -86,7 +88,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
         };
 
         initFilters();
-    }, [isSupervisor, isRepresentative, zoneId, userRegion, userState, profile, authLoading]);
+    }, [isStrictSupervisor, isRepresentative, zoneId, userRegion, userState, profile, authLoading]);
 
     const loadMasterData = async () => {
         setLoading(true);
@@ -160,7 +162,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
     const clearFilters = () => {
         const resetFilters: AdminFilterState = { region: 'all', state: 'all', zoneId: 'all', userId: 'all' };
 
-        if (isSupervisor && userRegion) resetFilters.region = userRegion;
+        if (isStrictSupervisor && userRegion) resetFilters.region = userRegion;
         if (isRepresentative) {
             if (userRegion) resetFilters.region = userRegion;
             if (userState) resetFilters.state = userState;
@@ -173,23 +175,23 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
     };
 
     const hasActiveFilters = filters.region !== 'all' || filters.state !== 'all' || (filters.zoneId && filters.zoneId !== 'all') || (filters.userId && filters.userId !== 'all');
-    const isRegionLocked = (isSupervisor || isRepresentative) && !!userRegion;
+    const isRegionLocked = (isStrictSupervisor || isRepresentative) && !!userRegion;
     const isStateLocked = isRepresentative && !!userState;
     const isZoneLocked = isRepresentative && !!zoneId;
     const isUserLocked = isRepresentative;
 
-    const visibleStates = (isSupervisor && userRegion)
+    const visibleStates = (isStrictSupervisor && userRegion)
         ? getStatesInRegion(userRegion)
         : (filters.region && filters.region !== 'all' ? getStatesInRegion(filters.region) : getAllStates());
 
     const visibleZones = filters.state && filters.state !== 'all'
         ? zones.filter(z => z.state === filters.state)
-        : (isSupervisor && userRegion
+        : (isStrictSupervisor && userRegion
             ? zones.filter(z => z.state && visibleStates.includes(z.state))
             : zones);
 
     const visibleMembers = members.filter(m => {
-        if (isSupervisor && profile?.id) {
+        if (isStrictSupervisor && profile?.id) {
             // Supervisors see themselves and their subordinates
             return m.supervisorId === profile.id || m.id === profile.id;
         }
