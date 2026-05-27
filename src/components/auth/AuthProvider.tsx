@@ -79,6 +79,7 @@ interface AuthContextType {
     isSpecializedRole: boolean;
     // Permissions
     canManageUsers: boolean;
+    canViewUsers: boolean;
     canViewAllData: boolean;
     canManageCompany: boolean;
     canApproveExpenses: boolean;
@@ -466,6 +467,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSaaSDev,
         isSaaSStaff,
         canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
+        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isSupervisor,
         canViewAllData: isSaaSStaff || isAdmin || isManager,
         canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
         canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',

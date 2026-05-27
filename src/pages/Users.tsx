@@ -93,7 +93,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
 
 export default function Users() {
     const t = useTexts();
-    const { user, canManageUsers, isMaster, profile, organizationName } = useAuth();
+    const { user, canManageUsers, canViewUsers, isMaster, profile, organizationName } = useAuth();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
     
@@ -421,7 +421,7 @@ export default function Users() {
             user.last_name?.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
-    if (!canManageUsers) {
+    if (!canViewUsers) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
                 <Card className="w-full max-w-md border-none shadow-premium-lg bg-card">
@@ -451,20 +451,22 @@ export default function Users() {
                 statusColor="bg-emerald-500"
                 rightContent={
                     <div className="flex items-center gap-4">
-                        <Button
-                            onClick={() => {
-                                setInviteEmail('');
-                                setInviteFirstName('');
-                                setInviteLastName('');
-                                setInviteRole('representative');
-                                setInviteOrgId(organizationId || 'none');
-                                setIsInviteDialogOpen(true);
-                            }}
-                            className="bg-primary hover:bg-primary/95 text-white border-none rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 animate-in fade-in zoom-in duration-300"
-                        >
-                            <Plus className="h-4 w-4 text-white" />
-                            Invitar Colaborador
-                        </Button>
+                        {canManageUsers && (
+                            <Button
+                                onClick={() => {
+                                    setInviteEmail('');
+                                    setInviteFirstName('');
+                                    setInviteLastName('');
+                                    setInviteRole('representative');
+                                    setInviteOrgId(organizationId || 'none');
+                                    setIsInviteDialogOpen(true);
+                                }}
+                                className="bg-primary hover:bg-primary/95 text-white border-none rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 animate-in fade-in zoom-in duration-300"
+                            >
+                                <Plus className="h-4 w-4 text-white" />
+                                Invitar Colaborador
+                            </Button>
+                        )}
                         <Button
                             onClick={loadUsers}
                             variant="outline"
@@ -618,15 +620,17 @@ export default function Users() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right pr-8 py-8">
-                                        <div className="flex justify-end gap-3">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleEditClick(user)}
-                                                className="h-12 w-12 text-primary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all shadow-inner border border-transparent hover:border-primary/20"
-                                            >
-                                                <Edit className="h-4 w-4" />
-                                            </Button>
+                                        <div className="flex gap-2 justify-end">
+                                            {canManageUsers && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleEditClick(user)}
+                                                    className="h-12 w-12 text-primary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all shadow-inner border border-transparent hover:border-primary/20"
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            )}
                                             {isMaster && (
                                                 <Button
                                                     variant="ghost"
