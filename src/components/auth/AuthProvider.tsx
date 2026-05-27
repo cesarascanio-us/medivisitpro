@@ -453,7 +453,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSaaSDev,
         isSaaSStaff,
         canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
-        canViewAllData: isSaaSStaff || role === 'admin' || role === 'manager',
+        canViewAllData: isSaaSStaff || isAdmin || isManager,
         canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
         canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
         canAssignObjectives: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',

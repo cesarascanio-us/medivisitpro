@@ -10,6 +10,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "./useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { useDemoData } from "@/contexts/MockDataProvider";
 
@@ -50,7 +51,9 @@ interface UseContactsOptions {
 export function useContacts(options: UseContactsOptions = {}) {
     const [contacts, setContacts] = useState<Contact[]>([]);
     const [loading, setLoading] = useState(true);
-    const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
     const { toast } = useToast();
     const { searchTerm = "", typeFilter = "all", adminFilters = {} } = options;
 
@@ -96,18 +99,40 @@ export function useContacts(options: UseContactsOptions = {}) {
                 // [STRICT] Always filter by organization
                 query = query.eq('organization_id', organizationId);
 
+                let triangulatedUserIds: string[] | null = null;
+                const hasRegionalFilter = (adminFilters.region && adminFilters.region !== 'all') || 
+                                          (adminFilters.state && adminFilters.state !== 'all') || 
+                                          (adminFilters.zoneId && adminFilters.zoneId !== 'all');
+
+                if (canViewAllData && hasRegionalFilter) {
+                    let userQuery = supabase.from('user_roles').select('user_id');
+                    if (adminFilters.region && adminFilters.region !== 'all') userQuery = userQuery.eq('region', adminFilters.region);
+                    if (adminFilters.state && adminFilters.state !== 'all') userQuery = userQuery.eq('state', adminFilters.state);
+                    if (adminFilters.zoneId && adminFilters.zoneId !== 'all') userQuery = userQuery.eq('zone_id', adminFilters.zoneId);
+                    if (organizationId) userQuery = userQuery.eq('organization_id', organizationId);
+                    
+                    const { data: usersData } = await userQuery;
+                    triangulatedUserIds = usersData?.map((u: any) => u.user_id) || [];
+                }
+
                 // Apply role-based filtering
-                if (isSupervisor && zoneId) {
+                if (isSupervisor && !canViewAllData && zoneId) {
                     if (adminFilters.userId && adminFilters.userId !== 'all') {
                         query = query.eq('user_id', adminFilters.userId);
+                    } else {
+                        const { data: zoneUsers } = await supabase.from('user_roles').select('user_id').eq('zone_id', zoneId);
+                        const userIds = zoneUsers?.map(u => u.user_id) || [];
+                        if (userIds.length > 0) query = query.in('user_id', userIds);
+                        else query = query.eq('id', '00000000-0000-0000-0000-000000000000');
                     }
-                    // Removed zone_id, state and region filters because unified_contacts view 
-                    // doesn't have these columns. Security is handled by RLS.
                 } else if (!canViewAllData) {
                     query = query.eq('user_id', user.id);
                 } else {
                     if (adminFilters.userId && adminFilters.userId !== 'all') {
                         query = query.eq('user_id', adminFilters.userId);
+                    } else if (triangulatedUserIds !== null) {
+                        if (triangulatedUserIds.length > 0) query = query.in('user_id', triangulatedUserIds);
+                        else query = query.eq('id', '00000000-0000-0000-0000-000000000000');
                     }
                 }
 

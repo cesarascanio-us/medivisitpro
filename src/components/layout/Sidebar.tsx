@@ -126,7 +126,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
         { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: isMaster || (canSeeAnalytics && theme.enable_finance_monitor && canAccessModule('finance')) },
         { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: isMaster || isAdmin },
-        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: canAccessModule('documents') },
+        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: (isMaster || isAdmin || isManager) && canAccessModule('documents') },
         { name: "Mis Eventos", href: "/events", icon: Calendar, visible: true },
         { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
         { name: "Preguntas y Respuestas", href: "/faq", icon: ShieldCheck, visible: true },
@@ -135,14 +135,14 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     {
       title: "Gestión Médica",
       items: [
-        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: canAccessModule('visits'), badge: pendingVisits, badgeColor: "bg-destructive" },
+        { name: "Ciclos Promocionales", href: "/promotional-cycles", icon: GitBranch, visible: true },
+        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
+        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
+        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: canAccessModule('agenda') },
+        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: canAccessModule('visits') },
         { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: (isMaster || theme.enable_sample_tracking) && canAccessModule('sample_banks') },
         { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: canAccessModule('doctors') },
         { name: "Especialidades", href: "/specialties", icon: Users, visible: canAccessModule('doctors') },
-        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: canAccessModule('agenda') },
-        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
-        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
-        { name: "Ciclos Promocionales", href: "/cycles", icon: GitBranch, visible: true },
       ]
     },
     {
@@ -169,7 +169,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     {
       title: "Logística y Cobertura",
       items: [
-        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: canAccessModule('transfers'), badge: pendingTransfers, badgeColor: "bg-amber-500" },
+        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: canAccessModule('transfers') },
         { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: true },
         { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: canAccessModule('pharmacies') },
         { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: canAccessModule('pharmacies') },

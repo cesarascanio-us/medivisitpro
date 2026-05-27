@@ -8,20 +8,36 @@
 ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Plus, Calendar, Clock, MapPin, CheckCircle, Circle, ChevronLeft, ChevronRight } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Calendar, CheckCircle2, Clock, MapPin, MoreVertical, Plus, Check,
+    AlertCircle, Users, User, Eye, Target, Map, Lock, ChevronLeft, ChevronRight,
+    CheckCircle, Trash2
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { useDemoData } from "@/contexts/MockDataProvider";
+import { EliteHeader, EliteButton } from "@/components/layout/DesignSystem";
+import { Link } from "react-router-dom";
 
 interface PlanItem {
     id: string;
@@ -43,8 +59,25 @@ interface DailyPlan {
     status: string;
 }
 
+interface RoutedContact {
+    id: string;
+    name: string;
+    address: string | null;
+    contact_type: string;
+    type_label: string;
+    routing_days: string | null;
+    source: string;
+}
+
+interface TeamMember {
+    user_id: string;
+    name: string;
+    role: string;
+    zone_id: string | null;
+}
+
 export default function Planner() {
-    const { user, organizationId } = useAuth();
+    const { user, organizationId, isRepresentative, isSupervisor, isCoordinator, isManager, isMaster, zoneId, canViewAllData } = useAuth();
     const { toast } = useToast();
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [plan, setPlan] = useState<DailyPlan | null>(null);
@@ -52,8 +85,15 @@ export default function Planner() {
     const [contacts, setContacts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [hasRoutes, setHasRoutes] = useState<boolean | null>(null);
+    const [routedContacts, setRoutedContacts] = useState<RoutedContact[]>([]);
+    const [addingAll, setAddingAll] = useState(false);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+    const [selectedRepId, setSelectedRepId] = useState<string>('');
+    const [zones, setZones] = useState<{id: string, name: string}[]>([]);
+    const [selectedZoneId, setSelectedZoneId] = useState<string>("all");
+    const isViewingOtherRep = !isRepresentative || (!!selectedRepId && selectedRepId !== user?.id);
 
-    // Demo mode hook
     const demoData = useDemoData();
     const [formData, setFormData] = useState({
         title: "",
@@ -63,24 +103,171 @@ export default function Planner() {
         contact_id: ""
     });
 
+    // ─── Helpers ────────────────────────────────────────────────────────────────
+
+    const getDayOfWeek = (dateStr: string): string => {
+        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const date = new Date(dateStr + 'T12:00:00');
+        return days[date.getDay()];
+    };
+
+    const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr + 'T12:00:00');
+        return date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    };
+
+    const navigateDate = (direction: number) => {
+        const date = new Date(selectedDate + 'T12:00:00');
+        date.setDate(date.getDate() + direction);
+        setSelectedDate(date.toISOString().split('T')[0]);
+    };
+
+    // Determines whose plan to load (self or selected rep)
+    const getTargetUserId = () => selectedRepId || user?.id;
+
+    // Can supervisor+ see other reps?
+    const canViewTeam = isSupervisor || isCoordinator || isManager || isMaster;
+
+    // ─── Effects ────────────────────────────────────────────────────────────────
+
     useEffect(() => {
         if (user) {
-            loadPlan();
-            loadContacts();
+            if (demoData) {
+                setHasRoutes(true);
+                loadPlan();
+                loadContacts();
+            } else {
+                if (isRepresentative && !isViewingOtherRep) {
+                    checkActiveRoutes();
+                } else {
+                    // For managers/supervisors or when viewing someone else, we bypass the block screen
+                    setHasRoutes(true);
+                    loadPlan();
+                    loadContacts();
+                }
+            }
+            if (organizationId) {
+                if (isRepresentative && !isViewingOtherRep) {
+                    const day = getDayOfWeek(selectedDate);
+                    loadRoutedContactsForDay(day);
+                }
+            }
+            if (canViewTeam && organizationId) {
+                loadTeamMembers();
+                if (canViewAllData) {
+                    loadZones();
+                }
+            }
         }
-    }, [user, selectedDate]);
+    }, [user, selectedDate, organizationId, selectedRepId, selectedZoneId]);
+
+    const loadZones = async () => {
+        const { data } = await supabase.from('zones').select('id, name').order('name');
+        setZones(data || []);
+    };
+
+    // ─── Data Loading ────────────────────────────────────────────────────────────
+
+    const checkActiveRoutes = async () => {
+        try {
+            setLoading(true);
+            const targetId = getTargetUserId();
+
+            const { data: doctorData } = await supabase
+                .from("doctors")
+                .select("id")
+                .eq("organization_id", organizationId)
+                .not('days', 'is', null)
+                .neq('days', '')
+                .limit(1);
+
+            if (doctorData && doctorData.length > 0) {
+                setHasRoutes(true);
+                loadPlan();
+                loadContacts();
+                return;
+            }
+
+            const { data: pharmData } = await supabase
+                .from("pharmacies")
+                .select("id")
+                .eq("organization_id", organizationId)
+                .not('schedule', 'is', null)
+                .neq('schedule', '')
+                .limit(1);
+
+            if (pharmData && pharmData.length > 0) {
+                setHasRoutes(true);
+                loadPlan();
+                loadContacts();
+                return;
+            }
+
+            setHasRoutes(false);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error checking routes:", error);
+            setHasRoutes(false);
+            setLoading(false);
+        }
+    };
+
+    const loadTeamMembers = async () => {
+        if (!organizationId) return;
+        try {
+            // Load representatives (and supervisors for coordinators+) visible to current user
+            // RLS function get_visible_user_ids() handles zone filtering on the server side
+            let query = supabase
+                .from('user_roles_plain')
+                .select('user_id, role, zone_id')
+                .eq('organization_id', organizationId)
+                .in('role', isSupervisor && !isCoordinator ? ['representative'] : ['representative', 'supervisor', 'chief']);
+
+            if (selectedZoneId !== 'all') {
+                query = query.eq('zone_id', selectedZoneId);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                console.warn('Could not load team members:', error.message);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                setTeamMembers([]);
+                return;
+            }
+
+            // Fetch names from profiles
+            const userIds = data.map((d: any) => d.user_id);
+            const { data: profiles } = await supabase
+                .from('profiles')
+                .select('user_id, first_name, last_name')
+                .in('user_id', userIds);
+
+            const members: TeamMember[] = data.map((d: any) => {
+                const profile = profiles?.find((p: any) => p.user_id === d.user_id);
+                const name = profile
+                    ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
+                    : d.user_id.slice(0, 8);
+                return { user_id: d.user_id, name: name || 'Usuario', role: d.role, zone_id: d.zone_id };
+            });
+
+            // Exclude self
+            setTeamMembers(members.filter(m => m.user_id !== user?.id));
+        } catch (error) {
+            console.error('Error loading team members:', error);
+        }
+    };
 
     const loadPlan = async () => {
         try {
             setLoading(true);
 
-            // DEMO MODE: Use mock data
             if (demoData) {
-                console.log("Planner: Using mock demo data");
-                // Create mock daily plan with items based on visits for today
-                const todayStr = selectedDate;
                 const mockItems: PlanItem[] = demoData.visits
-                    .filter((v: any) => v.scheduled_date.startsWith(todayStr))
+                    .filter((v: any) => v.scheduled_date.startsWith(selectedDate))
                     .map((v: any, idx: number) => ({
                         id: `plan-item-${idx}`,
                         title: `Visita a ${v.contacts?.name || 'Contacto'}`,
@@ -92,64 +279,74 @@ export default function Planner() {
                         contact_id: v.contact_id,
                         contacts: { name: v.contacts?.name || '', specialty: v.contacts?.specialty || '' }
                     }));
-                setPlan({ id: 'demo-plan', plan_date: todayStr, title: 'Plan Demo', notes: null, status: 'active' });
+                setPlan({ id: 'demo-plan', plan_date: selectedDate, title: 'Plan Demo', notes: null, status: 'active' });
                 setItems(mockItems);
                 setLoading(false);
                 return;
             }
 
-            // Read-first: check if plan already exists for this date
+            const isAggregateView = !isRepresentative && !selectedRepId;
+
+            if (isAggregateView) {
+                let planIds: string[] = [];
+                if (selectedZoneId !== 'all') {
+                    const repIds = teamMembers.filter(m => m.zone_id === selectedZoneId).map(m => m.user_id);
+                    if (repIds.length > 0) {
+                        const { data: plans } = await supabase.from('daily_plans').select('id').in('user_id', repIds).eq('plan_date', selectedDate);
+                        planIds = plans?.map(p => p.id) || [];
+                    }
+                } else {
+                    const { data: plans } = await supabase.from('daily_plans').select('id').eq('organization_id', organizationId).eq('plan_date', selectedDate);
+                    planIds = plans?.map(p => p.id) || [];
+                }
+
+                setPlan({ id: 'dashboard', plan_date: selectedDate, title: 'Consolidado del Territorio', notes: null, status: 'active' });
+
+                if (planIds.length > 0) {
+                    const { data: itemsData } = await supabase
+                        .from('daily_plan_items')
+                        .select('*, contacts(name, specialty)')
+                        .in('plan_id', planIds)
+                        .order('scheduled_time', { ascending: true });
+                    setItems(itemsData || []);
+                } else {
+                    setItems([]);
+                }
+            } else {
+                const targetUserId = getTargetUserId();
+
             let { data: planData } = await supabase
                 .from('daily_plans')
                 .select('*')
-                .eq('user_id', user?.id)
+                .eq('user_id', targetUserId)
                 .eq('plan_date', selectedDate)
                 .maybeSingle();
 
-            // Create only if no plan exists yet
-            if (!planData) {
+            // Only create a new plan if we're viewing our own plan (not another rep's)
+            if (!planData && !isViewingOtherRep) {
                 let { data: newPlan, error: insertError } = await supabase
                     .from('daily_plans')
-                    .insert({ 
-                        user_id: user?.id, 
-                        plan_date: selectedDate,
-                        organization_id: organizationId
-                    })
+                    .insert({ user_id: user?.id, plan_date: selectedDate, organization_id: organizationId })
                     .select()
                     .maybeSingle();
 
                 if (insertError) {
                     console.warn('Plan insert failed:', insertError.message);
-                    
-                    // Safe Fallback: If foreign key violation occurs, retry inserting with null organization_id
                     if (insertError.code === '23503') {
-                        console.info('Retrying daily plan insert with null organization_id due to foreign key constraint...');
-                        const { data: fallbackPlan, error: fallbackError } = await supabase
+                        const { data: fallback } = await supabase
                             .from('daily_plans')
-                            .insert({ 
-                                user_id: user?.id, 
-                                plan_date: selectedDate,
-                                organization_id: null
-                            })
-                            .select()
-                            .maybeSingle();
-
-                        if (!fallbackError) {
-                            planData = fallbackPlan;
-                        } else {
-                            console.error('Fallback plan insert also failed:', fallbackError.message);
-                        }
+                            .insert({ user_id: user?.id, plan_date: selectedDate, organization_id: null })
+                            .select().maybeSingle();
+                        if (fallback) planData = fallback;
                     }
-
-                    // Secondary Fallback: Fetch in case of parallel render race condition
                     if (!planData) {
-                        const { data: retryPlan } = await supabase
+                        const { data: retry } = await supabase
                             .from('daily_plans')
                             .select('*')
                             .eq('user_id', user?.id)
                             .eq('plan_date', selectedDate)
                             .maybeSingle();
-                        planData = retryPlan;
+                        planData = retry;
                     }
                 } else {
                     planData = newPlan;
@@ -158,14 +355,17 @@ export default function Planner() {
 
             setPlan(planData);
 
-            if (planData) {
-                const { data: itemsData } = await supabase
-                    .from('daily_plan_items')
-                    .select('*, contacts(name, specialty)')
-                    .eq('plan_id', planData.id)
-                    .order('scheduled_time', { ascending: true });
-
-                setItems(itemsData || []);
+                setPlan(planData);
+                if (planData) {
+                    const { data: itemsData } = await supabase
+                        .from('daily_plan_items')
+                        .select('*, contacts(name, specialty)')
+                        .eq('plan_id', planData.id)
+                        .order('scheduled_time', { ascending: true });
+                    setItems(itemsData || []);
+                } else {
+                    setItems([]);
+                }
             }
         } catch (error) {
             console.error('Error loading plan:', error);
@@ -175,297 +375,547 @@ export default function Planner() {
     };
 
     const loadContacts = async () => {
-        // DEMO MODE: Use mock contacts
-        if (demoData) {
-            setContacts(demoData.contacts as any[]);
-            return;
-        }
-        const { data } = await supabase.from('contacts').select('id, name, specialty');
+        if (demoData) { setContacts(demoData.contacts as any[]); return; }
+        let query = supabase.from('contacts').select('id, name, specialty');
+        if (organizationId) query = query.eq('organization_id', organizationId);
+        if (isRepresentative && user?.id) query = query.eq('user_id', user.id);
+        const { data } = await query;
         setContacts(data || []);
     };
 
-    const addItem = async () => {
-        if (!user || !plan || !formData.title) return;
-
-        const baseItem = {
-            user_id: user.id,
-            plan_id: plan.id,
-            title: formData.title,
-            description: formData.description || null,
-            scheduled_time: formData.scheduled_time,
-            duration_minutes: formData.duration_minutes,
-            status: 'pending',
-            priority: items.length
-        };
-
+    const loadRoutedContactsForDay = async (day: string) => {
+        if (!organizationId || day === 'Domingo' || day === 'Sábado') {
+            setRoutedContacts([]);
+            return;
+        }
         try {
-            console.log('Attempting daily plan item insert (Attempt 1)...');
-            // Attempt 1: Full insert with organization_id and contact_id
-            let { error } = await supabase.from('daily_plan_items').insert({
-                ...baseItem,
-                contact_id: formData.contact_id || null,
-                organization_id: organizationId
+            const sources = [
+                { table: 'doctors',        field: 'days',         type: 'doctor',        label: 'Médico' },
+                { table: 'pharmacies',     field: 'schedule',     type: 'pharmacy',      label: 'Farmacia' },
+                { table: 'health_centers', field: 'routing_days', type: 'hospital',      label: 'Centro de Salud' },
+                { table: 'drugstores',     field: 'routing_days', type: 'drugstore',     label: 'Droguería' },
+                { table: 'commerces',      field: 'routing_days', type: 'commerce',      label: 'Comercio' },
+                { table: 'natural_stores', field: 'routing_days', type: 'natural_store', label: 'Tienda Naturista' },
+            ] as const;
+
+            const results = await Promise.all(
+                sources.map(async ({ table, field, type, label }) => {
+                    const { data } = await supabase
+                        .from(table)
+                        .select(`id, name, address, ${field}`)
+                        .eq('organization_id', organizationId)
+                        .ilike(field as string, `%${day}%`);
+
+                    return (data || []).map((c: any): RoutedContact => ({
+                        id: c.id, name: c.name, address: c.address || null,
+                        contact_type: type, type_label: label,
+                        routing_days: c[field] ?? null, source: table,
+                    }));
+                })
+            );
+            setRoutedContacts(results.flat());
+        } catch (error) {
+            console.error('Error loading routed contacts:', error);
+        }
+    };
+
+    // ─── Actions ────────────────────────────────────────────────────────────────
+
+    /** Auto-registers a visit in the visits table when a plan item is completed */
+    const autoCreateVisit = async (item: PlanItem) => {
+        if (!user || !plan) return;
+        try {
+            const typeMap: Record<string, string> = {
+                'Médico': 'doctor', 'Farmacia': 'pharmacy', 'Centro de Salud': 'hospital',
+                'Droguería': 'drugstore', 'Comercio': 'commerce', 'Tienda Naturista': 'natural_store',
+            };
+            const visitType = typeMap[item.description || ''] || 'field_visit';
+
+            const { error } = await supabase.from('visits').insert({
+                user_id: user.id,
+                organization_id: organizationId,
+                contact_id: item.contact_id || null,
+                scheduled_date: new Date(plan.plan_date + 'T09:00:00').toISOString(),
+                status: 'completed',
+                visit_type: visitType,
+                notes: item.title,
+                objective: item.description || null,
             });
 
-            if (error) {
-                console.warn('Item insert Attempt 1 failed:', error.message);
-                
-                if (error.code === '23503') {
-                    console.info('Attempting fallback hierarchy due to foreign key violation...');
-                    
-                    // Attempt 2: retry without organization_id (keep contact_id)
-                    console.log('Attempting daily plan item insert (Attempt 2 - null org)...');
-                    const { error: err2 } = await supabase.from('daily_plan_items').insert({
-                        ...baseItem,
-                        contact_id: formData.contact_id || null,
-                        organization_id: null
-                    });
-                    
-                    if (err2) {
-                        console.warn('Item insert Attempt 2 failed:', err2.message);
-                        
-                        if (err2.code === '23503') {
-                            // Attempt 3: retry with organization_id but null contact_id
-                            console.log('Attempting daily plan item insert (Attempt 3 - null contact)...');
-                            const { error: err3 } = await supabase.from('daily_plan_items').insert({
-                                ...baseItem,
-                                contact_id: null,
-                                organization_id: organizationId
-                            });
-                            
-                            if (err3) {
-                                console.warn('Item insert Attempt 3 failed:', err3.message);
-                                
-                                if (err3.code === '23503') {
-                                    // Attempt 4: retry with both null
-                                    console.log('Attempting daily plan item insert (Attempt 4 - safe mode null both)...');
-                                    const { error: err4 } = await supabase.from('daily_plan_items').insert({
-                                        ...baseItem,
-                                        contact_id: null,
-                                        organization_id: null
-                                    });
-                                    
-                                    if (err4) throw err4;
-                                } else {
-                                    throw err3;
-                                }
-                            }
-                        } else {
-                            throw err2;
-                        }
-                    }
-                } else {
-                    throw error;
-                }
+            if (!error) {
+                toast({
+                    title: '✅ Visita registrada en Agenda',
+                    description: `"${item.title}" aparecerá en tu Agenda de Visitas.`,
+                });
+            } else {
+                console.warn('Could not auto-create visit:', error.message);
             }
-
-            toast({ title: "Tarea agregada", description: "La tarea ha sido añadida al plan." });
-            setDialogOpen(false);
-            setFormData({ title: "", description: "", scheduled_time: "09:00", duration_minutes: 30, contact_id: "" });
-            loadPlan();
-        } catch (error: any) {
-            console.error('Error adding task item after progressive fallbacks:', error);
-            toast({ title: "Error", description: "No se pudo agregar la tarea.", variant: "destructive" });
+        } catch (err) {
+            console.error('Error auto-creating visit:', err);
         }
     };
 
     const toggleItemStatus = async (item: PlanItem) => {
+        if (isViewingOtherRep) return; // read-only for supervisors viewing other reps
         const newStatus = item.status === 'completed' ? 'pending' : 'completed';
-
         try {
-            await supabase
-                .from('daily_plan_items')
-                .update({ status: newStatus })
-                .eq('id', item.id);
-
+            await supabase.from('daily_plan_items').update({ status: newStatus }).eq('id', item.id);
+            if (newStatus === 'completed') {
+                await autoCreateVisit(item);
+            }
             setItems(items.map(i => i.id === item.id ? { ...i, status: newStatus } : i));
         } catch (error) {
             console.error('Error updating item:', error);
         }
     };
 
-    const navigateDate = (direction: number) => {
-        const date = new Date(selectedDate);
-        date.setDate(date.getDate() + direction);
-        setSelectedDate(date.toISOString().split('T')[0]);
+    const deleteItem = async (itemId: string) => {
+        if (isViewingOtherRep) return;
+        try {
+            const { error } = await supabase.from('daily_plan_items').delete().eq('id', itemId);
+            if (error) throw error;
+            setItems(items.filter(i => i.id !== itemId));
+            toast({ title: 'Ítem eliminado', description: 'El ítem ha sido removido del plan.' });
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            toast({ title: 'Error', description: 'No se pudo eliminar el ítem.', variant: 'destructive' });
+        }
     };
 
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    const addItem = async () => {
+        if (!user || !plan || !formData.title) return;
+        const baseItem = {
+            user_id: user.id, plan_id: plan.id, title: formData.title,
+            description: formData.description || null, scheduled_time: formData.scheduled_time,
+            duration_minutes: formData.duration_minutes, status: 'pending', priority: items.length
+        };
+        try {
+            let { error } = await supabase.from('daily_plan_items').insert({
+                ...baseItem, contact_id: formData.contact_id || null, organization_id: organizationId
+            });
+            if (error?.code === '23503') {
+                const { error: err2 } = await supabase.from('daily_plan_items').insert({
+                    ...baseItem, contact_id: null, organization_id: null
+                });
+                if (err2) throw err2;
+            } else if (error) throw error;
+
+            toast({ title: "Tarea agregada", description: "La tarea fue añadida al plan." });
+            setDialogOpen(false);
+            setFormData({ title: "", description: "", scheduled_time: "09:00", duration_minutes: 30, contact_id: "" });
+            loadPlan();
+        } catch (error: any) {
+            toast({ title: "Error", description: "No se pudo agregar la tarea.", variant: "destructive" });
+        }
     };
+
+    const addRoutedContactToPlan = async (contact: RoutedContact) => {
+        if (!user || !plan || isViewingOtherRep) return;
+        try {
+            const { error } = await supabase.from('daily_plan_items').insert({
+                user_id: user.id, plan_id: plan.id,
+                title: `Visita: ${contact.name}`, description: contact.type_label,
+                scheduled_time: null, duration_minutes: 30, status: 'pending',
+                priority: items.length, organization_id: organizationId,
+            });
+            if (error) throw error;
+            toast({ title: "✅ Visita agregada", description: `${contact.name} añadido al plan.` });
+            loadPlan();
+        } catch (error) {
+            toast({ title: "Error", description: "No se pudo agregar la visita.", variant: "destructive" });
+        }
+    };
+
+    const addAllRoutedContactsToPlan = async () => {
+        if (!user || !plan || routedContacts.length === 0 || isViewingOtherRep) return;
+        setAddingAll(true);
+        try {
+            const alreadyInPlan = new Set(items.map(i => i.title));
+            const toAdd = routedContacts.filter(c => !alreadyInPlan.has(`Visita: ${c.name}`));
+            if (toAdd.length === 0) {
+                toast({ title: "Sin cambios", description: "Todos los contactos ya están en el plan." });
+                return;
+            }
+            const inserts = toAdd.map((contact, idx) => ({
+                user_id: user!.id, plan_id: plan!.id,
+                title: `Visita: ${contact.name}`, description: contact.type_label,
+                scheduled_time: null, duration_minutes: 30, status: 'pending',
+                priority: items.length + idx, organization_id: organizationId,
+            }));
+            const { error } = await supabase.from('daily_plan_items').insert(inserts);
+            if (error) throw error;
+            toast({ title: `✅ ${toAdd.length} visitas agregadas`, description: "Ruta del día cargada al plan." });
+            loadPlan();
+        } catch (error) {
+            toast({ title: "Error", description: "No se pudo cargar la ruta.", variant: "destructive" });
+        } finally {
+            setAddingAll(false);
+        }
+    };
+
+    // ─── Computed ────────────────────────────────────────────────────────────────
 
     const completedCount = items.filter(i => i.status === 'completed').length;
     const progress = items.length > 0 ? (completedCount / items.length) * 100 : 0;
+    const currentDay = getDayOfWeek(selectedDate);
+    const viewingMember = teamMembers.find(m => m.user_id === selectedRepId);
+
+    // ─── Render ──────────────────────────────────────────────────────────────────
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">Planificador Diario</h1>
-                    <p className="text-muted-foreground">Organiza tus actividades del día</p>
-                </div>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="btn-medical">
-                            <Plus className="mr-2 h-4 w-4" /> Nueva Tarea
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md">
-                        <DialogHeader>
-                            <DialogTitle>Agregar Tarea</DialogTitle>
-                            <DialogDescription className="sr-only">
-                                Formulario para agregar una nueva tarea al planificador diario.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label>Título *</Label>
-                                <Input
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    placeholder="Nombre de la tarea"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Hora</Label>
-                                    <Input
-                                        type="time"
-                                        value={formData.scheduled_time}
-                                        onChange={(e) => setFormData({ ...formData, scheduled_time: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Duración (min)</Label>
-                                    <Select
-                                        value={formData.duration_minutes.toString()}
-                                        onValueChange={(v) => setFormData({ ...formData, duration_minutes: parseInt(v) })}
-                                    >
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="15">15 min</SelectItem>
-                                            <SelectItem value="30">30 min</SelectItem>
-                                            <SelectItem value="45">45 min</SelectItem>
-                                            <SelectItem value="60">1 hora</SelectItem>
-                                            <SelectItem value="90">1.5 horas</SelectItem>
-                                            <SelectItem value="120">2 horas</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Contacto (opcional)</Label>
-                                <Select value={formData.contact_id} onValueChange={(v) => setFormData({ ...formData, contact_id: v })}>
-                                    <SelectTrigger><SelectValue placeholder="Seleccionar contacto" /></SelectTrigger>
-                                    <SelectContent>
-                                        {contacts.map(c => (
-                                            <SelectItem key={c.id} value={c.id}>{c.name} - {c.specialty}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Notas</Label>
-                                <Textarea
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="Detalles adicionales..."
-                                />
-                            </div>
-                            <Button onClick={addItem} className="w-full btn-medical">Agregar Tarea</Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+        <div className="space-y-10 pb-20 font-display animate-in fade-in duration-700">
+            {/* Header */}
+            <div className="mb-4">
+                <EliteHeader
+                    title="Plan Diario de Trabajo"
+                    subtitle={isViewingOtherRep
+                        ? `Viendo plan de: ${viewingMember?.name || 'Representante'} (solo lectura)`
+                        : 'Gestiona tus visitas y tareas para el día seleccionado'}
+                    icon={Calendar}
+                    badgeText={isViewingOtherRep ? "Modo Supervisor" : "Día Operativo"}
+                    statusText={`${items.length} tareas programadas`}
+                    statusColor={items.length > 0 ? "bg-primary" : "bg-muted-foreground/30"}
+                    rightContent={
+                        hasRoutes && !isViewingOtherRep && (
+                            <EliteButton onClick={() => setDialogOpen(true)} icon={Plus}>
+                                Nuevo Evento
+                            </EliteButton>
+                        )
+                    }
+                />
             </div>
 
-            {/* Date Navigation */}
-            <Card className="medical-card">
-                <CardContent className="py-4">
-                    <div className="flex items-center justify-between">
-                        <Button variant="ghost" onClick={() => navigateDate(-1)}>
-                            <ChevronLeft className="h-5 w-5" />
-                        </Button>
-                        <div className="text-center">
-                            <h2 className="text-xl font-semibold capitalize">{formatDate(selectedDate)}</h2>
-                            <div className="flex items-center justify-center gap-4 mt-2">
-                                <Badge variant="outline">{completedCount} / {items.length} tareas</Badge>
-                                <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-primary transition-all text-white"
-                                        style={{ width: `${progress}%` }}
-                                    />
-                                </div>
-                                <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
-                            </div>
-                        </div>
-                        <Button variant="ghost" onClick={() => navigateDate(1)}>
-                            <ChevronRight className="h-5 w-5" />
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Tasks List */}
             {loading ? (
-                <div className="text-center py-12 text-muted-foreground">Cargando plan...</div>
-            ) : items.length === 0 ? (
-                <Card className="medical-card">
-                    <CardContent className="text-center py-12">
-                        <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-medium mb-2">Sin tareas programadas</h3>
-                        <p className="text-muted-foreground mb-4">Agrega tareas para organizar tu día</p>
+                <div className="flex justify-center p-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+            ) : hasRoutes === false ? (
+                <Card className="border-border shadow-premium-md overflow-hidden animate-in fade-in zoom-in duration-500 max-w-2xl mx-auto mt-12">
+                    <CardContent className="p-12 flex flex-col items-center justify-center text-center">
+                        <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-6">
+                            <Lock className="h-10 w-10 text-amber-500" />
+                        </div>
+                        <h2 className="text-2xl font-black text-foreground mb-3 font-display uppercase tracking-tight">Planificación Bloqueada</h2>
+                        <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
+                            No puedes generar un Plan Diario porque <strong>no tienes rutas semanales configuradas</strong>.
+                        </p>
+                        <Link to="/route-planner">
+                            <Button size="lg" className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                                <MapPin className="mr-2 h-4 w-4" />
+                                Ir a Rutas Semanales
+                            </Button>
+                        </Link>
                     </CardContent>
                 </Card>
             ) : (
-                <div className="space-y-3">
-                    {items.map((item) => (
-                        <Card
-                            key={item.id}
-                            className={`medical-card transition-all ${item.status === 'completed' ? 'opacity-60' : ''}`}
-                        >
-                            <CardContent className="py-4">
-                                <div className="flex items-start gap-4">
-                                    <Checkbox
-                                        checked={item.status === 'completed'}
-                                        onCheckedChange={() => toggleItemStatus(item)}
-                                        className="mt-1"
-                                    />
-                                    <div className="flex-1">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h3 className={`font-medium ${item.status === 'completed' ? 'line-through text-muted-foreground' : ''}`}>
-                                                {item.title}
-                                            </h3>
-                                            {item.scheduled_time && (
-                                                <Badge variant="outline" className="flex items-center gap-1">
-                                                    <Clock className="h-3 w-3" />
-                                                    {item.scheduled_time.slice(0, 5)}
-                                                </Badge>
-                                            )}
-                                        </div>
-                                        {(() => {
-                                            const contactInfo = item.contacts
-                                                ? (Array.isArray(item.contacts) ? item.contacts[0] : item.contacts)
-                                                : null;
-                                            
-                                            return contactInfo ? (
-                                                <p className="text-sm text-muted-foreground">
-                                                    👨‍⚕️ {contactInfo.name} {contactInfo.specialty ? `- ${contactInfo.specialty}` : ''}
-                                                </p>
-                                            ) : null;
-                                        })()}
-                                        {item.description && (
-                                            <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-                                        )}
-                                        <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                                            <Clock className="h-3 w-3" />
-                                            {item.duration_minutes} min
-                                        </div>
+                <div className="space-y-6">
+                    {/* Add Task Dialog */}
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <DialogContent className="max-w-md">
+                            <DialogHeader>
+                                <DialogTitle>Agregar Tarea</DialogTitle>
+                                <DialogDescription className="sr-only">Formulario para agregar una nueva tarea al planificador.</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Título *</Label>
+                                    <Input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} placeholder="Nombre de la tarea" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Hora</Label>
+                                        <Input type="time" value={formData.scheduled_time} onChange={(e) => setFormData({ ...formData, scheduled_time: e.target.value })} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Duración (min)</Label>
+                                        <Select value={formData.duration_minutes.toString()} onValueChange={(v) => setFormData({ ...formData, duration_minutes: parseInt(v) })}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="15">15 min</SelectItem>
+                                                <SelectItem value="30">30 min</SelectItem>
+                                                <SelectItem value="45">45 min</SelectItem>
+                                                <SelectItem value="60">1 hora</SelectItem>
+                                                <SelectItem value="90">1.5 horas</SelectItem>
+                                                <SelectItem value="120">2 horas</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                 </div>
+                                <div className="space-y-2">
+                                    <Label>Contacto (opcional)</Label>
+                                    <Select value={formData.contact_id} onValueChange={(v) => setFormData({ ...formData, contact_id: v })}>
+                                        <SelectTrigger><SelectValue placeholder="Seleccionar contacto" /></SelectTrigger>
+                                        <SelectContent>
+                                            {contacts.map(c => (
+                                                <SelectItem key={c.id} value={c.id}>{c.name}{c.specialty ? ` - ${c.specialty}` : ''}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Notas</Label>
+                                    <Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Detalles adicionales..." />
+                                </div>
+                                <Button onClick={addItem} className="w-full btn-medical">Agregar Tarea</Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Team Selector / Dashboard Filter ── */}
+                    {canViewTeam && (
+                        <Card className="border-border/50 bg-muted/30">
+                            <CardContent className="py-4 px-4 flex items-center gap-4 flex-wrap">
+                                <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                    <Users className="h-3.5 w-3.5" />
+                                    Territorio:
+                                </div>
+                                <div className="flex gap-4 flex-wrap flex-1">
+                                    {canViewAllData && (
+                                        <div className="w-64">
+                                            <Select value={selectedZoneId} onValueChange={(val) => { setSelectedZoneId(val); setSelectedRepId(''); }}>
+                                                <SelectTrigger className="h-10 bg-card border-border/50 text-xs font-semibold">
+                                                    <SelectValue placeholder="Todas las Zonas" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="all">Todas las Zonas</SelectItem>
+                                                    {zones.map(z => (
+                                                        <SelectItem key={z.id} value={z.id}>{z.name}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
+                                    <div className="w-64">
+                                        <Select value={selectedRepId || "all"} onValueChange={(val) => setSelectedRepId(val === "all" ? '' : val)}>
+                                            <SelectTrigger className="h-10 bg-card border-border/50 text-xs font-semibold">
+                                                <SelectValue placeholder="Todo el Equipo" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Todo el Equipo (Consolidado)</SelectItem>
+                                                {teamMembers.map(member => (
+                                                    <SelectItem key={member.user_id} value={member.user_id}>
+                                                        {member.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                                <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest text-amber-500 border-amber-500/30 ml-auto">
+                                    Solo lectura (Dashboard)
+                                </Badge>
                             </CardContent>
                         </Card>
-                    ))}
+                    )}
+
+                    {/* Date Navigation */}
+                    <Card className="medical-card">
+                        <CardContent className="py-4">
+                            <div className="flex items-center justify-between">
+                                <Button variant="ghost" onClick={() => navigateDate(-1)}>
+                                    <ChevronLeft className="h-5 w-5" />
+                                </Button>
+                                <div className="text-center">
+                                    <h2 className="text-xl font-semibold capitalize">{formatDate(selectedDate)}</h2>
+                                    <div className="flex items-center justify-center gap-4 mt-2">
+                                        <Badge variant="outline">{completedCount} / {items.length} tareas</Badge>
+                                        <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
+                                            <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
+                                        </div>
+                                        <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
+                                    </div>
+                                </div>
+                                <Button variant="ghost" onClick={() => navigateDate(1)}>
+                                    <ChevronRight className="h-5 w-5" />
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* ── Routed Contacts for the Day — only for self view ── */}
+                    {!isViewingOtherRep && currentDay !== 'Domingo' && currentDay !== 'Sábado' && (
+                        <Card className="border-primary/20 bg-primary/5 shadow-premium-sm">
+                            <CardHeader className="pb-3 border-b border-primary/10">
+                                <div className="flex items-center justify-between">
+                                    <CardTitle className="text-base flex items-center gap-2">
+                                        <MapPin className="h-4 w-4 text-primary" />
+                                        <span className="font-black uppercase tracking-widest text-xs text-primary">
+                                            Ruta del {currentDay}
+                                            {routedContacts.length > 0 && (
+                                                <span className="ml-2 text-muted-foreground normal-case font-normal">
+                                                    — {routedContacts.length} contacto{routedContacts.length !== 1 ? 's' : ''}
+                                                </span>
+                                            )}
+                                        </span>
+                                    </CardTitle>
+                                    {routedContacts.length > 0 && (
+                                        <Button
+                                            size="sm"
+                                            onClick={addAllRoutedContactsToPlan}
+                                            disabled={addingAll || !plan}
+                                            className="h-8 px-3 rounded-lg bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest shadow-sm hover:scale-105 transition-transform"
+                                        >
+                                            {addingAll ? '⏳ Cargando...' : '+ Agregar todos'}
+                                        </Button>
+                                    )}
+                                </div>
+                            </CardHeader>
+                            <CardContent className="pt-3">
+                                {routedContacts.length === 0 ? (
+                                    <div className="text-center py-6">
+                                        <p className="text-sm text-muted-foreground">No hay contactos asignados a este día.</p>
+                                        <Link to="/route-planner">
+                                            <Button variant="link" size="sm" className="mt-1 text-primary text-xs font-black uppercase tracking-widest">
+                                                Configurar Rutas →
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {routedContacts.map((contact) => {
+                                            const isInPlan = items.some(i => i.title === `Visita: ${contact.name}`);
+                                            return (
+                                                <div
+                                                    key={`${contact.source}-${contact.id}`}
+                                                    className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${isInPlan ? 'border-primary/20 bg-primary/10 opacity-70' : 'border-border/40 bg-card hover:border-primary/30 hover:bg-primary/5'}`}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isInPlan ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+                                                        <div>
+                                                            <p className="text-sm font-semibold leading-tight">{contact.name}</p>
+                                                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-black">{contact.type_label}</p>
+                                                        </div>
+                                                    </div>
+                                                    {isInPlan ? (
+                                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest text-primary border-primary/30">
+                                                            <CheckCircle className="h-3 w-3 mr-1" /> En el plan
+                                                        </Badge>
+                                                    ) : (
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() => addRoutedContactToPlan(contact)}
+                                                            disabled={!plan}
+                                                            className="h-7 px-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                                                        >
+                                                            + Agregar
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* ── Tasks List ── */}
+                    {items.length === 0 ? (
+                        <Card className="medical-card">
+                            <CardContent className="text-center py-12">
+                                <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                                <h3 className="text-lg font-medium mb-2">
+                                    {isViewingOtherRep ? 'Sin tareas registradas' : 'Sin tareas programadas'}
+                                </h3>
+                                <p className="text-muted-foreground mb-4">
+                                    {isViewingOtherRep
+                                        ? 'Este representante no tiene tareas para este día.'
+                                        : routedContacts.length > 0
+                                            ? 'Agrega los contactos de tu ruta o crea tareas adicionales'
+                                            : 'Agrega tareas para organizar tu día'}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="space-y-3">
+                            {items.map((item) => (
+                                <Card
+                                    key={item.id}
+                                    className={`medical-card transition-all ${item.status === 'completed' ? 'opacity-60' : ''}`}
+                                >
+                                    <CardContent className="py-4">
+                                        <div className="flex items-start gap-4">
+                                            <Checkbox
+                                                checked={item.status === 'completed'}
+                                                onCheckedChange={() => toggleItemStatus(item)}
+                                                className="mt-1"
+                                                disabled={isViewingOtherRep}
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <h3 className={`font-medium truncate ${item.status === 'completed' ? 'line-through text-muted-foreground' : ''}`}>
+                                                        {item.title}
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                                                        {item.scheduled_time && (
+                                                            <Badge variant="outline" className="flex items-center gap-1">
+                                                                <Clock className="h-3 w-3" />
+                                                                {item.scheduled_time.slice(0, 5)}
+                                                            </Badge>
+                                                        )}
+                                                        {!isViewingOtherRep && (
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="ghost"
+                                                                        className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                                                    >
+                                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>¿Eliminar ítem?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            Se eliminará "{item.title}" del plan de hoy. Esta acción no se puede deshacer.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            onClick={() => deleteItem(item.id)}
+                                                                            className="bg-destructive hover:bg-destructive/90"
+                                                                        >
+                                                                            Eliminar
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                {(() => {
+                                                    const contactInfo = item.contacts
+                                                        ? (Array.isArray(item.contacts) ? item.contacts[0] : item.contacts)
+                                                        : null;
+                                                    return contactInfo ? (
+                                                        <p className="text-sm text-muted-foreground">
+                                                            👨‍⚕️ {contactInfo.name}{contactInfo.specialty ? ` - ${contactInfo.specialty}` : ''}
+                                                        </p>
+                                                    ) : null;
+                                                })()}
+                                                {item.description && (
+                                                    <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+                                                )}
+                                                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                                                    <span className="flex items-center gap-1">
+                                                        <Clock className="h-3 w-3" /> {item.duration_minutes} min
+                                                    </span>
+                                                    {item.status === 'completed' && (
+                                                        <Badge className="text-[9px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black uppercase tracking-widest">
+                                                            <CheckCircle className="h-2.5 w-2.5 mr-1" /> Completado · Registrado en Agenda
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </div>

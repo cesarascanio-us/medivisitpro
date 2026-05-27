@@ -18,6 +18,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { getAllRegions, getStatesInRegion } from "@/constants/regions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -46,7 +47,8 @@ export default function Zones() {
         import: rawTexts.btn_import,
     };
     const { canManageZones, isMaster, profile } = useAuth();
-    const organizationId = profile?.organization_id;
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
     const { toast } = useToast();
     const [zones, setZones] = useState<Zone[]>([]);
     const [loading, setLoading] = useState(true);

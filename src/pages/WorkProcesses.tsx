@@ -24,7 +24,8 @@ import {
   Activity,
   Calendar,
   CheckCircle2,
-  ChevronRight
+  ChevronRight,
+  TrendingUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -33,49 +34,52 @@ import { useAuth } from '@/hooks/useAuth';
 const STANDARD_OPERATING_PROCEDURE = [
   {
     phase: "FASE 1",
-    label: "PREPARACIÓN & CHECK-IN",
+    label: "APERTURA ESTRATÉGICA",
     color: "bg-blue-600",
     glow: "shadow-blue-500/20",
-    icon: MapPin,
+    icon: Calendar,
+    reqBadge: "OBLIGATORIO: INICIO",
     steps: [
-      { id: "1.1", title: "Validación GPS y Cercanía", desc: "Asegurar que el visitador está en el radio del punto de venta para validación de geocerca." },
-      { id: "1.2", title: "Sincronización de Inventario", desc: "Verificar stock de muestras y material POP antes de la interacción comercial." },
+      { id: "1.1", title: "Registro de Ciclo Promocional", desc: "Creación del ciclo de trabajo en el módulo Ciclos Promocionales. Define la ventana de tiempo operativa." },
+      { id: "1.2", title: "Definición de Objetivos (KPIs)", desc: "Establecer la cuota de ventas y cobertura médica esperada. Sin esto, el sistema bloquea los pasos siguientes." },
     ]
   },
   {
     phase: "FASE 2",
-    label: "AUDITORÍA 360° (ANAQUEL)",
-    color: "bg-emerald-600",
-    glow: "shadow-emerald-500/20",
-    icon: Package,
+    label: "PLANIFICACIÓN LOGÍSTICA",
+    color: "bg-amber-500",
+    glow: "shadow-amber-500/20",
+    icon: MapPin,
+    reqBadge: "REQUISITO: CICLO ACTIVO",
     steps: [
-      { id: "2.1", title: "Auditoría Visual Propia (Faces)", desc: "Conteo riguroso de frentes de productos propios en el anaquel principal." },
-      { id: "2.2", title: "Visibilidad de Competencia", desc: "Mapeo de marcas rivales, precios y espacios ocupados en la góndola." },
-      { id: "2.3", title: "Registro de PVP Real", desc: "Validar que el precio de mercado coincida con la directiva comercial central." },
+      { id: "2.1", title: "Configuración de Rutas Semanales", desc: "Agrupación geográfica de médicos y farmacias (Módulo Rutas Semanales). Solo se habilita si existe un Ciclo Activo." },
+      { id: "2.2", title: "Armado del Plan Diario", desc: "Asignación táctica de tareas y visitas para días específicos basados en la Ruta Semanal." },
     ]
   },
   {
     phase: "FASE 3",
-    label: "NEGOCIACIÓN & VENTAS",
-    color: "bg-amber-500",
-    glow: "shadow-amber-500/20",
-    icon: BarChart3,
+    label: "EJECUCIÓN EN CAMPO",
+    color: "bg-emerald-600",
+    glow: "shadow-emerald-500/20",
+    icon: ClipboardList,
+    reqBadge: "REQUISITO: PLAN DIARIO",
     steps: [
-      { id: "3.1", title: "Identificación de Fallas", desc: "Detectar quiebres de stock críticos para generar orden de reposición inmediata." },
-      { id: "3.2", title: "Presentación de Promociones", desc: "Despliegue de material POP estratégico para impulsar el sell-through del mes." },
-      { id: "3.3", title: "Cierre de Pedido Directo", desc: "Formalizar orden de transferencia o venta directa mediante el portal MediVisitPro." },
+      { id: "3.1", title: "Activación de Agenda de Visitas", desc: "El representante inicia su jornada siguiendo la Agenda. No hay agenda sin un Plan Diario previo." },
+      { id: "3.2", title: "Visita Médica (Consultorio)", desc: "Pitch de productos Biofarco según especialidad y entrega desde el Banco de Muestras." },
+      { id: "3.3", title: "Visita Comercial (Retail)", desc: "Auditoría de presencia en anaquel, chequeo de stock y revisión de precios en Farmacias (POS)." },
     ]
   },
   {
     phase: "FASE 4",
-    label: "CIERRE & EVIDENCIAS",
+    label: "CIERRE Y TRANSFERENCIAS",
     color: "bg-indigo-600",
     glow: "shadow-indigo-500/20",
-    icon: Camera,
+    icon: TrendingUp,
+    reqBadge: "REQUISITO: AGENDA COMPLETADA",
     steps: [
-      { id: "4.1", title: "Captura Fotográfica (Forense)", desc: "Registro fotográfico obligatorio del anaquel post-ejecución para auditoría remota." },
-      { id: "4.2", title: "Compromisos y Notas", desc: "Registro de acuerdos estratégicos para seguimiento en la próxima ruta de visita." },
-      { id: "4.3", title: "Check-out del Sistema", desc: "Cierre oficial de la interacción para el cálculo en tiempo real de los KPIs de cobertura." },
+      { id: "4.1", title: "Emisión de Cotizaciones", desc: "Carga de ofertas comerciales directas o uso de Transfer Orders hacia Droguerías Aliadas." },
+      { id: "4.2", title: "Liquidación de Gastos", desc: "Registro de viáticos, peajes y comidas consumidas durante la ejecución de la ruta de trabajo." },
+      { id: "4.3", title: "Sincronización de Dashboard", desc: "Cierre oficial del día. Impacto automático en los KPIs de la Gerencia Comercial (Reportes en tiempo real)." },
     ]
   }
 ];
@@ -84,12 +88,12 @@ export default function WorkProcesses() {
   const { isMaster } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col p-8 font-display transition-colors duration-500 overflow-y-auto">
+    <div className="min-h-screen flex flex-col p-4 md:p-6 font-display transition-colors duration-500 overflow-y-auto">
       
       {/* HEADER INDUSTRIAL ELITE - PROCESOS DE TRABAJO */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-12 animate-in fade-in slide-in-from-top duration-700">
-          <div className="flex items-center gap-8">
-              <div className="w-20 h-20 rounded-[2.5rem] bg-primary/10 flex items-center justify-center shadow-premium-md border border-primary/20 rotate-3 hover:rotate-0 transition-transform group">
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-6 animate-in fade-in slide-in-from-top duration-700">
+          <div className="flex items-center gap-6">
+              <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center shadow-premium-md border border-primary/20 rotate-3 hover:rotate-0 transition-transform group">
                   <Layers className="h-10 w-10 text-primary group-hover:scale-110 transition-transform" />
               </div>
               <div>
@@ -124,19 +128,19 @@ export default function WorkProcesses() {
             <TabsTrigger value="manual" className="rounded-xl px-10 py-3 font-black text-[10px] uppercase tracking-[0.2em] data-[state=active]:bg-primary data-[state=active]:text-white transition-all shadow-none">Manual Estándar</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="sop" className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col gap-10">
-             <Tabs defaultValue="fase1" className="flex-1 flex flex-col 2xl:flex-row gap-10 min-h-0">
+          <TabsContent value="sop" className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col gap-6">
+             <Tabs defaultValue="fase1" className="flex-1 flex flex-col xl:flex-row gap-6 min-h-0">
                 {/* Side Selector - Phases */}
-                <TabsList className="flex flex-col h-fit bg-transparent gap-5 p-0 shrink-0 w-full 2xl:w-80">
+                <TabsList className="flex flex-col h-fit bg-transparent gap-3 p-0 shrink-0 w-full xl:w-64">
                    {STANDARD_OPERATING_PROCEDURE.map((phase, idx) => (
                       <TabsTrigger 
                         key={idx} 
                         value={`fase${idx+1}`}
-                        className="w-full flex items-center justify-between p-6 rounded-[2rem] bg-card border border-border shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
+                        className="w-full flex items-center justify-between p-4 rounded-2xl bg-card border border-border shadow-premium-sm data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white group transition-all"
                       >
-                         <div className="flex items-center gap-5">
-                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3 group-data-[state=active]:rotate-0 transition-transform", phase.color)}>
-                               <phase.icon className="h-6 w-6" />
+                         <div className="flex items-center gap-4">
+                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg rotate-3 group-data-[state=active]:rotate-0 transition-transform", phase.color)}>
+                               <phase.icon className="h-5 w-5" />
                             </div>
                             <div className="flex flex-col items-start">
                                <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 group-data-[state=active]:opacity-60 font-display">{phase.phase}</span>
@@ -149,27 +153,27 @@ export default function WorkProcesses() {
                 </TabsList>
 
                 {/* Content Area */}
-                <div className="flex-1 min-h-0 flex flex-col 2xl:flex-row gap-10">
+                <div className="flex-1 min-h-0 flex flex-col xl:flex-row gap-6">
                    <div className="flex-1">
                       {STANDARD_OPERATING_PROCEDURE.map((phase, idx) => (
                         <TabsContent key={idx} value={`fase${idx+1}`} className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-                           <div className="space-y-10">
-                              <div className="flex items-center gap-6">
-                                 <div className={cn("px-6 py-3 rounded-2xl text-white font-black text-xs uppercase tracking-[0.2em] shadow-lg font-display", phase.color)}>
+                           <div className="space-y-6">
+                              <div className="flex items-center gap-4">
+                                 <div className={cn("px-4 py-2 rounded-xl text-white font-black text-xs uppercase tracking-[0.2em] shadow-lg font-display", phase.color)}>
                                     {phase.phase}: {phase.label}
                                  </div>
-                                 <div className="flex-1 h-[2px] bg-border" />
-                                 <Badge className="bg-muted/20 text-muted-foreground border border-border font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-full">Estatus: Optimizado V26</Badge>
-                              </div>
+                                  <div className="flex-1 h-[2px] bg-border" />
+                                  <Badge className="bg-primary/10 text-primary border border-primary/20 font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-full">{phase.reqBadge}</Badge>
+                               </div>
 
-                              <div className="grid grid-cols-1 gap-6">
+                              <div className="grid grid-cols-1 gap-4">
                                  {phase.steps.map((step, sIdx) => (
-                                    <Card key={sIdx} className="border border-border bg-card shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[2.5rem] group/step relative overflow-hidden">
-                                       <CardContent className="p-10 flex items-start gap-8 relative z-10">
-                                          <div className="h-14 w-14 rounded-2xl bg-muted/20 flex items-center justify-center text-muted-foreground font-black text-sm font-mono group-hover/step:bg-primary group-hover/step:text-white transition-colors duration-500 shadow-inner">
+                                    <Card key={sIdx} className="border border-border bg-card shadow-premium-sm hover:shadow-premium-md transition-all hover:-translate-y-1 rounded-[1.5rem] group/step relative overflow-hidden">
+                                       <CardContent className="p-6 flex items-start gap-4 relative z-10">
+                                          <div className="h-10 w-10 shrink-0 rounded-xl bg-muted/20 flex items-center justify-center text-muted-foreground font-black text-sm font-mono group-hover/step:bg-primary group-hover/step:text-white transition-colors duration-500 shadow-inner">
                                              {step.id}
                                           </div>
-                                          <div className="space-y-3 flex-1">
+                                          <div className="space-y-2 flex-1">
                                              <h4 className="font-black text-foreground text-base uppercase tracking-tight font-display">{step.title}</h4>
                                              <p className="text-xs text-muted-foreground leading-relaxed font-bold">{step.desc}</p>
                                           </div>
@@ -187,14 +191,14 @@ export default function WorkProcesses() {
                    </div>
 
                    {/* Sidebar of Intelligence */}
-                   <div className="w-full 2xl:w-80 flex flex-col gap-8 shrink-0">
-                      <Card className="bg-card border border-primary/10 shadow-premium-lg rounded-[3rem] p-10 overflow-hidden relative group">
-                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-110 transition-transform">
-                            <ShieldCheck className="w-40 h-40 text-primary" />
+                   <div className="w-full xl:w-72 flex flex-col gap-6 shrink-0">
+                      <Card className="bg-card border border-primary/10 shadow-premium-lg rounded-[2rem] p-6 overflow-hidden relative group">
+                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:scale-110 transition-transform">
+                            <ShieldCheck className="w-32 h-32 text-primary" />
                         </div>
                         <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-8">
-                              <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                            <div className="flex items-center gap-3 mb-6">
+                              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                                  <CheckCircle2 className="h-6 w-6" />
                               </div>
                               <h3 className="text-sm font-black text-foreground uppercase tracking-[0.2em] font-display">Garantía Operativa</h3>
@@ -217,9 +221,9 @@ export default function WorkProcesses() {
                         </div>
                       </Card>
 
-                      <Card className="bg-card border border-border rounded-[3rem] shadow-premium-sm p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
-                        <div className="w-16 h-16 rounded-[2rem] bg-muted/20 flex items-center justify-center text-muted-foreground mb-8 shadow-inner">
-                            <Calendar className="h-8 w-8" />
+                      <Card className="bg-card border border-border rounded-[2rem] shadow-premium-sm p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-muted/20 flex items-center justify-center text-muted-foreground mb-4 shadow-inner">
+                            <Calendar className="h-6 w-6" />
                         </div>
                         <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-4 font-display">Próxima Revisión</h4>
                         <p className="text-base font-black text-foreground uppercase tracking-tighter font-display leading-none">MAYO 2026</p>
@@ -248,26 +252,26 @@ export default function WorkProcesses() {
                             </div>
                          </div>
                          <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-                            Bienvenido al centro de modelado de procesos estándar y contra-inteligencia comercial de nivel maestro. Aquí se gestionan los workflows operativos que regulan la labor de toda la fuerza representativa de MediVisitPro.
+                            Bienvenido al centro de modelado de procesos del sistema. Aquí se detalla la lógica operativa y las reglas de negocio en cascada (Waterfall) que rigen el funcionamiento del CRM médico.
                          </p>
 
                          <div className="space-y-4">
                             {[
                               { 
-                                title: "1. Táctica de Visibilidad Premium (Anaquel)", 
-                                desc: "Posicionar marcas propias a la altura de la vista (Eye-Level) ocupando al menos el 45% del espacio útil de la categoría de exhibición.",
+                                title: "1. Regla de Bloqueo Estricto (Ciclos)", 
+                                desc: "El sistema impedirá planificar cualquier Ruta o crear un Plan Diario si no existe un Ciclo Promocional vigente y registrado por la gerencia.",
                                 priority: "CRÍTICA",
                                 color: "text-rose-500 bg-rose-500/10 border-rose-500/20"
                               },
                               { 
-                                title: "2. Mitigación de Quiebres y Stock de Seguridad", 
-                                desc: "Activar solicitudes automáticas de pedido de transferencia a droguerías aliadas cuando la cobertura baje de 15 días estimados.",
+                                title: "2. Dependencia Táctica (Rutas a Plan)", 
+                                desc: "No se puede generar un Plan Diario con contactos médicos/comerciales que no hayan sido previamente asignados a la Ruta Semanal del usuario.",
                                 priority: "ALTA",
                                 color: "text-amber-500 bg-amber-500/10 border-amber-500/20"
                               },
                               { 
-                                title: "3. Protocolo de Captura Forense Multicanal", 
-                                desc: "Validación y cruce de imágenes de anaquel con geolocalización de satélite en tiempo real para evitar reportes fantasmas.",
+                                title: "3. Trazabilidad Muestral (Biofarco)", 
+                                desc: "Las muestras entregadas durante la ejecución de la Agenda de Visitas descontarán inventario del Banco de Muestras del visitador en tiempo real.",
                                 priority: "ESTÁNDAR",
                                 color: "text-blue-500 bg-blue-500/10 border-blue-500/20"
                               }

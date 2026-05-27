@@ -4,12 +4,20 @@ dotenv.config();
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY);
 
+import fs from 'fs';
+
 async function runSQL() {
-  const { data, error } = await supabase.rpc('execute_sql', { sql: "ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS rif TEXT; ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS potential TEXT; ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Activo';" });
+  const { data, error } = await supabase
+    .from('doctors')
+    .select('*')
+    .limit(1);
+  if (error) console.error('Error:', error);
+  else console.log('Doctors columns:', Object.keys(data[0] || {}));
+    
   if (error) {
-    console.error('Error executing RPC:', error);
+    console.error('Error fetching:', error);
   } else {
-    console.log('Success:', data);
+    console.log('Columns in unified_contacts:', Object.keys(data[0] || {}));
   }
 }
 

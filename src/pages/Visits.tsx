@@ -11,6 +11,7 @@ import { QuickScheduleWizard } from "@/components/visits/QuickScheduleWizard";
 import { VisitReportDialog } from "@/components/visits/VisitReportDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -39,7 +40,10 @@ export default function Visits() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const { user, canViewAllData, isSupervisor, zoneId, organizationId, organizationName } = useAuth();
+  const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { organization } = useOrganization();
+  const organizationId = organization?.id;
+  const organizationName = organization?.name;
   const { toast } = useToast();
   const [importing, setImporting] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
@@ -75,7 +79,7 @@ export default function Visits() {
 
       let query: any = supabase.from('visits').select('*');
       if (organizationId) query = query.eq('organization_id', organizationId);
-      if (isSupervisor && zoneId) {
+      if (isSupervisor && !canViewAllData && zoneId) {
         if (adminFilters.userId && adminFilters.userId !== 'all') query = query.eq('user_id', adminFilters.userId);
         else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') query = query.eq('zone_id', adminFilters.zoneId);
         else query = query.eq('zone_id', zoneId);

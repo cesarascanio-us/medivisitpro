@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { EliteHeader, EliteKPICard, EliteTable } from "@/components/layout/DesignSystem";
@@ -45,7 +46,9 @@ const EXPENSE_CATEGORIES = [
 ];
 
 export default function Expenses() {
-    const { user, isAdmin, isManager, organizationId, isSupervisor, canViewAllData, zoneId, organizationName } = useAuth();
+    const { user, canViewAllData, isSupervisor, zoneId, isManager, organizationName } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
     const { toast } = useToast();
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
@@ -82,7 +85,7 @@ export default function Expenses() {
                 .from('expenses')
                 .select('*');
 
-            if (isSupervisor && zoneId) {
+            if (isSupervisor && !canViewAllData && zoneId) {
                 query = query.eq('zone_id', zoneId);
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.eq('user_id', adminFilters.userId);
@@ -491,7 +494,7 @@ export default function Expenses() {
                 description="Listado exhaustivo de gastos operativos reportados por la fuerza de ventas."
                 searchPlaceholder="FILTRAR POR PROVEEDOR O CATEGORÍA..."
                 onSearch={() => {}}
-                rightContent={
+                filterElement={
                     <Select value={filterCategory} onValueChange={setFilterCategory}>
                         <SelectTrigger className="w-64 h-12 bg-muted/20 border-border/40 rounded-xl font-black uppercase text-[10px] px-5 shadow-inner">
                             <div className="flex items-center gap-3">

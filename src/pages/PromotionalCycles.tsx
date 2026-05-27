@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { cn } from "@/lib/utils";
 
 interface PromotionalCycle {
     id: string;
@@ -47,6 +48,7 @@ interface PromotionalCycle {
     current_samples: number;
     current_sales: number;
     created_at: string;
+    zone_id?: string;
     products?: { id: string; name: string }[];
 }
 
@@ -65,7 +67,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof
 };
 
 export default function PromotionalCycles() {
-    const { user, isManager, canViewAllData } = useAuth();
+    const { user, isManager, canViewAllData, zoneId } = useAuth();
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
     const [cycles, setCycles] = useState<PromotionalCycle[]>([]);
@@ -77,12 +79,15 @@ export default function PromotionalCycles() {
     const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
     const [viewingCycle, setViewingCycle] = useState<PromotionalCycle | null>(null);
 
+    const [selectedMonth, setSelectedMonth] = useState((new Date().getMonth() + 1).toString());
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+    const [selectedZone, setSelectedZone] = useState<string>("all");
+    const [zones, setZones] = useState<{id: string, name: string}[]>([]);
+
     // Form state
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        start_date: '',
-        end_date: '',
         objectives: '',
         target_visits: 100,
         target_presentations: 200,
@@ -99,8 +104,13 @@ export default function PromotionalCycles() {
     const loadData = async () => {
         setLoading(true);
         try {
+            if (canViewAllData) {
+                const { data: zonesData } = await supabase.from('zones').select('id, name').order('name');
+                setZones(zonesData || []);
+            }
+
             // Load cycles from Supabase
-            const { data: cyclesData, error: cyclesError } = await supabase
+            let query = supabase
                 .from('promotional_cycles' as any)
                 .select(`
                     *,
@@ -111,8 +121,13 @@ export default function PromotionalCycles() {
                             name
                         )
                     )
-                `)
-                .order('created_at', { ascending: false });
+                `);
+
+            if (isManager && zoneId) {
+                query = query.or(`zone_id.eq.${zoneId},zone_id.is.null`);
+            }
+
+            const { data: cyclesData, error: cyclesError } = await query.order('created_at', { ascending: false });
 
             if (cyclesError) throw cyclesError;
 
@@ -151,8 +166,6 @@ export default function PromotionalCycles() {
         setFormData({
             name: '',
             description: '',
-            start_date: '',
-            end_date: '',
             objectives: '',
             target_visits: 100,
             target_presentations: 200,
@@ -160,17 +173,33 @@ export default function PromotionalCycles() {
             target_sales: 1000,
         });
         setSelectedProducts([]);
+        setSelectedMonth((new Date().getMonth() + 1).toString());
+        setSelectedYear(new Date().getFullYear().toString());
+        setSelectedZone("all");
         setEditingCycle(null);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const monthNum = parseInt(selectedMonth);
+        const yearNum = parseInt(selectedYear);
+        const startDate = new Date(yearNum, monthNum - 1, 1).toISOString().split('T')[0];
+        const endDate = new Date(yearNum, monthNum, 0).toISOString().split('T')[0];
+        
+        let cycleZoneId = null;
+        if (isManager) {
+            cycleZoneId = zoneId || null;
+        } else if (canViewAllData && selectedZone !== 'all') {
+            cycleZoneId = selectedZone;
+        }
+
         const cyclePayload: any = {
-            name: formData.name,
+            name: formData.name || `Ciclo ${monthNum}/${yearNum}`,
             description: formData.description || null,
-            start_date: formData.start_date,
-            end_date: formData.end_date,
+            start_date: startDate,
+            end_date: endDate,
+            zone_id: cycleZoneId,
             objectives: formData.objectives || null,
             target_visits: formData.target_visits,
             target_presentations: formData.target_presentations,
@@ -237,14 +266,18 @@ export default function PromotionalCycles() {
         setFormData({
             name: cycle.name,
             description: cycle.description || '',
-            start_date: cycle.start_date,
-            end_date: cycle.end_date,
             objectives: cycle.objectives || '',
             target_visits: cycle.target_visits,
             target_presentations: cycle.target_presentations,
             target_samples: cycle.target_samples,
             target_sales: cycle.target_sales || 0,
         });
+        
+        const d = new Date(cycle.start_date + "T00:00:00");
+        setSelectedMonth((d.getMonth() + 1).toString());
+        setSelectedYear(d.getFullYear().toString());
+        setSelectedZone(cycle.zone_id || 'all');
+        
         setSelectedProducts(cycle.products?.map(p => p.id) || []);
         setIsDialogOpen(true);
     };
@@ -321,6 +354,7 @@ export default function PromotionalCycles() {
                             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border-none shadow-2xl">
                                 <DialogHeader>
                                     <DialogTitle className="text-xl font-bold tracking-tight">{editingCycle ? 'Editar campaña' : 'Nueva campaña'}</DialogTitle>
+                                    <DialogDescription className="sr-only">Formulario para crear o editar un ciclo promocional.</DialogDescription>
                                 </DialogHeader>
                                 <div className="grid gap-4 py-4">
                                     <div className="grid gap-2">
@@ -348,26 +382,56 @@ export default function PromotionalCycles() {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
-                                            <Label htmlFor="start_date" className="text-xs font-bold text-slate-500 uppercase">Fecha inicio</Label>
-                                            <Input
-                                                id="start_date"
-                                                type="date"
-                                                value={formData.start_date}
-                                                onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
-                                            />
+                                            <Label className="text-xs font-bold text-slate-500 uppercase">Mes del Ciclo</Label>
+                                            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                                                <SelectTrigger className="h-11 rounded-xl bg-slate-50 border-none shadow-inner font-semibold">
+                                                    <SelectValue placeholder="Mes" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-xl">
+                                                    {Array.from({ length: 12 }).map((_, i) => (
+                                                        <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                                            {new Date(2000, i, 1).toLocaleString('es', { month: 'long' }).toUpperCase()}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                         <div className="grid gap-2">
-                                            <Label htmlFor="end_date" className="text-xs font-bold text-slate-500 uppercase">Fecha fin</Label>
-                                            <Input
-                                                id="end_date"
-                                                type="date"
-                                                value={formData.end_date}
-                                                onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                                                className="h-11 rounded-xl bg-slate-50 border-none shadow-inner"
-                                            />
+                                            <Label className="text-xs font-bold text-slate-500 uppercase">Año</Label>
+                                            <Select value={selectedYear} onValueChange={setSelectedYear}>
+                                                <SelectTrigger className="h-11 rounded-xl bg-slate-50 border-none shadow-inner font-semibold">
+                                                    <SelectValue placeholder="Año" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-xl">
+                                                    {Array.from({ length: 5 }).map((_, i) => {
+                                                        const year = new Date().getFullYear() + i - 1;
+                                                        return (
+                                                            <SelectItem key={year} value={year.toString()}>
+                                                                {year}
+                                                            </SelectItem>
+                                                        );
+                                                    })}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                     </div>
+
+                                    {canViewAllData && (
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs font-bold text-slate-500 uppercase">Zona (Opcional)</Label>
+                                            <Select value={selectedZone} onValueChange={setSelectedZone}>
+                                                <SelectTrigger className="h-11 rounded-xl bg-slate-50 border-none shadow-inner font-semibold">
+                                                    <SelectValue placeholder="Todas las Zonas (Global)" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-xl">
+                                                    <SelectItem value="all">Todas las Zonas (Global)</SelectItem>
+                                                    {zones.map(z => (
+                                                        <SelectItem key={z.id} value={z.id}>{z.name}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="objectives" className="text-xs font-bold text-slate-500 uppercase">Objetivos estratégicos</Label>
@@ -692,6 +756,7 @@ export default function PromotionalCycles() {
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
                         <DialogTitle>{viewingCycle?.name}</DialogTitle>
+                        <DialogDescription className="sr-only">Detalles del ciclo promocional.</DialogDescription>
                     </DialogHeader>
                     {viewingCycle && (
                         <div className="space-y-4">

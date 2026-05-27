@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { refreshObjectivesProgress } from "@/services/objectiveService";
 import { useTexts } from "@/hooks/useTexts";
@@ -47,6 +48,8 @@ export default function Objectives() {
         import: rawTexts.btn_import,
     };
     const { user, canViewAllData, isSupervisor, isManager, isCoordinator, zoneId, canAssignObjectives: canAssign } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
     const { toast } = useToast();
     const [objectives, setObjectives] = useState<Objective[]>([]);
     const [loading, setLoading] = useState(true);
@@ -252,21 +255,18 @@ export default function Objectives() {
                     value={activeObjectives.length}
                     icon={Target}
                     color="primary"
-                    delay={0}
                 />
                 <EliteKPICard
                     title="Completados"
                     value={completedObjectives.length}
                     icon={CheckCircle}
                     color="emerald"
-                    delay={100}
                 />
                 <EliteKPICard
                     title="Progreso General"
                     value={`${Math.round(overallProgress)}%`}
                     icon={TrendingUp}
                     color="blue"
-                    delay={200}
                 />
             </div>
 

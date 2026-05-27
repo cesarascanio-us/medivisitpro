@@ -35,6 +35,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useContacts } from "@/hooks/useContacts";
 import { exportToCSV } from "@/utils/exportUtils";
 import { NaturalStoreFormDialog } from "@/components/pharma/NaturalStoreFormDialog";
@@ -56,7 +57,10 @@ export default function NaturalStores() {
     const { contacts: naturalStores, loading, refresh: loadNaturalStores } = useContacts(contactOptions);
 
     const { toast } = useToast();
-    const { user, organizationId, organizationName } = useAuth();
+    const { user } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
+    const organizationName = organization?.name;
     const navigate = useNavigate();
 
     const [formDialogOpen, setFormDialogOpen] = useState(false);

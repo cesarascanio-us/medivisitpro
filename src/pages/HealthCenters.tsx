@@ -25,6 +25,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
@@ -48,7 +49,9 @@ interface HealthCenter {
 }
 
 export default function HealthCenters() {
-  const { user, organizationId, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+  const { organization } = useOrganization();
+  const organizationId = organization?.id;
   const { toast } = useToast();
   const [healthCenters, setHealthCenters] = useState<HealthCenter[]>([]);
   const [loading, setLoading] = useState(true);

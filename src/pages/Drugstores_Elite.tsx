@@ -39,6 +39,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -74,7 +75,10 @@ export default function DrugstoresElite() {
     });
 
     const { toast } = useToast();
-    const { user, isMaster, organizationId, organizationName } = useAuth();
+    const { user, isMaster } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
+    const organizationName = organization?.name;
     const navigate = useNavigate();
 
     // Permissions logic

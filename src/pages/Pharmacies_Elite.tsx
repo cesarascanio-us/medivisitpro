@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import {
     Tabs,
     TabsContent,
@@ -49,7 +50,10 @@ import { ImportDialog } from "@/components/shared/ImportDialog";
 
 export default function PharmaciesElite() {
     const { theme } = useTheme();
-    const { user, organizationId, organizationName } = useAuth();
+    const { user } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
+    const organizationName = organization?.name;
     const { toast } = useToast();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -144,8 +148,22 @@ export default function PharmaciesElite() {
             }
 
             if (filteredUserIds !== null) {
+                let orConditions = [];
                 if (filteredUserIds.length > 0) {
-                    query = query.in('user_id', filteredUserIds);
+                    orConditions.push(`user_id.in.(${filteredUserIds.join(',')})`);
+                }
+                
+                if (adminFilters.state && adminFilters.state !== 'all') {
+                    orConditions.push(`state.eq.${adminFilters.state}`);
+                } else if (adminFilters.region && adminFilters.region !== 'all') {
+                    const states = getStatesInRegion(adminFilters.region);
+                    if (states.length > 0) {
+                        orConditions.push(`state.in.(${states.join(',')})`);
+                    }
+                }
+                
+                if (orConditions.length > 0) {
+                    query = query.or(orConditions.join(','));
                 } else {
                     query = query.eq('id', '00000000-0000-0000-0000-000000000000'); // Force empty if no users match
                 }

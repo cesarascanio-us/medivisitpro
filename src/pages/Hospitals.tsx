@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
 
@@ -47,6 +48,9 @@ interface Hospital {
 
 export default function Hospitals() {
     const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
+    const organizationName = organization?.name;
     const { toast } = useToast();
     const [hospitals, setHospitals] = useState<Hospital[]>([]);
     const [loading, setLoading] = useState(true);
@@ -79,7 +83,7 @@ export default function Hospitals() {
                 .select('*')
                 .eq('contact_type', 'hospital');
 
-            if (isSupervisor && zoneId) {
+            if (isSupervisor && !canViewAllData && zoneId) {
                 query = query.eq('zone_id', zoneId);
                 if (adminFilters.repId && adminFilters.repId !== 'all') {
                     query = query.eq('user_id', adminFilters.repId);

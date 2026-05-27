@@ -65,10 +65,15 @@ interface Doctor {
     updated_at: string;
 }
 
+import { useOrganization } from "@/hooks/useOrganization";
+
 export default function Doctors() {
     const { theme } = useTheme();
     const navigate = useNavigate();
-    const { user, canViewAllData, isSupervisor, zoneId, organizationId, organizationName } = useAuth();
+    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
+    const organizationName = organization?.name;
     const { toast } = useToast();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
@@ -107,11 +112,20 @@ export default function Doctors() {
                 return;
             }
 
-            let triangulatedUserIds: string[] = [];
-            
-            if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                const { data: userData } = await (supabase as any).from('user_roles').select('user_id').eq('zone_id', adminFilters.zoneId);
-                triangulatedUserIds = userData?.map((u: any) => u.user_id) || [];
+            let triangulatedUserIds: string[] | null = null;
+            const hasRegionalFilter = (adminFilters.region && adminFilters.region !== 'all') || 
+                                      (adminFilters.state && adminFilters.state !== 'all') || 
+                                      (adminFilters.zoneId && adminFilters.zoneId !== 'all');
+
+            if (canViewAllData && hasRegionalFilter) {
+                let userQuery = supabase.from('user_roles').select('user_id');
+                if (adminFilters.region && adminFilters.region !== 'all') userQuery = userQuery.eq('region', adminFilters.region);
+                if (adminFilters.state && adminFilters.state !== 'all') userQuery = userQuery.eq('state', adminFilters.state);
+                if (adminFilters.zoneId && adminFilters.zoneId !== 'all') userQuery = userQuery.eq('zone_id', adminFilters.zoneId);
+                if (organizationId) userQuery = userQuery.eq('organization_id', organizationId);
+                
+                const { data: usersData } = await userQuery;
+                triangulatedUserIds = usersData?.map((u: any) => u.user_id) || [];
             }
 
             let query: any = supabase.from('doctors').select('*');
@@ -120,7 +134,7 @@ export default function Doctors() {
                 query = query.eq('organization_id', organizationId);
             }
             
-            if (isSupervisor && zoneId) {
+            if (isSupervisor && !canViewAllData && zoneId) {
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
                 } else {
@@ -137,18 +151,26 @@ export default function Doctors() {
             } else {
                 if (adminFilters.userId && adminFilters.userId !== 'all') {
                     query = query.or(`representative_id.eq.${adminFilters.userId},user_id.eq.${adminFilters.userId}`);
-                } else if (adminFilters.zoneId && adminFilters.zoneId !== 'all') {
-                    if (triangulatedUserIds.length > 0) {
-                        query = query.or(`representative_id.in.(${triangulatedUserIds.join(',')}),user_id.in.(${triangulatedUserIds.join(',')})`);
+                } else if (hasRegionalFilter) {
+                    let orConditions = [];
+                    if (triangulatedUserIds && triangulatedUserIds.length > 0) {
+                        orConditions.push(`representative_id.in.(${triangulatedUserIds.join(',')})`);
+                        orConditions.push(`user_id.in.(${triangulatedUserIds.join(',')})`);
+                    }
+                    if (adminFilters.state && adminFilters.state !== 'all') {
+                        orConditions.push(`state.eq.${adminFilters.state}`);
+                    } else if (adminFilters.region && adminFilters.region !== 'all') {
+                        const states = getStatesInRegion(adminFilters.region);
+                        if (states.length > 0) {
+                            orConditions.push(`state.in.(${states.join(',')})`);
+                        }
+                    }
+                    
+                    if (orConditions.length > 0) {
+                        query = query.or(orConditions.join(','));
                     } else {
                         query = query.eq('id', '00000000-0000-0000-0000-000000000000');
                     }
-                } else if (adminFilters.state && adminFilters.state !== 'all') {
-                    query = query.eq('state', adminFilters.state);
-                } else if (adminFilters.region && adminFilters.region !== 'all') {
-                    const states = getStatesInRegion(adminFilters.region);
-                    if (states.length > 0) query = query.in('state', states);
-                    else query = query.eq('id', '00000000-0000-0000-0000-000000000000');
                 }
             }
 

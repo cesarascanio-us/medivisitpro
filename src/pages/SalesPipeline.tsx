@@ -27,6 +27,7 @@ import { DealDetailDialog } from "@/components/sales/DealDetailDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import { cloneElement } from "react";
@@ -58,7 +59,9 @@ interface AdminFilterState {
 }
 
 export default function SalesPipeline() {
-    const { user, canViewAllData, isSupervisor, zoneId, organizationId } = useAuth();
+    const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
     const { toast } = useToast();
 
     const [deals, setDeals] = useState<any[]>([]);
@@ -94,7 +97,7 @@ export default function SalesPipeline() {
                 .select("*")
                 .eq("organization_id", organizationId);
 
-            if (isSupervisor && zoneId) {
+            if (isSupervisor && !canViewAllData && zoneId) {
                 if (adminFilters.userId && adminFilters.userId !== "all") {
                     query = query.eq("user_id", adminFilters.userId);
                 } else {

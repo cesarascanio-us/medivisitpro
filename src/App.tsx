@@ -102,7 +102,6 @@ const CoachingDashboard = lazy(() => import("./pages/CoachingDashboard"));
 const University = lazy(() => import("./pages/University"));
 const Rewards = lazy(() => import("./pages/Rewards"));
 const Baremos = lazy(() => import("./pages/Baremos"));
-const Cycles = lazy(() => import("./pages/Planning/Cycles"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -296,11 +295,7 @@ const AppContent = () => (
         <Layout><Baremos /></Layout>
       </ProtectedRoute>
     } />
-    <Route path="cycles" element={
-      <ProtectedRoute>
-        <Layout><Cycles /></Layout>
-      </ProtectedRoute>
-    } />
+    <Route path="cycles" element={<Navigate to="/promotional-cycles" replace />} />
     <Route path="objectives" element={
       <ProtectedRoute>
         <ModuleGuard moduleKey="objectives">
@@ -434,10 +429,8 @@ const AppContent = () => (
       </ProtectedRoute>
     } />
     <Route path="promotional-cycles" element={
-      <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'telemarketing']}>
-        <ModuleGuard moduleKey="cycles">
-          <Layout><PromotionalCycles /></Layout>
-        </ModuleGuard>
+      <ProtectedRoute>
+        <Layout><PromotionalCycles /></Layout>
       </ProtectedRoute>
     } />
     <Route path="planning/cycles" element={<Navigate to="/promotional-cycles" replace />} />

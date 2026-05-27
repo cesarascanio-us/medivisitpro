@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useContacts } from "@/hooks/useContacts";
 import { exportToCSV } from "@/utils/exportUtils";
 import { NaturalStoreFormDialog } from "@/components/pharma/NaturalStoreFormDialog";
@@ -42,7 +43,9 @@ export default function Commerces() {
 
     const { contacts: commerces, loading, refresh: loadCommerces } = useContacts(contactOptions);
     const { toast } = useToast();
-    const { user, organizationId } = useAuth();
+    const { user } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
     const navigate = useNavigate();
 
     // Dialog States
