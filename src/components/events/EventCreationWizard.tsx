@@ -7,7 +7,7 @@
  ingeniería inversa o uso no autorizado de este código fuente.
 ======================================================================== */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -33,13 +33,22 @@ import { useQuery } from "@tanstack/react-query";
 const eventSchema = z.object({
     title: z.string().min(3, "El título es requerido"),
     event_type: z.string(),
-    scheduled_date: z.string().min(1, "La fecha es requerida"),
+    scheduled_date: z.string().min(1, "La fecha de inicio es requerida"),
+    end_date: z.string().min(1, "La fecha de fin es requerida"),
     location: z.string().optional(),
     description: z.string().optional(),
     attendees_count: z.preprocess(
         (a) => parseInt(z.string().parse(String(a))),
         z.number().min(0)
     ),
+    investment: z.preprocess(
+        (a) => parseFloat(z.string().parse(String(a || 0))),
+        z.number().min(0)
+    ).optional(),
+    per_diem: z.preprocess(
+        (a) => parseFloat(z.string().parse(String(a || 0))),
+        z.number().min(0)
+    ).optional(),
     contact_id: z.string().uuid().optional(), // Optional, but can be passed to check_event_eligibility if it's a pharmacy
 });
 
@@ -49,9 +58,10 @@ interface EventCreationWizardProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSuccess: () => void;
+    eventToEdit?: any | null;
 }
 
-export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCreationWizardProps) {
+export function EventCreationWizard({ open, onOpenChange, onSuccess, eventToEdit }: EventCreationWizardProps) {
     const [step, setStep] = useState(1);
     const [validating, setValidating] = useState(false);
     const [validationResult, setValidationResult] = useState<{ allowed: boolean; message: string } | null>(null);
@@ -62,11 +72,55 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
             title: "",
             event_type: "presentation",
             scheduled_date: "",
+            end_date: "",
             location: "",
             description: "",
             attendees_count: 0,
+            investment: 0,
+            per_diem: 0,
         },
     });
+
+    useEffect(() => {
+        if (open) {
+            if (eventToEdit) {
+                // Convert dates to proper format for datetime-local (YYYY-MM-DDThh:mm)
+                const formatDateForInput = (dateString: string) => {
+                    if (!dateString) return "";
+                    const d = new Date(dateString);
+                    // Need to offset timezone for local input, simple hack is to use slice on ISO string
+                    return new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                };
+
+                form.reset({
+                    title: eventToEdit.title || "",
+                    event_type: eventToEdit.event_type || "presentation",
+                    scheduled_date: formatDateForInput(eventToEdit.scheduled_date),
+                    end_date: formatDateForInput(eventToEdit.end_date),
+                    location: eventToEdit.location || "",
+                    description: eventToEdit.description || "",
+                    attendees_count: eventToEdit.attendees_count || 0,
+                    investment: eventToEdit.investment || 0,
+                    per_diem: eventToEdit.per_diem || 0,
+                    contact_id: eventToEdit.contact_id || undefined,
+                });
+            } else {
+                form.reset({
+                    title: "",
+                    event_type: "presentation",
+                    scheduled_date: "",
+                    end_date: "",
+                    location: "",
+                    description: "",
+                    attendees_count: 0,
+                    investment: 0,
+                    per_diem: 0,
+                });
+            }
+            setStep(1);
+            setValidationResult(null);
+        }
+    }, [open, eventToEdit, form]);
 
     // Fetch all contacts (doctors, pharmacies, etc) for selection
     const { data: contacts } = useQuery({
@@ -111,7 +165,7 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
 
     const handleNext = async () => {
         if (step === 1) {
-            const valid = await form.trigger(["title", "event_type", "scheduled_date"]);
+            const valid = await form.trigger(["title", "event_type", "scheduled_date", "end_date"]);
             if (valid) setStep(2);
         } else if (step === 2) {
             // Validate ROI before summary
@@ -129,21 +183,38 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
         }
 
         try {
-            const { error } = await supabase.from('events').insert({
-                user_id: (await supabase.auth.getUser()).data.user?.id,
+            const eventData = {
                 title: values.title,
                 description: values.description || null,
                 event_type: values.event_type,
                 location: values.location, // Could be pharmacy address logic if needed
                 scheduled_date: values.scheduled_date,
+                end_date: values.end_date,
                 attendees_count: values.attendees_count,
-                status: 'scheduled',
+                investment: values.investment || 0,
+                per_diem: values.per_diem || 0,
                 contact_id: values.contact_id || null,
-            });
+            };
 
-            if (error) throw error;
+            if (eventToEdit) {
+                const { error } = await supabase
+                    .from('events')
+                    .update(eventData)
+                    .eq('id', eventToEdit.id);
+                if (error) throw error;
+                toast.success("Evento actualizado exitosamente");
+            } else {
+                const { error } = await supabase
+                    .from('events')
+                    .insert({
+                        ...eventData,
+                        user_id: (await supabase.auth.getUser()).data.user?.id,
+                        status: 'scheduled',
+                    });
+                if (error) throw error;
+                toast.success("Evento creado exitosamente");
+            }
 
-            toast.success("Evento creado exitosamente");
             onOpenChange(false);
             form.reset();
             setStep(1);
@@ -189,6 +260,30 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                                 <div className="grid grid-cols-2 gap-4">
                                     <FormField
                                         control={form.control}
+                                        name="scheduled_date"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Fecha Inicio</FormLabel>
+                                                <FormControl><Input type="datetime-local" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="end_date"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Fecha Fin</FormLabel>
+                                                <FormControl><Input type="datetime-local" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
                                         name="event_type"
                                         render={({ field }) => (
                                             <FormItem>
@@ -205,17 +300,6 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                                                         <SelectItem value="inauguration">Inauguración</SelectItem>
                                                     </SelectContent>
                                                 </Select>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="scheduled_date"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Fecha</FormLabel>
-                                                <FormControl><Input type="datetime-local" {...field} /></FormControl>
-                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -274,16 +358,38 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                                     )}
                                 />
 
-                                <FormField
-                                    control={form.control}
-                                    name="attendees_count"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Asistentes Esperados</FormLabel>
-                                            <FormControl><Input type="number" {...field} /></FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+                                <div className="grid grid-cols-3 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="attendees_count"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Asistentes</FormLabel>
+                                                <FormControl><Input type="number" {...field} /></FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="investment"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Inversión ($)</FormLabel>
+                                                <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="per_diem"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Viáticos ($)</FormLabel>
+                                                <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
                             </div>
                         )}
 
@@ -352,7 +458,7 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                                     className={!validationResult?.allowed ? "opacity-50 cursor-not-allowed" : ""}
                                     disabled={!validationResult?.allowed || validating}
                                 >
-                                    Confirmar y Crear
+                                    {eventToEdit ? "Confirmar y Actualizar" : "Confirmar y Crear"}
                                 </Button>
                             )}
                         </DialogFooter>
