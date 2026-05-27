@@ -444,11 +444,12 @@ export default function Users() {
         return filtered;
     };
 
-    const filteredUsers = users.filter(user =>
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredUsers = users.filter(user => {
+        if (user.role === 'master') return false;
+        return user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.last_name?.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     if (!canManageUsers) {
         return (
@@ -685,7 +686,7 @@ export default function Users() {
             </EliteTable>
 
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent className="sm:max-w-[700px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-hidden bg-card font-display">
+                <DialogContent className="sm:max-w-[700px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-y-auto max-h-[90vh] bg-card font-display">
                     <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
                         <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase mb-2">Configurar Operador</DialogTitle>
