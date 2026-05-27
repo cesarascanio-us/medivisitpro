@@ -342,7 +342,7 @@ export default function Users() {
                 ? (inviteOrgId === 'none' ? null : inviteOrgId)
                 : (organizationId || null);
 
-            await supabase.functions.invoke('invite-user', {
+            const { data, error } = await supabase.functions.invoke('invite-user', {
                 body: { 
                     email: inviteEmail, 
                     firstName: inviteFirstName, 
@@ -351,6 +351,9 @@ export default function Users() {
                     organizationId: resolvedOrgId 
                 }
             });
+
+            if (error) throw error;
+            if (data?.error) throw new Error(data.error);
             
             toast({ 
                 title: "Invitación Enviada", 

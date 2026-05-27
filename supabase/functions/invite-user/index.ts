@@ -39,15 +39,15 @@ serve(async (req: Request) => {
             throw new Error('Unauthorized')
         }
 
-        // Verify role in profiles table (extra security layer)
+        // Verify role in user_roles_plain table (extra security layer)
         const { data: profile } = await supabaseClient
-            .from('profiles')
+            .from('user_roles_plain')
             .select('role')
             .eq('user_id', user.id)
             .single()
 
         // Allow 'master' and 'admin' to create users
-        if (!profile || !['master', 'admin'].includes(profile.role)) {
+        if (!profile || !['master', 'admin', 'organization_admin'].includes(profile.role)) {
             // Also allow if metadata has role (fallback)
             const userRole = user.app_metadata.role || user.user_metadata.role;
             if (!['master', 'admin'].includes(userRole)) {
@@ -120,36 +120,26 @@ serve(async (req: Request) => {
             targetUserId = inviteData.user.id;
         }
 
-        // 3. Insert/Update Profile (using onConflict to avoid duplicate key errors)
-        const { error: profileError } = await supabaseAdmin
-            .from('profiles')
-            .upsert({
-                user_id: targetUserId,
-                first_name: firstName,
-                last_name: lastName,
-                email: email,
-                organization_id: organizationId,
-                invitation_status: existingUser ? 'active' : 'pending',
-                updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id' })
+        // 3. Database Setup (Profile + Roles) via Security Definer RPC to bypass all permissions/triggers
+        const { data: dbData, error: dbError } = await supabaseAdmin.rpc('admin_invite_user_db_setup', {
+            p_user_id: targetUserId,
+            p_email: email,
+            p_first_name: firstName,
+            p_last_name: lastName,
+            p_role: role || 'representative',
+            p_organization_id: organizationId,
+            p_zone_id: zoneId || null
+        });
 
-        if (profileError) {
-            console.error('Profile creation error:', profileError)
-            throw new Error(`Auth logic success but profile update failed: ${profileError.message}`)
+        if (dbError) {
+            console.error('DB Setup RPC error:', dbError);
+            throw new Error(`Auth logic success but profile update failed: ${dbError.message}`);
         }
-
-        // 4. Insert/Update Role & Zone
-        const { error: roleError } = await supabaseAdmin
-            .from('user_roles')
-            .upsert({
-                user_id: targetUserId,
-                role: role || 'representative',
-                zone_id: zoneId || null,
-                organization_id: organizationId,
-                updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id' })
-
-        if (roleError) console.error('Role/Zone assignment error:', roleError)
+        
+        if (dbData && dbData.error) {
+            console.error('DB Setup RPC internal error:', dbData.error);
+            throw new Error(`Auth logic success but profile update failed internally: ${dbData.error}`);
+        }
 
         return new Response(
             JSON.stringify({
