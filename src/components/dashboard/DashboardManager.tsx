@@ -15,9 +15,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function DashboardManager({ organizationId }: { organizationId: string }) {
-  const { user, isManager, isSaaSStaff, profile } = useAuth();
+  const { user, isManager, isCoordinator, isSupervisor, isSaaSStaff, profile } = useAuth();
   
-  if (!isManager && !isSaaSStaff) {
+  if (!isManager && !isCoordinator && !isSupervisor && !isSaaSStaff) {
     return <Navigate to="/unauthorized" replace />;
   }
 

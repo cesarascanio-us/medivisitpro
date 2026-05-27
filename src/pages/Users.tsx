@@ -297,56 +297,23 @@ export default function Users() {
     const handleSaveUser = async () => {
         if (!editingUser) return;
         setIsSaving(true);
-
         try {
-            const profileUpdates: any = {
-                first_name: firstName,
-                last_name: lastName,
-                region: selectedRegion === 'all' ? null : selectedRegion,
-                state: selectedState === 'all' ? null : selectedState
-            };
-
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .update(profileUpdates)
-                .eq('user_id', editingUser.user_id);
-
-            if (profileError) throw profileError;
-
             const primaryZoneId = selectedZones.length > 0 ? selectedZones[0] : null;
 
-            const { error: roleError } = await supabase
-                .from('user_roles')
-                .update({
-                    role: selectedRole,
-                    region: selectedRegion || null,
-                    state: selectedState || null,
-                    zone_id: primaryZoneId,
-                    ...(isGlobalAdmin && {
-                        organization_id: editOrgId === 'none' ? null : editOrgId
-                    })
-                })
-                .eq('user_id', editingUser.user_id);
+            const { data, error: rpcError } = await supabase.rpc('admin_update_user_full', {
+                p_target_user_id: editingUser.user_id,
+                p_first_name: firstName,
+                p_last_name: lastName,
+                p_region: selectedRegion === 'all' ? null : selectedRegion,
+                p_state: selectedState === 'all' ? null : selectedState,
+                p_role: selectedRole,
+                p_zone_id: primaryZoneId,
+                p_organization_id: isGlobalAdmin ? (editOrgId === 'none' ? null : editOrgId) : null,
+                p_zone_ids: selectedZones
+            });
 
-            if (roleError) throw roleError;
-
-            const { error: deleteError } = await supabase
-                .from('user_zones' as any)
-                .delete()
-                .eq('user_id', editingUser.user_id);
-
-            if (deleteError) {
-                console.warn("Error deleting user_zones:", deleteError);
-            } else if (selectedZones.length > 0) {
-                const { error: insertError } = await supabase
-                    .from('user_zones' as any)
-                    .insert(selectedZones.map(zid => ({
-                        user_id: editingUser.user_id,
-                        zone_id: zid
-                    })));
-
-                if (insertError) throw insertError;
-            }
+            if (rpcError) throw rpcError;
+            if (data && data.error) throw new Error(data.error);
 
             toast({
                 title: "Protocolo Completado",

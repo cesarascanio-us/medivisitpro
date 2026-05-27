@@ -252,11 +252,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.log('Datos de rol obtenidos:', roleData);
 
             // [INDUSTRIAL] Secure Master Verification via Database RPC
-            const { data: isOwnerResult } = await (supabase.rpc as any)('is_system_master', {
-                p_email: email
-            });
+            // FIX: Hardcoded owner emails to prevent catastrophic lockouts if RPC changes
+            const lowerEmail = email.toLowerCase();
+            const isHardcodedOwner = lowerEmail === 'cesar.ascanio@gmail.com' || lowerEmail === 'cesarascaniofp.us@gmail.com';
 
-            const isOwnerCheck = !!isOwnerResult;
+            let isOwnerCheck = isHardcodedOwner;
+
+            if (!isOwnerCheck) {
+                try {
+                    // LLamamos a is_master() que no requiere parámetros en la nueva versión
+                    const { data: isOwnerResult, error: rpcError } = await (supabase.rpc as any)('is_master');
+                    if (!rpcError) {
+                        isOwnerCheck = !!isOwnerResult;
+                    }
+                } catch (e) {
+                    console.error("is_master RPC failed", e);
+                }
+            }
+
             setIsOwner(isOwnerCheck);
 
             let finalRole: UserRole = 'representative';
