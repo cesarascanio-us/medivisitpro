@@ -149,7 +149,6 @@ export default function DashboardManager({ organizationId }: { organizationId: s
           <EliteTable
             title="Ranking de Representantes"
             description="Desempeño del ciclo actual"
-            className="h-full"
           >
             <Table>
               <TableHeader>
