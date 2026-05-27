@@ -40,7 +40,7 @@ const eventSchema = z.object({
         (a) => parseInt(z.string().parse(String(a))),
         z.number().min(0)
     ),
-    pharmacy_id: z.string().uuid().optional(), // Optional, but required for 'jornada' logic check
+    contact_id: z.string().uuid().optional(), // Optional, but can be passed to check_event_eligibility if it's a pharmacy
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
@@ -68,19 +68,19 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
         },
     });
 
-    // Fetch pharmacies for selection
-    const { data: pharmacies } = useQuery({
-        queryKey: ["pharmacies-list"],
+    // Fetch all contacts (doctors, pharmacies, etc) for selection
+    const { data: contacts } = useQuery({
+        queryKey: ["unified-contacts-list"],
         queryFn: async () => {
-            const { data } = await supabase.from("pharmacies").select("id, name, address");
+            const { data } = await supabase.from("unified_contacts").select("id, name, specialty, source");
             return data || [];
         }
     });
 
     const checkEligibility = async () => {
-        const { pharmacy_id, event_type } = form.getValues();
+        const { contact_id, event_type } = form.getValues();
 
-        if (event_type !== 'jornada' || !pharmacy_id) {
+        if (event_type !== 'jornada' || !contact_id) {
             // No strict check needed or no pharmacy selected (manual location)
             setValidationResult({ allowed: true, message: "Evento estándar." });
             return true;
@@ -89,7 +89,7 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
         setValidating(true);
         try {
             const { data, error } = await (supabase as any).rpc('check_event_eligibility', {
-                p_pharmacy_id: pharmacy_id,
+                p_pharmacy_id: contact_id,
                 p_event_type: event_type
             });
 
@@ -138,8 +138,7 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                 scheduled_date: values.scheduled_date,
                 attendees_count: values.attendees_count,
                 status: 'scheduled',
-                // pharmacy_id relation could be added to events table if desired, 
-                // but for now we just use the check to block creation.
+                contact_id: values.contact_id || null,
             });
 
             if (error) throw error;
@@ -201,6 +200,9 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
                                                         <SelectItem value="jornada">Jornada Médica (ROI Alert)</SelectItem>
                                                         <SelectItem value="training">Capacitación</SelectItem>
                                                         <SelectItem value="conference">Conferencia</SelectItem>
+                                                        <SelectItem value="product_day">Día Producto</SelectItem>
+                                                        <SelectItem value="anniversary">Aniversario</SelectItem>
+                                                        <SelectItem value="inauguration">Inauguración</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </FormItem>
@@ -247,19 +249,21 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess }: EventCrea
 
                                 <FormField
                                     control={form.control}
-                                    name="pharmacy_id"
+                                    name="contact_id"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Farmacia Asociada (Opcional)</FormLabel>
+                                            <FormLabel>Contacto Asociado (Opcional)</FormLabel>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Seleccionar farmacia si aplica..." />
+                                                        <SelectValue placeholder="Seleccionar médico o farmacia si aplica..." />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {pharmacies?.map(p => (
-                                                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                                                    {contacts?.map(c => (
+                                                        <SelectItem key={c.id} value={c.id}>
+                                                            {c.name} {c.specialty ? `(${c.specialty})` : ''}
+                                                        </SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>

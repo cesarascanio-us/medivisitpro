@@ -105,6 +105,9 @@ export default function Events() {
             training: "Capacitación",
             jornada: "Jornada Médica",
             operative: "Operativo Médico",
+            product_day: "Día Producto",
+            anniversary: "Aniversario",
+            inauguration: "Inauguración",
             other: "Otro"
         };
         return labels[type] || type;
