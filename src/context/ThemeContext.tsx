@@ -325,9 +325,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       favicon.href = config.favicon_url;
     }
 
-    // Custom organization branding name
+    // Custom organization branding name is no longer overriding document.title
+    // to preserve the main "MediVisit Pro" branding in the browser tab.
     if (config.app_name && (!isDefault || config.app_name !== DEFAULT_THEME.app_name)) {
-      document.title = config.app_name;
+      // document.title = config.app_name; // REMOVED
     }
 
     // Custom CSS injection
