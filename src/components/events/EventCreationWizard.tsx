@@ -209,10 +209,10 @@ export function EventCreationWizard({ open, onOpenChange, onSuccess, eventToEdit
                     .insert({
                         ...eventData,
                         user_id: (await supabase.auth.getUser()).data.user?.id,
-                        status: 'scheduled',
+                        status: 'pending_approval',
                     });
                 if (error) throw error;
-                toast.success("Evento creado exitosamente");
+                toast.success("Solicitud de evento enviada exitosamente");
             }
 
             onOpenChange(false);
