@@ -16,11 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function DashboardManager({ organizationId }: { organizationId: string }) {
   const { user, isManager, isCoordinator, isSupervisor, isSaaSStaff, profile } = useAuth();
-  
-  if (!isManager && !isCoordinator && !isSupervisor && !isSaaSStaff) {
-    return <Navigate to="/unauthorized" replace />;
-  }
 
+  // All hooks MUST be called before any conditional return (React Rules of Hooks)
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -28,12 +25,17 @@ export default function DashboardManager({ organizationId }: { organizationId: s
     return () => clearInterval(timer);
   }, []);
 
+  const dashboardData = useDashboardData(organizationId);
+
+  // Access check AFTER all hooks
+  if (!isManager && !isCoordinator && !isSupervisor && !isSaaSStaff) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
   const formatDate = (d: Date) => {
     const formatted = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
     return formatted.charAt(0).toUpperCase() + formatted.slice(1);
   };
-
-  const dashboardData = useDashboardData(organizationId);
 
   // Mock Data
   const visitasData = [
