@@ -26,7 +26,7 @@ export default function DashboardRouter() {
     return <DashboardMaster />;
   }
 
-  if (role === 'manager' || role === 'coordinator' || role === 'supervisor') {
+  if (role === 'manager' || role === 'organization_admin' || role === 'coordinator' || role === 'supervisor' || role === 'store_manager') {
     return <DashboardManager organizationId={organizationId} />;
   }
 
