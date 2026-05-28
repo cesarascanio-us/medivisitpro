@@ -93,7 +93,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
 
 export default function Users() {
     const t = useTexts();
-    const { user, canManageUsers, canViewUsers, isMaster, profile, organizationName } = useAuth();
+    const { user, canManageUsers, canViewUsers, isMaster, profile, organizationName, role } = useAuth();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
     
@@ -416,6 +416,15 @@ export default function Users() {
 
     const filteredUsers = users.filter(user => {
         if (user.role === 'master') return false;
+        
+        // Si el usuario actual es supervisor, solo puede ver a otros supervisores, coordinadores o representantes
+        if (role === 'supervisor') {
+            const allowedRoles = ['supervisor', 'coordinator', 'representative', 'pharmacist', 'doctor', 'telemarketing'];
+            if (!allowedRoles.includes(user.role)) {
+                return false;
+            }
+        }
+
         return user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.last_name?.toLowerCase().includes(searchTerm.toLowerCase());
