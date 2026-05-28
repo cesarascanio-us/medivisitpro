@@ -144,5 +144,32 @@ export function useDashboardData(organizationId: string | undefined, zoneId?: st
     enabled: !!organizationId
   });
 
-  return { farmacias, medicos, visitas, transferencias, ciclo, inventario }
+  // Representantes
+  const representantes = useQuery({
+    queryKey: ['dashboard_representantes', organizationId],
+    queryFn: async () => {
+      if (!organizationId) return [];
+      const { data, error } = await supabase.from('user_roles')
+        .select(`
+            user_id,
+            role,
+            is_active,
+            profiles:user_id (
+                first_name,
+                last_name
+            )
+        `)
+        .eq('organization_id', organizationId)
+        .in('role', ['representative', 'supervisor']); // Puede ajustarse a solo representative
+      
+      if (error) {
+        console.warn('Error fetching representantes', error);
+        return [];
+      }
+      return data || [];
+    },
+    enabled: !!organizationId
+  });
+
+  return { farmacias, medicos, visitas, transferencias, ciclo, inventario, representantes }
 }

@@ -33,6 +33,8 @@ export default function DashboardManager({ organizationId }: { organizationId: s
     return formatted.charAt(0).toUpperCase() + formatted.slice(1);
   };
 
+  const dashboardData = useDashboardData(organizationId);
+
   // Mock Data
   const visitasData = [
     { day: 'Lun', visitas: 145 },
@@ -40,14 +42,6 @@ export default function DashboardManager({ organizationId }: { organizationId: s
     { day: 'Mié', visitas: 152 },
     { day: 'Jue', visitas: 184 },
     { day: 'Vie', visitas: 132 },
-  ];
-
-  const rankingData = [
-    { id: 1, name: 'Carlos Mendoza', role: 'Representante Sr.', visitas: 42, efectividad: 92, status: 'active' },
-    { id: 2, name: 'Ana Silva', role: 'Representante', visitas: 38, efectividad: 88, status: 'active' },
-    { id: 3, name: 'Luis Herrera', role: 'Representante', visitas: 35, efectividad: 85, status: 'active' },
-    { id: 4, name: 'María Gómez', role: 'Representante Jr.', visitas: 28, efectividad: 76, status: 'review' },
-    { id: 5, name: 'Pedro Rojas', role: 'Representante', visitas: 22, efectividad: 65, status: 'pending' },
   ];
 
   return (
@@ -158,35 +152,57 @@ export default function DashboardManager({ organizationId }: { organizationId: s
                   <TableHead className="text-xs uppercase font-medium text-muted-foreground text-right">Efectividad</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {rankingData.map((rep) => (
-                  <TableRow key={rep.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <TableCell className="py-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={`https://api.dicebear.com/7.x/notionists/svg?seed=${rep.name}`} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
-                            {rep.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{rep.name}</p>
-                          <p className="text-xs text-muted-foreground">{rep.role}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-3 text-center">
-                      <span className="text-sm font-medium">{rep.visitas}</span>
-                    </TableCell>
-                    <TableCell className="py-3 text-right">
-                      <EliteBadge 
-                        status={rep.status as 'active' | 'review' | 'pending'} 
-                        customLabel={`${rep.efectividad}%`} 
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+                <TableBody>
+                  {dashboardData.representantes.data?.length > 0 ? (
+                    dashboardData.representantes.data.map((rep: any) => {
+                      const repName = rep.profiles?.first_name ? `${rep.profiles.first_name} ${rep.profiles.last_name || ''}` : 'Representante';
+                      
+                      // TODO: Calculate real metrics when visits are fully tracked
+                      const repVisitas = 0; 
+                      const repEfectividad = 0; 
+                      const repStatus = rep.is_active ? 'active' : 'pending';
+
+                      return (
+                        <TableRow key={rep.user_id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                          <TableCell className="py-3">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage src={`https://api.dicebear.com/7.x/notionists/svg?seed=${repName}`} />
+                                <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                                  {repName.split(' ').map((n: string) => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="text-sm font-bold text-foreground truncate max-w-[150px]">
+                                  {repName}
+                                </p>
+                                <p className="text-xs text-muted-foreground/80 capitalize">
+                                  {rep.role === 'representative' ? 'Representante' : rep.role}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-center font-semibold text-foreground py-3">
+                            {repVisitas}
+                          </TableCell>
+                          <TableCell className="text-right py-3">
+                            <EliteBadge 
+                              status={repStatus}
+                              customLabel={`${repEfectividad}%`}
+                              className="font-mono"
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-6 text-muted-foreground">
+                        No hay representantes en esta zona.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
             </Table>
           </EliteTable>
         </div>
