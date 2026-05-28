@@ -41,6 +41,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTexts } from "@/hooks/useTexts";
 import { Button } from "@/components/ui/button";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useAppRoles } from "@/hooks/useAppRoles";
 
 interface SidebarProps {
   className?: string;
@@ -66,7 +67,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const texts = useTexts();
   const navigate = useNavigate();
   const location = useLocation();
-  const { canAccessModule } = usePermissions();
+  const { canAccessModule, can } = usePermissions();
 
   const [isExpanded, setIsExpanded] = useState(theme?.sidebar_default !== "collapsed");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
@@ -88,20 +89,12 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     ? `${profile.first_name.charAt(0)}${(profile.last_name || '').charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}`.toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || "U";
 
+  const { data: appRoles } = useAppRoles();
   const getRoleLabel = () => {
-    if (isMaster) return 'Master';
-    if (isAdmin) return 'Administrador';
-    if (isManager) return 'Gerente';
-    if (isCoordinator) return 'Coordinador';
-    if (isSupervisor) return 'Supervisor';
-    return 'Representante';
+    return appRoles?.find(r => r.slug === role)?.name || role;
   };
 
   const canSeeMaster      = isMaster;
-  const canSeeManagement  = isMaster || isAdmin || isManager || isCoordinator || isSupervisor;
-  const canSeeAnalytics   = isMaster || isAdmin || isManager;
-  const canSeeZones       = isMaster || isAdmin || isManager;
-  const canSeeHR          = isMaster || isAdmin || isManager;
 
   // Mock states for visual design specs
   const pendingVisits = role === 'representative' ? 3 : 0;
@@ -113,20 +106,21 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       title: "Administración SaaS",
       items: [
         { name: "Consola Sentinel", href: "/master-panel", icon: Crown, visible: canSeeMaster },
+        { name: "Matriz de Roles", href: "/roles", icon: Shield, visible: canSeeMaster },
         { name: "Planes & Capacidad", href: "/master/plans", icon: Shield, visible: canSeeMaster },
-        { name: "Cobros & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
+        { name: "Cobros & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster || can('admin.billing') },
         { name: "Auditoría Global", href: "/master/logs", icon: Database, visible: canSeeMaster },
         { name: "Soporte Técnico", href: "/master/tickets", icon: ClipboardList, visible: canSeeMaster },
-        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
+        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster || can('admin.theme') },
       ]
     },
     {
       title: "Panel de Control",
       items: [
-        { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: true },
-        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: isMaster || (canSeeAnalytics && theme.enable_finance_monitor && canAccessModule('finance')) },
-        { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: isMaster || isAdmin },
-        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: (isMaster || isAdmin || isManager) && canAccessModule('documents') },
+        { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: can('dashboard.executive') || can('dashboard.regional') || can('dashboard.tactical') || can('dashboard.external') || true },
+        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: can('reports.financial') },
+        { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: canSeeMaster || can('admin.theme') },
+        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: can('reports.export') },
         { name: "Mis Eventos", href: "/events", icon: Calendar, visible: true },
         { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
         { name: "Preguntas y Respuestas", href: "/faq", icon: ShieldCheck, visible: true },
@@ -135,14 +129,14 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     {
       title: "Gestión Médica",
       items: [
-        { name: "Ciclos Promocionales", href: "/promotional-cycles", icon: GitBranch, visible: true },
-        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
-        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: (isMaster || theme.enable_geolocation) && canAccessModule('agenda') },
-        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: canAccessModule('agenda') },
-        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: canAccessModule('visits') },
-        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: (isMaster || theme.enable_sample_tracking) && canAccessModule('sample_banks') },
-        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: canAccessModule('doctors') },
-        { name: "Especialidades", href: "/specialties", icon: Users, visible: canAccessModule('doctors') },
+        { name: "Ciclos Promocionales", href: "/promotional-cycles", icon: GitBranch, visible: can('planning.cycles') },
+        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: can('planning.routes') },
+        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: can('planning.agenda_own') },
+        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: can('planning.agenda_own') || can('planning.agenda_team') },
+        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: can('visits.history') || can('visits.team') || can('visits.create') },
+        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: can('samples.bank') },
+        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: can('directory.view') },
+        { name: "Especialidades", href: "/specialties", icon: Users, visible: can('directory.view') },
       ]
     },
     {
@@ -155,26 +149,26 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     {
       title: "Gestión Comercial",
       items: [
-        { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: canSeeManagement },
-        { name: texts.users_title, href: "/users", icon: Users, visible: canSeeManagement },
-        { name: "Capital Humano", href: "/hr", icon: Shield, visible: canSeeHR && canAccessModule('hr') },
-        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: canAccessModule('sales_pipeline') },
-        { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: true },
+        { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: can('visits.coaching') },
+        { name: texts.users_title, href: "/users", icon: Users, visible: can('admin.users') },
+        { name: "Capital Humano", href: "/hr", icon: Shield, visible: can('admin.users') },
+        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: can('commercial.transfer') },
+        { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: can('reports.national') || can('reports.regional') },
         { name: "Catálogo Interactivo", href: "/products", icon: ShoppingCart, visible: true },
-        { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: true },
-        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: canSeeZones && canAccessModule('zones') },
-        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: (isMaster || theme.enable_pmbok) && canAccessModule('pmbok') },
+        { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: can('commercial.transfer') },
+        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: can('admin.zones') },
+        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: canSeeMaster },
       ]
     },
     {
       title: "Logística y Cobertura",
       items: [
-        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: canAccessModule('transfers') },
-        { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: true },
-        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: canAccessModule('pharmacies') },
-        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: canAccessModule('pharmacies') },
-        { name: "Gestión de Baremos", href: "/baremos", icon: FileText, visible: true },
-        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: isMaster || (canSeeManagement && theme.enable_coverage_map && canAccessModule('coverage_map')) },
+        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: can('commercial.transfer') },
+        { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: can('commercial.pharmacies') },
+        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: can('commercial.pharmacies') },
+        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: can('commercial.stock') },
+        { name: "Gestión de Baremos", href: "/baremos", icon: FileText, visible: can('commercial.prices') },
+        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: can('dashboard.regional') || can('dashboard.executive') },
       ]
     }
   ]

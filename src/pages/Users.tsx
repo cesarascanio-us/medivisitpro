@@ -29,6 +29,7 @@ import { getAllRegions, getStatesInRegion } from "@/constants/regions";
 import { cn } from "@/lib/utils";
 import { EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
 import { useTexts } from "@/hooks/useTexts";
+import { useAppRoles } from "@/hooks/useAppRoles";
 
 interface Zone {
     id: string;
@@ -53,51 +54,16 @@ interface UserWithRole {
     created_at: string;
 }
 
-const ROLE_LABELS: Record<UserRole, string> = {
-    master: 'Master Elite CA',
-    organization_admin: 'Admin de Organización',
-    admin: 'Administrador',
-    manager: 'Gerente',
-    coordinator: 'Coordinador',
-    supervisor: 'Supervisor',
-    representative: 'Representante',
-    chief: 'Jefe de Zona',
-    store_manager: 'Gerente de Tienda',
-    doctor: 'Médico',
-    pharmacist: 'Farmacéutico',
-    service_chief: 'Jefe de Servicios',
-    telemarketing: 'Telemarketing',
-    admin_saas: 'SaaS Admin',
-    soporte_saas: 'SaaS Soporte',
-    desarrollo_saas: 'SaaS Dev'
-};
-
-const ROLE_COLORS: Record<UserRole, string> = {
-    master: 'bg-primary/10 text-primary border-primary/20',
-    organization_admin: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-    admin: 'bg-red-500/10 text-red-500 border-red-500/20',
-    manager: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
-    coordinator: 'bg-violet-500/10 text-violet-500 border-violet-500/20',
-    supervisor: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-    representative: 'bg-muted/10 text-muted-foreground border-border/40',
-    chief: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-    store_manager: 'bg-sky-500/10 text-sky-500 border-sky-500/20',
-    doctor: 'bg-teal-500/10 text-teal-500 border-teal-500/20',
-    pharmacist: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-    service_chief: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
-    telemarketing: 'bg-pink-500/10 text-pink-500 border-pink-500/20',
-    admin_saas: 'bg-foreground text-background',
-    soporte_saas: 'bg-muted/30 text-muted-foreground',
-    desarrollo_saas: 'bg-primary text-white'
-};
-
 export default function Users() {
     const t = useTexts();
     const { user, canManageUsers, canViewUsers, isMaster, profile, organizationName, role } = useAuth();
+    const { data: appRoles } = useAppRoles();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
     
-    // --- NUEVOS ESTADOS DE INVITACIÓN Y ORGANIZACIONES ---
+    const getRoleLabel = (slug: string) => appRoles?.find(r => r.slug === slug)?.name || slug;
+    const getRoleColor = (slug: string) => appRoles?.find(r => r.slug === slug)?.color || "bg-muted/10 text-muted-foreground border-border/40";
+    
     const isGlobalAdmin = isMaster && organizationId === '00000000-0000-0000-0000-000000000000';
     const [organizations, setOrganizations] = useState<{ id: string; name: string }[]>([]);
     const [selectedOrgFilter, setSelectedOrgFilter] = useState<string>('all');
@@ -415,19 +381,19 @@ export default function Users() {
     };
 
     const filteredUsers = users.filter(user => {
-        if (user.role === 'master') return false;
+        if (user.role === 'master' && !isMaster) return false;
         
-        // Si el usuario actual es supervisor, solo puede ver a otros supervisores, coordinadores o representantes
-        if (role === 'supervisor') {
-            const allowedRoles = ['supervisor', 'coordinator', 'representative', 'pharmacist', 'doctor', 'telemarketing'];
-            if (!allowedRoles.includes(user.role)) {
-                return false;
-            }
+        if (!isMaster) {
+            const isSystemRole = appRoles?.find(r => r.slug === user.role)?.is_system;
+            if (isSystemRole && role !== 'admin') return false;
         }
 
-        return user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.last_name?.toLowerCase().includes(searchTerm.toLowerCase());
+        if (!searchTerm) return true;
+
+        const search = searchTerm.toLowerCase();
+        return (user.email?.toLowerCase().includes(search) || false) ||
+            (user.first_name?.toLowerCase().includes(search) || false) ||
+            (user.last_name?.toLowerCase().includes(search) || false);
     });
 
     if (!canViewUsers) {
@@ -567,9 +533,9 @@ export default function Users() {
                                     <TableCell>
                                         <Badge
                                             variant="outline"
-                                            className={cn("font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg border", ROLE_COLORS[user.role] || "bg-muted/10 text-muted-foreground border-border/40")}
+                                            className={cn("font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg border", getRoleColor(user.role))}
                                         >
-                                            {ROLE_LABELS[user.role]}
+                                            {getRoleLabel(user.role)}
                                         </Badge>
                                     </TableCell>
                                     {isGlobalAdmin && (
@@ -708,9 +674,9 @@ export default function Users() {
                                     <SelectValue placeholder="Definir rol corporativo" />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-border/40 bg-card">
-                                    {Object.entries(ROLE_LABELS).map(([value, label]) => (
-                                        <SelectItem key={value} value={value} className="font-black uppercase text-[10px] tracking-widest py-3">
-                                            {label}
+                                    {appRoles?.filter(r => isMaster || !r.is_system).map((r) => (
+                                        <SelectItem key={r.slug} value={r.slug}>
+                                            {r.name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -942,13 +908,11 @@ export default function Users() {
                                         <SelectValue placeholder="Definir rol" />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-border/40 bg-card">
-                                        {Object.entries(ROLE_LABELS)
-                                            .filter(([r]) => isGlobalAdmin ? true : r !== 'master') // Only master can invite masters
-                                            .map(([value, label]) => (
-                                                <SelectItem key={value} value={value} className="font-black uppercase text-[10px] tracking-widest py-3">
-                                                    {label}
-                                                </SelectItem>
-                                            ))}
+                                        {appRoles?.filter(r => isMaster || !r.is_system).map((r) => (
+                                            <SelectItem key={r.slug} value={r.slug}>
+                                                {r.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>

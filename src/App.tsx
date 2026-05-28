@@ -86,6 +86,7 @@ const Billing = lazy(() => import("./pages/Billing"));
 const TicketList = lazy(() => import("./pages/Master/Tickets/TicketList"));
 const AuditLogs = lazy(() => import("./pages/Master/Logs/AuditLogs"));
 const BillingManager = lazy(() => import("./pages/Master/Billing/BillingManager"));
+const RoleManager = lazy(() => import("./pages/RoleManager"));
 const SystemAlerts = lazy(() => import("./pages/Master/Reminders/SystemAlerts"));
 const PlanManager = lazy(() => import("./pages/Master/Memberships/PlanManager"));
 const LandingEditor = lazy(() => import("./pages/Master/LandingEditor"));
@@ -483,6 +484,13 @@ const AppContent = () => (
         <Layout><LandingEditor /></Layout>
       </ProtectedRoute>
     } />
+
+    <Route path="roles" element={
+      <ProtectedRoute allowedRoles={['master']}>
+        <Layout><RoleManager /></Layout>
+      </ProtectedRoute>
+    } />
+
     <Route path="master/compensation" element={
       <ProtectedRoute allowedRoles={['master', 'admin', 'manager']}>
         <Layout><CompensationConfig /></Layout>

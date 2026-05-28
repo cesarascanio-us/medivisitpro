@@ -7,47 +7,20 @@
  ingeniería inversa o uso no autorizado de este código fuente.
  ======================================================================== */
 
-import { useState, useEffect, cloneElement } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Plus, Edit, Trash2, Lock, Save, RefreshCw, LayoutDashboard, Search } from "lucide-react";
+import { Shield, Save, RefreshCw } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AppRole {
-    id: string;
     slug: string;
     name: string;
-    description: string;
     is_system: boolean;
-    color: string;
-    permissions?: string[]; // Code array
 }
 
 interface AppPermission {
@@ -57,25 +30,25 @@ interface AppPermission {
     description: string;
 }
 
+interface RolePermission {
+    role_slug: string;
+    permission_code: string;
+    access_level: 'full' | 'read_only';
+}
+
+// Matrix State: [roleSlug][permissionCode] = 'full' | 'read_only' | null
+type MatrixState = Record<string, Record<string, 'full' | 'read_only' | null>>;
+
 export default function RoleManager() {
     const { isMaster } = useAuth();
     const { toast } = useToast();
+    
     const [roles, setRoles] = useState<AppRole[]>([]);
     const [permissions, setPermissions] = useState<AppPermission[]>([]);
+    const [matrix, setMatrix] = useState<MatrixState>({});
+    const [originalMatrix, setOriginalMatrix] = useState<MatrixState>({});
     const [loading, setLoading] = useState(true);
-
-    // Dialog State
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [editingRole, setEditingRole] = useState<AppRole | null>(null);
-
-    // Form State
-    const [formData, setFormData] = useState({
-        slug: "",
-        name: "",
-        description: "",
-        color: "bg-slate-100 text-slate-800",
-        selectedPermissions: [] as string[]
-    });
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (isMaster) {
@@ -86,44 +59,58 @@ export default function RoleManager() {
     const loadData = async () => {
         setLoading(true);
         try {
-            // 1. Fetch Roles
+            // Fetch Roles (Only show non-system or roles meant for the matrix)
             const { data: rolesData, error: rolesError } = await supabase
                 .from('app_roles')
                 .select('*')
+                // .eq('is_system', false) // Optional: exclude master/admin from grid if desired.
+                .not('slug', 'in', '("master")') // Let's hide master from being edited
                 .order('name');
-
             if (rolesError) throw rolesError;
 
-            // 2. Fetch Permissions
+            // Fetch Permissions
             const { data: permsData, error: permsError } = await supabase
                 .from('app_permissions')
                 .select('*')
-                .order('module, name');
-
+                .order('module, code');
             if (permsError) throw permsError;
-            setPermissions(permsData || []);
 
-            // 3. Fetch Role-Permissions
+            // Fetch mappings
             const { data: rolePermsData, error: rpError } = await supabase
                 .from('role_permissions')
-                .select('role_slug, permission_code');
+                .select('role_slug, permission_code, access_level');
+            if (rpError) {
+                // If the column doesn't exist yet, it will throw an error. 
+                // We'll fallback to a basic fetch if access_level column is missing.
+                console.warn("access_level column might be missing. Run the migration.");
+            }
 
-            if (rpError) throw rpError;
+            // Build Matrix State
+            const initialState: MatrixState = {};
+            rolesData?.forEach(r => {
+                initialState[r.slug] = {};
+                permsData?.forEach(p => {
+                    initialState[r.slug][p.code] = null;
+                });
+            });
 
-            // Map permissions to roles
-            const rolesWithPerms = rolesData?.map(role => ({
-                ...role,
-                permissions: rolePermsData
-                    ?.filter(rp => rp.role_slug === role.slug)
-                    .map(rp => rp.permission_code) || []
-            })) || [];
+            rolePermsData?.forEach(rp => {
+                if (initialState[rp.role_slug]) {
+                    // Si no existe access_level en la DB (error viejo), por defecto será full
+                    initialState[rp.role_slug][rp.permission_code] = rp.access_level || 'full';
+                }
+            });
 
-            setRoles(rolesWithPerms);
+            setRoles(rolesData || []);
+            setPermissions(permsData || []);
+            setMatrix(JSON.parse(JSON.stringify(initialState)));
+            setOriginalMatrix(JSON.parse(JSON.stringify(initialState)));
+
         } catch (error: any) {
-            console.error('Error loading RBAC data:', error);
+            console.error('Error loading RBAC matrix:', error);
             toast({
-                title: "Error cargando roles",
-                description: error.message,
+                title: "Error cargando matriz",
+                description: "Asegúrate de haber ejecutado el script SQL para añadir 'access_level'.",
                 variant: "destructive"
             });
         } finally {
@@ -131,114 +118,75 @@ export default function RoleManager() {
         }
     };
 
-    const handleOpenDialog = (role?: AppRole) => {
-        if (role) {
-            setEditingRole(role);
-            setFormData({
-                slug: role.slug,
-                name: role.name,
-                description: role.description || "",
-                color: role.color || "bg-slate-100 text-slate-800",
-                selectedPermissions: role.permissions || []
-            });
-        } else {
-            setEditingRole(null);
-            setFormData({
-                slug: "",
-                name: "",
-                description: "",
-                color: "bg-slate-100 text-slate-800",
-                selectedPermissions: []
-            });
-        }
-        setIsDialogOpen(true);
-    };
+    const handleToggleCell = (roleSlug: string, permCode: string) => {
+        setMatrix(prev => {
+            const current = prev[roleSlug][permCode];
+            let next: 'full' | 'read_only' | null = null;
 
-    const handleSaveRole = async () => {
-        try {
-            if (!formData.slug || !formData.name) {
-                toast({ title: "Error", description: "Nombre y SLUG son obligatorios", variant: "destructive" });
-                return;
-            }
+            if (current === null) next = 'full';
+            else if (current === 'full') next = 'read_only';
+            else next = null;
 
-            // 1. Upsert Role
-            const rolePayload = {
-                slug: formData.slug, 
-                name: formData.name,
-                description: formData.description,
-                color: formData.color,
-            };
-
-            if (editingRole && editingRole.slug !== formData.slug) {
-                toast({ title: "Error", description: "No se puede cambiar el ID (slug) de un rol existente.", variant: "destructive" });
-                return;
-            }
-
-            const { error: roleError } = await supabase
-                .from('app_roles')
-                .upsert(rolePayload, { onConflict: 'slug' });
-
-            if (roleError) throw roleError;
-
-            // 2. Update Permissions
-            // Delete existing
-            const { error: delError } = await supabase
-                .from('role_permissions')
-                .delete()
-                .eq('role_slug', formData.slug);
-
-            if (delError) throw delError;
-
-            // Insert new
-            if (formData.selectedPermissions.length > 0) {
-                const rpPayload = formData.selectedPermissions.map(code => ({
-                    role_slug: formData.slug,
-                    permission_code: code
-                }));
-
-                const { error: insError } = await supabase
-                    .from('role_permissions')
-                    .insert(rpPayload);
-
-                if (insError) throw insError;
-            }
-
-            toast({ title: "Rol Guardado", description: "Los cambios se han aplicado correctamente." });
-            setIsDialogOpen(false);
-            loadData();
-        } catch (error: any) {
-            console.error('Save role error:', error);
-            toast({ title: "Error", description: error.message, variant: "destructive" });
-        }
-    };
-
-    const handleDeleteRole = async (slug: string) => {
-        if (!confirm(`¿Estás seguro de eliminar el rol '${slug}'? Esto afectará a los usuarios asignados.`)) return;
-
-        try {
-            const { error } = await supabase.from('app_roles').delete().eq('slug', slug);
-            if (error) throw error;
-            toast({ title: "Rol Eliminado" });
-            loadData();
-        } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
-        }
-    };
-
-    const togglePermission = (code: string) => {
-        setFormData(prev => {
-            const exists = prev.selectedPermissions.includes(code);
             return {
                 ...prev,
-                selectedPermissions: exists
-                    ? prev.selectedPermissions.filter(p => p !== code)
-                    : [...prev.selectedPermissions, code]
+                [roleSlug]: {
+                    ...prev[roleSlug],
+                    [permCode]: next
+                }
             };
         });
     };
 
+    const handleSaveMatrix = async () => {
+        setSaving(true);
+        try {
+            // 1. Delete all existing permissions for the roles shown in the matrix
+            const slugs = roles.map(r => r.slug);
+            const { error: delError } = await supabase
+                .from('role_permissions')
+                .delete()
+                .in('role_slug', slugs);
+
+            if (delError) throw delError;
+
+            // 2. Build bulk insert payload
+            const inserts: RolePermission[] = [];
+            roles.forEach(role => {
+                permissions.forEach(perm => {
+                    const access = matrix[role.slug][perm.code];
+                    if (access !== null) {
+                        inserts.push({
+                            role_slug: role.slug,
+                            permission_code: perm.code,
+                            access_level: access
+                        });
+                    }
+                });
+            });
+
+            // 3. Insert new matrix
+            if (inserts.length > 0) {
+                const { error: insError } = await supabase
+                    .from('role_permissions')
+                    .insert(inserts);
+                if (insError) throw insError;
+            }
+
+            setOriginalMatrix(JSON.parse(JSON.stringify(matrix)));
+            toast({ title: "Matriz Guardada", description: "Todos los privilegios han sido actualizados." });
+
+        } catch (error: any) {
+            console.error('Save matrix error:', error);
+            toast({ title: "Error al guardar", description: error.message, variant: "destructive" });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const hasChanges = JSON.stringify(matrix) !== JSON.stringify(originalMatrix);
+
     // Group permissions by module
-    const permissionsByModule = permissions.reduce((acc, curr) => {
+    const groupedPermissions = permissions.reduce((acc, curr) => {
         if (!acc[curr.module]) acc[curr.module] = [];
         acc[curr.module].push(curr);
         return acc;
@@ -247,213 +195,110 @@ export default function RoleManager() {
     if (!isMaster) return <div className="p-8 text-center text-red-500">Acceso Denegado</div>;
 
     return (
-        <div className="flex flex-col h-full bg-background space-y-8 p-1">
-            {/* HEADER INDUSTRIAL ELITE - GESTIÓN DE SEGURIDAD */}
-            <header className="bg-card px-10 md:px-12 py-10 rounded-elite-lg shadow-premium-sm border border-border relative overflow-hidden">
-                {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-80 h-80 bg-primary/5 rounded-full blur-3xl opacity-40" />
-                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-muted/10 rounded-full blur-3xl opacity-40" />
-
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                    <div className="flex items-center gap-8">
-                        <div className="w-20 h-20 bg-primary/10 rounded-[2.5rem] flex items-center justify-center shadow-premium-md border border-primary/20 rotate-3 hover:rotate-0 transition-transform group">
-                            <Shield className="text-primary h-10 w-10 group-hover:scale-110 transition-transform" />
-                        </div>
-                        <div>
-                            <p className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 font-display">Administración de Seguridad</p>
-                            <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase font-display leading-none">
-                                Roles & Permisos
-                            </h1>
-                            <div className="flex items-center gap-3 mt-4">
-                                <Badge className="bg-muted text-muted-foreground border-none font-black text-[9px] px-3 py-1.5 uppercase tracking-widest leading-none">RBAC Protocol V6.0</Badge>
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-900">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-none">{roles.length} Roles Activos</span>
-                                </div>
-                            </div>
-                        </div>
+        <div className="flex flex-col h-full bg-[#FAFBFC] space-y-4 p-4 md:p-6 overflow-hidden max-w-[100vw]">
+            
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm shrink-0">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[#EEF5F8] rounded-xl flex items-center justify-center">
+                        <Shield className="text-[#0B5C6E] h-6 w-6" />
                     </div>
-
-                    <div className="flex items-center gap-4">
-                        <Button
-                            onClick={loadData}
-                            size="icon"
-                            variant="ghost"
-                            className="w-14 h-14 rounded-2xl bg-card border border-border hover:bg-muted/10 hover:shadow-premium-sm transition-all shadow-sm group"
-                        >
-                            <RefreshCw className={cn("h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors", loading && "animate-spin text-primary")} />
-                        </Button>
-                        <Button
-                            onClick={() => handleOpenDialog()}
-                            className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-10 rounded-2xl transition-all hover:scale-105 active:scale-95"
-                        >
-                            <Plus className="h-5 w-5 mr-3" />
-                            Nuevo Rol
-                        </Button>
+                    <div>
+                        <h1 className="text-xl font-bold text-[#1A2332]">Matriz de Accesos</h1>
+                        <p className="text-sm text-slate-500">Configuración global de privilegios</p>
                     </div>
                 </div>
-            </header>
 
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {roles.map(role => (
-                    <Card key={role.slug} className="relative overflow-hidden border border-border shadow-premium-sm bg-card rounded-[3rem] group hover:shadow-premium-md transition-all duration-500">
-                        <div className={cn("absolute top-0 left-0 w-2 h-full opacity-10", role.color.split(' ')[0] || 'bg-muted')} />
-                        <CardHeader className="p-8 pb-4">
-                            <div className="flex justify-between items-start">
-                                <CardTitle className="text-xl font-black text-foreground tracking-tighter uppercase font-display flex items-center gap-3">
-                                    {role.name}
-                                    {role.is_system && (
-                                        <div className="w-6 h-6 rounded-lg bg-amber-50 flex items-center justify-center text-slate-900">
-                                            <Lock className="h-3 w-3 text-amber-500" />
-                                        </div>
-                                    )}
-                                </CardTitle>
-                                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-300 hover:text-primary" onClick={() => handleOpenDialog(role)}>
-                                        <Edit className="h-5 w-5" />
-                                    </Button>
-                                    {!role.is_system && (
-                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-rose-50 text-slate-300 hover:text-rose-600" onClick={() => handleDeleteRole(role.slug)}>
-                                            <Trash2 className="h-5 w-5" />
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                            <CardDescription className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest mt-2 font-display leading-relaxed">
-                                {role.description || "Sin descripción detallada de privilegios"}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="p-8 pt-0">
-                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-4 font-display">Matriz de Acceso ({role.permissions?.length || 0})</p>
-                            <div className="flex flex-wrap gap-2">
-                                {role.permissions?.slice(0, 4).map(code => (
-                                    <Badge key={code} variant="outline" className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-muted/20 border-border text-muted-foreground">
-                                        {permissions.find(p => p.code === code)?.name || code}
-                                    </Badge>
-                                ))}
-                                {(role.permissions?.length || 0) > 4 && (
-                                    <Badge variant="secondary" className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-primary/5 text-primary border-none">
-                                        +{role.permissions!.length - 4} Privilegios
-                                    </Badge>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                <div className="flex flex-wrap items-center gap-6 text-sm text-[#6B7A8D] bg-[#F7F8FA] px-6 py-3 rounded-xl border border-slate-200">
+                    <span className="flex items-center gap-2"><span className="text-[#1D9E75] text-lg font-bold">✓</span> Acceso completo</span>
+                    <span className="flex items-center gap-2"><span className="text-[#B45309] text-lg font-bold">◐</span> Acceso parcial / lectura</span>
+                    <span className="flex items-center gap-2"><span className="text-[#D1D5DB] text-lg font-bold">—</span> Sin acceso</span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <Button onClick={loadData} variant="outline" size="icon" className="h-10 w-10 shrink-0" disabled={loading || saving}>
+                        <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+                    </Button>
+                    <Button 
+                        onClick={handleSaveMatrix} 
+                        disabled={!hasChanges || saving}
+                        className="bg-[#0B5C6E] hover:bg-[#084A59] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        {saving ? "Guardando..." : "Guardar Matriz"}
+                    </Button>
+                </div>
             </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-3xl max-h-[90vh] rounded-[3.5rem] border-none shadow-premium-lg p-0 overflow-hidden flex flex-col font-sans">
-                    <DialogHeader className="bg-card p-12 pb-8 border-b border-slate-100 relative">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
-                        <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase font-display leading-none relative z-10">
-                            {editingRole ? 'Configurar Privilegios' : 'Nueva Entidad de Acceso'}
-                        </DialogTitle>
-                        <DialogDescription className="text-muted-foreground font-bold text-xs mt-4 uppercase tracking-widest relative z-10">
-                            Protocolo de Definición de Roles Estructurales
-                        </DialogDescription>
-                    </DialogHeader>
+            <Tabs defaultValue={Object.keys(groupedPermissions)[0]} className="flex-1 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-slate-200 bg-[#F7F8FA]">
+                    <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent justify-start">
+                        {Object.keys(groupedPermissions).map(moduleName => (
+                            <TabsTrigger 
+                                key={moduleName} 
+                                value={moduleName}
+                                className="uppercase text-xs font-bold tracking-wider data-[state=active]:bg-[#0B5C6E] data-[state=active]:text-white data-[state=active]:shadow-md"
+                            >
+                                {moduleName}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                </div>
 
-                    <ScrollArea className="flex-1 px-12 py-8 bg-slate-50/50">
-                        <div className="space-y-10">
-                            {/* Role Details */}
-                            <div className="grid grid-cols-2 gap-8">
-                                <div className="space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Designación del Rol</Label>
-                                    <Input
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="Ej: AUDITOR MAESTRO"
-                                        className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm"
-                                    />
-                                </div>
-                                <div className="space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Identificador Único (Slug)</Label>
-                                    <Input
-                                        value={formData.slug}
-                                        onChange={e => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
-                                        placeholder="ej: auditor_maestro"
-                                        disabled={!!editingRole} 
-                                        className="h-16 rounded-2xl border-transparent bg-card font-black text-primary focus:ring-primary/20 shadow-sm disabled:opacity-50"
-                                    />
-                                </div>
-                                <div className="col-span-2 space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Propósito Técnico</Label>
-                                    <Textarea
-                                        value={formData.description}
-                                        onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                        className="rounded-2xl border-transparent bg-card font-bold text-foreground focus:ring-primary/20 shadow-sm min-h-[100px]"
-                                        placeholder="Describa el alcance de este rol..."
-                                    />
-                                </div>
-                                <div className="col-span-2 space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 font-display">Token Visual (Tailwind Color)</Label>
-                                    <div className="flex gap-4">
-                                        <Input
-                                            value={formData.color}
-                                            onChange={e => setFormData({ ...formData, color: e.target.value })}
-                                            placeholder="ej: bg-blue-50 text-blue-600"
-                                            className="h-16 rounded-2xl border-transparent bg-card font-bold text-foreground shadow-sm flex-1"
-                                        />
-                                        <div className="flex items-center px-6 rounded-2xl bg-card shadow-sm border border-slate-100">
-                                            <Badge className={cn("px-4 py-2 rounded-full border-none font-black text-[10px] uppercase tracking-widest", formData.color)}>Vista Previa</Badge>
-                                        </div>
-                                    </div>
-                                </div>
-                                                   {/* Permissions Grid */}
-                            <div className="space-y-8 pt-8 border-t border-border">
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-display flex items-center gap-3">
-                                    <Shield className="h-4 w-4" /> Matriz de Permisos Operativos
-                                </h3>
-                                {Object.entries(permissionsByModule).map(([module, perms]) => (
-                                    <div key={module} className="bg-card rounded-[2rem] border border-border shadow-sm overflow-hidden transform transition-all hover:shadow-md">
-                                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] bg-muted/20 text-muted-foreground border-b border-border px-8 py-4 font-display flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                            {module}
-                                        </h4>
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            {perms.map(p => (
-                                                <div key={p.code} className="flex items-start space-x-4 p-4 rounded-2xl hover:bg-muted/10 transition-colors group">
-                                                    <Checkbox
-                                                        id={`perm-${p.code}`}
-                                                        checked={formData.selectedPermissions.includes(p.code)}
-                                                        onCheckedChange={() => togglePermission(p.code)}
-                                                        className="mt-1 w-5 h-5 rounded-lg border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                                                    />
-                                                    <div className="grid gap-1.5 leading-none">
-                                                        <Label
-                                                            htmlFor={`perm-${p.code}`}
-                                                            className="text-xs font-black uppercase tracking-tight text-foreground cursor-pointer group-hover:text-primary transition-colors font-display"
+                {Object.entries(groupedPermissions).map(([moduleName, perms]) => (
+                    <TabsContent key={moduleName} value={moduleName} className="flex-1 m-0 p-0 outline-none">
+                        <ScrollArea className="h-full w-full">
+                            <div className="min-w-[max-content] p-0 pb-8">
+                                <table className="w-full border-collapse text-left text-[11px] font-sans">
+                                    <thead className="sticky top-0 z-20 bg-[#F7F8FA] shadow-[0_1px_0_#E2E6EA]">
+                                        <tr>
+                                            <th className="p-4 border-r border-[#E2E6EA] font-semibold text-[#1A2332] uppercase tracking-wider min-w-[280px] bg-[#F7F8FA] sticky left-0 z-30 shadow-[1px_0_0_#E2E6EA]">
+                                                Acción
+                                            </th>
+                                            {roles.map(role => (
+                                                <th key={role.slug} className="border-r border-[#E2E6EA] align-bottom bg-[#F7F8FA]">
+                                                    <div className="w-[45px] h-[160px] mx-auto flex items-end pb-4 justify-center">
+                                                        <span 
+                                                            className="text-[10px] font-semibold text-[#6B7A8D] whitespace-nowrap"
+                                                            style={{ writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}
                                                         >
-                                                            {p.name}
-                                                        </Label>
-                                                        <p className="text-[10px] text-muted-foreground font-bold leading-relaxed">
-                                                            {p.description}
-                                                        </p>
+                                                            {role.name}
+                                                        </span>
                                                     </div>
-                                                </div>
+                                                </th>
                                             ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>          </div>
-                        </div>
-                    </ScrollArea>
-
-                    <DialogFooter className="bg-card p-10 px-12 border-t border-slate-100">
-                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="h-16 rounded-2xl px-8 font-black uppercase text-[10px] tracking-widest text-muted-foreground hover:bg-muted/10 transition-all">
-                            Abortar Cambios
-                        </Button>
-                        <Button
-                            onClick={handleSaveRole}
-                            className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-16 px-12 font-black uppercase text-[10px] tracking-widest shadow-premium-md transition-all active:scale-95 flex items-center gap-3"
-                        >
-                            <Save className="h-5 w-5" />
-                            Consolidar Configuración
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {perms.map(perm => (
+                                            <tr key={perm.code} className="hover:bg-[#FAFBFC] transition-colors border-b border-[#E2E6EA]">
+                                                <td className="px-4 py-3 text-[#1A2332] font-medium sticky left-0 bg-white border-r border-[#E2E6EA] group-hover:bg-[#FAFBFC] z-10 shadow-[1px_0_0_#E2E6EA]">
+                                                    {perm.name}
+                                                </td>
+                                                {roles.map(role => {
+                                                    const val = matrix[role.slug]?.[perm.code];
+                                                    return (
+                                                        <td 
+                                                            key={`${role.slug}-${perm.code}`} 
+                                                            className="border-r border-[#E2E6EA] text-center p-0 cursor-pointer hover:bg-slate-50 transition-colors"
+                                                            onClick={() => handleToggleCell(role.slug, perm.code)}
+                                                        >
+                                                            <div className="w-full h-full min-h-[40px] flex items-center justify-center select-none">
+                                                                {val === 'full' && <span className="text-[#1D9E75] text-sm font-bold">✓</span>}
+                                                                {val === 'read_only' && <span className="text-[#B45309] text-sm font-bold">◐</span>}
+                                                                {val === null && <span className="text-[#D1D5DB] text-xs font-bold">—</span>}
+                                                            </div>
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ScrollArea>
+                    </TabsContent>
+                ))}
+            </Tabs>
         </div>
     );
 }

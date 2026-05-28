@@ -16,24 +16,24 @@ import { supabase } from "@/integrations/supabase/client";
 const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 
-// Role definitions
+// Role definitions (Dynamic, but providing autocomplete for core roles)
 export type UserRole =
     | 'master'
-    | 'organization_admin'
     | 'admin'
     | 'manager'
     | 'chief'
     | 'coordinator'
     | 'supervisor'
     | 'telemarketing'
-    | 'representative'
+    | 'commercial_rep'
+    | 'medical_visitor'
+    | 'integral_rep'
+    | 'pharmacy'
     | 'doctor'
-    | 'pharmacist'
-    | 'service_chief'
-    | 'store_manager'
-    | 'admin_saas'
-    | 'soporte_saas'
-    | 'desarrollo_saas';
+    | 'buyer'
+    | 'representative' // legacy
+    | 'pharmacist' // legacy
+    | (string & {});
 
 export interface UserProfile {
     id: string;
@@ -466,8 +466,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSaaSSupport,
         isSaaSDev,
         isSaaSStaff,
-        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
-        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isSupervisor,
+        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin',
+        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isCoordinator || isSupervisor,
         canViewAllData: isSaaSStaff || isAdmin || isManager,
         canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
         canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',

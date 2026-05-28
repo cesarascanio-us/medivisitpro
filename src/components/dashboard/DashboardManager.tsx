@@ -46,6 +46,23 @@ export default function DashboardManager({ organizationId }: { organizationId: s
     { day: 'Vie', visitas: 132 },
   ];
 
+  const ROLE_VISIBILITY: Record<string, string[]> = {
+    master:       [],
+    admin:        ['admin', 'manager', 'coordinator', 'supervisor', 'telemarketing', 'representative', 'store_manager', 'organization_admin'],
+    organization_admin: ['admin', 'manager', 'coordinator', 'supervisor', 'telemarketing', 'representative', 'store_manager'],
+    store_manager:['store_manager', 'representative'],
+    manager:      ['manager', 'coordinator', 'supervisor', 'telemarketing', 'representative'],
+    coordinator:  ['coordinator', 'supervisor', 'telemarketing', 'representative'],
+    supervisor:   ['supervisor', 'representative'],
+  };
+
+  const allowedRoles = ROLE_VISIBILITY[profile?.role as string] || [];
+  const filteredReps = (dashboardData.representantes.data || []).filter((rep: any) => {
+    if (rep.role === 'master') return false;
+    if (allowedRoles.length > 0 && !allowedRoles.includes(rep.role)) return false;
+    return true;
+  });
+
   return (
     <div className="flex flex-col w-full space-y-6 max-w-[1200px] mx-auto pb-20">
       
@@ -155,8 +172,8 @@ export default function DashboardManager({ organizationId }: { organizationId: s
                 </TableRow>
               </TableHeader>
                 <TableBody>
-                  {dashboardData.representantes.data?.length > 0 ? (
-                    dashboardData.representantes.data.map((rep: any) => {
+                  {filteredReps.length > 0 ? (
+                    filteredReps.map((rep: any) => {
                       const repName = rep.profiles?.first_name ? `${rep.profiles.first_name} ${rep.profiles.last_name || ''}` : 'Representante';
                       
                       // TODO: Calculate real metrics when visits are fully tracked
