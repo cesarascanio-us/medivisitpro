@@ -8,7 +8,7 @@
 ======================================================================== */
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     X, ChevronRight, ChevronLeft, Map, Stethoscope,
     ShieldAlert, TrendingUp, Sparkles, CheckCircle2,
@@ -83,7 +83,7 @@ export function StrategicOnboarding360() {
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
-            <motion.div
+            <m.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 className="w-full max-w-2xl"
@@ -104,7 +104,7 @@ export function StrategicOnboarding360() {
                         </div>
 
                         <AnimatePresence mode="wait">
-                            <motion.div
+                            <m.div
                                 key={currentStep}
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -128,7 +128,7 @@ export function StrategicOnboarding360() {
                                         </div>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </m.div>
                         </AnimatePresence>
 
                         <div className="flex items-center justify-between mt-10">
@@ -155,14 +155,14 @@ export function StrategicOnboarding360() {
                                     Siguiente <ChevronRight className="ml-2 h-4 w-4" />
                                 </Button>
                             ) : (
-                                <Button className="bg-primary hover:bg-primary/90" onClick={handleFinish}>
+                                <Button className="bg-primary hover:bg-primary/90 text-white" onClick={handleFinish}>
                                     ¡Empezar mi día 360! <Sparkles className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </div>
                     </CardContent>
                 </Card>
-            </motion.div>
+            </m.div>
         </div>
     );
 }

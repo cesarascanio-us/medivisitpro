@@ -169,10 +169,12 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        aria-describedby={undefined}
+        className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="bg-slate-900 px-8 py-6 text-white rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-background/10 backdrop-blur-md flex items-center justify-center">
               <Package className="h-5 w-5 text-indigo-400" />
             </div>
             <div>
@@ -185,12 +187,12 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
         <div className="space-y-6">
           {/* Inventory Summary */}
           <div className="grid grid-cols-2 gap-4 px-8 pt-6">
-            <div className="text-center p-6 bg-indigo-50/50 border border-indigo-100 rounded-[1.5rem] group hover:bg-white transition-all">
+            <div className="text-center p-6 bg-indigo-50/50 border border-indigo-100 rounded-[1.5rem] group hover:bg-card transition-all">
               <div className="text-3xl font-black text-indigo-600 tracking-tighter mb-1">{inventory}</div>
               <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">Stock Disponible</div>
             </div>
-            <div className="text-center p-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] group hover:bg-white transition-all">
-              <div className="text-3xl font-black text-slate-900 tracking-tighter mb-1">{movements.length}</div>
+            <div className="text-center p-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] group hover:bg-card transition-all text-slate-900">
+              <div className="text-3xl font-black text-foreground tracking-tighter mb-1">{movements.length}</div>
               <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">Operaciones Mes</div>
             </div>
           </div>
@@ -234,7 +236,7 @@ export function ProductSamplesDialog({ trigger, productData }: ProductSamplesDia
                 <div>
                   <Label htmlFor="doctor">Médico destinatario</Label>
                   <Select value={selectedContact} onValueChange={setSelectedContact} required>
-                    <SelectTrigger className="mt-2">
+                    <SelectTrigger id="doctor" className="mt-2">
                       <SelectValue placeholder="Seleccionar médico" />
                     </SelectTrigger>
                     <SelectContent>

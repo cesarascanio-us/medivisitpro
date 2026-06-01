@@ -3,24 +3,24 @@
  Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
 
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
  ======================================================================== */
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
-    Users,
-    FileText,
-    Scale,
-    Calendar,
-    TrendingUp,
-    ShieldCheck,
-    Search,
-    Filter,
-    Plus,
-    ChevronRight,
-    UserRound,
-    FileCheck,
     Calculator,
+    ShieldCheck,
+    Users,
+    TrendingUp,
+    Scale,
+    Plus,
+    Calendar,
+    ChevronRight,
+    FileCheck,
+    FileText,
+    Search,
+    UserRound,
     AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,8 +30,6 @@ import { cn } from "@/lib/utils";
 import {
     Tabs,
     TabsContent,
-    TabsList,
-    TabsTrigger
 } from "@/components/ui/tabs";
 import {
     Card,
@@ -40,6 +38,7 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card";
+import { EliteTabsList, EliteTabsTrigger, EliteKPICard, EliteHeader } from "@/components/layout/DesignSystem";
 
 // Simulated Employee Data for RRHH (LOTTT Compliant)
 const EMPLOYEES = [
@@ -82,221 +81,210 @@ export default function HumanResources() {
     const [searchTerm, setSearchTerm] = useState("");
 
     return (
-        <div className="container mx-auto py-8 px-4 space-y-8 animate-in fade-in duration-500">
-            {/* Header Estilo Corporate White */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/40 pb-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-800 flex items-center gap-3">
-                        <UserRound className="h-8 w-8 text-primary" />
-                        Talento Humano (RRHH)
-                    </h1>
-                    <p className="text-slate-500 mt-2">
-                        Gestión integral bajo normativa <span className="font-bold text-primary italic">LOTTT</span> (V01-CA)
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="gap-2 border-primary/20 hover:bg-primary/5">
-                        <Scale className="h-4 w-4" />
-                        Auditoría Legal
-                    </Button>
-                    <Button className="gap-2 shadow-lg shadow-primary/20">
-                        <Plus className="h-4 w-4" />
-                        Nuevo Contrato
-                    </Button>
-                </div>
-            </div>
-
-            {/* KPI Cards Nivel Dios */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                    { label: "Colaboradores", value: "32", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-                    { label: "Cumplimiento LOTTT", value: "94.2%", icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
-                    { label: "Bonus Vacacional", value: "$4,250", icon: Calendar, color: "text-amber-600", bg: "bg-amber-50" },
-                    { label: "Fondo Prestaciones", value: "$12,8K", icon: TrendingUp, color: "text-indigo-600", bg: "bg-indigo-50" },
-                ].map((kpi, i) => (
-                    <motion.div
-                        key={kpi.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                    >
-                        <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden relative group">
-                            <div className={cn("absolute inset-0 opacity-10 group-hover:opacity-15 transition-opacity", kpi.bg)} />
-                            <CardContent className="p-6 relative">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-slate-500">{kpi.label}</p>
-                                    <kpi.icon className={cn("h-5 w-5", kpi.color)} />
-                                </div>
-                                <p className="text-3xl font-bold text-slate-800 mt-2 tracking-tight">{kpi.value}</p>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
-            </div>
-
-            {/* Main Tabs System */}
-            <Tabs defaultValue="directory" className="w-full">
-                <TabsList className="bg-slate-100/50 p-1 border border-slate-200">
-                    <TabsTrigger value="directory" className="gap-2">
-                        <Users className="h-4 w-4" /> Directorio
-                    </TabsTrigger>
-                    <TabsTrigger value="legal" className="gap-2">
-                        <Scale className="h-4 w-4" /> Legal & LOTTT
-                    </TabsTrigger>
-                    <TabsTrigger value="simulator" className="gap-2">
-                        <Calculator className="h-4 w-4" /> Simulador Prestaciones
-                    </TabsTrigger>
-                </TabsList>
-
-                {/* Directorio de Empleados */}
-                <TabsContent value="directory" className="mt-6 space-y-4">
-                    <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                            <Input
-                                placeholder="Buscar por nombre, cargo o rol..."
-                                className="pl-10 border-slate-200 focus:ring-primary/20"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                        <Button variant="outline" className="gap-2">
-                            <Filter className="h-4 w-4" /> Filtros
+        <div className="space-y-6">
+            <EliteHeader
+                title="Talento Humano"
+                subtitle="Gestión Integral y Estrategia Corporativa"
+                icon={ShieldCheck}
+                badgeText="Estrategia 2026"
+                statusText="Gestión Integral • V06-CA"
+                statusColor="bg-indigo-500"
+                rightContent={
+                    <div className="flex items-center gap-3">
+                        <Button variant="outline" className="h-12 px-6 border-border/40 hover:bg-card bg-transparent rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all">
+                            <Scale className="mr-2 h-4 w-4" /> Auditoría
+                        </Button>
+                        <Button className="btn-elite-primary h-12 px-8">
+                            <Plus className="h-5 w-5 mr-3" /> Nuevo Contrato
                         </Button>
                     </div>
+                }
+            />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {EMPLOYEES.map((employee) => (
-                            <Card key={employee.id} className="corporate-card group overflow-hidden border-none shadow-sm">
-                                <CardHeader className="p-0">
-                                    <div className="h-2 bg-primary/80 group-hover:bg-primary transition-colors" />
-                                    <div className="p-6 pb-2 flex items-center justify-between">
-                                        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-inner">
-                                            <UserRound className="h-6 w-6 text-slate-600" />
+            {/* KPI GRID - NATURISTA STYLE */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 overflow-visible">
+                <EliteKPICard 
+                    title="Colaboradores"
+                    value="32"
+                    icon={Users}
+                    color="indigo"
+                />
+                <EliteKPICard 
+                    title="Cumplimiento"
+                    value="94.2%"
+                    icon={ShieldCheck}
+                    color="emerald"
+                />
+                <EliteKPICard 
+                    title="Provisión Vac."
+                    value="$4,250"
+                    icon={Calendar}
+                    color="amber"
+                />
+                <EliteKPICard 
+                    title="Prestaciones"
+                    value="$12.8K"
+                    icon={TrendingUp}
+                    color="blue"
+                />
+            </div>
+
+            {/* CONTENT MODULES */}
+            <Tabs defaultValue="directory" className="flex-1 min-h-0 flex flex-col gap-8 overflow-hidden">
+                <EliteTabsList>
+                    <EliteTabsTrigger value="directory" label="Directorio Industrial" icon={Users} />
+                    <EliteTabsTrigger value="legal" label="Expediente Legal" icon={Scale} />
+                    <EliteTabsTrigger value="simulator" label="Motor de Prestaciones" icon={Calculator} />
+                </EliteTabsList>
+
+                {/* Directorio de Empleados */}
+                <TabsContent value="directory" className="flex-1 min-h-0 flex flex-col gap-6 animate-in slide-in-from-bottom-5 duration-700">
+                    <Card className="card-elite p-4 shrink-0 bg-card border border-border/40 rounded-2xl shadow-premium-sm">
+                        <div className="relative group">
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                            <Input
+                                placeholder="BUSCA POR NOMBRE, CARGO O ROL..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-16 h-14 bg-muted/10 border-none focus-visible:ring-primary/20 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner text-foreground transition-all"
+                            />
+                        </div>
+                    </Card>
+
+                    <Card className="flex-1 min-h-0 bg-card border border-border rounded-[2rem] shadow-soft overflow-hidden flex flex-col p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {EMPLOYEES.map((employee) => (
+                                <div key={employee.id} className="bg-muted/10 rounded-2xl border border-border p-6 hover:bg-muted/20 transition-all group relative overflow-hidden">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="w-12 h-12 rounded-xl bg-card border border-border shadow-inner flex items-center justify-center group-hover:scale-110 transition-all group-hover:bg-indigo-600">
+                                            <UserRound className="h-6 w-6 text-slate-400 group-hover:text-white" />
                                         </div>
-                                        <Badge variant={employee.status === 'activo' ? 'success' : 'outline'} className="uppercase text-[10px] tracking-tighter">
+                                        <Badge className={cn("px-3 py-1 font-black text-[8px] uppercase tracking-widest rounded-full", employee.status === 'activo' ? 'bg-emerald-500/10 text-emerald-500 border-none' : 'bg-rose-500/10 text-rose-500 border-none')}>
                                             {employee.status}
                                         </Badge>
                                     </div>
-                                </CardHeader>
-                                <CardContent className="p-6 pt-2">
-                                    <h3 className="text-lg font-bold text-slate-800">{employee.name}</h3>
-                                    <p className="text-sm text-slate-500 font-medium">{employee.role}</p>
+                                    <div className="space-y-1 mb-6">
+                                        <h3 className="text-lg font-black text-foreground tracking-tight uppercase ">{employee.name}</h3>
+                                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-60 leading-none">{employee.role}</p>
+                                    </div>
 
-                                    <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
-                                        <div>
-                                            <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Antigüedad</p>
-                                            <p className="text-sm font-semibold text-slate-700">{employee.seniority_months} meses</p>
+                                    <div className="grid grid-cols-2 gap-4 pb-6 border-b border-border">
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] uppercase text-slate-400 font-black tracking-widest">Antigüedad</p>
+                                            <p className="text-xs font-black text-foreground">{employee.seniority_months} Meses</p>
                                         </div>
-                                        <div>
-                                            <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Cumplimiento</p>
-                                            <p className="text-sm font-semibold text-primary">{employee.lottt_status}</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] uppercase text-slate-400 font-black tracking-widest">Cumplimiento</p>
+                                            <p className="text-xs font-black text-indigo-500 uppercase tracking-tighter">{employee.lottt_status}</p>
                                         </div>
                                     </div>
 
-                                    <Button variant="ghost" className="w-full mt-6 gap-2 text-slate-600 hover:text-primary hover:bg-primary/5">
-                                        Ver Expediente Completo
+                                    <Button variant="ghost" className="w-full mt-4 h-12 rounded-xl gap-2 text-slate-400 hover:text-indigo-600 transition-all font-bold text-[10px] uppercase tracking-widest">
+                                        Ver Expediente
                                         <ChevronRight className="h-4 w-4" />
                                     </Button>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
                 </TabsContent>
 
                 {/* Módulo Legal LOTTT */}
-                <TabsContent value="legal" className="mt-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <Card className="lg:col-span-2 border-none shadow-sm">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <FileCheck className="h-5 w-5 text-primary" />
-                                    Bóveda de Documentos Legales
+                <TabsContent value="legal" className="mt-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <Card className="lg:col-span-2 border border-border shadow-soft rounded-[2rem] bg-card overflow-hidden">
+                            <CardHeader className="px-10 py-8 border-b border-border bg-muted/5">
+                                <CardTitle className="text-xl font-black uppercase tracking-tight  flex items-center gap-3">
+                                    <FileCheck className="h-6 w-6 text-indigo-600" /> 
+                                    Bóveda de Documentos
                                 </CardTitle>
-                                <CardDescription>Gestión de anexos obligatorios según Art. 142 y 190 LOTTT</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {[
-                                        { doc: "Anexo Cálculo Prestaciones Anual", date: "2026-01-30", status: "Certificado" },
-                                        { doc: "Libro de Control de Vacaciones", date: "2026-02-15", status: "Actualizado" },
-                                        { doc: "Contrato de Confidencialidad (NDA)", date: "2026-02-20", status: "Firma Pendiente" },
-                                        { doc: "Reporte Salud Ocupacional", date: "2025-12-05", status: "Vencido" }
-                                    ].map((doc) => (
-                                        <div key={doc.doc} className="flex items-center justify-between p-4 rounded-lg bg-slate-50/50 border border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group">
-                                            <div className="flex items-center gap-3">
-                                                <FileText className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
-                                                <div>
-                                                    <p className="text-sm font-semibold text-slate-800">{doc.doc}</p>
-                                                    <p className="text-[10px] text-slate-500">Última actualización: {doc.date}</p>
-                                                </div>
+                            <CardContent className="p-8 space-y-3">
+                                {[
+                                    { doc: "Anexo Cálculo Prestaciones Anual", date: "2026-01-30", status: "Certificado" },
+                                    { doc: "Libro de Control de Vacaciones", date: "2026-02-15", status: "Actualizado" },
+                                    { doc: "Contrato de Confidencialidad (NDA)", date: "2026-02-20", status: "Firma Pendiente" },
+                                    { doc: "Reporte Salud Ocupacional", date: "2025-12-05", status: "Vencido" }
+                                ].map((doc, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-muted/5 border border-border group hover:bg-muted/10 transition-all cursor-pointer">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center group-hover:bg-indigo-600 transition-all">
+                                                <FileText className="h-5 w-5 text-slate-400 group-hover:text-white" />
                                             </div>
-                                            <Badge variant={doc.status === 'Certificado' || doc.status === 'Actualizado' ? 'success' : doc.status === 'Vencido' ? 'destructive' : 'warning'}>
-                                                {doc.status}
-                                            </Badge>
+                                            <div>
+                                                <p className="font-black text-foreground uppercase text-xs tracking-tight">{doc.doc}</p>
+                                                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Auditado: {doc.date}</p>
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
+                                        <Badge className={cn("px-3 py-1 font-black text-[8px] uppercase tracking-widest rounded-full",
+                                            doc.status === 'Certificado' || doc.status === 'Actualizado' ? 'bg-emerald-50 text-emerald-600 border-none' : 
+                                            doc.status === 'Vencido' ? 'bg-rose-50 text-rose-600 border-none' : 'bg-amber-50 text-amber-600 border-none'
+                                        )}>
+                                            {doc.status}
+                                        </Badge>
+                                    </div>
+                                ))}
                             </CardContent>
                         </Card>
 
-                        <Card className="border-none shadow-sm bg-primary/5 border border-primary/10">
-                            <CardHeader>
-                                <CardTitle className="text-lg flex items-center gap-2 text-primary">
-                                    <AlertCircle className="h-5 w-5" />
-                                    Alertas de Calidad (Audit)
+                        <div className="space-y-6">
+                            <Card className="border-none shadow-xl shadow-indigo-500/10 rounded-[2rem] bg-indigo-600 text-white overflow-hidden p-8 relative">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-background/10 rounded-full blur-2xl"></div>
+                                <CardTitle className="text-lg font-black uppercase tracking-widest flex items-center gap-3 relative z-10 mb-6 font-outfit leading-none">
+                                    <AlertCircle className="h-5 w-5" /> Notificaciones
                                 </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="p-3 bg-white rounded-lg border border-primary/20 shadow-sm">
-                                    <p className="text-[10px] font-bold text-amber-600 uppercase mb-1">Prioridad Alta</p>
-                                    <p className="text-xs font-semibold text-slate-800">Actualizar Expediente Morffe</p>
-                                    <p className="text-[10px] text-slate-500 mt-1">Falta anexo legal de antigüedad Art. 142 para Q1 2026.</p>
+                                <div className="space-y-4 relative z-10">
+                                    <div className="p-5 bg-background/10 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-background/20 transition-all">
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-white/60 mb-1 leading-none">Urgente</p>
+                                        <p className="text-xs font-black  uppercase leading-tight">Actualizar Expediente Morffe</p>
+                                    </div>
+                                    <div className="p-5 bg-background/5 rounded-xl border border-white/5 opacity-80">
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-white/40 mb-1 leading-none">Nómina</p>
+                                        <p className="text-xs font-black  uppercase leading-tight">Cierre Ciclo Vacacional</p>
+                                    </div>
                                 </div>
-                                <div className="p-3 bg-white rounded-lg border border-slate-200">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Próxima Visita</p>
-                                    <p className="text-xs font-semibold text-slate-800">Cierre de Ciclo Vacacional</p>
-                                    <p className="text-[10px] text-slate-500 mt-1">Humberto Venta debe tomar 15 días antes de Marzo.</p>
-                                </div>
-                            </CardContent>
-                        </Card>
+                            </Card>
+                        </div>
                     </div>
                 </TabsContent>
 
-                <TabsContent value="simulator" className="mt-6">
-                    <Card className="border-none shadow-sm max-w-2xl mx-auto">
-                        <CardHeader className="text-center">
-                            <CardTitle className="text-2xl font-bold tracking-tight">Simulador de Prestaciones LOTTT</CardTitle>
-                            <CardDescription>Cálculo estimado de liquidaciones y prestaciones sociales acumuladas</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6 pt-4">
-                            <div className="grid grid-cols-2 gap-6">
+                <TabsContent value="simulator" className="mt-8">
+                    <Card className="border border-border shadow-soft bg-card rounded-[2rem] max-w-xl mx-auto overflow-hidden">
+                        <div className="p-8 text-center border-b border-border">
+                            <h3 className="text-2xl font-black text-foreground tracking-tight uppercase ">Simulador de Prestaciones</h3>
+                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2">Motor de proyección LOTTT v6.0</p>
+                        </div>
+                        <CardContent className="p-10 space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-700">Fecha de Ingreso</label>
-                                    <Input type="date" className="border-slate-200" defaultValue="2024-01-15" />
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Fecha de Ingreso</label>
+                                    <Input type="date" className="h-12 rounded-xl border-slate-100 bg-muted/10 font-bold text-foreground" defaultValue="2024-01-15" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-700">Último Salario Base ($)</label>
-                                    <Input type="number" className="border-slate-200" defaultValue="1500" />
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Salario Base ($)</label>
+                                    <Input type="number" className="h-12 rounded-xl border-slate-100 bg-muted/10 font-bold text-foreground" defaultValue="1500" />
                                 </div>
                             </div>
-                            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                                <div className="flex justify-between items-center mb-4">
-                                    <span className="text-slate-600">Días Acumulados (75% Antigüedad)</span>
-                                    <span className="font-bold text-slate-800">45 días</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-4 border-t border-slate-200 pt-4">
-                                    <span className="text-slate-600 font-medium">TOTAL ESTIMADO PRESTACIONES</span>
-                                    <span className="text-2xl font-bold text-primary tracking-tighter">$2,250.00</span>
-                                </div>
+                            <div className="bg-indigo-600 p-8 rounded-2xl border border-indigo-400 shadow-xl shadow-indigo-500/20 relative overflow-hidden text-center text-white">
+                                <div className="text-white/60 font-black uppercase text-[9px] tracking-widest mb-1">Pasivo Laboral Estimado</div>
+                                <div className="text-5xl font-black text-white tracking-tighter  leading-none">$2,250.00</div>
                             </div>
-                            <Button className="w-full h-12 text-lg shadow-lg shadow-primary/20">Generar Reporte PDF Legal</Button>
-                            <p className="text-[10px] text-center text-slate-400 italic">Este simulador es de carácter informativo. Los montos finales dependen de la auditoría contable oficial de Empresa CA.</p>
+                            <Button className="w-full h-14 text-[10px] font-black uppercase tracking-widest shadow-lg rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-all">Generar Reporte (PDF)</Button>
                         </CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
+
+             {/* Footer Industrial Elite */}
+             <div className="mt-8 flex items-center justify-between text-slate-400 px-2 shrink-0">
+                <p className="text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                   <ShieldCheck className="h-3.5 w-3.5" /> Directiva de Talento Humano César Ascanio CA
+                </p>
+                <div className="flex gap-4">
+                    <span className="text-[9px] font-bold">V 6.0.0</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest">Compliance OK</span>
+                </div>
+            </div>
         </div>
     );
 }
-

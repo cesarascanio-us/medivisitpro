@@ -25,7 +25,9 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    // Estabilidad SENTINEL: Evitar colisiones en localhost
+    storageKey: 'sb-medivisit-auth-token',
   },
   global: {
     headers: { 'x-application-name': 'MediVisitPro-Sentinel' },

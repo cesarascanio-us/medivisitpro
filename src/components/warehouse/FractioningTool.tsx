@@ -112,7 +112,7 @@ export default function FractioningTool() {
         <Card className="border-purple-100 shadow-xl overflow-hidden">
             <CardHeader className="bg-purple-900 text-white">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white/10 rounded-lg">
+                    <div className="p-2 bg-background/10 rounded-lg">
                         <Boxes className="h-6 w-6" />
                     </div>
                     <div>
@@ -125,7 +125,7 @@ export default function FractioningTool() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                     {/* SOURCE SECTION */}
                     <div className="space-y-6">
-                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-slate-900">
                             <h3 className="text-sm font-black text-slate-500 uppercase mb-4 flex items-center gap-2">
                                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-[10px]">1</span>
                                 Origen (Unidad Mayor)
@@ -135,7 +135,7 @@ export default function FractioningTool() {
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-600">Almacén Origen</label>
                                     <Select value={selectedWarehouse} onValueChange={setSelectedWarehouse}>
-                                        <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
+                                        <SelectTrigger className="bg-background"><SelectValue /></SelectTrigger>
                                         <SelectContent>
                                             {warehouses.map(w => <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>)}
                                         </SelectContent>
@@ -145,7 +145,7 @@ export default function FractioningTool() {
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-600">Producto Base (Caja/Pack)</label>
                                     <Select value={sourceProduct} onValueChange={setSourceProduct}>
-                                        <SelectTrigger className="bg-white"><SelectValue placeholder="Seleccionar producto" /></SelectTrigger>
+                                        <SelectTrigger className="bg-background"><SelectValue placeholder="Seleccionar producto" /></SelectTrigger>
                                         <SelectContent>
                                             {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
                                         </SelectContent>
@@ -155,7 +155,7 @@ export default function FractioningTool() {
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-600">Seleccionar Lote</label>
                                     <Select value={selectedSourceBatch} onValueChange={setSelectedSourceBatch}>
-                                        <SelectTrigger className="bg-white"><SelectValue placeholder="Seleccionar lote" /></SelectTrigger>
+                                        <SelectTrigger className="bg-background"><SelectValue placeholder="Seleccionar lote" /></SelectTrigger>
                                         <SelectContent>
                                             {sourceBatches.map(b => (
                                                 <SelectItem key={b.id} value={b.id}>
@@ -172,7 +172,7 @@ export default function FractioningTool() {
                                         type="number"
                                         value={sourceQty}
                                         onChange={e => setSourceQty(e.target.value)}
-                                        className="h-10 bg-white"
+                                        className="h-10 bg-background"
                                         min="1"
                                         max={currentBatch?.quantity || 1}
                                     />
@@ -198,12 +198,12 @@ export default function FractioningTool() {
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-purple-600">Producto Destino (Fracción)</label>
                                     <Select value={targetProduct} onValueChange={setTargetProduct}>
-                                        <SelectTrigger className="bg-white"><SelectValue placeholder="Seleccionar producto detallado" /></SelectTrigger>
+                                        <SelectTrigger className="bg-background"><SelectValue placeholder="Seleccionar producto detallado" /></SelectTrigger>
                                         <SelectContent>
                                             {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
                                         </SelectContent>
                                     </Select>
-                                    <p className="text-[10px] text-purple-400 italic flex items-center gap-1">
+                                    <p className="text-[10px] text-purple-400  flex items-center gap-1">
                                         <Info className="h-3 w-3" /> Puede ser el mismo producto o una entrada de catálogo detallada.
                                     </p>
                                 </div>
@@ -214,7 +214,7 @@ export default function FractioningTool() {
                                         type="number"
                                         value={targetQty}
                                         onChange={e => setTargetQty(e.target.value)}
-                                        className="h-10 bg-white font-black text-purple-700 text-lg"
+                                        className="h-10 bg-background font-black text-purple-700 text-lg"
                                         placeholder="Ej: 30"
                                     />
                                     <p className="text-[10px] text-purple-500">Total de unidades obtenidas después del fraccionamiento.</p>
@@ -225,13 +225,13 @@ export default function FractioningTool() {
                                     <Input
                                         value={notes}
                                         onChange={e => setNotes(e.target.value)}
-                                        className="h-10 bg-white text-xs"
+                                        className="h-10 bg-background text-xs"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-amber-50 rounded-lg p-4 border border-amber-200 flex items-start gap-3">
+                        <div className="bg-amber-50 rounded-lg p-4 border border-amber-200 flex items-start gap-3 text-slate-900">
                             <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
                             <div className="text-[11px] text-amber-800 leading-tight">
                                 <b>Importante:</b> Esta operación es irreversible. Se creará un nuevo lote con el sufijo <span className="font-mono text-amber-900 font-bold">-DET</span> para facilitar su identificación en el Kardex.

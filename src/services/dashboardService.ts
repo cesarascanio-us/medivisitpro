@@ -9,6 +9,14 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { getRegion, getStatesInRegion } from "@/utils/regions";
+import { MOCK_DATA } from "@/data/mockDemoData";
+
+const isDemoMode = () => {
+    return typeof window !== 'undefined' && (
+        window.location.pathname.includes('/demo') ||
+        localStorage.getItem('sb-medivisit-auth-token')?.includes('demo.medivisitpro@gmail.com')
+    );
+};
 
 export interface DashboardFilters {
     region?: string;
@@ -19,6 +27,10 @@ export interface DashboardFilters {
 
 export const dashboardService = {
     async getVisits(startDate: string, filters: DashboardFilters) {
+        if (isDemoMode()) {
+            return { data: MOCK_DATA.visits || [], count: (MOCK_DATA.visits || []).length };
+        }
+
         let query = supabase.from('visits').select('*, contacts(state)');
 
         // Aplicamos filtros en cascada
@@ -43,6 +55,10 @@ export const dashboardService = {
     },
 
     async getOrders(startDate: string, filters: DashboardFilters) {
+        if (isDemoMode()) {
+            return MOCK_DATA.transfers || [];
+        }
+
         let query = supabase.from('transfer_orders').select('*, contacts(state)');
 
         if (filters.repId && filters.repId !== 'all') {
@@ -64,6 +80,19 @@ export const dashboardService = {
     },
 
     async getProfilesAndRoles() {
+        if (isDemoMode()) {
+            return {
+                profiles: [
+                    { user_id: 'rep-1', first_name: 'Juan', last_name: 'Pérez', email: 'juan@demo.com' },
+                    { user_id: 'rep-2', first_name: 'María', last_name: 'Gómez', email: 'maria@demo.com' }
+                ],
+                roles: [
+                    { user_id: 'rep-1', role: 'representative', is_active: true, state: 'Miranda' },
+                    { user_id: 'rep-2', role: 'representative', is_active: true, state: 'Carabobo' }
+                ]
+            };
+        }
+
         const [profilesRes, rolesRes] = await Promise.all([
             supabase.from('profiles').select('*'),
             supabase.from('user_roles').select('*')
@@ -80,12 +109,26 @@ export const dashboardService = {
     },
 
     async getZones() {
+        if (isDemoMode()) {
+            return [
+                { id: 'zone-1', name: 'Zona Centro-Norte' },
+                { id: 'zone-2', name: 'Zona Occidente' }
+            ];
+        }
+
         const { data, error } = await (supabase as any).from('zones').select('id, name');
         if (error) throw error;
         return data || [];
     },
 
     async getKpiData() {
+        if (isDemoMode()) {
+            return [
+                { id: '1', zone_name: 'Zona Centro-Norte', coverage: 82.5, frequency: 1.8, sales_actual: 75000, sales_quota: 90000 },
+                { id: '2', zone_name: 'Zona Occidente', coverage: 78.2, frequency: 1.5, sales_actual: 62000, sales_quota: 80000 }
+            ];
+        }
+
         // Safe casting as view might not be typed yet
         const { data, error } = await supabase.from('view_kpi_zonas' as any).select('*');
         if (error) throw error;
@@ -93,6 +136,16 @@ export const dashboardService = {
     },
 
     async getPendingOrders(filters?: DashboardFilters) {
+        if (isDemoMode()) {
+            return (MOCK_DATA.transfers || [])
+                .filter(t => t.status === 'pending')
+                .map(t => ({
+                    ...t,
+                    contacts: { name: 'Farmacia San Pedro' },
+                    users: { first_name: 'Demo', last_name: 'User', email: 'demo@medivisitpro.com', state: 'Caracas', zone_ids: ['zone-1'] }
+                }));
+        }
+
         // Fetch all pending orders first
         const { data: orders, error } = await supabase.from('transfer_orders')
             .select('*, contacts(name)')
@@ -190,6 +243,13 @@ export const dashboardService = {
     },
 
     async getDroguerias() {
+        if (isDemoMode()) {
+            return [
+                { id: 'drog-1', name: 'Droguería Nena' },
+                { id: 'drog-2', name: 'Droguería Cobeca' }
+            ];
+        }
+
         const { data, error } = await supabase
             .from('drugstores')
             .select('id, name')

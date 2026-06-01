@@ -195,7 +195,7 @@ export function POPAssignmentHistory() {
                                             <TableCell className="font-medium">{a.representative_name}</TableCell>
                                             <TableCell className="text-muted-foreground">{a.creator_name}</TableCell>
                                             <TableCell>
-                                                <Badge className={STATUS_COLORS[a.status] || 'bg-gray-100'}>
+                                                <Badge className={STATUS_COLORS[a.status] || 'bg-muted'}>
                                                     {STATUS_LABELS[a.status] || a.status}
                                                 </Badge>
                                             </TableCell>

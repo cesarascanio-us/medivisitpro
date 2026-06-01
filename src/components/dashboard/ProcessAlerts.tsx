@@ -5,10 +5,10 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,10 +18,10 @@ import {
     AlertTriangle,
     Clock,
     Calendar,
-    XCircle,
     ChevronRight,
     Loader2
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ProcessAlert {
     id: string;
@@ -34,7 +34,7 @@ interface ProcessAlert {
 }
 
 export function ProcessAlerts() {
-    const { user, isMaster, isAdmin, isManager, isSupervisor } = useAuth();
+    const { user, isMaster, isAdmin, isManager } = useAuth();
     const [alerts, setAlerts] = useState<ProcessAlert[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -54,7 +54,7 @@ export function ProcessAlerts() {
         const now = new Date().toISOString();
 
         try {
-            // 1. Buscar ciclos promocionales expirados (fecha fin pasada pero status 'active')
+            // 1. Buscar ciclos promocionales expirados
             if (canViewAllAlerts) {
                 const { data: expiredCycles, error: cyclesError } = await supabase
                     .from('promotional_cycles')
@@ -68,27 +68,26 @@ export function ProcessAlerts() {
                             id: `cycle-${cycle.id}`,
                             type: 'cycle_expired',
                             title: 'Ciclo Promocional Vencido',
-                            description: `El ciclo "${cycle.name}" terminó el ${new Date(cycle.end_date).toLocaleDateString()} pero sigue activo.`,
+                            description: `El ciclo "${cycle.name}" terminó pero sigue activo.`,
                             severity: 'critical',
                             actionUrl: '/promotional-cycles',
-                            actionLabel: 'Cerrar Ciclo'
+                            actionLabel: 'Gestionar'
                         });
                     });
                 }
             }
 
-            // 2. Buscar visitas "zombie" (in_progress por más de 24 horas)
+            // 2. Buscar visitas "zombie" (> 24h in_progress)
             const yesterday = new Date();
             yesterday.setHours(yesterday.getHours() - 24);
             const yesterdayISO = yesterday.toISOString();
 
             let zombieQuery = supabase
                 .from('visits')
-                .select('id, scheduled_date, actual_start_time, contact_id')
+                .select('id, scheduled_date, actual_start_time, contacts(name)')
                 .eq('status', 'in_progress')
                 .lt('actual_start_time', yesterdayISO);
 
-            // Si no es admin/manager, filtrar solo las propias
             if (!canViewAllAlerts) {
                 zombieQuery = zombieQuery.eq('user_id', user.id);
             }
@@ -97,7 +96,7 @@ export function ProcessAlerts() {
 
             if (!visitsError && zombieVisits && zombieVisits.length > 0) {
                 zombieVisits.forEach(visit => {
-                    const contactName = (visit.contacts as any)?.name || 'Contacto desconocido';
+                    const contactName = (visit.contacts as any)?.name || 'Contacto';
                     const startTime = visit.actual_start_time || visit.scheduled_date;
                     const hoursAgo = Math.round((new Date().getTime() - new Date(startTime).getTime()) / (1000 * 60 * 60));
 
@@ -105,10 +104,10 @@ export function ProcessAlerts() {
                         id: `visit-${visit.id}`,
                         type: 'zombie_visit',
                         title: 'Visita Sin Cerrar',
-                        description: `Visita a "${contactName}" lleva ${hoursAgo} horas en progreso. ¿Olvidaste hacer check-out?`,
+                        description: `"${contactName}" lleva ${hoursAgo}h en progreso.`,
                         severity: 'warning',
                         actionUrl: `/visits/execute/${visit.id}`,
-                        actionLabel: 'Cerrar Visita'
+                        actionLabel: 'Cerrar'
                     });
                 });
             }
@@ -123,72 +122,89 @@ export function ProcessAlerts() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <div className="bg-card border-none rounded-[2rem] p-8 text-center animate-pulse shadow-soft">
+                <Loader2 className="mx-auto h-8 w-8 text-primary/30 mb-4 animate-spin" />
+                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest  tracking-widest">Analizando Filtros CA...</p>
             </div>
         );
     }
 
-    if (alerts.length === 0) {
-        return null; // No mostrar nada si no hay alertas
-    }
+    if (alerts.length === 0) return null;
 
     return (
-        <Card className="border-l-4 border-l-amber-500 bg-amber-50/30">
-            <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                    <AlertTriangle className="h-5 w-5 text-amber-600" />
-                    Alertas de Proceso
-                    <Badge variant="outline" className="ml-2 bg-amber-100 text-amber-800 border-amber-200">
-                        {alerts.length}
-                    </Badge>
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-                {alerts.map((alert) => (
-                    <div
-                        key={alert.id}
-                        className={`flex items-start justify-between p-3 rounded-lg ${alert.severity === 'critical'
-                            ? 'bg-red-50 border border-red-200'
-                            : 'bg-amber-50 border border-amber-200'
-                            }`}
-                    >
-                        <div className="flex items-start gap-3">
-                            {alert.type === 'cycle_expired' ? (
-                                <Calendar className={`h-5 w-5 mt-0.5 ${alert.severity === 'critical' ? 'text-red-600' : 'text-amber-600'
-                                    }`} />
-                            ) : (
-                                <Clock className={`h-5 w-5 mt-0.5 ${alert.severity === 'critical' ? 'text-red-600' : 'text-amber-600'
-                                    }`} />
-                            )}
-                            <div>
-                                <p className={`font-medium text-sm ${alert.severity === 'critical' ? 'text-red-800' : 'text-amber-800'
-                                    }`}>
-                                    {alert.title}
-                                </p>
-                                <p className={`text-xs mt-0.5 ${alert.severity === 'critical' ? 'text-red-600' : 'text-amber-600'
-                                    }`}>
-                                    {alert.description}
-                                </p>
-                            </div>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                            className={`shrink-0 ${alert.severity === 'critical'
-                                ? 'text-red-700 hover:bg-red-100'
-                                : 'text-amber-700 hover:bg-amber-100'
-                                }`}
-                        >
-                            <Link to={alert.actionUrl}>
-                                {alert.actionLabel}
-                                <ChevronRight className="h-4 w-4 ml-1" />
-                            </Link>
-                        </Button>
+        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden font-outfit">
+            <CardHeader className="pb-6 px-8 pt-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle className="flex items-center gap-3 text-sm font-black text-slate-700 dark:text-foreground uppercase tracking-tighter ">
+                            <AlertTriangle className="h-5 w-5 text-amber-500" />
+                            Control de Procesos
+                            <Badge className="bg-amber-500/10 text-amber-500 border-none rounded-full h-5 w-5 flex items-center justify-center font-black text-[10px] p-0">
+                                {alerts.length}
+                            </Badge>
+                        </CardTitle>
+                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">
+                            Auditoría de Protocolos Real-Time CA
+                        </CardDescription>
                     </div>
-                ))}
+                </div>
+            </CardHeader>
+            <CardContent className="px-6 pb-8 space-y-4">
+                {alerts.map((alert) => {
+                    const isCritical = alert.severity === 'critical';
+                    const Icon = alert.type === 'cycle_expired' ? Calendar : Clock;
+
+                    return (
+                        <div
+                            key={alert.id}
+                            className={cn(
+                                "flex items-center justify-between p-4 rounded-[1.5rem] border transition-all hover:scale-[1.02]",
+                                isCritical 
+                                    ? 'bg-rose-500/5 border-rose-500/10' 
+                                    : 'bg-amber-500/5 border-amber-500/10'
+                            )}
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={cn(
+                                    "p-2.5 rounded-xl bg-card shadow-soft",
+                                    isCritical ? 'text-rose-500' : 'text-amber-500'
+                                )}>
+                                    <Icon className="h-5 w-5" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className={cn(
+                                        "font-black uppercase tracking-tight  text-xs",
+                                        isCritical ? 'text-rose-700 dark:text-rose-400' : 'text-amber-700 dark:text-amber-400'
+                                    )}>
+                                        {alert.title}
+                                    </p>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 truncate max-w-[150px]">
+                                        {alert.description}
+                                    </p>
+                                </div>
+                            </div>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className={cn(
+                                    "rounded-xl h-8 px-4 font-black text-[9px] uppercase tracking-widest",
+                                    isCritical 
+                                        ? 'text-rose-600 hover:bg-rose-500/10' 
+                                        : 'text-amber-600 hover:bg-amber-500/10'
+                                )}
+                            >
+                                <Link to={alert.actionUrl}>
+                                    {alert.actionLabel}
+                                    <ChevronRight className="h-3 w-3 ml-1" />
+                                </Link>
+                            </Button>
+                        </div>
+                    );
+                })}
             </CardContent>
         </Card>
     );
 }
+
+export default ProcessAlerts;

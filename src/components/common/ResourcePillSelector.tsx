@@ -50,7 +50,7 @@ export function ResourcePillSelector({
         return (
             <div className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground">{label}</label>
-                <p className="text-xs text-muted-foreground italic">{emptyMessage}</p>
+                <p className="text-xs text-muted-foreground ">{emptyMessage}</p>
             </div>
         );
     }

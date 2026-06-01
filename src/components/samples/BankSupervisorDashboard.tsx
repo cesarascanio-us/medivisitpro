@@ -43,7 +43,7 @@ export function BankSupervisorDashboard() {
     const demoData = useDemoData();
 
     useEffect(() => {
-        if (demoData || true) loadBanks(); // user is implied by routing/guard
+        loadBanks();
     }, [demoData]);
 
     const loadBanks = async () => {
@@ -57,7 +57,7 @@ export function BankSupervisorDashboard() {
                 bank_inventory: (demoData.bankInventory || []).filter(item => item.bank_id === bank.id),
                 profiles: { first_name: "Usuario", last_name: "Demo" }
             }));
-            // @ts-ignore
+            // @ts-expect-error - Demo data typing
             setBanks(demoBanks);
             setLoading(false);
             return;
@@ -79,7 +79,7 @@ export function BankSupervisorDashboard() {
         if (error) {
             console.error("Error loading banks:", error);
         } else {
-            // @ts-ignore
+            // @ts-expect-error - Supabase join typing
             setBanks(data || []);
         }
         setLoading(false);
@@ -156,7 +156,7 @@ export function BankSupervisorDashboard() {
                                             <TableCell>
                                                 <div className="font-medium">{bank.name}</div>
                                                 <div className="text-xs text-muted-foreground">{bank.health_centers?.name}</div>
-                                                <div className="text-xs text-muted-foreground italic">{bank.service_name}</div>
+                                                <div className="text-xs text-muted-foreground ">{bank.service_name}</div>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-1 text-sm">

@@ -20,7 +20,7 @@ export const DemoHeroVideo: React.FC = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
 
             {/* Video Container / Thumbnail */}
-            <div className="relative aspect-video rounded-[2.5rem] bg-slate-800 border-4 border-slate-700/50 overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="relative aspect-video rounded-[2.5rem] bg-slate-800 border-4 border-slate-700/50 overflow-hidden shadow-2xl backdrop-blur-xl text-white">
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 to-transparent z-10" />
 
                 {/* Abstract Preview Pattern */}

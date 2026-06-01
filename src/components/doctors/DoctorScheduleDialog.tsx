@@ -150,7 +150,7 @@ export function DoctorScheduleDialog({
             <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
                 <div className="bg-slate-800 px-6 py-8 text-white">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-background/10 flex items-center justify-center">
                             <Clock className="h-5 w-5" />
                         </div>
                         <DialogTitle className="text-xl font-black mt-0">
@@ -159,7 +159,7 @@ export function DoctorScheduleDialog({
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 bg-white max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 bg-card max-h-[70vh] overflow-y-auto custom-scrollbar">
                     {/* Centro de Salud */}
                     <div className="space-y-3">
                         <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Centro de Salud Vinculado</Label>
@@ -181,7 +181,7 @@ export function DoctorScheduleDialog({
                         </Select>
                     </div>
 
-                    <Separator className="bg-slate-100" />
+                    <Separator className="bg-slate-100 text-slate-900" />
 
                     {/* Dirección Manual */}
                     <div className="space-y-4">
@@ -221,7 +221,7 @@ export function DoctorScheduleDialog({
                     </div>
 
                     {/* Geocoding Section */}
-                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 shadow-inner">
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 shadow-inner text-slate-900">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Navigation className="h-4 w-4 text-blue-600" />
@@ -249,7 +249,7 @@ export function DoctorScheduleDialog({
                                 value={formData.latitude || ""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) || null }))}
                                 placeholder="Latitud"
-                                className="h-9 text-[10px] font-mono font-bold bg-white"
+                                className="h-9 text-[10px] font-mono font-bold bg-card"
                             />
                             <Input
                                 type="number"
@@ -257,12 +257,12 @@ export function DoctorScheduleDialog({
                                 value={formData.longitude || ""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) || null }))}
                                 placeholder="Longitud"
-                                className="h-9 text-[10px] font-mono font-bold bg-white"
+                                className="h-9 text-[10px] font-mono font-bold bg-card"
                             />
                         </div>
                     </div>
 
-                    <Separator className="bg-slate-100" />
+                    <Separator className="bg-slate-100 text-slate-900" />
 
                     {/* Horarios */}
                     <div className="space-y-4">
@@ -330,7 +330,7 @@ export function DoctorScheduleDialog({
                         />
                     </div>
 
-                    <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-3">
+                    <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-3 text-slate-900">
                         <Checkbox
                             id="activo"
                             checked={formData.activo}
@@ -343,7 +343,7 @@ export function DoctorScheduleDialog({
                     </div>
                 </form>
 
-                <div className="bg-white border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                <div className="bg-card border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
                     <Button variant="ghost" onClick={() => onOpenChange(false)} className="h-12 px-6 font-bold text-slate-400">Descartar</Button>
                     <Button onClick={handleSubmit} disabled={loading} className="h-12 px-8 bg-slate-800 hover:bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl transition-all hover:scale-[1.02]">
                         {loading ? "Sincronizando..." : (scheduleData ? "Actualizar Sede" : "Confirmar Nueva Sede")}

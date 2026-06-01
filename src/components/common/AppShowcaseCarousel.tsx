@@ -73,7 +73,7 @@ export const AppShowcaseCarousel: React.FC = () => {
 
             {/* Main Container */}
             <div
-                className="relative aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] bg-slate-800 border-4 border-slate-700/50 overflow-hidden shadow-2xl backdrop-blur-xl cursor-pointer"
+                className="relative aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] bg-slate-800 border-4 border-slate-700/50 overflow-hidden shadow-2xl backdrop-blur-xl cursor-pointer text-white"
                 onClick={() => navigate('/demo')}
             >
                 {/* Images */}
@@ -139,7 +139,7 @@ export const AppShowcaseCarousel: React.FC = () => {
                             onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
                             className={cn(
                                 "h-1 transition-all rounded-full",
-                                i === current ? "w-8 bg-emerald-500" : "w-2 bg-white/30 hover:bg-white/50"
+                                i === current ? "w-8 bg-emerald-500" : "w-2 bg-background/30 hover:bg-background/50"
                             )}
                         />
                     ))}

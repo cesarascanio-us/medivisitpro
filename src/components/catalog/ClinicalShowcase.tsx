@@ -92,7 +92,7 @@ export function ClinicalShowcase({
     return (
         <div
             ref={containerRef}
-            className={`rounded-xl ${isFullscreen ? 'p-8 h-screen overflow-y-auto bg-slate-900' : 'bg-white'}`}
+            className={`rounded-xl ${isFullscreen ? 'p-8 h-screen overflow-y-auto bg-slate-900' : 'bg-card'}`}
         >
             {/* Header Section */}
             <div className={`flex justify-between items-start mb-6 ${isFullscreen ? 'text-white' : ''}`}>
@@ -111,9 +111,9 @@ export function ClinicalShowcase({
 
                     {/* Key Message */}
                     {keyMessage && (
-                        <div className={`flex items-start gap-2 p-3 rounded-lg max-w-xl ${isFullscreen ? 'bg-white/10' : 'bg-amber-50 border border-amber-200'}`}>
+                        <div className={`flex items-start gap-2 p-3 rounded-lg max-w-xl ${isFullscreen ? 'bg-background/10' : 'bg-amber-50 border border-amber-200'}`}>
                             <Sparkles className={`h-5 w-5 flex-shrink-0 mt-0.5 ${isFullscreen ? 'text-amber-400' : 'text-amber-500'}`} />
-                            <p className={`text-sm italic ${isFullscreen ? 'text-white' : 'text-amber-800'}`}>"{keyMessage}"</p>
+                            <p className={`text-sm  ${isFullscreen ? 'text-white' : 'text-amber-800'}`}>"{keyMessage}"</p>
                         </div>
                     )}
 
@@ -121,7 +121,7 @@ export function ClinicalShowcase({
                     {activeIngredients && activeIngredients.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
                             {activeIngredients.slice(0, 3).map((ingredient, i) => (
-                                <Badge key={i} variant="secondary" className={isFullscreen ? 'bg-white/20 text-white border-0' : 'bg-emerald-100 text-emerald-700 border-0'}>
+                                <Badge key={i} variant="secondary" className={isFullscreen ? 'bg-background/20 text-white border-0' : 'bg-emerald-100 text-emerald-700 border-0'}>
                                     {ingredient}
                                 </Badge>
                             ))}
@@ -133,7 +133,7 @@ export function ClinicalShowcase({
                     variant={isFullscreen ? "secondary" : "outline"}
                     size="sm"
                     onClick={toggleFullscreen}
-                    className={`gap-2 ${isFullscreen ? 'bg-white/20 hover:bg-white/30 text-white border-0' : ''}`}
+                    className={`gap-2 ${isFullscreen ? 'bg-background/20 hover:bg-background/30 text-white border-0' : ''}`}
                 >
                     {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                     {isFullscreen ? 'Salir' : 'Modo Presentación'}
@@ -151,9 +151,9 @@ export function ClinicalShowcase({
                         {/* Media Content */}
                         {activeAsset ? (
                             activeAsset.type === 'video' ? (
-                                <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                                <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white">
                                     <div className="text-center">
-                                        <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-white/30 transition-colors">
+                                        <div className="w-20 h-20 rounded-full bg-background/20 flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-background/30 transition-colors">
                                             <PlayCircle className="h-12 w-12 text-white" />
                                         </div>
                                         <p className="text-white/70">Click para reproducir</p>
@@ -173,7 +173,7 @@ export function ClinicalShowcase({
                                 <img
                                     src={activeAsset.url}
                                     alt={activeAsset.title}
-                                    className="w-full h-full object-contain bg-white"
+                                    className="w-full h-full object-contain bg-card"
                                     onError={() => setImageError(true)}
                                 />
                             )
@@ -195,7 +195,7 @@ export function ClinicalShowcase({
                                 <Button
                                     variant="secondary"
                                     size="icon"
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/90 hover:bg-background shadow-lg rounded-full opacity-0 group-hover:opacity-100 transition-all"
                                     onClick={prevAsset}
                                 >
                                     <ChevronLeft className="h-5 w-5" />
@@ -203,7 +203,7 @@ export function ClinicalShowcase({
                                 <Button
                                     variant="secondary"
                                     size="icon"
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/90 hover:bg-background shadow-lg rounded-full opacity-0 group-hover:opacity-100 transition-all"
                                     onClick={nextAsset}
                                 >
                                     <ChevronRight className="h-5 w-5" />
@@ -222,7 +222,7 @@ export function ClinicalShowcase({
                                         )}
                                     </div>
                                     {assets.length > 1 && (
-                                        <Badge className="bg-white/20 text-white border-0 text-xs">
+                                        <Badge className="bg-background/20 text-white border-0 text-xs">
                                             {activeIndex + 1} / {assets.length}
                                         </Badge>
                                     )}
@@ -273,7 +273,7 @@ export function ClinicalShowcase({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Indications */}
                         {indications && (
-                            <Card className={`border shadow-sm ${isFullscreen ? 'bg-white/10 border-white/20' : 'border-blue-100 bg-blue-50/50'}`}>
+                            <Card className={`border shadow-sm ${isFullscreen ? 'bg-background/10 border-white/20' : 'border-blue-100 bg-blue-50/50'}`}>
                                 <CardHeader className="pb-2">
                                     <CardTitle className={`text-base flex items-center gap-2 ${isFullscreen ? 'text-white' : 'text-blue-800'}`}>
                                         <Activity className={`h-5 w-5 ${isFullscreen ? 'text-blue-400' : 'text-blue-600'}`} />
@@ -290,7 +290,7 @@ export function ClinicalShowcase({
 
                         {/* Dosage */}
                         {dosage && (
-                            <Card className={`border shadow-sm ${isFullscreen ? 'bg-white/10 border-white/20' : 'border-emerald-100 bg-emerald-50/50'}`}>
+                            <Card className={`border shadow-sm ${isFullscreen ? 'bg-background/10 border-white/20' : 'border-emerald-100 bg-emerald-50/50'}`}>
                                 <CardHeader className="pb-2">
                                     <CardTitle className={`text-base flex items-center gap-2 ${isFullscreen ? 'text-white' : 'text-emerald-800'}`}>
                                         <Pill className={`h-5 w-5 ${isFullscreen ? 'text-emerald-400' : 'text-emerald-600'}`} />
@@ -308,7 +308,7 @@ export function ClinicalShowcase({
 
                     {/* Safety Information */}
                     {safetyInfo && (
-                        <Card className={`border shadow-sm ${isFullscreen ? 'bg-white/10 border-white/20' : 'border-amber-100 bg-amber-50/50'}`}>
+                        <Card className={`border shadow-sm ${isFullscreen ? 'bg-background/10 border-white/20' : 'border-amber-100 bg-amber-50/50'}`}>
                             <CardHeader className="pb-2">
                                 <CardTitle className={`text-base flex items-center gap-2 ${isFullscreen ? 'text-white' : 'text-amber-800'}`}>
                                     <Shield className={`h-5 w-5 ${isFullscreen ? 'text-amber-400' : 'text-amber-600'}`} />
@@ -325,7 +325,7 @@ export function ClinicalShowcase({
 
                     {/* Composition */}
                     {composition && (
-                        <Card className={`border shadow-sm ${isFullscreen ? 'bg-white/10 border-white/20' : 'border-slate-200'}`}>
+                        <Card className={`border shadow-sm ${isFullscreen ? 'bg-background/10 border-white/20' : 'border-slate-200'}`}>
                             <CardHeader className="pb-2">
                                 <CardTitle className={`text-base flex items-center gap-2 ${isFullscreen ? 'text-white' : 'text-slate-800'}`}>
                                     <Beaker className={`h-5 w-5 ${isFullscreen ? 'text-slate-400' : 'text-slate-600'}`} />
@@ -351,7 +351,7 @@ export function ClinicalShowcase({
                     />
 
                     {/* Clinical Evidence */}
-                    <Card className={`border shadow-md overflow-hidden ${isFullscreen ? 'bg-white/10 border-white/20' : ''}`}>
+                    <Card className={`border shadow-md overflow-hidden ${isFullscreen ? 'bg-background/10 border-white/20' : ''}`}>
                         <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3">
                             <CardTitle className="text-base flex items-center gap-2">
                                 <Award className="h-5 w-5" />

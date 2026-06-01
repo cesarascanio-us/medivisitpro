@@ -66,7 +66,7 @@ export const SignaturePad = forwardRef<SignaturePadRef, SignaturePadProps>(
                 </CardHeader>
                 <CardContent className="space-y-3">
                     <div
-                        className="border-2 border-gray-300 rounded-lg bg-white touch-none"
+                        className="border-2 border-border rounded-lg bg-card touch-none"
                         style={{ width: "100%", maxWidth: width }}
                     >
                         <SignatureCanvas

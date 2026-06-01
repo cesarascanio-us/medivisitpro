@@ -231,11 +231,11 @@ export default function DashboardSupervisor() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
+        <div className="flex flex-col min-h-full space-y-6">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-10 md:px-12 py-8 rounded-elite-lg shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -244,17 +244,17 @@ export default function DashboardSupervisor() {
                             <Users className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Panel de Supervisión Regional</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Panel de Supervisión Regional</p>
+                            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
                                 ¡Hola, {user?.email?.split('@')[0]}!
                             </h1>
                             <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
+                                <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
                                     Supervisor
                                 </Badge>
-                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-muted border border-border">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{userRegion || 'Región'}</span>
+                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">{userRegion || 'Región'}</span>
                                 </div>
                             </div>
                         </div>
@@ -263,7 +263,7 @@ export default function DashboardSupervisor() {
                     <div className="flex flex-col items-end gap-3">
                         <div className="flex items-center gap-3">
                             <div className="text-right hidden sm:block">
-                                <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">
+                                <div className="text-2xl font-black text-foreground tabular-nums tracking-tighter">
                                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </div>
                                 <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
@@ -274,20 +274,20 @@ export default function DashboardSupervisor() {
                                 onClick={loadDashboardData}
                                 size="icon"
                                 variant="outline"
-                                className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                                className="w-12 h-12 rounded-2xl border-border bg-muted shadow-sm hover:shadow-md transition-all active:scale-95 group"
                             >
-                                <RefreshCw className={cn("h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-emerald-600 transition-colors", loading && "animate-spin")} />
+                                <RefreshCw className={cn("h-5 w-5 text-muted-foreground group-hover:text-emerald-600 transition-colors", loading && "animate-spin")} />
                             </Button>
                         </div>
                     </div>
                 </div>
 
                 {/* Performance Summary Bar */}
-                <div className="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex flex-wrap items-center gap-x-8 gap-y-3">
+                <div className="mt-8 pt-6 border-t border-border flex flex-wrap items-center gap-x-8 gap-y-3">
                     <div className="flex items-center gap-4">
                         <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.1em]">Filtrar Periodo:</p>
                         <Select value={selectedPeriod} onValueChange={(v: 'week' | 'month') => setSelectedPeriod(v)}>
-                            <SelectTrigger className="w-44 bg-slate-100 dark:bg-slate-800 border-none h-10 font-bold rounded-xl">
+                            <SelectTrigger className="w-44 bg-muted border-none h-10 font-bold rounded-xl">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -296,10 +296,10 @@ export default function DashboardSupervisor() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="h-8 w-px bg-slate-100 dark:bg-slate-800 hidden md:block"></div>
+                    <div className="h-8 w-px bg-border hidden md:block"></div>
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                        <p className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                        <p className="text-xs font-bold text-muted-foreground">
                             {data?.totalReps || 0} Representantes en línea
                         </p>
                     </div>
@@ -341,7 +341,7 @@ export default function DashboardSupervisor() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Weekly Trend */}
-                <Card className="bg-white border-slate-200 shadow-sm">
+                <Card className="bg-white border-slate-200 shadow-sm text-slate-900">
                     <CardHeader>
                         <CardTitle className="text-slate-800 flex items-center gap-2">
                             <BarChart3 className="h-5 w-5 text-emerald-500" />
@@ -372,7 +372,7 @@ export default function DashboardSupervisor() {
                 </Card>
 
                 {/* Visits per Representative */}
-                <Card className="bg-white border-slate-200 shadow-sm">
+                <Card className="bg-white border-slate-200 shadow-sm text-slate-900">
                     <CardHeader>
                         <CardTitle className="text-slate-800 flex items-center gap-2">
                             <Users className="h-5 w-5 text-blue-500" />
@@ -404,7 +404,7 @@ export default function DashboardSupervisor() {
             </div>
 
             {/* Representatives Table */}
-            <Card className="bg-white border-slate-200 shadow-sm">
+            <Card className="bg-white border-slate-200 shadow-sm text-slate-900">
                 <CardHeader>
                     <CardTitle className="text-slate-800 flex items-center gap-2">
                         <Award className="h-5 w-5 text-amber-500" />
@@ -415,7 +415,7 @@ export default function DashboardSupervisor() {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-none">
+                                <tr className="bg-card/50 border-none">
                                     <th className="text-left py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Representante</th>
                                     <th className="text-center py-4 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Visitas Mes</th>
                                     <th className="text-center py-4 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Visitas Sem.</th>
@@ -483,34 +483,34 @@ export default function DashboardSupervisor() {
 function KPICard({ title, value, icon, color, subtitle }: any) {
     const variants: any = {
         emerald: {
-            bg: "bg-emerald-50 dark:bg-emerald-950/30",
-            icon: "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30",
+            bg: "bg-emerald-500/10",
+            icon: "text-emerald-600 bg-emerald-500/20",
         },
         blue: {
-            bg: "bg-blue-50 dark:bg-blue-950/30",
-            icon: "text-blue-600 bg-blue-100 dark:bg-blue-900/30",
+            bg: "bg-blue-500/10",
+            icon: "text-blue-600 bg-blue-500/20",
         },
         amber: {
-            bg: "bg-amber-50 dark:bg-amber-950/30",
-            icon: "text-amber-600 bg-amber-100 dark:bg-amber-900/30",
+            bg: "bg-amber-500/10",
+            icon: "text-amber-600 bg-amber-500/20",
         },
         purple: {
-            bg: "bg-purple-50 dark:bg-purple-950/30",
-            icon: "text-purple-600 bg-purple-100 dark:bg-purple-900/30",
+            bg: "bg-purple-500/10",
+            icon: "text-purple-600 bg-purple-500/20",
         },
     };
 
     const v = variants[color] || variants.emerald;
 
     return (
-        <Card className="border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+        <Card className="border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-card rounded-[2rem] overflow-hidden group hover:scale-[1.02] transition-all duration-300">
             <CardContent className="p-6 relative">
                 <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-5 transition-opacity duration-500", v.bg)}></div>
 
                 <div className="flex items-center justify-between relative z-10">
                     <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.15em]">{title}</p>
-                        <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+                        <p className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.15em]">{title}</p>
+                        <p className="text-3xl font-black text-foreground tracking-tight tabular-nums">
                             {value}
                         </p>
                         {subtitle && <p className="text-[10px] font-bold text-slate-400 mt-1">{subtitle}</p>}

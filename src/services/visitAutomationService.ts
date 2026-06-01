@@ -15,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
  */
 
 export interface VisitScenario {
+    id?: string;
     type: 'conquest' | 'development' | 'maturity';
     label: string;
     suggestedObjective: string;
@@ -98,15 +99,31 @@ export function determineScenario(visitCount: number, entityType?: string): Visi
 }
 
 
-export const calculateCycleCondition = (visitCount: number) => {
-    // Implementation placeholder based on visit count
-    return visitCount === 0 ? "new" : "recurring";
+export const calculateCycleCondition = (visitCount: number, salesDropPercent: number = 0) => {
+    // If sales drop is critical (>20%), the contact is automatically "At Risk"
+    if (salesDropPercent > 20) {
+        return "at_risk";
+    }
+    
+    if (visitCount === 0) return "new";
+    if (visitCount <= 2) return "developing";
+    return "stable";
 };
 
-export const calculateSuggestedNextVisit = (lastDate?: string) => {
-    // Implementation placeholder
+export const calculateSuggestedNextVisit = (priority: string = 'medium', lastDate?: string) => {
+    // Frequency based on Potential (Priority)
+    // High/Urgent -> 15 days
+    // Medium -> 30 days
+    // Low -> 45 days
+    
+    let daysToAdd = 30;
+    const p = priority?.toLowerCase();
+    
+    if (p === 'high' || p === 'urgent') daysToAdd = 15;
+    else if (p === 'low') daysToAdd = 45;
+    
     const date = lastDate ? new Date(lastDate) : new Date();
-    date.setDate(date.getDate() + 30);
+    date.setDate(date.getDate() + daysToAdd);
     return date.toISOString();
 };
 
@@ -149,13 +166,28 @@ export async function getCurrentCycle(): Promise<string | null> {
 }
 
 /**
- * Calculate smart next visit date (same day of week, 1 month later)
+ * Calculate smart next visit date (frequency based on priority/potential)
  */
-export function calculateNextVisitDate(fromDate: Date = new Date()): string {
+export function calculateNextVisitDate(fromDate: Date = new Date(), priority: string = 'medium'): string {
     const nextDate = new Date(fromDate);
-    nextDate.setMonth(nextDate.getMonth() + 1);
+    
+    let monthsToAdd = 1;
+    let daysToAdd = 0;
+    
+    const p = priority?.toLowerCase();
+    if (p === 'high' || p === 'urgent') {
+        daysToAdd = 15; // High potential visits every 15 days
+    } else if (p === 'low') {
+        monthsToAdd = 1;
+        daysToAdd = 15; // Low potential visits every 45 days (approx)
+    } else {
+        monthsToAdd = 1; // Medium potential visits every month
+    }
 
-    // Ensure same day of week
+    if (monthsToAdd > 0) nextDate.setMonth(nextDate.getMonth() + monthsToAdd);
+    if (daysToAdd > 0) nextDate.setDate(nextDate.getDate() + daysToAdd);
+
+    // Ensure same day of week for regularity
     const currentDayOfWeek = fromDate.getDay();
     const futureDayOfWeek = nextDate.getDay();
 
@@ -210,8 +242,14 @@ export async function getVisitHistory(directoryItemId: string): Promise<VisitHis
  */
 export function generateSmartObjective(
     scenario: VisitScenario,
-    lastCommitment: string | null
+    lastCommitment: string | null,
+    salesDropPercent: number = 0
 ): string {
+    // If sales drop is significant, prioritize recovery
+    if (salesDropPercent > 20) {
+        return `RECUPERACIÓN: Analizar causa de caída del ${salesDropPercent.toFixed(0)}% en ventas y reactivar prescripción.`;
+    }
+
     // If there's a previous commitment, create follow-up objective
     if (lastCommitment) {
         const lowerCommitment = lastCommitment.toLowerCase();

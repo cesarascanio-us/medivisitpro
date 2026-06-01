@@ -1,576 +1,348 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
- ======================================================================== */
-
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  Calendar,
   Users,
-  FileText,
   BarChart3,
-  Package,
-  Boxes,
-  Settings,
-  Home,
-  Stethoscope,
   Building2,
   GitBranch,
-  CalendarDays,
-  Target,
-  Pill,
-  DollarSign,
-  Bell,
-  HelpCircle,
-  ClipboardList,
-  UserRound,
-  Store,
+  Home,
   Shield,
-  LogOut,
+  DollarSign,
   Crown,
-  Megaphone,
-  Map,
-  RefreshCw,
-  Award,
   Truck,
-  CalendarCheck,
   Layers,
-  ChevronLeft,
   ChevronRight,
+  TrendingUp,
+  ShieldCheck,
+  Map,
+  ShoppingCart,
+  Store,
+  Stethoscope,
+  Calendar,
+  MapPin,
+  FileText,
+  Pill,
+  ClipboardList,
+  GraduationCap,
+  FlaskConical,
+  LogOut,
+  LayoutDashboard,
+  Gift,
+  Palette,
+  Globe,
+  ChevronLeft,
   ChevronDown,
-  Leaf,
-  Globe
+  Database
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/context/ThemeContext";
+import { useTexts } from "@/hooks/useTexts";
 import { Button } from "@/components/ui/button";
-
-// Navigation Groups
-// --- STRICT NAVIGATION CONFIGURATIONS ---
-
-// GOD MODE NAV (Merged System Admin + Manager + Rep capabilities)
-const SYSTEM_ADMIN_NAV = [
-  {
-    title: "CORE SYSTEM",
-    items: [
-      { name: "Centro de Mando", href: "/dashboard-master", icon: BarChart3 },
-      { name: "Dashboard Operativo", href: "/dashboard", icon: Home },
-      { name: "Panel Master", href: "/master-panel", icon: Crown },
-      { name: "Control Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
-      { name: "SaaS & Facturación", href: "/master/billing", icon: DollarSign },
-      { name: "Auditoría de Sistema", href: "/master/logs", icon: Shield },
-    ]
-  },
-  {
-    title: "GESTIÓN COMERCIAL & EQUIPO",
-    items: [
-      { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
-      { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield },
-      { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
-      { name: "Planificación & Ciclos", href: "/promotional-cycles", icon: Layers },
-      { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
-    ]
-  },
-  {
-    title: "OPERACIÓN DE CAMPO",
-    items: [
-      { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
-      { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
-      { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
-      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
-      { name: "Droguerías", href: "/drugstores", icon: Truck },
-      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
-      { name: "Rutas y Territorios", href: "/visits", icon: FileText },
-      { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
-      { name: "Cobertura Global", href: "/coverage-map", icon: Map },
-    ]
-  },
-  {
-    title: "INVENTARIO & RECURSOS",
-    items: [
-      { name: "Catálogo Maestro", href: "/products", icon: Package },
-      { name: "Control Almacén", href: "/warehouse", icon: Boxes },
-      { name: "Muestras Médicas", href: "/muestras", icon: Pill },
-      { name: "Material POP", href: "/material-pop", icon: Megaphone },
-      { name: "Agenda Global", href: "/agenda", icon: Calendar },
-    ]
-  }
-];
-
-const OPERATIONAL_NAV = [
-  {
-    title: "GESTIÓN COMERCIAL & EQUIPO",
-    items: [
-      { name: "Mi Equipo (Usuarios)", href: "/users", icon: Users },
-      { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield },
-      { name: "Reportes Globales", href: "/reports", icon: BarChart3 },
-      { name: "Planificación & Ciclos", href: "/promotional-cycles", icon: Layers },
-      { name: "Zonas y Territorios", href: "/zones", icon: GitBranch },
-    ]
-  },
-  {
-    title: "OPERACIÓN DE CAMPO",
-    items: [
-      { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
-      { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
-      { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
-      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
-      { name: "Droguerías", href: "/drugstores", icon: Truck },
-      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
-      { name: "Rutas y Territorios", href: "/visits", icon: FileText },
-      { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
-      { name: "Cobertura Global", href: "/coverage-map", icon: Map },
-    ]
-  },
-  {
-    title: "INVENTARIO & RECURSOS",
-    items: [
-      { name: "Catálogo Maestro", href: "/products", icon: Package },
-      { name: "Control Almacén", href: "/warehouse", icon: Boxes },
-      { name: "Muestras Médicas", href: "/muestras", icon: Pill },
-      { name: "Material POP", href: "/material-pop", icon: Megaphone },
-      { name: "Agenda Global", href: "/agenda", icon: Calendar },
-    ]
-  }
-];
-
-const REPRESENTATIVE_NAV = [
-  {
-    title: "Mi Día",
-    items: [
-      { name: "Mi Dashboard", href: "/dashboard", icon: Home },
-      { name: "Agenda", href: "/agenda", icon: Calendar },
-      { name: "Objetivos", href: "/objectives", icon: Target }
-    ]
-  },
-  {
-    title: "Operación de Campo",
-    items: [
-      { name: "Contactos (Directorio)", href: "/contacts", icon: Users },
-      { name: "Fichero Médico (IP)", href: "/doctors", icon: Stethoscope },
-      { name: "Farmacias & POS", href: "/pharmacies", icon: Store },
-      { name: "Tiendas Naturistas", href: "/natural-stores", icon: Leaf },
-      { name: "Droguerías", href: "/drugstores", icon: Truck },
-      { name: "Centros de Salud", href: "/health-centers", icon: Building2 },
-      { name: "Rutas y Territorios", href: "/visits", icon: FileText },
-      { name: "Cobertura Global", href: "/coverage-map", icon: Map },
-      { name: "Pedidos y Transferencias", href: "/transfer-orders", icon: Truck },
-    ]
-  },
-  {
-    title: "Recursos",
-    items: [
-      { name: "Catálogo", href: "/products", icon: Package },
-      { name: "Muestras", href: "/muestras", icon: Pill }
-    ]
-  }
-];
-
-const COORDINATOR_NAV = [
-  {
-    title: "Supervisión",
-    items: [
-      { name: "Tablero de Mando", href: "/dashboard-supervisor", icon: BarChart3 },
-      { name: "Agenda Equipo", href: "/agenda", icon: Calendar }, // Restored
-      { name: "Mi Equipo", href: "/users", icon: Users },
-      { name: "Rutas de Tropa", href: "/visits", icon: Map },
-      // { name: "Cobertura", href: "/coverage-map", icon: Map }, // Hidden for Reps/Coordinators by default logic if this is shared? Wait, this is COORDINATOR_NAV.
-      { name: "Cobertura", href: "/coverage-map", icon: Map }, // Coordinators see this. Reps use a different list?
-    ]
-  },
-  {
-    title: "Gestión",
-    items: [
-      { name: "Objetivos Equipo", href: "/objectives", icon: Target }, // Restored
-      { name: "Planificador", href: "/planner", icon: ClipboardList }, // Restored
-      { name: "Eventos", href: "/events", icon: CalendarCheck }, // Restored
-      { name: "Pedidos Especiales", href: "/transfer-orders", icon: ClipboardList },
-      { name: "Reportes", href: "/reports", icon: FileText },
-    ]
-  },
-  {
-    title: "Herramientas de Apoyo", // Restored full tools for support
-    items: [
-      { name: "Catálogo", href: "/products", icon: Package },
-      { name: "Muestras", href: "/muestras", icon: Pill },
-      { name: "Procesos", href: "/work-processes", icon: GitBranch },
-      { name: "Activos", href: "/resources/assets", icon: Boxes },
-    ]
-  }
-];
-
-const TELEMARKETING_NAV = [
-  {
-    title: "Ventas Internas",
-    items: [
-      { name: "Panel de Ventas", href: "/dashboard", icon: Home },
-      { name: "Lista de Llamadas", href: "/contacts", icon: Users },
-      { name: "Nuevo Pedido", href: "/commercial/builder", icon: DollarSign },
-      { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck }, // Restored
-      { name: "Objetivos Venta", href: "/objectives", icon: Target }, // Restored
-    ]
-  },
-  {
-    title: "Recursos",
-    items: [
-      { name: "Catálogo", href: "/products", icon: Package },
-      { name: "Promociones", href: "/promotional-cycles", icon: Award },
-      { name: "Procesos (Scripts)", href: "/work-processes", icon: GitBranch }, // Restored
-    ]
-  }
-];
-
-// DEFAULT NAV for Unassigned/Demo
-const DEFAULT_NAV = [
-  {
-    title: "Inicio",
-    items: [
-      { name: "Dashboard", href: "/dashboard", icon: Home },
-      { name: "Ayuda", href: "/help", icon: HelpCircle },
-    ]
-  }
-];
-
-// MASTER SAAS NAV (Default View - No Org Selected)
-const MASTER_SAAS_NAV = [
-  {
-    title: "SAAS CONTROL",
-    items: [
-      { name: "SaaS Dashboard", href: "/dashboard-master", icon: BarChart3 },
-      { name: "Global Audit Logs", href: "/master/logs", icon: Shield },
-      { name: "SaaS Billing", href: "/master/billing", icon: DollarSign },
-      { name: "Alerts & Health", href: "/master/alerts", icon: Bell },
-    ]
-  },
-  {
-    title: "ADMINISTRACIÓN GLOBAL",
-    items: [
-      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
-      { name: "Gestión de Cuentas", href: "/users", icon: Users },
-      { name: "Talento Humano (LOTTT)", href: "/hr", icon: Shield },
-      { name: "Planes & Suscripciones", href: "/master/plans", icon: Layers },
-      { name: "Editor Landing Page", href: "/master/landing", icon: Globe },
-    ]
-  }
-];
-
-const SOPORTE_SAAS_NAV = [
-  {
-    title: "SOPORTE TÉCNICO",
-    items: [
-      { name: "Dashboard SaaS", href: "/dashboard-master", icon: BarChart3 },
-      { name: "Tickets Activos", href: "/master/tickets", icon: HelpCircle },
-      { name: "Documentación", href: "/documentation", icon: FileText },
-    ]
-  },
-  {
-    title: "GESTIÓN DE CLIENTES",
-    items: [
-      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
-      { name: "Directorio de Usuarios", href: "/users", icon: Users },
-    ]
-  }
-];
-
-const DESARROLLO_SAAS_NAV = [
-  {
-    title: "DEV & MAINTENANCE",
-    items: [
-      { name: "Dashboard SaaS", href: "/dashboard-master", icon: BarChart3 },
-      { name: "Logs de Auditoría", href: "/master/logs", icon: Shield },
-      { name: "Estado del Sistema", href: "/master/alerts", icon: Bell },
-    ]
-  },
-  {
-    title: "OPERACIÓN TÉCNICA",
-    items: [
-      { name: "Organizaciones", href: "/master-panel?tab=orgs", icon: Building2 },
-      { name: "Configuración Base", href: "/documentation", icon: Settings },
-    ]
-  }
-];
-
-const ADMIN_NAV = [
-  ...OPERATIONAL_NAV,
-  {
-    title: "ADMINISTRACIÓN EMPRESARIAL",
-    items: [
-      { name: "Configuración General", href: "/settings", icon: Settings },
-      { name: "Suscripción y Pagos", href: "/billing", icon: DollarSign }, // Placeholder for future tenant billing
-      { name: "Auditoría Interna", href: "/logs", icon: Shield }, // Placeholder for tenant logs
-    ]
-  }
-];
+import { usePermissions } from "@/hooks/usePermissions";
+import { useAppRoles } from "@/hooks/useAppRoles";
 
 interface SidebarProps {
   className?: string;
-  isMobile?: boolean; // Optional prop to detect mobile state
+  isMobile?: boolean;
 }
 
 export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const {
     user,
+    profile,
     signOut,
+    role,
     isMaster,
     isAdmin,
     isManager,
-    isChief,
     isCoordinator,
     isSupervisor,
-    isTelemarketing,
-    isSystemAdmin,
-    isSaaSAdmin,
-    isSaaSSupport,
-    isSaaSDev,
-    isSaaSStaff,
-    role,
-    organizationId,
-    isDemo
+    organizationName,
+    loading
   } = useAuth();
 
+  const { theme } = useTheme();
+  const texts = useTexts();
+  const navigate = useNavigate();
   const location = useLocation();
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isPinned, setIsPinned] = useState(true);
+  const { canAccessModule, can } = usePermissions();
+
+  const [isExpanded, setIsExpanded] = useState(theme?.sidebar_default !== "collapsed");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
-  // Auto-collapse on mobile or logic
-  // For now keep simple
-  const togglePin = () => setIsPinned(!isPinned);
-  const toggleGroup = (title: string, e: any) => {
+  const toggleGroup = (title: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setCollapsedGroups(prev => ({
-      ...prev,
-      [title]: !prev[title]
-    }));
+    setCollapsedGroups(prev => ({ ...prev, [title]: !prev[title] }));
   };
 
-  const handleSignOut = async () => {
-    await signOut();
+  const handleSignOut = async () => { await signOut(); };
+
+  const userName = profile?.first_name 
+    ? `${profile.first_name} ${profile.last_name || ''}`.trim()
+    : user?.user_metadata?.first_name 
+      || user?.email?.split('@')[0] 
+      || "Usuario";
+      
+  const userInitials = profile?.first_name 
+    ? `${profile.first_name.charAt(0)}${(profile.last_name || '').charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}`.toUpperCase()
+    : user?.email?.substring(0, 2).toUpperCase() || "U";
+
+  const { data: appRoles } = useAppRoles();
+  const getRoleLabel = () => {
+    return appRoles?.find(r => r.slug === role)?.name || role;
   };
 
-  // User Initials
-  const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U";
-  const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || "Usuario";
-  const roleLabel = role?.toUpperCase() || "INVITADO";
+  const canSeeMaster      = isMaster;
 
-  // --- SELECT NAVIGATION BY ROLE ---
-  const getNavigationGroups = () => {
-    // 1. SAAS STAFF - Internal Team Navigation
-    if (isSaaSStaff) {
-      // If Staff has selected an Organization (Impersonation Mode)
-      if (organizationId) {
-        return SYSTEM_ADMIN_NAV;
-      }
+  // Mock states for visual design specs
+  const pendingVisits = role === 'representative' ? 3 : 0;
+  const pendingTransfers = (isManager || role === 'representative') ? 5 : 0;
+  const hasActiveVisit = role === 'representative';
 
-      // Default: Pure SaaS Admin/Support/Dev View
-      if (isMaster || isSaaSAdmin) return MASTER_SAAS_NAV;
-      if (isSaaSSupport) return SOPORTE_SAAS_NAV;
-      if (isSaaSDev) return DESARROLLO_SAAS_NAV;
-
-      return MASTER_SAAS_NAV; // Fallback for staff
+  const filteredNav = [
+    {
+      title: "Administración SaaS",
+      items: [
+        { name: "Consola Sentinel", href: "/master-panel", icon: Crown, visible: canSeeMaster },
+        { name: "Matriz de Roles", href: "/roles", icon: Shield, visible: canSeeMaster },
+        { name: "Planes & Capacidad", href: "/master/plans", icon: Shield, visible: canSeeMaster },
+        { name: "Cobros & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
+        { name: "Auditoría Global", href: "/master/logs", icon: Database, visible: canSeeMaster },
+        { name: "Soporte Técnico", href: "/master/tickets", icon: ClipboardList, visible: canSeeMaster },
+        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
+      ]
+    },
+    {
+      title: "Panel de Control",
+      items: [
+        { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: can('dashboard.executive') || can('dashboard.regional') || can('dashboard.tactical') || can('dashboard.external') || true },
+        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: can('reports.financial') },
+        { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: canSeeMaster || can('admin.theme') },
+        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: can('reports.export') },
+        { name: "Mis Eventos", href: "/events", icon: Calendar, visible: true },
+        { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
+        { name: "Preguntas y Respuestas", href: "/faq", icon: ShieldCheck, visible: true },
+      ]
+    },
+    {
+      title: "Gestión Médica",
+      items: [
+        { name: "Ciclos Promocionales", href: "/promotional-cycles", icon: GitBranch, visible: can('planning.cycles') },
+        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: can('planning.routes') },
+        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: can('planning.agenda_own') },
+        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: can('planning.agenda_own') || can('planning.agenda_team') },
+        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: can('visits.history') || can('visits.team') || can('visits.create') },
+        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: can('samples.bank') },
+        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: can('directory.view') },
+        { name: "Especialidades", href: "/specialties", icon: Users, visible: can('directory.view') },
+      ]
+    },
+    {
+      title: "Formación y Beneficios",
+      items: [
+        { name: "Universidad Biofarco", href: "/university", icon: GraduationCap, visible: true },
+        { name: "Tienda de Premios", href: "/rewards", icon: Gift, visible: true },
+      ]
+    },
+    {
+      title: "Gestión Comercial",
+      items: [
+        { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: can('visits.coaching') },
+        { name: texts.users_title, href: "/users", icon: Users, visible: can('admin.users') },
+        { name: "Capital Humano", href: "/hr", icon: Shield, visible: can('admin.users') },
+        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: can('commercial.transfer') },
+        { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: can('reports.national') || can('reports.regional') },
+        { name: "Catálogo Interactivo", href: "/products", icon: ShoppingCart, visible: true },
+        { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: can('commercial.transfer') },
+        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: can('admin.zones') },
+        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: canSeeMaster },
+      ]
+    },
+    {
+      title: "Logística y Cobertura",
+      items: [
+        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: can('commercial.transfer') },
+        { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: can('commercial.pharmacies') },
+        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: can('commercial.pharmacies') },
+        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: can('commercial.stock') },
+        { name: "Gestión de Baremos", href: "/baremos", icon: FileText, visible: can('commercial.prices') },
+        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: can('dashboard.regional') || can('dashboard.executive') },
+      ]
     }
-
-    // 2. SAFETY CHECK: If no Org assigned (and not Master), restrict view. 
-    // EXCEPTION: Trusted roles (Rep, Supervisor, etc.) pass even if OrgID is transiently missing to avoid UI lockout.
-    const trustedRoles = ['representative', 'supervisor', 'coordinator', 'chief', 'telemarketing', 'manager', 'admin'];
-    if (!organizationId && !isDemo && !trustedRoles.includes(role)) {
-      return [
-        {
-          title: "CUENTA PENDIENTE",
-          items: [
-            { name: "Asignación Pendiente", href: "/dashboard", icon: Shield },
-            { name: "Contactar Master", href: "mailto:soporte@medivisitpro.com", icon: HelpCircle },
-          ]
-        },
-        ...DEFAULT_NAV
-      ];
-    }
-
-    // 3. ROLE SPECIFIC NAV
-
-    // Level 1: Company Owners & Support
-    // Manager (Client Owner) and Admin (SaaS Support) see everything including Business Settings
-    if (isManager || isAdmin) return ADMIN_NAV;
-
-    // Level 2: High Level Operations (Chiefs)
-    // Chiefs run the operation but don't own the business settings
-    if (isChief) return OPERATIONAL_NAV;
-
-    // Level 3: Coordinator / Supervisor (Team Leaders)
-    if (isCoordinator || isSupervisor) return COORDINATOR_NAV;
-
-    // Level 4: Desk Users (Telemarketing)
-    if (isTelemarketing) return TELEMARKETING_NAV;
-
-    // Level 5: Field Users (Representative)
-    // Default fallback for representatives and specialized roles
-    return REPRESENTATIVE_NAV;
-  };
-
-  const activeNavGroups = getNavigationGroups();
+  ]
+    .map(group => ({
+      ...group,
+      items: group.items.filter(item => item.visible)
+    }))
+    .filter(group => group.items.length > 0);
 
   return (
-    <div
+    <aside
       className={cn(
-        "flex flex-col bg-white text-slate-700 border-r border-gray-200 h-screen shadow-xl z-50 transition-all duration-300 ease-in-out",
-        isExpanded ? "w-64" : "w-16",
+        "flex flex-col bg-card border-r border-border h-screen sticky top-0 flex-shrink-0 z-40",
+        "transition-all duration-300 ease-in-out",
+        isExpanded ? "w-56" : "w-14",
         className
       )}
-      onMouseEnter={() => !isMobile && setIsHovered(true)}
-      onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between h-14 px-3 border-b border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center gap-2 overflow-hidden">
-          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
-            <Stethoscope className="h-5 w-5 text-primary" />
+      {/* Brand Area */}
+      <div
+        className={cn(
+          "flex items-center h-14 px-3 border-b border-border cursor-pointer select-none flex-shrink-0",
+          isExpanded ? "gap-2.5 justify-between" : "justify-center"
+        )}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 overflow-hidden bg-primary/10">
+            <img
+              src={theme?.logo_url || "/favicon.svg"}
+              className="w-full h-full object-contain"
+              alt="Logo"
+            />
           </div>
-          <div className={cn("transition-all duration-300", isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none")}>
-            <h1 className="text-sm font-bold text-slate-800 whitespace-nowrap">MediVisitPro</h1>
-            <p className="text-[9px] text-slate-500 uppercase tracking-wider">Visitador</p>
-          </div>
+          {isExpanded && (
+            <div className="min-w-0 flex-1 animate-in fade-in duration-200">
+              <p className="text-sm font-semibold text-foreground truncate leading-tight">
+                {theme?.texts?.sidebar_title || theme?.app_name || "MediVisitPro"}
+              </p>
+              {theme?.texts?.sidebar_subtitle && (
+                <p className="text-xs text-muted-foreground truncate leading-none mt-0.5">
+                  {theme.texts.sidebar_subtitle}
+                </p>
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Pin Toggle - Desktop Only */}
-        {!isMobile && isExpanded && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-primary/5 transition-colors"
-            onClick={togglePin}
-            title={isPinned ? "Desafijar Menú" : "Fijar Menú"}
-          >
-            <Shield className={cn("h-4 w-4 transition-all", isPinned ? "fill-current text-primary rotate-0" : "rotate-45")} />
-          </Button>
+        {isExpanded && (
+          <ChevronLeft className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
         )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 py-3 space-y-4 overflow-y-auto custom-scrollbar">
-        {activeNavGroups.map((group, groupIndex) => {
-          // No more internal filtering needed as the arrays are role-specific
-          const hasAccessToGroup = true;
-
-          if (!hasAccessToGroup) return null;
-
-          const isGroupCollapsed = isExpanded && collapsedGroups[group.title];
-
-          return (
-            <div key={group.title} className="space-y-1">
-              {/* Group Title - Clickable */}
-              <div
-                className={cn(
-                  "px-2 flex items-center justify-between cursor-pointer group/header mb-1 transition-all duration-300",
-                  isExpanded ? "opacity-100" : "opacity-0 h-0 overflow-hidden"
-                )}
-                onClick={(e) => toggleGroup(group.title, e)}
-              >
-                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ">
-                  {group.title}
-                </div>
-                <ChevronDown
-                  className={cn(
-                    "h-3 w-3 text-slate-600 transition-transform duration-200",
-                    isGroupCollapsed ? "-rotate-90" : ""
-                  )}
-                />
-              </div>
-
-              {/* Separator for collapsed mode */}
-              {!isExpanded && groupIndex > 0 && (
-                <div className="my-2 mx-2 border-t border-slate-700/50" />
-              )}
-
-              {/* Group Items Container */}
-              <div className={cn(
-                "space-y-1 transition-all duration-300",
-                isGroupCollapsed ? "hidden" : "block"
-              )}>
-                {group.items.map((item: any) => {
-                  // Staff users always use root routes (real data) even if in Demo Org
-                  const itemHref = isSaaSStaff ? item.href : (isDemo ? `/demo${item.href}` : item.href);
-                  const isActive = location.pathname === itemHref;
-                  return (
-                    <NavLink
-                      key={item.name}
-                      to={itemHref}
-                      title={!isExpanded ? item.name : undefined}
-                      onClick={(e) => {
-                        // FIX: When on coverage-map, Leaflet corrupts React Router state
-                        // Use hard navigation to ensure proper page transition
-                        const targetPath = itemHref;
-                        if (location.pathname.includes('/coverage-map') && !targetPath.includes('/coverage-map')) {
-                          e.preventDefault();
-                          console.log('[Sidebar] Hard navigation from coverage-map to:', targetPath);
-                          window.location.href = targetPath;
-                        }
-                      }}
-                      className={cn(
-                        "flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-all group",
-                        isActive
-                          ? "bg-primary text-white shadow-md shadow-primary/20"
-                          : "text-slate-500 hover:bg-slate-100 hover:text-primary"
-                      )}
-                    >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      <span className={cn("ml-3 whitespace-nowrap transition-all duration-300", isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>
-                        {item.name}
-                      </span>
-                    </NavLink>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </nav>
-
-      {/* Footer - User Info */}
-      <div className="p-2 bg-gray-50 border-t border-gray-200">
-        {isExpanded ? (
-          // Expanded: show user info and logout
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-bold text-primary">{userInitials}</span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-slate-700 truncate">{userName}</p>
-                <p className="text-[10px] text-slate-500 truncate">{roleLabel}</p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-slate-400 hover:text-primary hover:bg-slate-100 flex-shrink-0 h-8 w-8"
-              onClick={handleSignOut}
-              title="Cerrar Sesión"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
+      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 scrollbar-none">
+        {loading ? (
+          <div className="space-y-1 px-1">
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="h-8 bg-muted rounded-md animate-pulse" />
+            ))}
           </div>
         ) : (
-          // Collapsed: only logout icon centered
-          <div className="flex justify-center">
+          filteredNav.map((group) => (
+            <div key={group.title} className="mb-3">
+              {/* Group label */}
+              {isExpanded && (
+                <div
+                  className="flex items-center justify-between px-2 py-1 cursor-pointer group/title"
+                  onClick={(e) => toggleGroup(group.title, e)}
+                >
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+                    {group.title}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "w-3 h-3 text-muted-foreground transition-transform duration-200",
+                      collapsedGroups[group.title] ? "-rotate-90" : "rotate-0"
+                    )}
+                  />
+                </div>
+              )}
+
+              {/* Group items */}
+              {!collapsedGroups[group.title] && (
+                <div className="space-y-0.5 mt-0.5">
+                  {group.items.map((item: any) => {
+                    const isActive = location.pathname === item.href;
+                    return (
+                      <NavLink
+                        key={item.name}
+                        to={item.href}
+                        title={!isExpanded ? item.name : undefined}
+                        className={cn(
+                          "flex items-center rounded-md transition-all duration-150 group relative",
+                          isExpanded ? "px-2 py-1.5 gap-2.5" : "px-0 py-1.5 justify-center",
+                          isActive
+                            ? "bg-accent text-primary font-medium"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        )}
+                      >
+                        <item.icon
+                          className={cn(
+                            "w-4 h-4 flex-shrink-0 transition-colors",
+                            isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                          )}
+                          strokeWidth={1.5}
+                        />
+                        {isExpanded && (
+                          <span className="text-xs truncate flex-1 text-left">{item.name}</span>
+                        )}
+                        {/* Badges */}
+                        {isExpanded && item.badge > 0 && (
+                          <span className={cn("px-1.5 py-0.5 rounded-full text-[9px] font-bold text-white", item.badgeColor || "bg-primary")}>
+                            {item.badge}
+                          </span>
+                        )}
+                        {!isExpanded && item.badge > 0 && (
+                          <span className={cn("absolute top-1 right-1 w-2 h-2 rounded-full", item.badgeColor || "bg-primary")} />
+                        )}
+                        {/* Active indicator */}
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </nav>
+
+      {/* User Footer */}
+      <div className={cn(
+        "border-t border-border p-2 flex-shrink-0",
+        isExpanded ? "" : "flex justify-center"
+      )}>
+        <div className={cn(
+          "flex items-center rounded-md p-2 hover:bg-muted transition-colors",
+          isExpanded ? "gap-2.5 w-full" : "w-10 h-10 justify-center relative"
+        )}>
+          {/* Avatar */}
+          <div className="w-7 h-7 rounded-md bg-accent flex items-center justify-center flex-shrink-0 border border-border relative">
+            <span className="text-xs font-semibold text-primary">{userInitials}</span>
+            {!isExpanded && hasActiveVisit && (
+               <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-card animate-pulse" />
+            )}
+          </div>
+
+          {isExpanded && (
+            <div className="min-w-0 flex-1 animate-in fade-in duration-200">
+              <div className="flex items-center gap-1.5">
+                <p className="text-xs font-medium text-foreground truncate leading-tight">{userName}</p>
+                {hasActiveVisit && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse flex-shrink-0" title="Visita en curso" />
+                )}
+              </div>
+              <p className="text-[10px] text-muted-foreground truncate mt-0.5">{getRoleLabel()}</p>
+            </div>
+          )}
+
+          {isExpanded && (
             <Button
               variant="ghost"
               size="icon"
-              className="text-slate-400 hover:text-primary hover:bg-slate-100 h-10 w-10"
+              className="w-6 h-6 flex-shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
               onClick={handleSignOut}
-              title="Cerrar Sesión"
+              title="Cerrar sesión"
             >
-              <LogOut className="h-5 w-5" />
+              <LogOut className="w-3.5 h-3.5" strokeWidth={1.5} />
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </aside>
   );
 }

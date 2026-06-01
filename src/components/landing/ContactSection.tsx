@@ -10,10 +10,11 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { trackEvent } from '@/lib/analytics';
-import { Send, User, Mail, Building2, MessageSquare, Loader2, CheckCircle2 } from 'lucide-react';
+import { Send, User, Mail, Building2, MessageSquare, Loader2, CheckCircle2, Stethoscope } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function ContactSection() {
@@ -70,20 +71,20 @@ export function ContactSection() {
 
     if (submitted) {
         return (
-            <section id="contacto" className="py-24 px-4 bg-white relative overflow-hidden">
-                <div className="max-w-3xl mx-auto text-center space-y-8 animate-in zoom-in duration-700">
-                    <div className="w-24 h-24 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
-                        <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+            <section id="contacto" className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-slate-950 relative overflow-hidden border-t border-white/5">
+                <div className="max-w-3xl mx-auto text-center space-y-8 lg:space-y-10 animate-in zoom-in duration-700">
+                    <div className="w-20 lg:w-24 h-20 lg:h-24 bg-blue-500/10 rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/20 border border-blue-500/20">
+                        <CheckCircle2 className="w-10 lg:w-12 h-10 lg:h-12 text-blue-400" />
                     </div>
-                    <h2 className="text-4xl font-bold text-slate-900 tracking-tighter">¡Conexión Exitosa!</h2>
-                    <p className="text-xl text-slate-500 font-medium leading-relaxed">
-                        Tu información ha sido capturada por el sistema **Sentinel**. <br />
-                        Uno de nuestros directores técnicos revisará tu caso en breve.
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight break-words">¡Conexión Exitosa!</h2>
+                    <p className="text-lg lg:text-xl text-slate-400 font-medium leading-relaxed">
+                        Su información ha sido capturada por el sistema Sentinel. <br />
+                        Uno de nuestros directores técnicos revisará su caso en breve.
                     </p>
                     <Button
                         onClick={() => setSubmitted(false)}
                         variant="outline"
-                        className="rounded-xl border-slate-200"
+                        className="rounded-xl border-white/10 text-white hover:bg-white/5 font-bold text-sm h-12 px-8"
                     >
                         Enviar otro mensaje
                     </Button>
@@ -93,123 +94,132 @@ export function ContactSection() {
     }
 
     return (
-        <section id="contacto" className="py-24 px-4 bg-slate-50 relative overflow-hidden">
+        <section id="contacto" className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-slate-950 relative overflow-hidden text-white border-t border-white/5">
             {/* Design Ornaments */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full -z-10 -translate-x-1/2 translate-y-1/2"></div>
+            <div className="absolute top-0 right-0 w-full max-w-[400px] h-full max-h-[400px] bg-blue-600/5 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-full max-w-[400px] h-full max-h-[400px] bg-blue-900/5 blur-[120px] rounded-full -z-10 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
 
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
                 {/* Text Side */}
-                <div className="space-y-8">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary-dark text-[10px] font-black uppercase tracking-widest">
+                <div className="space-y-8 lg:space-y-10 text-center lg:text-left">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wide">
                         Contacto Mission Control
                     </div>
-                    <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-[1.1] tracking-tighter">
-                        ¿Listo para <span className="text-primary">Orquestar</span> tu Crecimiento?
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight break-words">
+                        ¿Listo para <span className="text-blue-500">orquestar</span> <br className="hidden sm:block" /> su éxito comercial?
                     </h2>
-                    <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-lg">
+                    <p className="text-lg text-slate-400 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
                         Únete a la élite de visitadores médicos en Latinoamérica. Déjanos tus datos y un especialista diseñará tu plan estratégico.
                     </p>
 
-                    <div className="space-y-6 pt-4">
-                        {[
-                            { icon: Mail, label: 'Soporte Directo', text: 'missioncontrol@medivisitpro.com' },
-                            { icon: Building2, label: 'Centro de Operaciones', text: 'Caracas, Venezuela / Global Remote' }
-                        ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-4 group">
-                                <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-primary transition-all duration-300">
-                                    <item.icon className="w-5 h-5 text-primary group-hover:text-white" />
-                                </div>
-                                <div>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
-                                    <p className="font-bold text-slate-900">{item.text}</p>
-                                </div>
+                    <div className="grid sm:grid-cols-2 gap-6 pt-6 text-left">
+                        <div className="flex items-center gap-5 p-5 bg-white/5 rounded-2xl border border-white/5">
+                            <div className="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                                <Mail className="w-6 h-6 text-blue-500" />
                             </div>
-                        ))}
+                            <div>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Escríbenos</p>
+                                <p className="text-sm font-bold text-white">elite@medivisitpro.com</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-5 p-5 bg-white/5 rounded-2xl border border-white/5">
+                            <div className="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                                <Stethoscope className="w-6 h-6 text-blue-500" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Soporte</p>
+                                <p className="text-sm font-bold text-white">Atención 24/7 Global</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 {/* Form Side */}
-                <div className="relative">
-                    <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl rounded-[2.5rem] -rotate-2 scale-105 -z-10 border border-white/60"></div>
-                    <div className="bg-white rounded-[2.5rem] p-10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] border border-slate-100 relative">
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid sm:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Nombre</label>
-                                    <div className="relative">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                        <Input
-                                            required
-                                            value={formData.name}
-                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                            placeholder="Tu nombre completo"
-                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Correo Corporativo</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                        <Input
-                                            required
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                            placeholder="ejemplo@pharma.com"
-                                            className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
+                <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="relative bg-slate-900/90 backdrop-blur-3xl p-8 lg:p-10 rounded-[2.2rem] border border-white/10 shadow-2xl space-y-6"
+                    >
+                        <div className="grid sm:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Organización / Empresa</label>
+                                <Label className="text-xs font-bold text-slate-300 ml-1">Nombre Maestro</Label>
                                 <div className="relative">
-                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                                     <Input
                                         required
-                                        value={formData.company}
-                                        onChange={e => setFormData({ ...formData, company: e.target.value })}
-                                        placeholder="Nombre de tu laboratorio o empresa"
-                                        className="h-14 pl-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                        placeholder="Tu nombre completo"
+                                        className="h-12 pl-12 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-600 font-medium"
                                     />
                                 </div>
                             </div>
-
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Mensaje de Orquestación</label>
+                                <Label className="text-xs font-bold text-slate-300 ml-1">Email Corporativo</Label>
                                 <div className="relative">
-                                    <MessageSquare className="absolute left-4 top-4 w-4 h-4 text-slate-400" />
-                                    <Textarea
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                    <Input
                                         required
-                                        value={formData.message}
-                                        onChange={e => setFormData({ ...formData, message: e.target.value })}
-                                        placeholder="¿Cómo podemos potenciar tu gestión médica?"
-                                        className="min-h-[140px] pl-12 pt-4 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium resize-none"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                        placeholder="ejemplo@pharma.com"
+                                        className="h-12 pl-12 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-600 font-medium"
                                     />
                                 </div>
                             </div>
+                        </div>
 
-                            <Button
-                                disabled={submitting}
-                                className="w-full h-16 bg-primary hover:bg-primary-dark text-white rounded-2xl shadow-xl shadow-primary/30 transition-all font-bold text-lg group"
-                            >
-                                {submitting ? (
-                                    <div className="flex items-center gap-3">
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                        Iniciando Sincronización...
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-3">
-                                        Enviar Mensaje
-                                        <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                    </div>
-                                )}
-                            </Button>
-                        </form>
-                    </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-300 ml-1">Organización / Empresa</Label>
+                            <div className="relative">
+                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <Input
+                                    required
+                                    value={formData.company}
+                                    onChange={e => setFormData({ ...formData, company: e.target.value })}
+                                    placeholder="Nombre de tu laboratorio o clínica"
+                                    className="h-12 pl-12 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-600 font-medium"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-300 ml-1">Mensaje de Orquestación</Label>
+                            <div className="relative">
+                                <MessageSquare className="absolute left-4 top-4 w-4 h-4 text-slate-500" />
+                                <Textarea
+                                    required
+                                    value={formData.message}
+                                    onChange={e => setFormData({ ...formData, message: e.target.value })}
+                                    placeholder="¿Cómo podemos potenciar su gestión?"
+                                    className="min-h-[140px] pl-12 pt-4 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-600 resize-none font-medium leading-relaxed"
+                                />
+                            </div>
+                        </div>
+
+                        <Button
+                            disabled={submitting}
+                            className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white transition-all font-bold text-base rounded-xl shadow-2xl shadow-blue-500/20 active:scale-95"
+                        >
+                            {submitting ? (
+                                <div className="flex items-center gap-2">
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    Sincronizando...
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    Enviar solicitud al sistema
+                                    <Send className="w-4 h-4" />
+                                </div>
+                            )}
+                        </Button>
+
+                        <p className="text-[10px] text-center text-slate-500 font-medium">
+                            Sus datos están protegidos por encriptación de grado militar y cumplimiento ISO 27001.
+                        </p>
+                    </form>
                 </div>
             </div>
         </section>

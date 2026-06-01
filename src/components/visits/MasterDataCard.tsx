@@ -49,7 +49,7 @@ export function MasterDataCard({
     if (!needsEmail && !needsPhone) return null;
 
     return (
-        <Card className="bg-amber-50 border-amber-200 border-2">
+        <Card className="bg-amber-50 border-amber-200 border-2 text-slate-900">
             <CardContent className="pt-4">
                 <div className="flex items-start gap-3">
                     <div className="p-2 bg-amber-100 rounded-full">
@@ -79,7 +79,7 @@ export function MasterDataCard({
                                         placeholder="correo@ejemplo.com"
                                         value={email}
                                         onChange={(e) => handleEmailChange(e.target.value)}
-                                        className="bg-white border-amber-300 focus:border-amber-500 h-9 text-sm"
+                                        className="bg-background border-amber-300 focus:border-amber-500 h-9 text-sm"
                                     />
                                 </div>
                             )}
@@ -94,7 +94,7 @@ export function MasterDataCard({
                                         placeholder="+58 412 123 4567"
                                         value={phone}
                                         onChange={(e) => handlePhoneChange(e.target.value)}
-                                        className="bg-white border-amber-300 focus:border-amber-500 h-9 text-sm"
+                                        className="bg-background border-amber-300 focus:border-amber-500 h-9 text-sm"
                                     />
                                 </div>
                             )}

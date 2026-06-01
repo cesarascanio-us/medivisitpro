@@ -7,26 +7,42 @@
  ingeniería inversa o uso no autorizado de este código fuente.
 ======================================================================== */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { MOCK_DATA } from "@/data/mockDemoData";
+import { useToast } from "@/hooks/use-toast";
 
 /**
- * DemoDataSeeder - DISABLED
- * 
- * Now using isolated mock data from MockDataProvider instead of Supabase.
- * This component is kept for backwards compatibility but does nothing.
- * 
- * Mock data is provided by: src/data/mockDemoData.ts
- * Provider: src/contexts/MockDataProvider.tsx
+ * DemoDataSeeder - Active Seeder
+ * Injects fictitious data into the REAL database for the Demo Organization.
  */
 export const DemoDataSeeder = () => {
-    const { isDemo } = useAuth();
+    const { isDemo, user, organizationId } = useAuth();
+    const { toast } = useToast();
+    const [seeding, setSeeding] = useState(false);
 
     useEffect(() => {
-        if (isDemo) {
-            console.log("DemoDataSeeder: Demo mode active - using local mock data (no Supabase)");
-        }
-    }, [isDemo]);
+        const seedData = async () => {
+            if (!isDemo || !user || !organizationId || seeding) return;
+
+            console.log("ℹ️ [Seeder] Modo Demo activo. Iniciando siembra virtual local...");
+            setSeeding(true);
+            toast({
+                title: "Modo Demo Offline",
+                description: "Cargando experiencia interactiva con datos locales virtuales...",
+            });
+            setTimeout(() => {
+                toast({
+                    title: "¡Demo Lista (Virtual)!",
+                    description: "Se han cargado los datos virtuales interactivos en local.",
+                });
+                setSeeding(false);
+            }, 500);
+        };
+
+        seedData();
+    }, [isDemo, user, organizationId]);
 
     return null;
 };

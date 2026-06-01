@@ -16,34 +16,38 @@ import { supabase } from "@/integrations/supabase/client";
 const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 
-// Role definitions
+// Role definitions (Dynamic, but providing autocomplete for core roles)
 export type UserRole =
     | 'master'
-    | 'organization_admin'
     | 'admin'
     | 'manager'
     | 'chief'
     | 'coordinator'
     | 'supervisor'
     | 'telemarketing'
-    | 'representative'
+    | 'commercial_rep'
+    | 'medical_visitor'
+    | 'integral_rep'
+    | 'pharmacy'
     | 'doctor'
-    | 'pharmacist'
-    | 'service_chief'
-    | 'store_manager'
-    | 'admin_saas'
-    | 'soporte_saas'
-    | 'desarrollo_saas';
+    | 'buyer'
+    | 'representative' // legacy
+    | 'pharmacist' // legacy
+    | (string & {});
 
 export interface UserProfile {
     id: string;
     email: string;
+    first_name?: string;
+    last_name?: string;
     role: UserRole;
     organization_id: string | null;
+    company_id: string | null;
     zone_id: string | null;
     state: string | null;
     region: string | null;
     is_master: boolean;
+    org_role_id?: string | null;
 }
 
 interface AuthContextType {
@@ -75,6 +79,7 @@ interface AuthContextType {
     isSpecializedRole: boolean;
     // Permissions
     canManageUsers: boolean;
+    canViewUsers: boolean;
     canViewAllData: boolean;
     canManageCompany: boolean;
     canApproveExpenses: boolean;
@@ -100,6 +105,7 @@ interface AuthContextType {
     // Zone/Location
     organizationName: string | null;
     organizationId: string | null;
+    companyId: string | null;
     zoneId: string | null;
     userState: string | null;
     userRegion: string | null;
@@ -119,6 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [role, setRole] = useState<UserRole>('representative');
+    const [isOwner, setIsOwner] = useState(false);
     const [permissions, setPermissions] = useState<string[]>([]);
     const DEFAULT_FEATURES = {
         sales_module: true,
@@ -152,9 +159,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .eq('id', orgId)
                 .single();
 
-            const orgFeatures = (orgData?.settings as any)?.features || {};
-            setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
-            setOrganizationName(orgData?.name || null);
+            if (orgData) {
+                const orgFeatures = (orgData as any).settings?.features || {};
+                setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                setOrganizationName((orgData as any).name);
+            }
         } catch (error) {
             console.error("Error loading features for Audit Mode:", error);
         }
@@ -187,21 +196,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const isHardcodedDemo = lowerEmail === demoEmailLower;
 
         // [DEMO FAIL-SAFE] Only for the public demo account
+        // Supports localStorage override for testing different roles
         if (isHardcodedDemo) {
-            console.log('AuthProvider: DEMO context triggered for', lowerEmail);
+            const overrideRole = (typeof window !== 'undefined' && localStorage.getItem('demo_role')) as UserRole | null;
+            const demoRole: UserRole = (overrideRole && ['master', 'manager', 'representative'].includes(overrideRole))
+                ? overrideRole as UserRole
+                : 'representative';
+            const demoIsMaster = demoRole === 'master';
+
+            console.log('AuthProvider: DEMO context triggered for', lowerEmail, '| role override:', demoRole);
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
-                role: 'representative',
+                first_name: 'Demo',
+                last_name: 'User',
+                role: demoRole,
                 organization_id: DEMO_ORG_ID,
+                company_id: DEMO_ORG_ID, // In demo, both match
                 zone_id: null,
                 state: null,
                 region: null,
-                is_master: false
+                is_master: demoIsMaster
             };
 
             setProfile(combinedProfile);
-            setRole('representative');
+            setRole(demoRole);
+            setIsOwner(demoIsMaster);
             setPermissions([]);
             setLoading(false);
             return;
@@ -212,7 +232,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
-                .select('*')
+                .select('*, company_id')
                 .eq('user_id', userId)
                 .maybeSingle();
 
@@ -221,7 +241,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
 
             const { data: roleData, error: roleError } = await supabase
-                .from('user_roles')
+                .from('user_roles_plain')
                 .select('role, organization_id, zone_id, state, region')
                 .eq('user_id', userId)
                 .maybeSingle();
@@ -232,23 +252,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             console.log('Datos de rol obtenidos:', roleData);
 
-            // [FAIL-SAFE] Explicit check for System Owner to prevent accidental lockouts
-            const isOwner = email.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
+            // [INDUSTRIAL] Secure Master Verification via Database RPC
+            // FIX: Hardcoded owner emails to prevent catastrophic lockouts if RPC changes
+            const lowerEmail = email.toLowerCase();
+            const isHardcodedOwner = lowerEmail === 'cesar.ascanio@gmail.com';
 
-            let finalRole = (roleData?.role as UserRole) || (isOwner ? 'master' : 'representative');
-            let finalOrgId = roleData?.organization_id || profileData?.organization_id || null;
+            let isOwnerCheck = isHardcodedOwner;
+
+            if (!isOwnerCheck) {
+                try {
+                    // LLamamos a is_master() que no requiere parámetros en la nueva versión
+                    const { data: isOwnerResult, error: rpcError } = await (supabase.rpc as any)('is_master');
+                    if (!rpcError) {
+                        isOwnerCheck = !!isOwnerResult;
+                    }
+                } catch (e) {
+                    console.error("is_master RPC failed", e);
+                }
+            }
+
+            setIsOwner(isOwnerCheck);
+
+            let finalRole: UserRole = 'representative';
+            let finalOrgId: string | null = null;
+
+            if (roleData) {
+                finalRole = ((roleData as any).role as UserRole);
+                finalOrgId = (roleData as any).organization_id;
+            } else if (isOwnerCheck) {
+                finalRole = 'master';
+            }
+
+            if (!finalOrgId && profileData) {
+                finalOrgId = (profileData as any).organization_id;
+            }
 
             // [STRICT] Tenant 0 Isolation for Global Master
             const isTenantZero = finalOrgId === '00000000-0000-0000-0000-000000000000';
 
-            // If it's the owner but role record is missing, force master
-            if (isOwner && finalRole !== 'master') {
+            // If it's a verified master but role record is missing, force master
+            if (isOwnerCheck && finalRole !== 'master') {
                 finalRole = 'master';
             }
 
             // [ARCHITECTURAL REFINEMENT] Auto-migrate local 'master' strings to 'organization_admin'
             // for UI/Logic consistency, even if the DB record hasn't been migrated yet.
-            if (finalRole === 'master' && !isOwner && !isTenantZero) {
+            if (finalRole === 'master' && !isOwnerCheck && !isTenantZero) {
                 console.warn('AuthProvider: Local Master detected, mapping to organization_admin');
                 finalRole = 'organization_admin';
             }
@@ -256,11 +305,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const combinedProfile: UserProfile = {
                 id: userId,
                 email: email,
-                role: finalRole as UserRole,
+                first_name: (profileData as any)?.first_name || '',
+                last_name: (profileData as any)?.last_name || '',
+                role: finalRole,
                 organization_id: finalOrgId,
-                zone_id: roleData?.zone_id || null,
-                state: roleData?.state || null,
-                region: roleData?.region || null,
+                company_id: (roleData as any)?.company_id || (profileData as any)?.company_id || null,
+                zone_id: (roleData as any)?.zone_id || null,
+                state: (roleData as any)?.state || null,
+                region: (roleData as any)?.region || null,
                 is_master: finalRole === 'master'
             };
 
@@ -274,19 +326,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .select('permission_code')
                 .eq('role_slug', finalRole);
 
-            setPermissions(permsData?.map(p => p.permission_code) || []);
+            setPermissions((permsData as any[])?.map(p => p.permission_code) || []);
 
             // Load Organization Features and Name
             if (finalOrgId) {
-                const { data: orgData } = await supabase
+                const { data: orgData, error: orgError } = await supabase
                     .from('organizations')
                     .select('name, settings')
                     .eq('id', finalOrgId)
-                    .single();
+                    .maybeSingle();
 
-                setOrganizationName(orgData?.name || null);
-                const orgFeatures = (orgData?.settings as any)?.features || {};
-                setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                if (orgError) console.error('DEBUG: Organization error:', orgError);
+
+                if (orgData) {
+                    setOrganizationName((orgData as any).name);
+                    const orgFeatures = (orgData as any).settings?.features || {};
+                    setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                }
             } else {
                 setOrganizationName(null);
                 setFeatures(DEFAULT_FEATURES);
@@ -344,11 +400,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // --- Derived Permissions ---
     // [STRICT] Resilience for System Owner / Tenant 0
-    const isOwner = user?.email?.trim().toLowerCase() === 'cesar.ascanio@gmail.com';
     const isTenantZero = profile?.organization_id === '00000000-0000-0000-0000-000000000000';
 
     // isMaster is now STRICTLY for Global Administration (Tenant 0)
-    const isMaster = isOwner || (isTenantZero && (role === 'master' || originalRole === 'master'));
+    const isMaster = isOwner || (isTenantZero && (role === 'master' || (profile as any)?.originalRole === 'master'));
 
     const isOrgAdmin = role === 'organization_admin' || (role === 'master' && !isMaster); // Fallback for transition
     const isAdmin = role === 'admin' || isOrgAdmin;
@@ -387,7 +442,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         isAuthenticated: !!user,
         // Masters and SaaS Staff are NEVER in demo mode for navigation purposes
-        isDemo: !isSaaSStaff && profile?.organization_id === 'd3300000-0000-0000-0000-000000000001',
+        // Un entorno es DEMO si la organización es la compartida O si está en periodo de prueba (trialing)
+        // Esto permite que n8n cree organizaciones reales auditales que se comporten como demo
+        isDemo: !isSaaSStaff && (
+            profile?.organization_id === 'd3300000-0000-0000-0000-000000000001' || 
+            features?.trial_mode === true ||
+            organizationName?.toLowerCase().includes('demo')
+        ),
         isMaster,
         isOrgAdmin,
         isAdmin,
@@ -405,8 +466,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSaaSSupport,
         isSaaSDev,
         isSaaSStaff,
-        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
-        canViewAllData: isSaaSStaff || role === 'admin' || role === 'manager',
+        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin',
+        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isCoordinator || isSupervisor,
+        canViewAllData: isSaaSStaff || isAdmin || isManager,
         canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
         canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
         canAssignObjectives: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
@@ -420,6 +482,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canViewVisitHistory: isSaaSStaff || isSupervisor || isDoctor || isPharmacist,
         zoneId: profile?.zone_id || null,
         organizationId: profile?.organization_id || null,
+        companyId: profile?.company_id || null,
         userState: profile?.state || null,
         userRegion: profile?.region || null,
         // Feature Flags (Default logic)

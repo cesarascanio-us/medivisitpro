@@ -1,19 +1,10 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
-
-import { useState, useEffect, cloneElement } from "react";
-import { Plus, UserRound, Shield, Building, Search, Trash2, Edit, Check, X, MapPin, Globe, ChevronsUpDown, Loader2, RefreshCw, LayoutDashboard, Users as UsersIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Shield, MapPin, Globe, Loader2, RefreshCw, Users as UsersIcon, Search, Edit, Trash2, Check, ChevronsUpDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -34,8 +25,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, UserRole } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { getAllRegions, getStatesInRegion, getAllStates } from "@/constants/regions";
+import { getAllRegions, getStatesInRegion } from "@/constants/regions";
 import { cn } from "@/lib/utils";
+import { EliteHeader, EliteTable } from "@/components/layout/DesignSystem";
+import { useTexts } from "@/hooks/useTexts";
+import { useAppRoles } from "@/hooks/useAppRoles";
 
 interface Zone {
     id: string;
@@ -52,68 +46,46 @@ interface UserWithRole {
     last_name: string | null;
     role: UserRole;
     organization_id: string | null;
-    zone_id: string | null; // Keep for legacy/compat
-    assigned_zones: Zone[]; // New field for multiple zones
+    zone_id: string | null;
+    assigned_zones: Zone[];
     state: string | null;
     region: string | null;
     is_active: boolean;
     created_at: string;
 }
 
-const ROLE_LABELS: Record<UserRole, string> = {
-    master: 'Master Elite CA',
-    organization_admin: 'Admin de Organización',
-    admin: 'Administrador',
-    manager: 'Gerente',
-    coordinator: 'Coordinador',
-    supervisor: 'Supervisor',
-    representative: 'Representante',
-    chief: 'Jefe de Zona',
-    store_manager: 'Gerente de Tienda',
-    doctor: 'Médico',
-    pharmacist: 'Farmacéutico',
-    service_chief: 'Jefe de Servicios',
-    telemarketing: 'Telemarketing',
-    admin_saas: 'SaaS Admin',
-    soporte_saas: 'SaaS Soporte',
-    desarrollo_saas: 'SaaS Dev'
-};
-
-
-const ROLE_COLORS: Record<UserRole, string> = {
-    master: 'bg-purple-900/20 text-purple-900 border-purple-200',
-    organization_admin: 'bg-indigo-100 text-indigo-800',
-    admin: 'bg-red-100 text-red-800',
-    manager: 'bg-blue-100 text-blue-800',
-    coordinator: 'bg-indigo-100 text-indigo-800',
-    supervisor: 'bg-green-100 text-green-800',
-    representative: 'bg-gray-100 text-gray-800',
-    chief: 'bg-orange-100 text-orange-800',
-    store_manager: 'bg-indigo-100 text-indigo-800',
-    doctor: 'bg-teal-100 text-teal-800',
-    pharmacist: 'bg-amber-100 text-amber-800',
-    service_chief: 'bg-cyan-100 text-cyan-800',
-    telemarketing: 'bg-pink-100 text-pink-800',
-    admin_saas: 'bg-slate-900 text-white',
-    soporte_saas: 'bg-slate-700 text-white',
-    desarrollo_saas: 'bg-slate-800 text-white'
-};
-
-
 export default function Users() {
-    const { user, canManageUsers, isMaster, profile } = useAuth();
+    const t = useTexts();
+    const { user, canManageUsers, canViewUsers, isMaster, profile, organizationName, role } = useAuth();
+    const { data: appRoles } = useAppRoles();
     const organizationId = profile?.organization_id;
     const { toast } = useToast();
+    
+    const getRoleLabel = (slug: string) => appRoles?.find(r => r.slug === slug)?.name || slug;
+    const getRoleColor = (slug: string) => appRoles?.find(r => r.slug === slug)?.color || "bg-muted/10 text-muted-foreground border-border/40";
+    
+    const isGlobalAdmin = isMaster && organizationId === '00000000-0000-0000-0000-000000000000';
+    const [organizations, setOrganizations] = useState<{ id: string; name: string }[]>([]);
+    const [selectedOrgFilter, setSelectedOrgFilter] = useState<string>('all');
+    
+    const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteFirstName, setInviteFirstName] = useState('');
+    const [inviteLastName, setInviteLastName] = useState('');
+    const [inviteRole, setInviteRole] = useState<UserRole>('representative');
+    const [inviteOrgId, setInviteOrgId] = useState<string>('');
+    const [isInviting, setIsInviting] = useState(false);
+    
+    const [editOrgId, setEditOrgId] = useState<string>('');
+
     const [users, setUsers] = useState<UserWithRole[]>([]);
     const [zones, setZones] = useState<Zone[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Editing state
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
 
-    // Form States
     const [selectedRole, setSelectedRole] = useState<UserRole>('representative');
     const [selectedRegion, setSelectedRegion] = useState<string>('');
     const [selectedState, setSelectedState] = useState<string>('');
@@ -127,10 +99,12 @@ export default function Users() {
         if (user) {
             loadUsers();
             loadZones();
+            if (isMaster) {
+                loadOrganizations();
+            }
         }
-    }, [user]);
+    }, [user, selectedOrgFilter]);
 
-    // Initial load of form when opening dialog
     useEffect(() => {
         if (editingUser) {
             setSelectedRole(editingUser.role);
@@ -139,21 +113,20 @@ export default function Users() {
             setSelectedZones(editingUser.assigned_zones?.map(z => z.id) || []);
             setFirstName(editingUser.first_name || '');
             setLastName(editingUser.last_name || '');
+            setEditOrgId(editingUser.organization_id || 'none');
         } else {
-            // Reset form
             setSelectedRole('representative');
             setSelectedRegion('');
             setSelectedState('');
             setSelectedZones([]);
             setFirstName('');
             setLastName('');
+            setEditOrgId('');
         }
     }, [editingUser]);
 
-    // Reset downstream selections when upstream changes
     useEffect(() => {
         if (selectedRegion) {
-            // If we change region, we might keep state if it belongs, or clear it
             const statesInRegion = getStatesInRegion(selectedRegion);
             if (selectedState && !statesInRegion.includes(selectedState)) {
                 setSelectedState('');
@@ -163,46 +136,45 @@ export default function Users() {
     }, [selectedRegion]);
 
     useEffect(() => {
-        // When state changes, we might want to clear zones if they don't match anymore
-        // But for simplicity, we just filter them visually. 
-        // Actually good UX: clear zones that are not available
         if (selectedState) {
             const availableZones = getAvailableZones();
-            // Check if selected zones are still valid
             const validZoneIds = new Set(availableZones.map(z => z.id));
             setSelectedZones(prev => prev.filter(id => validZoneIds.has(id)));
         } else {
-            // When state is cleared, usually we should clear zones if we enforce state->zone hierarchy
-            // But if we allow picking zones from region (without state set), logic might differ
-            // Assuming strict hierarchy: Region -> State -> Zone
             if (zones.length > 0 && selectedRegion === '') {
-                // Reset if no region either
                 setSelectedZones([]);
             }
         }
     }, [selectedState]);
 
+    const loadOrganizations = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('organizations')
+                .select('id, name')
+                .order('name');
+            if (error) throw error;
+            setOrganizations(data || []);
+        } catch (error) {
+            console.error('Error loading organizations:', error);
+        }
+    };
 
     const loadZones = async () => {
         try {
-            let query = supabase
-                .from('zones')
-                .select('*');
-
-            if (!isMaster && organizationId) {
+            let query = supabase.from('zones').select('*');
+            if (!isGlobalAdmin && organizationId) {
                 query = query.eq('organization_id', organizationId);
             }
-
             const { data, error } = await query.order('name');
-
             if (error) throw error;
             setZones(data || []);
         } catch (error) {
             console.error('Error loading zones:', error);
             toast({
                 variant: "destructive",
-                title: "Error",
-                description: "No se pudieron cargar las zonas",
+                title: "Error de Sistema",
+                description: "No se pudieron recuperar los perímetros de zona.",
             });
         }
     };
@@ -221,29 +193,36 @@ export default function Users() {
                     )
                 `);
 
-            if (!isMaster && organizationId) {
-                query = query.eq('organization_id', organizationId);
+            if (!isGlobalAdmin) {
+                if (organizationId) {
+                    query = query.eq('organization_id', organizationId);
+                }
+            } else {
+                if (selectedOrgFilter !== 'all') {
+                    if (selectedOrgFilter === 'none') {
+                        query = query.is('organization_id', null);
+                    } else {
+                        query = query.eq('organization_id', selectedOrgFilter);
+                    }
+                }
             }
 
             const { data: rolesData, error: rolesError } = await query;
-
             if (rolesError) throw rolesError;
 
-            // Fetch assigned zones for all users
             const { data: userZonesData, error: userZonesError } = await supabase
                 .from('user_zones' as any)
                 .select('user_id, zone_id, zones(id, name, state, region)');
 
             if (userZonesError) {
-                console.warn("Could not fetch user_zones, maybe table doesn't exist yet?", userZonesError);
+                console.warn("Could not fetch user_zones", userZonesError);
             }
 
             const usersWithRoles = rolesData?.map((role: any) => {
-                // Find all zones for this user
                 const myZones = userZonesData
                     ?.filter((uz: any) => uz.user_id === role.user_id)
                     .map((uz: any) => uz.zones)
-                    .filter(Boolean) || []; // filter Boolean to remove any nulls from join
+                    .filter(Boolean) || [];
 
                 return {
                     id: role.id,
@@ -267,13 +246,14 @@ export default function Users() {
             console.error('Error loading users:', error);
             toast({
                 variant: "destructive",
-                title: "Error",
-                description: "No se pudieron cargar los usuarios",
+                title: "Error de Protocolo",
+                description: "Fallo en la sincronización de la base de datos de personal.",
             });
         } finally {
             setLoading(false);
         }
     };
+
 
     const handleEditClick = (user: UserWithRole) => {
         setEditingUser(user);
@@ -283,80 +263,79 @@ export default function Users() {
     const handleSaveUser = async () => {
         if (!editingUser) return;
         setIsSaving(true);
-
         try {
-            // 1. Update Profile (Name)
-            // 1. Update Profile (Name, Region, State)
-            // We sync region/state to profiles as well, as some views might rely on it
-            const profileUpdates: any = {
-                first_name: firstName,
-                last_name: lastName,
-                region: selectedRegion === 'all' ? null : selectedRegion,
-                state: selectedState === 'all' ? null : selectedState
-            };
-
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .update(profileUpdates)
-                .eq('user_id', editingUser.user_id);
-
-            if (profileError) throw profileError;
-
-            // 2. Update User Role (Role, Region, State, Main Zone)
-            // We use the first selected zone as the "main" zone_id for backward compatibility
             const primaryZoneId = selectedZones.length > 0 ? selectedZones[0] : null;
 
-            const { error: roleError } = await supabase
-                .from('user_roles')
-                .update({
-                    role: selectedRole,
-                    region: selectedRegion || null,
-                    state: selectedState || null,
-                    zone_id: primaryZoneId
-                })
-                .eq('user_id', editingUser.user_id);
+            const { data, error: rpcError } = await supabase.rpc('admin_update_user_full', {
+                p_target_user_id: editingUser.user_id,
+                p_first_name: firstName,
+                p_last_name: lastName,
+                p_region: selectedRegion === 'all' ? null : selectedRegion,
+                p_state: selectedState === 'all' ? null : selectedState,
+                p_role: selectedRole,
+                p_zone_id: primaryZoneId,
+                p_organization_id: isGlobalAdmin ? (editOrgId === 'none' ? null : editOrgId) : null,
+                p_zone_ids: selectedZones
+            });
 
-            if (roleError) throw roleError;
-
-            // 3. Update User Zones (Many-to-Many)
-            // First delete existing
-            const { error: deleteError } = await supabase
-                .from('user_zones' as any)
-                .delete()
-                .eq('user_id', editingUser.user_id);
-
-            if (deleteError) {
-                // If table doesn't exist, this might fail.
-                console.warn("Error deleting user_zones:", deleteError);
-            } else if (selectedZones.length > 0) {
-                // Insert new
-                const { error: insertError } = await supabase
-                    .from('user_zones' as any)
-                    .insert(selectedZones.map(zid => ({
-                        user_id: editingUser.user_id,
-                        zone_id: zid
-                    })));
-
-                if (insertError) throw insertError;
-            }
+            if (rpcError) throw rpcError;
+            if (data && data.error) throw new Error(data.error);
 
             toast({
-                title: "Usuario actualizado",
-                description: "Los datos se han guardado correctamente.",
+                title: "Protocolo Completado",
+                description: "Los parámetros del colaborador han sido reconfigurados.",
             });
 
             setIsEditDialogOpen(false);
-            loadUsers(); // Reload to see changes
+            loadUsers();
 
         } catch (error: any) {
             console.error('Error updating user:', error);
             toast({
                 variant: "destructive",
-                title: "Error",
-                description: error.message || "No se pudo actualizar el usuario",
+                title: "Error de Escritura",
+                description: error.message || "No se pudo actualizar la matriz de usuario.",
             });
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleInviteUserSubmit = async () => {
+        setIsInviting(true);
+        try {
+            const resolvedOrgId = isGlobalAdmin 
+                ? (inviteOrgId === 'none' ? null : inviteOrgId)
+                : (organizationId || null);
+
+            const { data, error } = await supabase.functions.invoke('invite-user', {
+                body: { 
+                    email: inviteEmail, 
+                    firstName: inviteFirstName, 
+                    lastName: inviteLastName, 
+                    role: inviteRole, 
+                    organizationId: resolvedOrgId 
+                }
+            });
+
+            if (error) throw error;
+            if (data?.error) throw new Error(data.error);
+            
+            toast({ 
+                title: "Invitación Enviada", 
+                description: "Credenciales de acceso y enlace de onboarding enviados por correo electrónico." 
+            });
+            setIsInviteDialogOpen(false);
+            loadUsers();
+        } catch (error: any) { 
+            console.error("Invite error:", error);
+            toast({ 
+                title: "Error de Envío", 
+                description: error.message || "Fallo al enviar la invitación al operador.", 
+                variant: "destructive" 
+            }); 
+        } finally {
+            setIsInviting(false); 
         }
     };
 
@@ -374,18 +353,17 @@ export default function Users() {
             ));
 
             toast({
-                title: !currentStatus ? "Usuario activado" : "Usuario desactivado",
-                description: `El usuario ha sido ${!currentStatus ? 'activado' : 'desactivado'} exitosamente.`
+                title: !currentStatus ? "Acceso Restaurado" : "Acceso Revocado",
+                description: `El estado del colaborador ha sido modificado en la red central.`
             });
         } catch (error) {
             toast({
                 variant: "destructive",
-                title: "Error",
-                description: "No se pudo cambiar el estado del usuario"
+                title: "Fallo de Sistema",
+                description: "No se pudo alterar el estado de acceso del usuario."
             });
         }
     };
-
 
     const getAvailableStates = () => {
         if (!selectedRegion || selectedRegion === 'all') return [];
@@ -394,38 +372,42 @@ export default function Users() {
 
     const getAvailableZones = () => {
         let filtered = zones;
-
-        // Filter by state if selected
         if (selectedState && selectedState !== 'all') {
             filtered = filtered.filter(z => z.state === selectedState);
         } else if (selectedRegion && selectedRegion !== 'all') {
-            // If only region selected, filter by all states in that region? 
-            // Or filter by region column if available
-            // Since we have region in zone type, let's use it
             filtered = filtered.filter(z => z.region === selectedRegion);
         }
-
         return filtered;
     };
 
-    const filteredUsers = users.filter(user =>
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredUsers = users.filter(user => {
+        if (user.role === 'master' && !isMaster) return false;
+        
+        if (!isMaster) {
+            const isSystemRole = appRoles?.find(r => r.slug === user.role)?.is_system;
+            if (isSystemRole && role !== 'admin') return false;
+        }
 
-    if (!canManageUsers) {
+        if (!searchTerm) return true;
+
+        const search = searchTerm.toLowerCase();
+        return (user.email?.toLowerCase().includes(search) || false) ||
+            (user.first_name?.toLowerCase().includes(search) || false) ||
+            (user.last_name?.toLowerCase().includes(search) || false);
+    });
+
+    if (!canViewUsers) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
-                <Card className="w-full max-w-md">
+                <Card className="w-full max-w-md border-none shadow-premium-lg bg-card">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-destructive">
+                        <CardTitle className="flex items-center gap-2 text-destructive font-black uppercase tracking-widest text-sm">
                             <Shield className="h-5 w-5" />
-                            Acceso Restringido
+                            Acceso Denegado
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>No tienes permisos para administrar usuarios.</p>
+                        <p className="text-muted-foreground font-medium">No posee credenciales de nivel suficiente para administrar el personal.</p>
                     </CardContent>
                 </Card>
             </div>
@@ -433,263 +415,318 @@ export default function Users() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
-            {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
-                {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
-
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-none transform transition-transform hover:scale-105">
-                            <UsersIcon className="text-white h-8 w-8" />
-                        </div>
-                        <div>
-                            <p className="text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Sistema de Administración</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                                Gestión de Usuarios
-                            </h1>
-                            <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
-                                    {isMaster ? 'Modo Master Global' : (ROLE_LABELS[profile?.role as UserRole] || 'Admin')}
-                                </Badge>
-                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{users.length} Colaboradores</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col items-end gap-3">
+        <div className="flex flex-col min-h-full space-y-10 font-display animate-in fade-in duration-700 text-foreground pb-20">
+            
+            <EliteHeader 
+                title={t.users_title}
+                subtitle={t.users_subtitle}
+                icon={UsersIcon}
+                badgeText={isMaster ? "Soberanía Global" : "Control de Acceso"}
+                statusText={`${users.length} Operadores Activos`}
+                statusColor="bg-emerald-500"
+                rightContent={
+                    <div className="flex items-center gap-4">
+                        {canManageUsers && (
+                            <Button
+                                onClick={() => {
+                                    setInviteEmail('');
+                                    setInviteFirstName('');
+                                    setInviteLastName('');
+                                    setInviteRole('representative');
+                                    setInviteOrgId(organizationId || 'none');
+                                    setIsInviteDialogOpen(true);
+                                }}
+                                className="bg-primary hover:bg-primary/95 text-white border-none rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 animate-in fade-in zoom-in duration-300"
+                            >
+                                <Plus className="h-4 w-4 text-white" />
+                                Invitar Colaborador
+                            </Button>
+                        )}
                         <Button
                             onClick={loadUsers}
                             variant="outline"
-                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl h-12 px-6 font-bold shadow-sm hover:shadow-md transition-all active:scale-95 group"
+                            className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all group"
                         >
-                            <RefreshCw className={cn("h-4 w-4 mr-2 text-slate-500 group-hover:text-purple-600 transition-colors", loading && "animate-spin")} />
-                            Actualizar Listado
+                            <RefreshCw className={cn("h-4 w-4 mr-3 text-primary group-hover:rotate-180 transition-transform duration-700", loading && "animate-spin")} />
+                            Sincronizar Datos
                         </Button>
                     </div>
-                </div>
-            </header>
+                }
+            />
 
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight">
-                            Personal del Sistema
-                        </CardTitle>
-                        <div className="relative w-full md:w-80">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                            <Input
-                                placeholder="Buscar colaborador..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 h-11 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus-visible:ring-purple-500 font-medium"
-                            />
+            <EliteTable 
+                title="Directorio de Operadores Alpha"
+                description="Matriz central de colaboradores y niveles de acceso corporativo."
+                searchPlaceholder="BUSCAR COLABORADOR POR IDENTIFICADOR..."
+                onSearch={setSearchTerm}
+                filterElement={
+                    isGlobalAdmin ? (
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtrar Org:</span>
+                            <Select
+                                value={selectedOrgFilter}
+                                onValueChange={setSelectedOrgFilter}
+                            >
+                                <SelectTrigger className="h-9 w-48 bg-muted/30 border-border/40 rounded-xl font-black uppercase text-[9px] px-4 shadow-sm">
+                                    <SelectValue placeholder="Todas" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-xl border-border/40 bg-card">
+                                    <SelectItem value="all" className="font-black uppercase text-[9px] tracking-widest py-2">
+                                        Todas las Organizaciones
+                                    </SelectItem>
+                                    <SelectItem value="none" className="font-black uppercase text-[9px] tracking-widest py-2">
+                                        Sistémico / Global Core
+                                    </SelectItem>
+                                    {organizations.map((org) => (
+                                        <SelectItem key={org.id} value={org.id} className="font-black uppercase text-[9px] tracking-widest py-2">
+                                            {org.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    {loading ? (
-                        <div className="flex justify-center p-8">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        </div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
-                                    <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pl-6">Usuario</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Rol</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Ubicación</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Zonas Asignadas</TableHead>
-                                        <TableHead className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4">Estado</TableHead>
-                                        <TableHead className="text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-4 pr-6">Acciones</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {filteredUsers.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={6} className="h-24 text-center">
-                                                No se encontraron usuarios
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        filteredUsers.map((user) => (
-                                            <TableRow key={user.id}>
-                                                <TableCell>
-                                                    <div className="flex flex-col">
-                                                        <span className="font-medium">
-                                                            {user.first_name} {user.last_name}
-                                                        </span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {user.email}
-                                                        </span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge
-                                                        variant="outline"
-                                                        className={cn("font-medium", ROLE_COLORS[user.role] || "bg-gray-100 text-gray-800")}
-                                                    >
-                                                        {ROLE_LABELS[user.role]}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-col gap-1 text-sm">
-                                                        {user.region && (
-                                                            <div className="flex items-center gap-1 text-muted-foreground">
-                                                                <Globe className="h-3 w-3" />
-                                                                <span>{user.region}</span>
-                                                            </div>
-                                                        )}
-                                                        {user.state && (
-                                                            <div className="flex items-center gap-1 text-muted-foreground">
-                                                                <MapPin className="h-3 w-3" />
-                                                                <span>{user.state}</span>
-                                                            </div>
-                                                        )}
-                                                        {!user.region && !user.state && (
-                                                            <span className="text-muted-foreground italic">Sin ubicación</span>
-                                                        )}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {user.assigned_zones && user.assigned_zones.length > 0 ? (
-                                                            user.assigned_zones.slice(0, 3).map(z => (
-                                                                <Badge key={z.id} variant="secondary" className="text-xs">
-                                                                    {z.name}
-                                                                </Badge>
-                                                            ))
-                                                        ) : (
-                                                            <span className="text-xs text-muted-foreground">Ninguna</span>
-                                                        )}
-                                                        {user.assigned_zones && user.assigned_zones.length > 3 && (
-                                                            <Badge variant="secondary" className="text-xs">
-                                                                +{user.assigned_zones.length - 3}
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant={user.is_active ? "default" : "secondary"}>
-                                                        {user.is_active ? "Activo" : "Inactivo"}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <div className="flex justify-end gap-2">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => handleEditClick(user)}
-                                                            className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                        {isMaster && (
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() => handleToggleActive(user.user_id, user.is_active)}
-                                                                className={cn(
-                                                                    "h-8 w-8",
-                                                                    user.is_active
-                                                                        ? "text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                                        : "text-green-600 hover:text-green-700 hover:bg-green-50"
-                                                                )}
-                                                            >
-                                                                {user.is_active ? (
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                ) : (
-                                                                    <Check className="h-4 w-4" />
-                                                                )}
-                                                            </Button>
-                                                        )}
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                    ) : null
+                }
+            >
+                <Table>
+                    <TableHeader>
+                        <TableRow className="hover:bg-transparent border-border/40">
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6 pl-8">Operador</TableHead>
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Privilegios</TableHead>
+                            {isGlobalAdmin && (
+                                <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Organización</TableHead>
+                            )}
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Despliegue Geográfico</TableHead>
+                            <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Radio de Cobertura</TableHead>
+                            <TableHead className="text-center text-[10px] font-black uppercase tracking-widest py-6">Estado</TableHead>
+                            <TableHead className="text-right text-[10px] font-black uppercase tracking-widest py-6 pr-8">Acciones</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            [1,2,3,4,5].map(i => (
+                                <TableRow key={i} className="animate-pulse border-border/40">
+                                    <TableCell colSpan={isGlobalAdmin ? 7 : 6} className="h-16 py-8">
+                                        <div className="h-4 bg-muted/20 rounded-full w-full"></div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : filteredUsers.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={isGlobalAdmin ? 7 : 6} className="h-40 text-center text-muted-foreground font-black uppercase text-[10px] tracking-widest">
+                                    Ningún colaborador interceptado en el radar.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            filteredUsers.map((user) => (
+                                <TableRow key={user.id} className="hover:bg-muted/5 transition-colors border-border/40 group">
+                                    <TableCell className="pl-8 py-8">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="font-black text-foreground uppercase tracking-tighter text-base group-hover:text-primary transition-colors">
+                                                {user.first_name} {user.last_name}
+                                            </span>
+                                            <span className="text-[10px] text-muted-foreground font-black tracking-widest uppercase opacity-70">
+                                                {user.email}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge
+                                            variant="outline"
+                                            className={cn("font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg border", getRoleColor(user.role))}
+                                        >
+                                            {getRoleLabel(user.role)}
+                                        </Badge>
+                                    </TableCell>
+                                    {isGlobalAdmin && (
+                                        <TableCell className="py-8">
+                                            <span className="text-[10px] font-black text-foreground uppercase tracking-tight">
+                                                {organizations.find(o => o.id === user.organization_id)?.name || (user.organization_id === '00000000-0000-0000-0000-000000000000' ? 'Global Core' : 'Sistémico')}
+                                            </span>
+                                        </TableCell>
                                     )}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                                    <TableCell className="py-8">
+                                        <div className="flex flex-col gap-2">
+                                            {user.region && (
+                                                <div className="flex items-center gap-2 text-muted-foreground">
+                                                    <Globe className="h-3 w-3 text-primary" />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest">{user.region}</span>
+                                                </div>
+                                            )}
+                                            {user.state && (
+                                                <div className="flex items-center gap-2 text-muted-foreground">
+                                                    <MapPin className="h-3 w-3 text-primary" />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest">{user.state}</span>
+                                                </div>
+                                            )}
+                                            {!user.region && !user.state && (
+                                                <span className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-widest italic">Perímetro Global</span>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-8">
+                                        <div className="flex flex-wrap gap-2">
+                                            {user.assigned_zones && user.assigned_zones.length > 0 ? (
+                                                user.assigned_zones.slice(0, 3).map(z => (
+                                                    <Badge key={z.id} className="bg-muted/20 text-muted-foreground border border-border/40 font-black text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-md shadow-inner">
+                                                        {z.name}
+                                                    </Badge>
+                                                ))
+                                            ) : (
+                                                <span className="text-[9px] font-black text-muted-foreground/20 uppercase tracking-widest">N/A</span>
+                                            )}
+                                            {user.assigned_zones && user.assigned_zones.length > 3 && (
+                                                <Badge className="bg-primary/10 text-primary border border-primary/20 font-black text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-md">
+                                                    +{user.assigned_zones.length - 3}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-center py-8">
+                                        <div className="flex justify-center">
+                                            <Badge className={cn(
+                                                "font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full border shadow-sm",
+                                                user.is_active 
+                                                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" 
+                                                    : "bg-muted/10 text-muted-foreground border-border/40"
+                                            )}>
+                                                {user.is_active ? "Activo" : "Inactivo"}
+                                            </Badge>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right pr-8 py-8">
+                                        <div className="flex gap-2 justify-end">
+                                            {canManageUsers && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleEditClick(user)}
+                                                    className="h-12 w-12 text-primary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all shadow-inner border border-transparent hover:border-primary/20"
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            )}
+                                            {isMaster && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleToggleActive(user.user_id, user.is_active)}
+                                                    className={cn(
+                                                        "h-12 w-12 rounded-2xl transition-all shadow-inner border border-transparent",
+                                                        user.is_active
+                                                            ? "text-red-500 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20"
+                                                            : "text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20"
+                                                    )}
+                                                >
+                                                    {user.is_active ? (
+                                                        <Trash2 className="h-4 w-4" />
+                                                    ) : (
+                                                        <Check className="h-4 w-4" />
+                                                    )}
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        ))}
+                    </TableBody>
+                </Table>
+            </EliteTable>
 
-            {/* Edit User Dialog */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent className="sm:max-w-[600px] rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden">
-                    <DialogHeader className="bg-slate-50 dark:bg-slate-900 p-8 pb-6 border-b border-slate-100 dark:border-slate-800">
-                        <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Editar Usuario</DialogTitle>
-                        <DialogDescription className="text-slate-500 font-medium">
-                            Modifique los permisos y asignaciones del colaborador en el sistema.
+                <DialogContent className="sm:max-w-[700px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-y-auto max-h-[90vh] bg-card font-display">
+                    <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+                        <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase mb-2">Configurar Operador</DialogTitle>
+                        <DialogDescription className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-70">
+                            Ajuste de parámetros y credenciales tácticas del colaborador.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-6 p-8">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="firstName">Nombre</Label>
+                    <div className="grid gap-10 p-10">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Nombre</Label>
                                 <Input
-                                    id="firstName"
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
+                                    className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="lastName">Apellido</Label>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Apellido</Label>
                                 <Input
-                                    id="lastName"
                                     value={lastName}
                                     onChange={(e) => setLastName(e.target.value)}
+                                    className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner"
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="role">Rol del Sistema</Label>
+                        <div className="space-y-3">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Nivel de Seguridad (Rol)</Label>
                             <Select
                                 value={selectedRole}
                                 onValueChange={(v) => setSelectedRole(v as UserRole)}
                             >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Seleccionar rol" />
+                                <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                    <SelectValue placeholder="Definir rol corporativo" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(ROLE_LABELS).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>
-                                            {label}
+                                <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                    {appRoles?.filter(r => isMaster || !r.is_system).map((r) => (
+                                        <SelectItem key={r.slug} value={r.slug}>
+                                            {r.name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
 
-                        <div className="space-y-4 rounded-lg border p-4 bg-muted/20">
-                            <h4 className="font-medium flex items-center gap-2">
-                                <Globe className="h-4 w-4 text-primary" />
-                                Asignación Geográfica
+                        {isGlobalAdmin && (
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">SaaS Tenant (Organización)</Label>
+                                <Select
+                                    value={editOrgId}
+                                    onValueChange={setEditOrgId}
+                                >
+                                    <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                        <SelectValue placeholder="Elegir organización" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                        <SelectItem value="none" className="font-black uppercase text-[10px] tracking-widest py-3">
+                                            Sistémico / Global Core
+                                        </SelectItem>
+                                        {organizations.map((org) => (
+                                            <SelectItem key={org.id} value={org.id} className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                {org.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
+
+                        <div className="space-y-8 rounded-[2.5rem] border border-border/40 p-8 bg-muted/10 shadow-inner">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
+                                <Globe className="h-4 w-4" />
+                                Jurisdicción Territorial
                             </h4>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Región</Label>
+                            <div className="grid grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Región Alpha</Label>
                                     <Select
                                         value={selectedRegion}
                                         onValueChange={setSelectedRegion}
                                     >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccionar región" />
+                                        <SelectTrigger className="h-12 bg-card border-border/40 rounded-xl font-black uppercase text-[10px] px-5 shadow-sm">
+                                            <SelectValue placeholder="Elegir región" />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">Todas (Solo visible admin)</SelectItem>
+                                        <SelectContent className="rounded-xl border-border/40 bg-card">
+                                            <SelectItem value="all" className="font-black uppercase text-[10px] tracking-widest">Global</SelectItem>
                                             {getAllRegions().map((region) => (
-                                                <SelectItem key={region} value={region}>
+                                                <SelectItem key={region} value={region} className="font-black uppercase text-[10px] tracking-widest">
                                                     {region}
                                                 </SelectItem>
                                             ))}
@@ -697,20 +734,20 @@ export default function Users() {
                                     </Select>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label>Estado</Label>
+                                <div className="space-y-3">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Estado de Operación</Label>
                                     <Select
                                         value={selectedState}
                                         onValueChange={setSelectedState}
                                         disabled={!selectedRegion || selectedRegion === 'all'}
                                     >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder={selectedRegion ? "Seleccionar estado" : "Seleccione región primero"} />
+                                        <SelectTrigger className="h-12 bg-card border-border/40 rounded-xl font-black uppercase text-[10px] px-5 shadow-sm">
+                                            <SelectValue placeholder="Definir estado" />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">Todos</SelectItem>
+                                        <SelectContent className="rounded-xl border-border/40 bg-card">
+                                            <SelectItem value="all" className="font-black uppercase text-[10px] tracking-widest">Todos los Estados</SelectItem>
                                             {getAvailableStates().map((state) => (
-                                                <SelectItem key={state} value={state}>
+                                                <SelectItem key={state} value={state} className="font-black uppercase text-[10px] tracking-widest">
                                                     {state}
                                                 </SelectItem>
                                             ))}
@@ -719,119 +756,216 @@ export default function Users() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <Label>Zonas Asignadas</Label>
-                                <div className="space-y-2">
-                                    <Popover open={openZoneCombobox} onOpenChange={setOpenZoneCombobox}>
-                                        <PopoverTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                className="w-full justify-between"
-                                                disabled={(!selectedState || selectedState === 'all') && (!selectedRegion || selectedRegion === 'all')}
-                                            >
-                                                {selectedZones.length > 0
-                                                    ? `${selectedZones.length} zona(s) seleccionada(s)`
-                                                    : "Seleccionar zonas"}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[400px] p-0" align="start">
-                                            <Command>
-                                                <CommandInput placeholder="Buscar zona..." />
-                                                <div className="p-2 border-b">
-                                                    <div className="flex items-center space-x-2">
-                                                        <Checkbox
-                                                            id="select-all"
-                                                            checked={selectedZones.length > 0 &&
-                                                                getAvailableZones().length > 0 &&
-                                                                selectedZones.length === getAvailableZones().length}
-                                                            onCheckedChange={(checked) => {
-                                                                if (checked) {
-                                                                    setSelectedZones(getAvailableZones().map(z => z.id));
-                                                                } else {
-                                                                    setSelectedZones([]);
-                                                                }
-                                                            }}
-                                                        />
-                                                        <label
-                                                            htmlFor="select-all"
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                        >
-                                                            Seleccionar Todas
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <CommandList>
-                                                    <CommandEmpty>No se encontraron zonas.</CommandEmpty>
-                                                    <CommandGroup className="max-h-[200px] overflow-auto">
-                                                        {getAvailableZones().map((zone) => (
-                                                            <CommandItem
-                                                                key={zone.id}
-                                                                value={zone.name}
-                                                                onSelect={() => {
-                                                                    setSelectedZones(prev =>
-                                                                        prev.includes(zone.id)
-                                                                            ? prev.filter(id => id !== zone.id)
-                                                                            : [...prev, zone.id]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <Check
-                                                                    className={cn(
-                                                                        "mr-2 h-4 w-4",
-                                                                        selectedZones.includes(zone.id)
-                                                                            ? "opacity-100"
-                                                                            : "opacity-0"
-                                                                    )}
-                                                                />
-                                                                {zone.name}
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
-
-                                    <div className="flex flex-wrap gap-1 mt-2 min-h-[24px]">
-                                        {selectedZones.map(zoneId => {
-                                            const zone = zones.find(z => z.id === zoneId);
-                                            return zone ? (
-                                                <Badge key={zoneId} variant="secondary" className="flex items-center gap-1">
-                                                    {zone.name}
-                                                    <X
-                                                        className="h-3 w-3 cursor-pointer hover:text-destructive"
-                                                        onClick={() => setSelectedZones(prev => prev.filter(id => id !== zoneId))}
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Perímetros de Zona (Multi-asignación)</Label>
+                                <Popover open={openZoneCombobox} onOpenChange={setOpenZoneCombobox}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full h-12 bg-card border-border/40 rounded-xl font-black uppercase text-[10px] px-5 shadow-sm justify-between hover:bg-muted/10"
+                                            disabled={(!selectedState || selectedState === 'all') && (!selectedRegion || selectedRegion === 'all')}
+                                        >
+                                            {selectedZones.length > 0
+                                                ? `${selectedZones.length} Zona(s) Interceptada(s)`
+                                                : "Escanear Zonas Disponibles"}
+                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[500px] p-0 rounded-2xl border-border/40 shadow-2xl bg-card" align="start">
+                                        <Command className="bg-transparent">
+                                            <CommandInput placeholder="FILTRAR ZONA POR IDENTIFICADOR..." className="h-14 font-black uppercase text-[10px] tracking-widest" />
+                                            <div className="p-4 border-b border-border/40 bg-muted/10">
+                                                <div className="flex items-center space-x-3">
+                                                    <Checkbox
+                                                        id="select-all"
+                                                        checked={selectedZones.length > 0 &&
+                                                            getAvailableZones().length > 0 &&
+                                                            selectedZones.length === getAvailableZones().length}
+                                                        onCheckedChange={(checked) => {
+                                                            if (checked) {
+                                                                setSelectedZones(getAvailableZones().map(z => z.id));
+                                                            } else {
+                                                                setSelectedZones([]);
+                                                            }
+                                                        }}
+                                                        className="rounded-md border-primary/40 data-[state=checked]:bg-primary"
                                                     />
-                                                </Badge>
-                                            ) : null;
-                                        })}
-                                        {selectedZones.length === 0 && (
-                                            <span className="text-xs text-muted-foreground italic">
-                                                Ninguna zona seleccionada
-                                            </span>
-                                        )}
-                                    </div>
-                                    {(!selectedState || selectedState === 'all') && (
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                            Seleccione un estado específico para filtrar zonas.
-                                        </p>
-                                    )}
-                                </div>
+                                                    <label
+                                                        htmlFor="select-all"
+                                                        className="text-[10px] font-black uppercase tracking-widest text-foreground cursor-pointer"
+                                                    >
+                                                        Sincronizar Todas las Zonas Visibles
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <CommandList>
+                                                <CommandEmpty className="py-6 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ninguna zona interceptada.</CommandEmpty>
+                                                <CommandGroup className="max-h-[300px] overflow-auto p-2">
+                                                    {getAvailableZones().map((zone) => (
+                                                        <CommandItem
+                                                            key={zone.id}
+                                                            value={zone.name}
+                                                            onSelect={() => {
+                                                                setSelectedZones(prev =>
+                                                                    prev.includes(zone.id)
+                                                                        ? prev.filter(id => id !== zone.id)
+                                                                        : [...prev, zone.id]
+                                                                );
+                                                            }}
+                                                            className="rounded-lg py-3 px-4 font-black uppercase text-[9px] tracking-widest hover:bg-primary/10 data-[selected=true]:bg-primary/5 cursor-pointer"
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-3 h-4 w-4 text-primary transition-opacity",
+                                                                    selectedZones.includes(zone.id)
+                                                                        ? "opacity-100"
+                                                                        : "opacity-0"
+                                                                )}
+                                                            />
+                                                            {zone.name}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
-                    </div>
 
-                    <DialogFooter className="bg-slate-50 dark:bg-slate-900 p-6 px-8 border-t border-slate-100 dark:border-slate-800">
-                        <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold">
-                            Cancelar
-                        </Button>
-                        <Button onClick={handleSaveUser} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-8 font-black shadow-lg shadow-purple-200 dark:shadow-none transition-all active:scale-95">
-                            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Guardar Cambios
-                        </Button>
-                    </DialogFooter>
+                        <div className="flex gap-4 justify-end pt-4">
+                            <Button 
+                                variant="outline" 
+                                onClick={() => setIsEditDialogOpen(false)}
+                                className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40 hover:bg-muted/10"
+                            >
+                                Abortar
+                            </Button>
+                            <Button 
+                                onClick={handleSaveUser} 
+                                disabled={isSaving}
+                                className="h-14 px-12 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+                            >
+                                {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                                Consolidar Cambios
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+                <DialogContent className="sm:max-w-[700px] rounded-[3rem] border-border/40 shadow-premium-2xl p-0 overflow-hidden bg-card font-display">
+                    <DialogHeader className="bg-muted/20 p-10 pb-8 border-b border-border/40 relative">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+                        <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase mb-2">Invitar Colaborador</DialogTitle>
+                        <DialogDescription className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-70">
+                            Invitar un nuevo miembro al equipo e iniciar el flujo de onboarding automático.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="grid gap-8 p-10">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Nombre</Label>
+                                <Input
+                                    value={inviteFirstName}
+                                    onChange={(e) => setInviteFirstName(e.target.value)}
+                                    placeholder="EJ: JUAN"
+                                    className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner focus-visible:ring-primary"
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Apellido</Label>
+                                <Input
+                                    value={inviteLastName}
+                                    onChange={(e) => setInviteLastName(e.target.value)}
+                                    placeholder="EJ: PÉREZ"
+                                    className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner focus-visible:ring-primary"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Correo Electrónico</Label>
+                            <Input
+                                type="email"
+                                value={inviteEmail}
+                                onChange={(e) => setInviteEmail(e.target.value)}
+                                placeholder="EJ: JUAN.PEREZ@EMPRESA.COM"
+                                className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner focus-visible:ring-primary"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rol / Nivel de Acceso</Label>
+                                <Select
+                                    value={inviteRole}
+                                    onValueChange={(v) => setInviteRole(v as UserRole)}
+                                >
+                                    <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                        <SelectValue placeholder="Definir rol" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                        {appRoles?.filter(r => isMaster || !r.is_system).map((r) => (
+                                            <SelectItem key={r.slug} value={r.slug}>
+                                                {r.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Organización / SaaS Tenant</Label>
+                                {isGlobalAdmin ? (
+                                    <Select
+                                        value={inviteOrgId}
+                                        onValueChange={setInviteOrgId}
+                                    >
+                                        <SelectTrigger className="h-14 bg-muted/20 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner">
+                                            <SelectValue placeholder="Asignar organización" />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-2xl border-border/40 bg-card">
+                                            <SelectItem value="none" className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                Sistémico / Global Core
+                                            </SelectItem>
+                                            {organizations.map((org) => (
+                                                <SelectItem key={org.id} value={org.id} className="font-black uppercase text-[10px] tracking-widest py-3">
+                                                    {org.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                ) : (
+                                    <Input
+                                        value={organizationName || "Organización Local"}
+                                        disabled
+                                        className="h-14 bg-muted/30 border-border/40 rounded-2xl font-black uppercase text-xs px-6 shadow-inner cursor-not-allowed text-muted-foreground"
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4 justify-end pt-4">
+                            <Button 
+                                variant="outline" 
+                                onClick={() => setIsInviteDialogOpen(false)}
+                                className="h-14 px-10 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/40 hover:bg-muted/10"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button 
+                                onClick={handleInviteUserSubmit} 
+                                disabled={isInviting || !inviteEmail || !inviteFirstName || !inviteLastName}
+                                className="h-14 px-12 rounded-2xl font-black uppercase text-[10px] tracking-widest bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                            >
+                                {isInviting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                                Enviar Invitación
+                            </Button>
+                        </div>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>

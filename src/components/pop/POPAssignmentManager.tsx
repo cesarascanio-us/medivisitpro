@@ -212,7 +212,7 @@ export function POPAssignmentManager() {
                                 {recipients.map((r: any) => (
                                     <SelectItem key={r.user_id} value={r.user_id}>
                                         <span className="flex items-center gap-2">
-                                            <span className={`text-xs px-1.5 py-0.5 rounded ${r.role === 'supervisor' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                            <span className={`text-xs px-1.5 py-0.5 rounded ${r.role === 'supervisor' ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'}`}>
                                                 {r.role === 'supervisor' ? 'SUP' : 'REP'}
                                             </span>
                                             {r.first_name || ''} {r.last_name || ''} {!r.first_name && !r.last_name && r.email}

@@ -24,7 +24,7 @@ interface DoctorScoreCardProps {
 }
 
 const CATEGORY_CONFIG = {
-    low: { label: 'Bajo', color: 'bg-gray-100 text-gray-800', icon: TrendingDown },
+    low: { label: 'Bajo', color: 'bg-muted text-muted-foreground', icon: TrendingDown },
     medium: { label: 'Medio', color: 'bg-yellow-100 text-yellow-800', icon: TrendingUp },
     high: { label: 'Alto', color: 'bg-green-100 text-green-800', icon: TrendingUp },
     vip: { label: 'VIP', color: 'bg-purple-100 text-purple-800', icon: Trophy }
@@ -72,7 +72,7 @@ export function DoctorScoreCard({
                             stroke="currentColor"
                             strokeWidth="3"
                             strokeDasharray={`${(score / 100) * 100.53} 100.53`}
-                            className={category === 'vip' ? 'text-purple-500' : category === 'high' ? 'text-green-500' : category === 'medium' ? 'text-yellow-500' : 'text-gray-400'}
+                            className={category === 'vip' ? 'text-purple-500' : category === 'high' ? 'text-green-500' : category === 'medium' ? 'text-yellow-500' : 'text-muted-foreground'}
                         />
                     </svg>
                     <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
@@ -112,7 +112,7 @@ export function DoctorScoreCard({
                                     stroke="currentColor"
                                     strokeWidth="4"
                                     strokeDasharray={`${(score / 100) * 175.93} 175.93`}
-                                    className={category === 'vip' ? 'text-purple-500' : category === 'high' ? 'text-green-500' : category === 'medium' ? 'text-yellow-500' : 'text-gray-400'}
+                                    className={category === 'vip' ? 'text-purple-500' : category === 'high' ? 'text-green-500' : category === 'medium' ? 'text-yellow-500' : 'text-muted-foreground'}
                                 />
                             </svg>
                             <span className="absolute inset-0 flex items-center justify-center text-lg font-bold">

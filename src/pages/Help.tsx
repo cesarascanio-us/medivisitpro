@@ -8,14 +8,13 @@
 ======================================================================== */
 
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import {
     HelpCircle, Search, BookOpen, Video, MessageCircle, Ticket,
     Download, ChevronDown, ChevronUp, Clock, CheckCircle, AlertCircle,
     Phone, Mail, MessageSquare, Send, FileText, Plus, Upload
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -27,12 +26,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useTexts } from "@/hooks/useTexts";
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton, EliteInput, EliteTabsList, EliteTabsTrigger } from "@/components/layout/DesignSystem";
 
 interface FAQ {
     id: string;
+    category: string;
     question: string;
     answer: string;
-    category: string;
 }
 
 interface Tutorial {
@@ -86,16 +87,16 @@ const downloads = [
 ];
 
 const LEVEL_COLORS = {
-    basico: 'bg-green-100 text-green-800',
-    intermedio: 'bg-yellow-100 text-yellow-800',
-    avanzado: 'bg-red-100 text-red-800'
+    basico: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-3 py-1 font-bold rounded-lg',
+    intermedio: 'bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 font-bold rounded-lg',
+    avanzado: 'bg-rose-500/10 text-rose-500 border border-rose-500/20 px-3 py-1 font-bold rounded-lg'
 };
 
 const STATUS_CONFIG = {
-    open: { label: 'Abierto', color: 'bg-blue-100 text-blue-800', icon: Clock },
-    in_progress: { label: 'En Proceso', color: 'bg-yellow-100 text-yellow-800', icon: AlertCircle },
-    resolved: { label: 'Resuelto', color: 'bg-green-100 text-green-800', icon: CheckCircle },
-    closed: { label: 'Cerrado', color: 'bg-gray-100 text-gray-800', icon: CheckCircle },
+    open: { label: 'Abierto', color: 'bg-blue-500/10 text-blue-500 border border-blue-500/20 px-3 py-1 font-bold rounded-lg', icon: Clock },
+    in_progress: { label: 'En Proceso', color: 'bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 font-bold rounded-lg', icon: AlertCircle },
+    resolved: { label: 'Resuelto', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-3 py-1 font-bold rounded-lg', icon: CheckCircle },
+    closed: { label: 'Cerrado', color: 'bg-muted/30 text-muted-foreground border border-border/40 px-3 py-1 font-bold rounded-lg', icon: CheckCircle },
 };
 
 export default function Help() {
@@ -108,6 +109,7 @@ export default function Help() {
     const [tickets, setTickets] = useState<SupportTicket[]>([]);
     const [ticketDialogOpen, setTicketDialogOpen] = useState(false);
     const [newTicket, setNewTicket] = useState({ subject: '', description: '', category: 'general', priority: 'medium' });
+    const t = useTexts();
 
     useEffect(() => {
         if (user) {
@@ -194,257 +196,257 @@ export default function Help() {
     };
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                    <HelpCircle className="h-6 w-6 text-primary" />
-                    Centro de Ayuda
-                </h1>
-                <p className="text-muted-foreground">Encuentra respuestas, tutoriales y soporte</p>
-            </div>
+        <div className="flex flex-col min-h-full space-y-10 font-sans transition-colors duration-500 text-foreground pb-20 animate-in fade-in duration-700">
+            <EliteHeader
+                title={t.help_title || "Centro de Ayuda"}
+                subtitle={t.help_subtitle || "Encuentra respuestas, tutoriales y soporte corporativo"}
+                icon={HelpCircle}
+                badgeText="Ayuda & FAQ"
+                statusText="Soporte Activo"
+            />
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid grid-cols-5 w-full max-w-3xl">
-                    <TabsTrigger value="faq" className="flex items-center gap-2">
-                        <BookOpen className="h-4 w-4" />
-                        FAQ
-                    </TabsTrigger>
-                    <TabsTrigger value="tutorials" className="flex items-center gap-2">
-                        <Video className="h-4 w-4" />
-                        Tutoriales
-                    </TabsTrigger>
-                    <TabsTrigger value="contact" className="flex items-center gap-2">
-                        <MessageCircle className="h-4 w-4" />
-                        Contacto
-                    </TabsTrigger>
-                    <TabsTrigger value="tickets" className="flex items-center gap-2">
-                        <Ticket className="h-4 w-4" />
-                        Tickets
-                    </TabsTrigger>
-                    <TabsTrigger value="downloads" className="flex items-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Descargas
-                    </TabsTrigger>
-                </TabsList>
+                <EliteTabsList className="mb-6">
+                    <EliteTabsTrigger value="faq" label="FAQ" icon={BookOpen} />
+                    <EliteTabsTrigger value="tutorials" label="Tutoriales" icon={Video} />
+                    <EliteTabsTrigger value="contact" label="Contacto" icon={MessageCircle} />
+                    <EliteTabsTrigger value="tickets" label="Tickets" icon={Ticket} />
+                    <EliteTabsTrigger value="downloads" label="Descargas" icon={Download} />
+                </EliteTabsList>
 
                 {/* FAQ Tab */}
-                <TabsContent value="faq">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Preguntas Frecuentes</CardTitle>
-                            <CardDescription>Respuestas a las consultas más comunes</CardDescription>
-                            <div className="flex gap-4 mt-4">
-                                <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                    <Input
+                <TabsContent value="faq" className="animate-in fade-in slide-in-from-bottom-5 duration-700">
+                    <EliteCard className="p-6">
+                        <CardHeader className="px-0 pt-0">
+                            <CardTitle className="text-xl font-black text-foreground">Preguntas Frecuentes</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground">Respuestas a las consultas más comunes</CardDescription>
+                            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                                <div className="flex-1 relative w-full group">
+                                    <EliteInput
+                                        icon={Search}
                                         placeholder="Buscar en FAQ..."
-                                        className="pl-10"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
                                 </div>
                                 <Select value={faqCategory} onValueChange={setFaqCategory}>
-                                    <SelectTrigger className="w-40">
+                                    <SelectTrigger className="w-full sm:w-48 h-14 bg-background/50 border-border/40 rounded-2xl shadow-inner font-bold text-foreground">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Todas</SelectItem>
-                                        <SelectItem value="general">General</SelectItem>
-                                        <SelectItem value="visitas">Visitas</SelectItem>
-                                        <SelectItem value="muestras">Muestras</SelectItem>
-                                        <SelectItem value="reportes">Reportes</SelectItem>
-                                        <SelectItem value="gastos">Gastos</SelectItem>
+                                    <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                        <SelectItem value="all" className="font-bold">Todas</SelectItem>
+                                        <SelectItem value="general" className="font-bold">General</SelectItem>
+                                        <SelectItem value="visitas" className="font-bold">Visitas</SelectItem>
+                                        <SelectItem value="muestras" className="font-bold">Muestras</SelectItem>
+                                        <SelectItem value="reportes" className="font-bold">Reportes</SelectItem>
+                                        <SelectItem value="gastos" className="font-bold">Gastos</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-2">
+                        <CardContent className="space-y-4 px-0 pb-0">
                             {filteredFaqs.length === 0 ? (
                                 <p className="text-center text-muted-foreground py-8">No se encontraron resultados</p>
                             ) : (
                                 filteredFaqs.map(faq => (
-                                    <Collapsible key={faq.id} open={openFaqs.includes(faq.id)}>
+                                    <Collapsible key={faq.id} open={openFaqs.includes(faq.id)} className="border border-border/40 rounded-2xl overflow-hidden bg-muted/10">
                                         <CollapsibleTrigger
-                                            className="flex items-center justify-between w-full p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
+                                            className="flex items-center justify-between w-full p-6 hover:bg-muted/20 transition-colors"
                                             onClick={() => toggleFaq(faq.id)}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <Badge variant="outline" className="text-xs">{faq.category}</Badge>
-                                                <span className="font-medium text-left">{faq.question}</span>
+                                            <div className="flex items-center gap-4">
+                                                <Badge variant="secondary" className="bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1 border-none">{faq.category}</Badge>
+                                                <span className="font-bold text-left text-sm text-foreground">{faq.question}</span>
                                             </div>
-                                            {openFaqs.includes(faq.id) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                            {openFaqs.includes(faq.id) ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                                         </CollapsibleTrigger>
-                                        <CollapsibleContent className="px-4 py-3 text-muted-foreground">
+                                        <CollapsibleContent className="px-6 py-4 text-muted-foreground text-sm font-semibold border-t border-border/40 bg-card/30">
                                             {faq.answer}
                                         </CollapsibleContent>
                                     </Collapsible>
                                 ))
                             )}
                         </CardContent>
-                    </Card>
+                    </EliteCard>
                 </TabsContent>
 
                 {/* Tutorials Tab */}
-                <TabsContent value="tutorials">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Video Tutoriales</CardTitle>
-                            <CardDescription>Aprende a sacar el máximo provecho de la aplicación</CardDescription>
+                <TabsContent value="tutorials" className="animate-in fade-in slide-in-from-bottom-5 duration-700">
+                    <EliteCard className="p-6">
+                        <CardHeader className="px-0 pt-0 mb-6">
+                            <CardTitle className="text-xl font-black text-foreground">Video Tutoriales</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground">Aprende a sacar el máximo provecho de la aplicación</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="grid md:grid-cols-2 gap-4">
+                        <CardContent className="px-0 pb-0">
+                            <div className="grid md:grid-cols-2 gap-6">
                                 {tutorials.map(tutorial => (
-                                    <div key={tutorial.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <h3 className="font-semibold">{tutorial.title}</h3>
-                                            <Badge className={LEVEL_COLORS[tutorial.level]}>
-                                                {tutorial.level.charAt(0).toUpperCase() + tutorial.level.slice(1)}
-                                            </Badge>
+                                    <div key={tutorial.id} className="border border-border/40 rounded-2xl p-6 hover:shadow-premium-sm bg-muted/10 hover:bg-muted/20 transition-all group flex flex-col justify-between">
+                                        <div>
+                                            <div className="flex items-start justify-between mb-4">
+                                                <h3 className="font-black text-foreground text-base group-hover:text-primary transition-colors">{tutorial.title}</h3>
+                                                <Badge className={cn("border-none text-[9px] uppercase tracking-widest", LEVEL_COLORS[tutorial.level])}>
+                                                    {tutorial.level}
+                                                </Badge>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground mb-6 font-semibold">{tutorial.description}</p>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mb-3">{tutorial.description}</p>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                                <Clock className="h-3 w-3" />
+                                        <div className="flex items-center justify-between mt-auto">
+                                            <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-bold">
+                                                <Clock className="h-4 w-4 text-primary" />
                                                 {tutorial.duration}
                                             </span>
-                                            <Button size="sm" variant="outline">
+                                            <EliteButton size="sm" variant="secondary" className="px-4">
                                                 <Video className="h-4 w-4 mr-2" />
                                                 Ver Tutorial
-                                            </Button>
+                                            </EliteButton>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </CardContent>
-                    </Card>
+                    </EliteCard>
                 </TabsContent>
 
                 {/* Contact Tab */}
-                <TabsContent value="contact">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Información de Contacto</CardTitle>
-                            <CardDescription>Nuestros canales de comunicación</CardDescription>
+                <TabsContent value="contact" className="animate-in fade-in slide-in-from-bottom-5 duration-700">
+                    <EliteCard className="p-6">
+                        <CardHeader className="px-0 pt-0 mb-6">
+                            <CardTitle className="text-xl font-black text-foreground">Información de Contacto</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground">Nuestros canales de comunicación</CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-0 pb-0">
                             <div className="grid md:grid-cols-3 gap-6">
-                                <div className="text-center p-6 border rounded-lg">
-                                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Phone className="h-6 w-6 text-blue-600" />
+                                <div className="text-center p-6 border border-border/40 rounded-2xl bg-muted/5 hover:bg-muted/10 transition-all flex flex-col justify-between">
+                                    <div>
+                                        <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
+                                            <Phone className="h-6 w-6 text-blue-500" />
+                                        </div>
+                                        <h3 className="font-black text-foreground mb-2">Teléfono</h3>
+                                        <p className="text-muted-foreground text-xs font-semibold mb-6">Lun - Vie, 9:00 - 18:00</p>
                                     </div>
-                                    <h3 className="font-semibold mb-2">Teléfono</h3>
-                                    <p className="text-muted-foreground text-sm mb-4">Lun - Vie, 9:00 - 18:00</p>
-                                    <Button variant="outline" className="w-full">
+                                    <EliteButton variant="secondary" className="w-full">
                                         <Phone className="h-4 w-4 mr-2" />
                                         +1 800 123 4567
-                                    </Button>
+                                    </EliteButton>
                                 </div>
 
-                                <div className="text-center p-6 border rounded-lg">
-                                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Mail className="h-6 w-6 text-green-600" />
+                                <div className="text-center p-6 border border-border/40 rounded-2xl bg-muted/5 hover:bg-muted/10 transition-all flex flex-col justify-between">
+                                    <div>
+                                        <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+                                            <Mail className="h-6 w-6 text-emerald-500" />
+                                        </div>
+                                        <h3 className="font-black text-foreground mb-2">Email</h3>
+                                        <p className="text-muted-foreground text-xs font-semibold mb-6">Respuesta en 24h</p>
                                     </div>
-                                    <h3 className="font-semibold mb-2">Email</h3>
-                                    <p className="text-muted-foreground text-sm mb-4">Respuesta en 24h</p>
-                                    <Button variant="outline" className="w-full">
+                                    <EliteButton variant="secondary" className="w-full">
                                         <Mail className="h-4 w-4 mr-2" />
                                         soporte@medvisit.com
-                                    </Button>
+                                    </EliteButton>
                                 </div>
 
-                                <div className="text-center p-6 border rounded-lg">
-                                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <MessageSquare className="h-6 w-6 text-purple-600" />
+                                <div className="text-center p-6 border border-border/40 rounded-2xl bg-muted/5 hover:bg-muted/10 transition-all flex flex-col justify-between">
+                                    <div>
+                                        <div className="w-12 h-12 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-500/20">
+                                            <MessageSquare className="h-6 w-6 text-indigo-500" />
+                                        </div>
+                                        <h3 className="font-black text-foreground mb-2">Chat en Vivo</h3>
+                                        <p className="text-muted-foreground text-xs font-semibold mb-6">Soporte inmediato</p>
                                     </div>
-                                    <h3 className="font-semibold mb-2">Chat en Vivo</h3>
-                                    <p className="text-muted-foreground text-sm mb-4">Soporte inmediato</p>
-                                    <Button className="w-full">
+                                    <EliteButton className="w-full">
                                         <MessageSquare className="h-4 w-4 mr-2" />
                                         Iniciar Chat
-                                    </Button>
+                                    </EliteButton>
                                 </div>
                             </div>
                         </CardContent>
-                    </Card>
+                    </EliteCard>
                 </TabsContent>
 
                 {/* Tickets Tab */}
-                <TabsContent value="tickets">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
+                <TabsContent value="tickets" className="animate-in fade-in slide-in-from-bottom-5 duration-700">
+                    <EliteCard className="p-6">
+                        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-0 pt-0 mb-6">
                             <div>
-                                <CardTitle>Tickets de Soporte</CardTitle>
-                                <CardDescription>Gestiona tus solicitudes de ayuda</CardDescription>
+                                <CardTitle className="text-xl font-black text-foreground">Tickets de Soporte</CardTitle>
+                                <CardDescription className="text-sm text-muted-foreground">Gestiona tus solicitudes de ayuda</CardDescription>
                             </div>
                             <Dialog open={ticketDialogOpen} onOpenChange={setTicketDialogOpen}>
                                 <DialogTrigger asChild>
-                                    <Button><Plus className="h-4 w-4 mr-2" />Nuevo Ticket</Button>
+                                    <EliteButton variant="primary">
+                                        <Plus className="h-4 w-4 mr-2" />Nuevo Ticket
+                                    </EliteButton>
                                 </DialogTrigger>
-                                <DialogContent className="max-w-md">
+                                <DialogContent className="max-w-md rounded-[2.5rem] border-border/40 p-8 shadow-2xl bg-card">
                                     <DialogHeader>
-                                        <DialogTitle>Crear Ticket de Soporte</DialogTitle>
+                                        <DialogTitle className="text-2xl font-black text-foreground tracking-tight">Crear Ticket de Soporte</DialogTitle>
                                     </DialogHeader>
-                                    <div className="space-y-4 py-4">
+                                    <div className="space-y-6 py-4">
                                         <div className="space-y-2">
-                                            <Label>Asunto</Label>
-                                            <Input
+                                            <Label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Asunto</Label>
+                                            <EliteInput
                                                 value={newTicket.subject}
                                                 onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
                                                 placeholder="Resumen del problema"
+                                                className="bg-background/50 border-border/40 rounded-2xl h-14 font-semibold shadow-inner focus-visible:ring-primary/20 text-foreground"
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <Label>Categoría</Label>
+                                                <Label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Categoría</Label>
                                                 <Select value={newTicket.category} onValueChange={(v) => setNewTicket({ ...newTicket, category: v })}>
-                                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="general">General</SelectItem>
-                                                        <SelectItem value="bug">Error/Bug</SelectItem>
-                                                        <SelectItem value="feature">Nueva Función</SelectItem>
-                                                        <SelectItem value="account">Cuenta</SelectItem>
-                                                        <SelectItem value="billing">Facturación</SelectItem>
+                                                    <SelectTrigger className="h-14 bg-background/50 border-border/40 rounded-2xl shadow-inner font-bold text-foreground">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                                        <SelectItem value="general" className="font-bold">General</SelectItem>
+                                                        <SelectItem value="bug" className="font-bold">Error/Bug</SelectItem>
+                                                        <SelectItem value="feature" className="font-bold">Nueva Función</SelectItem>
+                                                        <SelectItem value="account" className="font-bold">Cuenta</SelectItem>
+                                                        <SelectItem value="billing" className="font-bold">Facturación</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
                                             <div className="space-y-2">
-                                                <Label>Prioridad</Label>
+                                                <Label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Prioridad</Label>
                                                 <Select value={newTicket.priority} onValueChange={(v) => setNewTicket({ ...newTicket, priority: v })}>
-                                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="low">Baja</SelectItem>
-                                                        <SelectItem value="medium">Normal</SelectItem>
-                                                        <SelectItem value="high">Alta</SelectItem>
-                                                        <SelectItem value="critical">Urgente</SelectItem>
+                                                    <SelectTrigger className="h-14 bg-background/50 border-border/40 rounded-2xl shadow-inner font-bold text-foreground">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                                        <SelectItem value="low" className="font-bold">Baja</SelectItem>
+                                                        <SelectItem value="medium" className="font-bold">Normal</SelectItem>
+                                                        <SelectItem value="high" className="font-bold">Alta</SelectItem>
+                                                        <SelectItem value="critical" className="font-bold">Urgente</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>Descripción</Label>
+                                            <Label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Descripción</Label>
                                             <Textarea
                                                 value={newTicket.description}
                                                 onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })}
                                                 placeholder="Describe tu problema en detalle..."
                                                 rows={4}
+                                                className="bg-background/50 border-border/40 rounded-2xl font-semibold shadow-inner focus-visible:ring-primary/20 text-foreground"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>Captura de pantalla (Opcional)</Label>
-                                            <Input
+                                            <Label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Captura de pantalla (Opcional)</Label>
+                                            <EliteInput
                                                 type="file"
                                                 accept="image/*"
                                                 onChange={(e) => setTicketFile(e.target.files ? e.target.files[0] : null)}
-                                                className="cursor-pointer"
+                                                className="cursor-pointer bg-background/50 border-border/40 rounded-2xl h-14 flex items-center pt-3 font-semibold shadow-inner focus-visible:ring-primary/20 text-foreground"
                                             />
                                         </div>
-                                        <Button className="w-full" onClick={handleCreateTicket}>
+                                        <EliteButton className="w-full h-14 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl mt-4" onClick={handleCreateTicket}>
                                             <Send className="h-4 w-4 mr-2" />
                                             Enviar Ticket
-                                        </Button>
+                                        </EliteButton>
                                     </div>
                                     {ticketFile && (
-                                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-bold">
                                             <Upload className="h-3 w-3" />
                                             Adjunto: {ticketFile.name} ({(ticketFile.size / 1024 / 1024).toFixed(2)} MB)
                                         </p>
@@ -452,74 +454,76 @@ export default function Help() {
                                 </DialogContent>
                             </Dialog>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-0 pb-0">
                             {tickets.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    <Ticket className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                                    <p>No tienes tickets de soporte</p>
-                                    <p className="text-sm">Crea uno si necesitas ayuda</p>
+                                <div className="text-center py-16 text-muted-foreground">
+                                    <Ticket className="h-16 w-16 mx-auto mb-4 opacity-20 text-primary" />
+                                    <p className="font-bold text-foreground text-base">No tienes tickets de soporte</p>
+                                    <p className="text-sm font-semibold mt-1">Crea uno si necesitas ayuda corporativa</p>
                                 </div>
                             ) : (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Asunto</TableHead>
-                                            <TableHead>Categoría</TableHead>
-                                            <TableHead>Estado</TableHead>
-                                            <TableHead>Fecha</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {tickets.map(ticket => {
-                                            const status = STATUS_CONFIG[ticket.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.open;
-                                            return (
-                                                <TableRow key={ticket.id}>
-                                                    <TableCell className="font-medium">{ticket.subject}</TableCell>
-                                                    <TableCell><Badge variant="outline">{ticket.category}</Badge></TableCell>
-                                                    <TableCell><Badge className={status.color}>{status.label}</Badge></TableCell>
-                                                    <TableCell>{new Date(ticket.created_at).toLocaleDateString('es-ES')}</TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
+                                <div className="border border-border/40 rounded-2xl overflow-hidden bg-muted/5 shadow-inner">
+                                    <Table>
+                                        <TableHeader className="bg-muted/10 border-b border-border/40">
+                                            <TableRow>
+                                                <TableHead className="font-black uppercase text-[10px] tracking-widest p-6">Asunto</TableHead>
+                                                <TableHead className="font-black uppercase text-[10px] tracking-widest p-6">Categoría</TableHead>
+                                                <TableHead className="font-black uppercase text-[10px] tracking-widest p-6">Estado</TableHead>
+                                                <TableHead className="font-black uppercase text-[10px] tracking-widest p-6">Fecha</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {tickets.map(ticket => {
+                                                const status = STATUS_CONFIG[ticket.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.open;
+                                                return (
+                                                    <TableRow key={ticket.id} className="border-b border-border/40 hover:bg-muted/10 transition-colors">
+                                                        <TableCell className="font-bold text-foreground p-6">{ticket.subject}</TableCell>
+                                                        <TableCell className="p-6"><Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[9px] uppercase tracking-widest px-3 py-1 font-black">{ticket.category}</Badge></TableCell>
+                                                        <TableCell className="p-6"><Badge className={cn("border-none text-[9px] uppercase tracking-widest px-3 py-1 font-black", status.color)}>{status.label}</Badge></TableCell>
+                                                        <TableCell className="text-muted-foreground font-bold text-xs p-6">{new Date(ticket.created_at).toLocaleDateString('es-ES')}</TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             )}
                         </CardContent>
-                    </Card>
+                    </EliteCard>
                 </TabsContent>
 
                 {/* Downloads Tab */}
-                <TabsContent value="downloads">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Documentación y Descargas</CardTitle>
-                            <CardDescription>Manuales y recursos para consulta</CardDescription>
+                <TabsContent value="downloads" className="animate-in fade-in slide-in-from-bottom-5 duration-700">
+                    <EliteCard className="p-6">
+                        <CardHeader className="px-0 pt-0 mb-6">
+                            <CardTitle className="text-xl font-black text-foreground">Documentación y Descargas</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground">Manuales y recursos para consulta corporativa</CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-0 pb-0">
                             <div className="space-y-4">
                                 {downloads.map((doc, i) => (
-                                    <div key={i} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                                    <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border border-border/40 rounded-2xl hover:bg-muted/10 bg-muted/5 transition-all gap-4">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                                                <FileText className="h-5 w-5 text-primary" />
+                                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0 border border-primary/20">
+                                                <FileText className="h-6 w-6 text-primary" />
                                             </div>
                                             <div>
-                                                <h3 className="font-medium">{doc.name}</h3>
-                                                <p className="text-sm text-muted-foreground">{doc.description}</p>
+                                                <h3 className="font-black text-foreground text-sm leading-none mb-1.5">{doc.name}</h3>
+                                                <p className="text-xs text-muted-foreground font-semibold">{doc.description}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-4">
-                                            <span className="text-xs text-muted-foreground">{doc.format} • {doc.size}</span>
-                                            <Button variant="outline" size="sm">
+                                        <div className="flex items-center justify-between sm:justify-end gap-6 flex-shrink-0">
+                                            <span className="text-xs text-muted-foreground font-bold">{doc.format} • {doc.size}</span>
+                                            <EliteButton variant="secondary" size="sm" className="px-5">
                                                 <Download className="h-4 w-4 mr-2" />
                                                 Descargar
-                                            </Button>
+                                            </EliteButton>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </CardContent>
-                    </Card>
+                    </EliteCard>
                 </TabsContent>
             </Tabs>
         </div>

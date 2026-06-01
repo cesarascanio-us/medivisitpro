@@ -12,7 +12,7 @@ import {
   BarChart3, TrendingUp, Download, Calendar, Users as UsersIcon,
   FileText, Target, Award, FileDown, PieChart as PieChartIcon,
   AlertCircle, Map as MapIcon, ShieldAlert, DollarSign,
-  ShoppingCart, UserRound, Truck, Store, Package
+  ShoppingCart, UserRound, Truck, Store, Package, Stethoscope, Sprout, FlaskConical, Building2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
@@ -32,14 +33,19 @@ import { useToast } from "@/hooks/use-toast";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import VisitHeatmap from "@/components/map/VisitHeatmap";
+import { useChartTheme } from "@/hooks/useChartTheme";
+import { useTexts } from "@/hooks/useTexts";
 
 export default function Reports() {
+  const t = useTexts();
   const [timeRange, setTimeRange] = useState("month");
-  const { user, role: userRole, isManager: isAdminOrManager, isMaster, profile } = useAuth();
-  const organizationId = profile?.organization_id;
+  const { user, role: userRole, isManager: isAdminOrManager, isMaster, companyId, organizationId } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [heatmapType, setHeatmapType] = useState<"pharmacy" | "natural_store">("pharmacy");
+  const [heatmapType, setHeatmapType] = useState<"doctor" | "pharmacy" | "health_center" | "natural_store" | "drugstore" | "commerce">("pharmacy");
+  const chartTheme = useChartTheme();
+  const hasAdvancedReports = useFeatureAccess('advanced_reports');
+  const hasGeolocalization = useFeatureAccess('geolocalization');
 
   // State for SQL View Data
   const [gerencialKpis, setGerencialKpis] = useState<{
@@ -81,6 +87,7 @@ export default function Reports() {
       loadNextGenData();
       loadOrgSettings();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, timeRange, userRole]);
 
   const loadOrgSettings = async () => {
@@ -101,10 +108,11 @@ export default function Reports() {
       loadHeatmapData();
       loadCorrelationData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, heatmapType]);
 
   const loadCorrelationData = async () => {
-    if (!profile?.organization_id) return;
+    if (!companyId) return;
     try {
       // Fetch some sample correlation data using a direct query for now or the new function
       // In production, this would call get_visit_impact_correlation via RPC
@@ -150,7 +158,7 @@ export default function Reports() {
     try {
       // 1. Fetch Gerencial KPIs
       let kpiQuery = supabase.from('view_gerencial_kpis' as any).select('*');
-      if (!isMaster && organizationId) kpiQuery = kpiQuery.eq('organization_id', organizationId);
+      if (!isMaster && companyId) kpiQuery = kpiQuery.eq('company_id', companyId);
       const { data: kpiData, error: kpiError } = await kpiQuery.maybeSingle();
 
       if (kpiError) throw kpiError;
@@ -158,7 +166,7 @@ export default function Reports() {
 
       // 2. Fetch Sales by Zone
       let zonaQuery = supabase.from('view_ventas_por_zona' as any).select('*');
-      if (!isMaster && organizationId) zonaQuery = zonaQuery.eq('organization_id', organizationId);
+      if (!isMaster && companyId) zonaQuery = zonaQuery.eq('company_id', companyId);
       const { data: zonaData, error: zonaError } = await zonaQuery;
 
       if (zonaError) throw zonaError;
@@ -166,7 +174,7 @@ export default function Reports() {
 
       // 3. Fetch Product Mix
       let mixQuery = supabase.from('view_product_mix' as any).select('*');
-      if (!isMaster && organizationId) mixQuery = mixQuery.eq('organization_id', organizationId);
+      if (!isMaster && companyId) mixQuery = mixQuery.eq('company_id', companyId);
       const { data: mixData, error: mixError } = await mixQuery;
 
       if (mixError) throw mixError;
@@ -187,13 +195,13 @@ export default function Reports() {
   const loadHeatmapData = async () => {
     try {
       let query = supabase
-        .from('contacts')
+        .from('unified_contacts')
         .select('latitude, longitude, contact_type')
         .eq('contact_type', heatmapType)
         .not('latitude', 'is', null)
         .not('longitude', 'is', null);
 
-      if (!isMaster && organizationId) {
+      if (organizationId) {
         query = query.eq('organization_id', organizationId);
       }
 
@@ -225,35 +233,43 @@ export default function Reports() {
     );
   }
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+  const COLORS = [
+    'hsl(var(--chart-1))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--chart-5))'
+  ];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Next-Gen Reporting Suite</h1>
-          <p className="text-muted-foreground">Gerencial Dashboard | Business Intelligence en Tiempo Real</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1">
-            <TrendingUp className="mr-1 h-3 w-3" />
-            Backend Sync Active
-          </Badge>
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-[180px] bg-background">
-              <Calendar className="mr-2 h-4 w-4 opacity-50" />
-              <SelectValue placeholder="Periodo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="month">Este Mes</SelectItem>
-              <SelectItem value="quarter">Trimestre Actual</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <EliteHeader
+        title={t.reports_title}
+        subtitle={t.reports_subtitle}
+        icon={BarChart3}
+        badgeText="Sincronizado"
+        statusText="Backend Sync Active"
+        statusColor="bg-emerald-500"
+        rightContent={
+          <div className="flex items-center gap-4">
+             <Select value={timeRange} onValueChange={setTimeRange}>
+               <SelectTrigger className="w-[180px] h-10 rounded-lg shadow-sm border border-input text-xs font-medium bg-card">
+                 <Calendar className="mr-2 h-4 w-4 opacity-50" />
+                 <SelectValue placeholder="Periodo" />
+               </SelectTrigger>
+               <SelectContent className="rounded-lg text-xs font-medium border border-border bg-card shadow-md">
+                 <SelectItem value="month">Este Mes</SelectItem>
+                 <SelectItem value="quarter">Trimestre Actual</SelectItem>
+               </SelectContent>
+             </Select>
+             <Button variant="outline" size="default" className="shadow-sm">
+                <Download className="h-4 w-4 mr-2" /> Exportar
+             </Button>
+          </div>
+        }
+      />
 
-      {!useFeatureAccess('advanced_reports') && (
+      {!hasAdvancedReports && (
         <SubscriptionLock
           featureName="Métricas Gerenciales"
           requiredPlan="Profesional"
@@ -261,11 +277,11 @@ export default function Reports() {
         />
       )}
 
-      <div className={!useFeatureAccess('advanced_reports') ? "opacity-20 pointer-events-none filter blur-sm grayscale select-none mt-6" : "mt-6"}>
+      <div className={!hasAdvancedReports ? "opacity-20 pointer-events-none filter blur-sm grayscale select-none mt-6" : "mt-6"}>
         {/* NIVEL 1: Impact KPI Cards */}
         {/* NIVEL 2: Strategy 360 KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-          <Card className="border-t-4 border-t-emerald-500 shadow-sm">
+          <Card className="border-t-4 border-t-emerald-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -274,32 +290,32 @@ export default function Reports() {
                     {gerencialKpis.proyected_prescriptions || 0}
                   </p>
                 </div>
-                <div className="p-3 bg-emerald-100 rounded-lg">
-                  <TrendingUp className="h-5 w-5 text-emerald-600" />
+                <div className="p-3 bg-emerald-500/10 rounded-lg">
+                  <TrendingUp className="h-5 w-5 text-emerald-500" />
                 </div>
               </div>
-              <p className="text-[10px] mt-4 text-muted-foreground italic">Volumen estimado basado en compromisos</p>
+              <p className="text-xs mt-4 text-muted-foreground">Volumen estimado basado en compromisos</p>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-red-500 shadow-sm">
+          <Card className="border-t-4 border-t-rose-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase">Fuga de Ventas (Riesgo)</p>
-                  <p className="text-3xl font-bold mt-1 text-red-600">
+                  <p className="text-3xl font-bold mt-1 text-rose-500">
                     {fugaVentas.prescriptions} <span className="text-sm font-normal">recetas</span>
                   </p>
                 </div>
-                <div className="p-3 bg-red-100 rounded-lg">
-                  <AlertCircle className="h-5 w-5 text-red-600" />
+                <div className="p-3 bg-rose-500/10 rounded-lg">
+                  <AlertCircle className="h-5 w-5 text-rose-500" />
                 </div>
               </div>
-              <p className="text-[10px] mt-4 text-red-700 font-bold">Est: ${fugaVentas.estimated_usd.toLocaleString()} USD</p>
+              <p className="text-xs mt-4 text-rose-500 font-bold">Est: ${fugaVentas.estimated_usd.toLocaleString()} USD</p>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-blue-500 shadow-sm">
+          <Card className="border-t-4 border-t-blue-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -313,11 +329,11 @@ export default function Reports() {
                 </div>
               </div>
               <Progress value={gerencialKpis.message_reach_rate} className="h-1.5 mt-4" />
-              <p className="text-[10px] mt-2 text-muted-foreground">Estrategia 360 Activa</p>
+              <p className="text-xs mt-2 text-muted-foreground">Estrategia 360 Activa</p>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-purple-500 shadow-sm">
+          <Card className="border-t-4 border-t-purple-500 shadow-premium-md bg-card border-border/40 rounded-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -331,7 +347,7 @@ export default function Reports() {
                 </div>
               </div>
               <Progress value={gerencialKpis.pos_health_index} className="h-1.5 mt-4 bg-purple-100" />
-              <p className="text-[10px] mt-2 text-muted-foreground">PDV Saludables (Capacitación + POP)</p>
+              <p className="text-xs mt-2 text-muted-foreground">PDV Saludables (Capacitación + POP)</p>
             </CardContent>
           </Card>
         </div>
@@ -339,9 +355,9 @@ export default function Reports() {
         {/* NIVEL 3: Product & Zone Analytics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Sales by Zone */}
-          <Card className="shadow-sm">
+          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center">
+              <CardTitle className="text-base flex items-center">
                 <BarChart3 className="mr-2 h-5 w-5 text-primary" />
                 Comparativa de Ventas por Zona
               </CardTitle>
@@ -355,9 +371,9 @@ export default function Reports() {
                     <YAxis dataKey="zona" type="category" width={80} style={{ fontSize: '12px' }} />
                     <Tooltip
                       cursor={{ fill: 'transparent' }}
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }}
                     />
-                    <Bar dataKey="total_ventas" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={20}>
+                    <Bar dataKey="total_ventas" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20}>
                       {ventasZona.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
@@ -369,9 +385,9 @@ export default function Reports() {
           </Card>
 
           {/* Product Mix */}
-          <Card className="shadow-sm">
+          <Card className="bg-card border border-border/40 shadow-premium-md rounded-lg">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center">
+              <CardTitle className="text-base flex items-center">
                 <PieChartIcon className="mr-2 h-5 w-5 text-secondary" />
                 Sales Mix: Unidades por Categoría
               </CardTitle>
@@ -394,7 +410,7 @@ export default function Reports() {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }} />
                     <Legend verticalAlign="bottom" height={36} />
                   </PieChart>
                 </ResponsiveContainer>
@@ -403,35 +419,39 @@ export default function Reports() {
           </Card>
         </div>
         {/* Heatmap Section */}
-        <Card className="mt-6 shadow-sm overflow-hidden border-border bg-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-slate-950/20">
+        <Card className="mt-6 bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 bg-muted/10 border-b border-border/40">
             <div>
-              <CardTitle className="text-lg font-bold flex items-center">
+              <CardTitle className="text-base font-bold flex items-center text-foreground uppercase tracking-tight">
                 <MapIcon className="mr-2 h-5 w-5 text-primary" />
-                Heatmap Táctico de Cobertura
+                Mapa de Calor Estratégico de Cobertura
               </CardTitle>
-              <CardDescription>Visualización geospacial de impacto comercial por categoría</CardDescription>
+              <CardDescription className="text-xs text-muted-foreground mt-1">Visualización geospacial de impacto comercial por categoría</CardDescription>
             </div>
             <Select value={heatmapType} onValueChange={(v: any) => setHeatmapType(v)}>
-              <SelectTrigger className="w-[180px] bg-background">
+              <SelectTrigger className="w-[200px] bg-card border border-input text-xs font-medium rounded-lg h-10 shadow-sm">
                 <SelectValue placeholder="Tipo de Punto" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pharmacy">Farmacias</SelectItem>
-                <SelectItem value="natural_store">Tiendas Naturistas</SelectItem>
+              <SelectContent className="bg-card border border-border text-foreground shadow-premium-lg rounded-lg">
+                <SelectItem value="doctor"><div className="flex items-center gap-2"><Stethoscope className="h-3.5 w-3.5" /> Médicos</div></SelectItem>
+                <SelectItem value="pharmacy"><div className="flex items-center gap-2"><Store className="h-3.5 w-3.5" /> Farmacias</div></SelectItem>
+                <SelectItem value="health_center"><div className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5" /> Centros Salud</div></SelectItem>
+                <SelectItem value="natural_store"><div className="flex items-center gap-2"><Sprout className="h-3.5 w-3.5" /> Naturistas</div></SelectItem>
+                <SelectItem value="drugstore"><div className="flex items-center gap-2"><FlaskConical className="h-3.5 w-3.5" /> Droguerías</div></SelectItem>
+                <SelectItem value="commerce"><div className="flex items-center gap-2"><ShoppingCart className="h-3.5 w-3.5" /> Comercios</div></SelectItem>
               </SelectContent>
             </Select>
           </CardHeader>
-          <CardContent className="p-0 relative h-[500px]">
-            {!useFeatureAccess('geolocalization') && (
+          <CardContent className="p-0 relative h-[550px]">
+            {!hasGeolocalization && (
               <SubscriptionLock
-                featureName="Heatmap Táctico"
+                featureName="Mapa de Calor Estratégico"
                 requiredPlan="Empresarial"
-                description="Optimiza tus rutas y despliegue táctico visualizando la densidad de tu red comercial en el mapa."
+                description="Optimiza tus rutas y análisis de cobertura visualizando la densidad de tu red comercial en el mapa."
               />
             )}
 
-            <div className={!useFeatureAccess('geolocalization') ? "h-full w-full opacity-30 pointer-events-none filter blur-sm grayscale select-none" : "h-full w-full"}>
+            <div className={!hasGeolocalization ? "h-full w-full opacity-30 pointer-events-none filter blur-sm grayscale select-none" : "h-full w-full"}>
               <MapContainer
                 center={[10.4806, -66.9036]}
                 zoom={12}
@@ -439,12 +459,12 @@ export default function Reports() {
                 className="h-full w-full z-0"
               >
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 />
                 <VisitHeatmap
                   visits={heatmapData}
-                  show={useFeatureAccess('geolocalization')}
+                  show={hasGeolocalization}
                 />
               </MapContainer>
             </div>
@@ -452,26 +472,26 @@ export default function Reports() {
         </Card>
 
         {/* NIVEL 4: Trazabilidad 360 (Correlation) */}
-        <Card className="mt-6 border-emerald-200 bg-emerald-50/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-emerald-800">
-              <ShoppingCart className="h-5 w-5" />
+        <Card className="mt-6 bg-card border border-border/40 shadow-premium-md rounded-lg overflow-hidden">
+          <CardHeader className="p-6 border-b border-border/40">
+            <CardTitle className="flex items-center gap-3 text-emerald-500 font-bold uppercase tracking-tight text-base">
+              <ShoppingCart className="h-6 w-6 text-emerald-500" />
               Trazabilidad 360: Impacto Médico en PDV
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs text-muted-foreground mt-1">
               Correlación entre entrega de muestras en consultorios y riesgos de stock en farmacias aledañas (Radio {orgSettings.geo_radius_attribution}km)
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <div className="space-y-4">
               {correlationData.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-4 bg-white rounded-xl border border-emerald-100 shadow-sm">
+                <div key={idx} className="flex items-center justify-between p-4 bg-muted/10 rounded-lg border border-border/40 shadow-sm">
                   <div className="flex items-center gap-4">
-                    <div className="p-2 bg-emerald-50 rounded-full">
-                      <UserRound className="h-5 w-5 text-emerald-600" />
+                    <div className="p-2 bg-emerald-500/10 rounded-full">
+                      <UserRound className="h-5 w-5 text-emerald-500" />
                     </div>
                     <div>
-                      <p className="font-semibold">{item.doctor_name}</p>
+                      <p className="font-semibold text-sm">{item.doctor_name}</p>
                       <p className="text-xs text-muted-foreground font-medium">✨ {item.samples_dropped}</p>
                     </div>
                   </div>
@@ -480,20 +500,20 @@ export default function Reports() {
                     <div className="h-px w-24 bg-emerald-200 relative">
                       <Truck className="h-3 w-3 text-emerald-400 absolute -top-1.5 left-1/2 -translate-x-1/2" />
                     </div>
-                    <span className="text-[10px] text-emerald-600 mt-1">{item.distance_km} km</span>
+                    <span className="text-xs text-emerald-600 mt-1">{item.distance_km} km</span>
                   </div>
 
                   <div className="flex items-center gap-4 text-right">
                     <div>
                       <p className="font-semibold text-sm">{item.pharmacy_name}</p>
                       {item.stock_risk ? (
-                        <Badge variant="destructive" className="text-[10px] animate-pulse">ALERTA: RIESGO QUIEBRE</Badge>
+                        <Badge variant="destructive" className="text-xs animate-pulse">ALERTA: RIESGO QUIEBRE</Badge>
                       ) : (
-                        <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-200">Stock Saludable</Badge>
+                        <Badge variant="outline" className="text-xs text-emerald-600 border-emerald-200">Stock Saludable</Badge>
                       )}
                     </div>
-                    <div className="p-2 bg-slate-50 rounded-full">
-                      <Store className="h-5 w-5 text-slate-400" />
+                    <div className="p-2 bg-muted rounded-full">
+                      <Store className="h-5 w-5 text-muted-foreground" />
                     </div>
                   </div>
                 </div>

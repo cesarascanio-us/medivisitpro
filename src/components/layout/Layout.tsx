@@ -3,21 +3,23 @@
  Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
 
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Header } from './Header';
+import { Header, HeaderActions } from './Header';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
+import { SubscriptionBanner } from '../common/SubscriptionBanner';
 import { useAuth } from '@/hooks/useAuth';
 import { Rocket, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { StrategicOnboarding360 } from '../onboarding/StrategicOnboarding360';
+
+const StrategicOnboarding360 = lazy(() =>
+  import('../onboarding/StrategicOnboarding360').then(module => ({ default: module.StrategicOnboarding360 }))
+);
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,58 +30,6 @@ export const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-
-  // FIX: Force resync if browser URL doesn't match React Router location
-  // This fixes the map freeze issue where navigation clicks change URL but not component
-  const lastReloadRef = React.useRef<number>(0);
-
-  useEffect(() => {
-    const checkUrlSync = () => {
-      const browserPath = window.location.pathname;
-      const now = Date.now();
-
-      // Only proceed if URLs don't match
-      if (browserPath !== location.pathname) {
-        // Anti-loop protection: don't reload if we just reloaded within last 2 seconds
-        if (now - lastReloadRef.current < 2000) {
-          console.log('[Layout] Skipping reload - too recent');
-          return;
-        }
-
-        console.warn('[Layout] URL mismatch detected:', browserPath, 'vs', location.pathname);
-        lastReloadRef.current = now;
-
-        // Store in sessionStorage to track across reloads
-        const reloadCount = parseInt(sessionStorage.getItem('mapFixReloadCount') || '0');
-        if (reloadCount >= 3) {
-          console.error('[Layout] Too many reloads, stopping to prevent infinite loop');
-          sessionStorage.removeItem('mapFixReloadCount');
-          return;
-        }
-
-        sessionStorage.setItem('mapFixReloadCount', String(reloadCount + 1));
-
-        // FIX: Redirect to the browser's URL instead of reloading
-        // reload() would reload the corrupted React Router state
-        // replace() forces navigation to the actual URL the user clicked
-        window.location.replace(browserPath + window.location.search);
-      } else {
-        // URLs match, clear the reload counter
-        sessionStorage.removeItem('mapFixReloadCount');
-      }
-    };
-
-    // Check after a longer delay to allow React Router to sync naturally first
-    const timeoutId = setTimeout(checkUrlSync, 500);
-
-    // Also listen for popstate events
-    window.addEventListener('popstate', checkUrlSync);
-
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('popstate', checkUrlSync);
-    };
-  }, [location.pathname]);
 
   const handleExitDemo = async () => {
     await supabase.auth.signOut();
@@ -95,82 +45,78 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col relative overflow-hidden">
-      {/* Premium Corporate Background Orbs - Light Theme */}
-      <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-blue-400/10 rounded-full blur-[160px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-cyan-400/10 rounded-full blur-[160px] pointer-events-none animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-300/5 rounded-full blur-[180px] pointer-events-none"></div>
-
-      {/* Compact Demo Mode Banner - Only shown on explicit demo routes */}
+    <div className="flex flex-col h-screen overflow-hidden bg-background">
+      {/* Demo Mode Banner */}
       {location.pathname.startsWith('/demo/') && (
-        <div className="bg-gradient-to-r from-primary-dark to-primary text-white px-3 py-1.5 shadow-md flex items-center justify-between z-50">
+        <div className="bg-primary text-primary-foreground px-4 py-1.5 flex items-center justify-between z-50 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/20 rounded-full text-xs">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/20 rounded-full text-xs font-semibold">
               <Rocket className="h-3 w-3" />
-              <span className="font-bold">MODO DEMO</span>
+              <span>MODO DEMO</span>
             </div>
-            <span className="text-xs hidden sm:inline font-medium">
-              Explorando con datos de ejemplo • Sin límites arquitectónicos
+            <span className="text-xs hidden sm:inline opacity-90">
+              Explorando con datos de ejemplo
             </span>
           </div>
-
           <div className="flex items-center gap-1">
             <Button
               onClick={handleCreateAccount}
               size="sm"
-              className="bg-white text-primary hover:bg-slate-100 text-[10px] font-bold h-6 px-3 hidden sm:inline-flex rounded-full"
+              className="bg-white text-primary hover:bg-white/90 text-xs font-semibold h-6 px-3 hidden sm:inline-flex rounded-md"
             >
               <UserPlus className="h-3 w-3 mr-1" />
-              REGISTRARSE
+              Registrarse
             </Button>
             <Button
               onClick={handleExitDemo}
               size="sm"
               variant="ghost"
-              className="text-white hover:bg-white/20 text-[10px] font-bold h-6 px-3 rounded-full"
+              className="text-white hover:bg-white/20 text-xs h-6 px-3 rounded-md"
             >
               <LogOut className="h-3 w-3 mr-1" />
-              SALIR
+              Salir
             </Button>
           </div>
         </div>
       )}
 
-      {/* Main container with sidebar and content */}
+      {/* Main Layout */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Hidden on mobile/tablet, visible on laptop+ (lg breakpoint) */}
-        {/* CRITICAL: relative z-50 ensures sidebar is above any map elements */}
-        <div className="hidden lg:block flex-shrink-0 relative z-50 sidebar-wrapper">
-          <Sidebar />
-        </div>
+        {/* SIDEBAR */}
+        <Sidebar className="hidden lg:flex" />
 
-        {/* Content area - z-0 to ensure it's below sidebar */}
-        <div className="flex-1 flex flex-col overflow-hidden relative z-0">
-          {/* Mobile/Tablet Header with hamburger menu */}
-          <div className="lg:hidden p-3 border-b border-sidebar-border flex items-center justify-between bg-white backdrop-blur-md sticky top-0 z-40">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <MobileNav />
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-light rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-                  <span className="text-xs font-black text-white">M</span>
+        {/* CONTENIDO */}
+        <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Mobile/Tablet header */}
+          <div className="lg:hidden h-13 px-4 border-b border-border flex items-center justify-between bg-card sticky top-0 z-40">
+            <div className="flex items-center gap-2">
+              <MobileNav />
+              <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/')}>
+                <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
+                  <span className="text-xs font-semibold text-white">M</span>
                 </div>
-                <span className="font-black text-base text-primary tracking-tight">MediVisitPro</span>
+                <span className="font-semibold text-sm text-foreground">MediVisitPro</span>
               </div>
             </div>
+            <HeaderActions />
           </div>
 
-          {/* Desktop Header - only on lg+ */}
-          <div className="hidden lg:block">
+          {/* Desktop header */}
+          <div className="hidden lg:block shrink-0">
             <Header />
           </div>
 
-          {/* Main Content - Responsive padding */}
-          <main key={location.pathname} className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-5 lg:p-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <SubscriptionBanner />
+
+          <main className="flex-1 overflow-y-auto bg-background p-6">
             {children}
           </main>
         </div>
       </div>
-      <StrategicOnboarding360 />
+
+      <Suspense fallback={null}>
+        <StrategicOnboarding360 />
+      </Suspense>
     </div>
   );
-}
+};

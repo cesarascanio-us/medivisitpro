@@ -42,7 +42,7 @@ export const RepresentativeScorecard = () => {
         stockRiskRate: 0,
         superScore: null
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

@@ -9,15 +9,23 @@
 
 export interface Expense {
     id: string;
+    organization_id: string;
     user_id: string;
     description: string;
     amount: number;
     expense_date: string;
-    category: 'alim' | 'hosp' | 'trans' | 'otros';
+    category: string;
+    custom_category?: string;
+    vendor?: string;
     receipt_url?: string;
     status: 'pending' | 'approved' | 'rejected';
     rejection_reason?: string;
     created_at: string;
+    start_km?: number;
+    end_km?: number;
+    km_start_url?: string;
+    km_end_url?: string;
+    zone_id?: string;
 }
 
 export interface FixedAsset {
@@ -31,8 +39,5 @@ export interface FixedAsset {
 }
 
 export const EXPENSE_CATEGORIES = {
-    alim: 'Alimentación',
-    hosp: 'Hospedaje',
-    trans: 'Transporte',
-    otros: 'Otros'
+    trans: 'Transporte'
 };

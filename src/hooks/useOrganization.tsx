@@ -29,13 +29,19 @@ interface OrganizationContextType {
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
 
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
-const DEMO_ORG = {
+const DEMO_ORG: Organization = {
     id: DEMO_ORG_ID,
     name: 'Demo Medical Corp',
     slug: 'demo-medivisitpro',
     plan_tier: 'professional',
     subscription_status: 'active',
     onboarding_completed: true,
+    is_system_owner: false,
+    logo_url: null,
+    stripe_customer_id: null,
+    stripe_subscription_id: null,
+    trial_ends_at: null,
+    settings: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
 };
@@ -60,6 +66,25 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             setIsLoading(true);
             setError(null);
 
+            // Bypassear en modo demo para evitar timeouts de Supabase y caídas offline
+            const isDemo = typeof window !== 'undefined' && (
+                window.location.pathname.startsWith('/demo') || 
+                window.location.pathname.includes('/demo') ||
+                localStorage.getItem('sb-medivisit-auth-token')?.includes('demo.medivisitpro@gmail.com')
+            );
+
+            if (isDemo) {
+                console.log('[useOrganization] Offline Demo Mode active. Bypassing Supabase fetch...');
+                setOrganization(DEMO_ORG);
+                setAllOrganizations([DEMO_ORG]);
+                setPlanFeatures(DEMO_FEATURES);
+                setIsOrgAdmin(true);
+                setIsMaster(false);
+                setIsSaaSStaff(false);
+                setIsLoading(false);
+                return;
+            }
+
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) {
                 setOrganization(null);
@@ -68,80 +93,88 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            // [STRICT FAIL-SAFE] Demo Bypass
-            const lowerEmail = user.email?.trim().toLowerCase();
-            if (lowerEmail === 'demo.medivisitpro@gmail.com') {
-                setOrganization(DEMO_ORG as any);
-                setAllOrganizations([DEMO_ORG as any]);
-                setPlanFeatures(DEMO_FEATURES);
-                setIsOrgAdmin(false);
-                setIsLoading(false);
-                return;
-            }
-
             let isMasterUser = false;
 
-            // Get profile and role data
+            // 1. Get profile and role data
             const [{ data: profile }, { data: userRole }] = await Promise.all([
                 supabase
                     .from('profiles')
-                    .select('organization_id, is_org_admin')
-                    .eq('id', user.id)
+                    .select('company_id, organization_id, is_org_admin')
+                    .eq('user_id', user.id)
                     .maybeSingle(),
                 supabase
                     .from('user_roles')
-                    .select('organization_id, role')
+                    .select('company_id, organization_id, role')
                     .eq('user_id', user.id)
                     .maybeSingle()
             ]);
 
             const userRoleName = userRole?.role || 'representative';
-            const isOwner = lowerEmail === 'cesar.ascanio@gmail.com';
             const saasRoles = ['master', 'admin_saas', 'soporte_saas', 'desarrollo_saas'];
+            
+            // SECURITY CHECK: Verify master status via RPC as source of truth
+            const { data: rpcIsMaster } = await supabase.rpc('is_system_master');
+            
+            const isActuallyMaster = userRoleName === 'master' || rpcIsMaster === true;
+            const isActuallySaaSStaff = saasRoles.includes(userRoleName) || rpcIsMaster === true;
 
-            isMasterUser = saasRoles.includes(userRoleName) || isOwner;
-            setIsMaster(userRoleName === 'master' || isOwner); // Strict master flag
-            setIsSaaSStaff(isMasterUser); // Internal staff flag (includes master)
+            console.log('[useOrganization] Security Check:', { 
+                roleTable: userRoleName, 
+                rpcCheck: rpcIsMaster, 
+                finalIsMaster: isActuallyMaster 
+            });
+
+            setIsMaster(isActuallyMaster);
+            setIsSaaSStaff(isActuallySaaSStaff);
 
             setIsOrgAdmin(
                 profile?.is_org_admin ||
                 userRoleName === 'admin' ||
                 userRoleName === 'manager' ||
-                isMasterUser
+                isActuallySaaSStaff
             );
 
             let currentOrg: Organization | null = null;
             let currentOrgsList: Organization[] = [];
 
-            if (isMasterUser) {
-                const { data: allOrgs } = await supabase
-                    .from('organizations')
-                    .select('*')
-                    .order('name');
+            if (isActuallySaaSStaff) {
+                try {
+                    const { data: allOrgs, error: orgsError } = await supabase
+                        .from('organizations')
+                        .select('id, name, slug, plan_tier, subscription_status, settings, onboarding_completed, is_system_owner')
+                        .order('name');
 
-                const orgs = (allOrgs || []).map(o => ({
-                    ...o,
-                    plan_tier: o.plan_tier as PlanTier,
-                    subscription_status: o.subscription_status as SubscriptionStatus
-                })) as Organization[];
+                    if (orgsError) {
+                        console.error('CRITICAL: RLS Block on organizations table:', orgsError);
+                        // Don't throw here, just log and keep going with empty list
+                        // This prevents the whole hook from breaking
+                    } else if (allOrgs) {
+                        const orgs = allOrgs.map(o => ({
+                            ...o,
+                            plan_tier: o.plan_tier as PlanTier,
+                            subscription_status: o.subscription_status as SubscriptionStatus,
+                            is_system_owner: !!(o as any).is_system_owner
+                        })) as Organization[];
 
-                currentOrgsList = orgs;
+                        currentOrgsList = orgs;
 
-                // 1. Check if there's a manually selected org in localStorage
-                const savedOrgId = localStorage.getItem('medivisit_master_active_org');
-                const assignedOrgId = profile?.organization_id || userRole?.organization_id;
+                        const savedOrgId = localStorage.getItem('medivisit_master_active_org');
+                        const assignedOrgId = profile?.organization_id || userRole?.organization_id;
 
-                // 2. Prioritize saved org, then assigned org, then first available
-                currentOrg = orgs.find(o => o.id === savedOrgId) ||
-                    orgs.find(o => o.id === assignedOrgId) ||
-                    orgs.find(o => o.is_system_owner) ||
-                    orgs[0] || null;
+                        currentOrg = orgs.find(o => o.id === savedOrgId) ||
+                            orgs.find(o => o.id === assignedOrgId) ||
+                            orgs.find(o => o.is_system_owner) ||
+                            orgs[0] || null;
+                    }
+                } catch (orgFetchErr) {
+                    console.error('Failed to fetch organizations list:', orgFetchErr);
+                }
             } else {
                 let organizationId = profile?.organization_id || userRole?.organization_id;
                 if (organizationId) {
                     const { data: org } = await supabase
                         .from('organizations')
-                        .select('*')
+                        .select('id, name, slug, plan_tier, subscription_status, settings, onboarding_completed, is_system_owner')
                         .eq('id', organizationId)
                         .maybeSingle();
 
@@ -149,7 +182,8 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
                         currentOrg = {
                             ...org,
                             plan_tier: org.plan_tier as PlanTier,
-                            subscription_status: org.subscription_status as SubscriptionStatus
+                            subscription_status: org.subscription_status as SubscriptionStatus,
+                            is_system_owner: !!(org as any).is_system_owner
                         } as Organization;
                         currentOrgsList = [currentOrg];
                     }
@@ -161,17 +195,20 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
             // FETCH FEATURES DYNAMICALLY
             if (currentOrg) {
-                const { data: planData } = await (supabase as any)
-                    .from('subscription_plans')
-                    .select('features')
-                    .ilike('name', `%${currentOrg.plan_tier}%`)
-                    .eq('active', true)
-                    .maybeSingle();
+                try {
+                    const { data: planData } = await (supabase as any)
+                        .from('subscription_plans')
+                        .select('features')
+                        .ilike('name', `%${currentOrg.plan_tier}%`)
+                        .eq('active', true)
+                        .maybeSingle();
 
-                if (planData) {
-                    setPlanFeatures((planData.features as unknown as string[]) || []);
-                } else {
-                    // Fallback to basic features if plan not found
+                    if (planData) {
+                        setPlanFeatures((planData.features as unknown as string[]) || []);
+                    } else {
+                        setPlanFeatures(['basic_visits', 'basic_reports']);
+                    }
+                } catch (featureErr) {
                     setPlanFeatures(['basic_visits', 'basic_reports']);
                 }
             } else {
@@ -179,8 +216,9 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             }
 
         } catch (err) {
-            console.error('Error fetching organization:', err);
+            console.error('Error in useOrganization flow:', err);
             setError(err instanceof Error ? err : new Error('Failed to fetch organization'));
+            setPlanFeatures(['basic_visits', 'basic_reports']);
         } finally {
             setIsLoading(false);
         }
@@ -276,7 +314,9 @@ export function useSubscriptionStatus(): {
 
 // Hook to check if user has access to a feature
 export function useFeatureAccess(feature: string): boolean {
-    const { organization, planFeatures } = useOrganization();
+    const { organization, planFeatures, isMaster } = useOrganization();
+
+    if (isMaster) return true;
 
     if (!organization) return false;
 

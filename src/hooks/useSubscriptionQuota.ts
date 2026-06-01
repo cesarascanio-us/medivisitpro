@@ -41,13 +41,20 @@ const PLAN_LIMITS = {
 export type PlanTier = 'starter' | 'pro' | 'team' | 'free';
 
 export function useSubscriptionQuota() {
-    const { user, role, organizationId } = useAuth();
+    const { user, role, organizationId, isDemo } = useAuth();
     const [tier, setTier] = useState<PlanTier>('starter');
     const [usage, setUsage] = useState({ doctors: 0, pharmacies: 0 });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUsage = async () => {
+            if (isDemo) {
+                setTier('team'); // Unlimited/Team plan for Demo
+                setUsage({ doctors: 45, pharmacies: 18 });
+                setLoading(false);
+                return;
+            }
+
             if (!user) {
                 setLoading(false);
                 return;
@@ -96,7 +103,7 @@ export function useSubscriptionQuota() {
         };
 
         fetchUsage();
-    }, [user, role, organizationId]);
+    }, [user, role, organizationId, isDemo]);
 
     const limits = PLAN_LIMITS[tier] || PLAN_LIMITS.starter;
 

@@ -28,7 +28,7 @@ import { useVisit, useStartVisit, useCompleteVisit } from "@/hooks/queries/useVi
 import { VoiceInput } from "@/components/common/VoiceInput";
 import { useVisitScenario } from "@/hooks/useVisitScenario";
 import { MasterDataCard } from "@/components/visits/MasterDataCard";
-import { createFutureVisit, updateDirectoryMasterData } from "@/services/visitAutomationService";
+import { createFutureVisit, updateDirectoryMasterData, VisitScenario } from "@/services/visitAutomationService";
 import { useAuth } from "@/hooks/useAuth";
 import { ImageUploadInput } from "@/components/common/ImageUploadInput";
 import { SmartScheduleWidget } from "@/components/visits/SmartScheduleWidget";
@@ -45,8 +45,42 @@ import { DynamicInterviewForm, validateDynamicInterview, getEmptyInterviewData, 
 import { VisualAidModal } from "@/components/visits/VisualAidModal";
 import { CommercialCalculator } from "@/components/catalog/CommercialCalculator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { QuickActionCard } from "@/components/common/QuickActionCard";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { processVoiceIntent } from "@/services/VoiceActionService";
+import { 
+    Smile, 
+    Meh, 
+    Frown, 
+    ShieldAlert as ShieldAlertIcon,
+    BadgeDollarSign,
+    Award as AwardIcon,
+    Handshake,
+    Truck as TruckIcon
+} from "lucide-react";
+
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// FALLBACK: Escenario SPIN para visitas sin guión dinámico predefinido
+const SPIN_FALLBACK_SCENARIO: VisitScenario = {
+    id: 'spin-fallback',
+    type: 'maturity', 
+    label: 'Fidelización (SPIN)',
+    title: 'Entrevista de Valor (SPIN)',
+    description: 'Búsqueda de necesidades y oportunidades mediante técnica SPIN.',
+    suggestedObjective: 'Seguimiento de valor y detección de necesidades',
+    showMasterDataCard: true,
+    showCloseFields: true
+};
+
+const getEmptySpinData = () => ({
+    situation: '',
+    problem: '',
+    implication: '',
+    need_payoff: ''
+});
 
 export default function VisitExecutionPage() {
     const { id } = useParams();
@@ -69,7 +103,8 @@ export default function VisitExecutionPage() {
     // Visit Automation: Scenario Detection
     const directoryItemId = (visit as any)?.directory_item_id || null;
     const entityType = visit?.directory_items?.entity_type || 'doctor';
-    const { scenario, history, autoFields, loading: scenarioLoading } = useVisitScenario(directoryItemId, entityType);
+    const { scenario: dynamicScenario, history, autoFields, loading: scenarioLoading } = useVisitScenario(directoryItemId, entityType);
+    const scenario = dynamicScenario || SPIN_FALLBACK_SCENARIO;
 
     // Automation state
     const [masterData, setMasterData] = useState<{ email?: string; phone?: string }>({});
@@ -78,6 +113,53 @@ export default function VisitExecutionPage() {
 
     const [timer, setTimer] = useState(0);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
+    const [isFocusMode, setIsFocusMode] = useState(false);
+
+    const processVoiceHeuristics = async (text: string) => {
+        const lowerText = text.toLowerCase();
+        
+        // 1. Actionable Intent Detection (Quantum Leap Phase 5)
+        if (["agendar", "cita", "programar", "pedido", "orden", "comprar"].some(k => lowerText.includes(k))) {
+            const actionResult = await processVoiceIntent(text, user?.id || "");
+            if (actionResult.success) {
+                toast({
+                    title: "🚀 ACCIÓN IA EJECUTADA",
+                    description: actionResult.message,
+                    variant: "default",
+                    className: "bg-emerald-600 border-emerald-500 text-white font-bold"
+                });
+                
+                if (actionResult.data?.redirect) {
+                    // Slight delay for feedback before redirecting if it's an order
+                    setTimeout(() => navigate(actionResult.data.redirect), 2000);
+                }
+            }
+        }
+
+        // 2. Form Field Heuristics (Phase 4)
+        // Emotional State Heuristics
+        if (["receptivo", "abierto", "bien", "positivo", "excelente"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, emotional_state: "open" }));
+        } else if (["duda", "preocupado", "esceptico", "critico"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, emotional_state: "skeptical" }));
+        } else if (["indiferente", "no le importa", "normal"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, emotional_state: "indifferent" }));
+        } else if (["molesto", "cerrado", "rechazo", "mal"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, emotional_state: "closed" }));
+        }
+
+        // Purchase Driver Heuristics
+        if (["precio", "barato", "rentable", "descuento", "dinero"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, purchase_driver: "price" }));
+        } else if (["calidad", "efectivo", "bueno", "premium", "ciencia"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, purchase_driver: "quality" }));
+        } else if (["confianza", "amistad", "relacion", "apoyo", "servicio"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, purchase_driver: "relationship" }));
+        } else if (["stock", "disponible", "entrega", "falla", "inventario"].some(k => lowerText.includes(k))) {
+            setFormData(prev => ({ ...prev, purchase_driver: "availability" }));
+        }
+    };
+
 
     // Form Data
     const [formData, setFormData] = useState({
@@ -127,15 +209,52 @@ export default function VisitExecutionPage() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const specialty = useMemo(() => {
+        return (visit as any)?.contacts?.specialty || (visit as any)?.directory_items?.specialties;
+    }, [visit]);
+
+    const isMedicalVisit = useMemo(() => {
+        const type = visit?.visit_type?.toLowerCase() || '';
+        return type === 'doctor' || type === 'médico' || type === 'medico';
+    }, [visit]);
+
     useEffect(() => {
         const fetchNegotiationProducts = async () => {
-            // Mock fetch or real fetch of key products
-            // Using limit 15 to show a good list of "Key Focus" products
-            const { data } = await supabase.from('products').select('*').limit(15);
-            if (data) setNegotiationProducts(data);
+            if (!visit) return;
+
+            console.log("VisitExecution: Fetching filtered negotiation products");
+            
+            let query = supabase.from('products').select('*');
+            
+            if (visit.organization_id) {
+                query = query.eq('organization_id', visit.organization_id);
+            }
+
+            const { data, error } = await query.limit(50);
+            
+            if (error) {
+                console.error("Error fetching negotiation products:", error);
+                return;
+            }
+
+            if (data) {
+                let filtered = data;
+                if (isMedicalVisit && specialty) {
+                    const spec = specialty.toLowerCase().trim();
+                    filtered = data.filter(p => {
+                        const pSpec = (p.medical_specialties || '').toLowerCase();
+                        const pCat = (p.category || '').toLowerCase();
+                        const isLaunch = pCat.includes('launch') || pCat.includes('lanzamiento');
+                        return isLaunch || pSpec.includes(spec);
+                    });
+                }
+                // If it's wholesale, we might want different products, but the requirement specifically mentions medical visits
+                
+                setNegotiationProducts(filtered.slice(0, 15));
+            }
         };
         fetchNegotiationProducts();
-    }, []);
+    }, [visit, specialty, isMedicalVisit]);
 
     const handleNegotiate = (product: any) => {
         setNegotiationProduct(product);
@@ -205,9 +324,13 @@ export default function VisitExecutionPage() {
     // Initialize Dynamic Data when scenario is loaded
     useEffect(() => {
         if (scenario && !dynamicInterviewData) {
-            setDynamicInterviewData(getEmptyInterviewData(scenario, entityType));
+            if (scenario.id === 'spin-fallback') {
+                setDynamicInterviewData(getEmptySpinData());
+            } else {
+                setDynamicInterviewData(getEmptyInterviewData(scenario, entityType));
+            }
         }
-    }, [scenario, entityType]);
+    }, [scenario, entityType, dynamicInterviewData]);
 
     // Sample Limit Warning for Conquest (Visit 1)
     useEffect(() => {
@@ -219,7 +342,7 @@ export default function VisitExecutionPage() {
                 duration: 5000
             });
         }
-    }, [deliveredSamples, scenario]);
+    }, [deliveredSamples, scenario, toast]);
 
 
 
@@ -240,8 +363,8 @@ export default function VisitExecutionPage() {
     };
 
     const handleCheckIn = async () => {
-        // Optimization for Demo Mode: Bypass real GPS to avoid blocks
-        const isDemo = id?.startsWith('detail-');
+        // Optimization for Demo Mode: Bypass real GPS (DISABLED for real data propagation)
+        const isDemo = false; // id?.startsWith('detail-');
         if (isDemo) {
             console.log("🚀 Demo Mode: Bypassing GPS for fast check-in");
             processCheckIn(10.4806, -66.8983);
@@ -379,7 +502,7 @@ export default function VisitExecutionPage() {
         let interviewValidationErrors: string[] = [];
         let interviewDataToSave: any = {};
 
-        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore';
+        const isCommerce = entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore' || entityType === 'commerce' || entityType === 'natural_store';
 
         if (isCommerce) {
             // Priority: Alta Comercial (Profiling) if Visit 1
@@ -457,7 +580,7 @@ export default function VisitExecutionPage() {
                 setIsTimerRunning(false);
 
                 // PROCESS SAMPLE DROPS
-                if (deliveredSamples.length > 0 && !id?.startsWith('detail-')) {
+                if (deliveredSamples.length > 0) {
                     for (const item of deliveredSamples) {
                         await supabase.rpc('register_visit_sample_drop', {
                             p_visit_id: id!,
@@ -469,7 +592,7 @@ export default function VisitExecutionPage() {
                 }
 
                 // PROCESS POP DROPS (360)
-                if (deliveredPOP.length > 0 && !id?.startsWith('detail-')) {
+                if (deliveredPOP.length > 0) {
                     for (const item of deliveredPOP) {
                         await supabase.rpc('register_visit_pop_drop' as any, {
                             p_visit_id: id!,
@@ -539,28 +662,32 @@ export default function VisitExecutionPage() {
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-4 md:p-8 pb-32">
+        <div className="max-w-4xl mx-auto p-3 md:p-6 pb-24">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-xl font-bold text-slate-900">
+                    <h1 className="text-xl font-bold text-foreground">
                         {directoryItem?.name || "Cliente Desconocido"}
                     </h1>
-                    <p className="text-sm text-slate-500 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {directoryItem?.address || "Sin dirección"}
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        <MapPin className="h-3 w-3 text-primary" /> {directoryItem?.address || "Sin dirección"}
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-muted/20 px-3 py-1.5 rounded-full border border-border/40 mr-1 text-foreground shadow-none">
+                        <Label htmlFor="focus-mode" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Foco Crítico</Label>
+                        <Switch id="focus-mode" checked={isFocusMode} onCheckedChange={setIsFocusMode} className="data-[state=checked]:bg-emerald-500 scale-[0.65]" />
+                    </div>
                     <Button
                         size="sm"
                         variant="outline"
                         onClick={() => goToTab("negotiation")}
-                        className="bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 font-bold gap-1 shadow-sm"
+                        className="gap-2 h-9 px-4 text-xs font-bold"
                     >
-                        💲 Venta/Negociación
+                        <BadgeDollarSign className="w-4 h-4" /> Venta / Cierre
                     </Button>
                     {isTimerRunning && (
-                        <Badge variant="outline" className="text-xs font-normal text-slate-400 border-slate-200">
-                            <Clock className="h-3 w-3 mr-1" />
+                        <Badge variant="outline" className="text-xs font-black text-primary border-primary/20 bg-primary/5 uppercase tracking-widest px-4 py-1.5 rounded-full h-9">
+                            <Clock className="h-4 w-4 mr-2" />
                             {formatTime(timer)}
                         </Badge>
                     )}
@@ -568,62 +695,62 @@ export default function VisitExecutionPage() {
             </div>
 
             {!visit.checkin_at ? (
-                <div className="py-12 text-center bg-white rounded-xl border border-dashed border-slate-300">
-                    <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Navigation className="h-8 w-8" />
+                <div className="py-12 text-center bg-card rounded-lg border border-dashed border-border shadow-premium-md">
+                    <div className="w-20 h-20 bg-primary/10 text-primary rounded-lg flex items-center justify-center mx-auto mb-6 border border-primary/20">
+                        <Navigation className="h-10 w-10" />
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Listo para iniciar</h3>
-                    <p className="text-slate-500 max-w-sm mx-auto mb-6">
-                        Comprueba tu ubicación y presiona Check-in.
+                    <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-2">Despliegue Listo</h3>
+                    <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest max-w-sm mx-auto mb-8 opacity-70">
+                        VERIFICA COBERTURA GPS E INICIA EL REGISTRO DE VISITA.
                     </p>
-                    <Button size="lg" onClick={handleCheckIn} className="bg-blue-600 hover:bg-blue-700 gap-2 shadow-lg shadow-blue-200">
+                    <Button size="lg" onClick={handleCheckIn} className="gap-3 h-11 px-6 rounded-lg active:scale-95 transition-all text-xs font-bold">
                         <Play className="h-5 w-5" /> INICIAR VISITA
                     </Button>
                 </div>
             ) : visit.status === 'completed' ? (
-                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-8 text-center">
+                <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-8 text-center text-slate-900 shadow-premium-md">
                     <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-emerald-900 mb-2">Visita Completada</h3>
                     <Button
                         onClick={() => navigate('/agenda')}
-                        className="mt-6 bg-emerald-600 text-white hover:bg-emerald-700 shadow-md transition-all active:scale-95"
+                        className="mt-6 shadow-premium-md transition-all active:scale-95"
                     >
                         Volver a la Agenda
                     </Button>
                 </div>
             ) : (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8 bg-white/80 p-1.5 h-auto md:h-16 rounded-2xl border border-slate-200 shadow-lg backdrop-blur-xl">
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-10 bg-muted/20 p-2 h-auto md:h-12 rounded-lg border border-border/40">
                         <TabsTrigger
                             value="strategy"
-                            className="rounded-xl text-slate-500 data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:scale-105 transition-all duration-300 font-bold text-sm md:text-base gap-2 h-12 md:h-full"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <Brain className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">1. Estrategia</span>
+                            <Brain className="w-4 h-4" />
+                            <span className="hidden sm:inline">1. Estrategia Alpha</span>
                             <span className="sm:hidden">Estrat.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="development"
-                            className="rounded-xl text-slate-500 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:scale-105 transition-all duration-300 font-bold text-sm md:text-base gap-2 h-12 md:h-full"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <ActivityIcon className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">2. Desarrollo</span>
+                            <ActivityIcon className="w-4 h-4" />
+                            <span className="hidden sm:inline">2. Desarrollo Estratégico</span>
                             <span className="sm:hidden">Desarr.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="negotiation"
-                            className="rounded-xl text-slate-500 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:scale-105 transition-all duration-300 font-bold text-sm md:text-base gap-2 h-12 md:h-full"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <Store className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">3. Negociación</span>
+                            <Store className="w-4 h-4" />
+                            <span className="hidden sm:inline">3. Negociación Elite</span>
                             <span className="sm:hidden">Negoc.</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="closing"
-                            className="rounded-xl text-slate-500 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:scale-105 transition-all duration-300 font-bold text-sm md:text-base gap-2 h-12 md:h-full"
+                            className="rounded-lg text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-premium-md transition-all font-black text-[10px] uppercase tracking-widest gap-3 h-10 md:h-full border border-transparent data-[state=active]:border-primary/20"
                         >
-                            <CheckCircle className="w-4 h-4 md:w-5 md:h-5" />
-                            <span className="hidden sm:inline">4. Cierre</span>
+                            <CheckCircle className="w-4 h-4" />
+                            <span className="hidden sm:inline">4. Cierre de Visita</span>
                             <span className="sm:hidden">Cierre</span>
                         </TabsTrigger>
                     </TabsList>
@@ -632,9 +759,9 @@ export default function VisitExecutionPage() {
                     <TabsContent value="strategy" className="space-y-6 animate-in fade-in-50 duration-500">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {scenario && !scenarioLoading && (
-                                <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 shadow-sm">
-                                    <h3 className="text-lg font-bold text-emerald-700 mb-1 flex items-center gap-2">
-                                        <Brain className="h-6 w-6 text-emerald-600" /> Brain 360: {scenario.title || 'Sugerencia Estratégica'}
+                                <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 shadow-premium-md text-slate-900">
+                                    <h3 className="text-base font-bold text-emerald-700 mb-1 flex items-center gap-2">
+                                        <Brain className="h-5 w-5 text-emerald-600" /> Brain 360: {scenario.title || 'Sugerencia Estratégica'}
                                     </h3>
                                     <p className="text-sm text-emerald-600/80 mb-6 px-8">
                                         {scenario.description}
@@ -651,15 +778,15 @@ export default function VisitExecutionPage() {
                             )}
 
 
-                            <Card className="border-slate-200 bg-white shadow-lg rounded-2xl overflow-hidden">
-                                <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100">
-                                    <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                        <FileText className="h-5 w-5 text-emerald-600" /> Preparación y Foco
+                            <Card className="border-border bg-card shadow-premium-md rounded-lg overflow-hidden">
+                                <CardHeader className="bg-slate-50 py-3 px-4 border-b border-slate-100 text-slate-900">
+                                    <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+                                        <FileText className="h-4 w-4 text-emerald-600" /> Preparación y Foco
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-6 pt-6">
+                                <CardContent className="space-y-4 pt-4 px-4 pb-4">
                                     {scenario?.showMasterDataCard && (
-                                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                                        <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 text-slate-900">
                                             <MasterDataCard
                                                 directoryItemId={directoryItemId || ''}
                                                 currentEmail={directoryItem?.email}
@@ -669,12 +796,12 @@ export default function VisitExecutionPage() {
                                         </div>
                                     )}
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Objetivo Transaccional</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Objetivo Transaccional Alpha</label>
                                         <div className="relative group">
                                             <Input
                                                 value={customObjective || (visit as any).objective || ''}
                                                 readOnly
-                                                className="relative bg-white border-slate-300 text-slate-800 font-medium h-14 text-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+                                                className="relative bg-card border-border text-foreground font-medium h-10 text-sm shadow-premium-sm focus:ring-emerald-500 focus:border-emerald-500"
                                             />
                                         </div>
                                     </div>
@@ -703,38 +830,38 @@ export default function VisitExecutionPage() {
 
                         </div>
                         <div className="flex justify-end mt-8">
-                            <Button onClick={() => goToTab("development")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 rounded-xl h-12 px-6 gap-2 font-bold text-lg hover:scale-105 transition-transform">
-                                Siguiente Fase <Navigation className="h-5 w-5" />
+                            <Button variant="default" size="sm" onClick={() => goToTab("development")} className="gap-2">
+                                Siguiente Fase <Navigation className="h-4 w-4" />
                             </Button>
                         </div>
                     </TabsContent>
 
                     {/* TAB 2: DESARROLLO (NEURO VENTAS & ENTREVISTA) */}
                     <TabsContent value="development" className="space-y-4 animate-in fade-in-50">
-                        <Card className="border-slate-200 bg-white shadow-lg rounded-2xl overflow-hidden">
-                            <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100">
-                                <CardTitle className="flex items-center gap-2 text-xl font-bold text-slate-900">
+                        <Card className="border-border bg-card shadow-premium-md rounded-lg overflow-hidden">
+                            <CardHeader className="bg-slate-50 pb-4 border-b border-slate-100 text-slate-900">
+                                <CardTitle className="flex items-center gap-2 text-xl font-bold text-foreground">
                                     <Star className="h-5 w-5 text-yellow-500" /> Psicología de Venta & Interés
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-8 pt-6">
                                 {/* Interest Scale */}
-                                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                    <label className="text-sm font-bold text-slate-500 uppercase tracking-wider block mb-4 text-center sm:text-left">Nivel de Engagement</label>
+                                <div className="bg-slate-50 p-6 rounded-lg border border-slate-100 text-slate-900">
+                                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] block mb-6 text-center sm:text-left">Nivel de Engagement Detectado</label>
                                     <div className="flex items-center justify-center sm:justify-start gap-4 mb-2">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <button
                                                 key={star}
                                                 onClick={() => setFormData((prev: any) => ({ ...prev, doctor_interest: star }))}
-                                                className={`p-3 transition-all transform hover:scale-110 rounded-xl border ${formData.doctor_interest >= star
-                                                    ? 'bg-yellow-400 text-white shadow-md border-yellow-500'
-                                                    : 'bg-white text-slate-300 border-slate-200 hover:text-yellow-400 hover:border-yellow-300'}`}
+                                                className={`p-3 transition-all transform hover:scale-110 rounded-lg border ${formData.doctor_interest >= star
+                                                    ? 'bg-yellow-400 text-white shadow-premium-sm border-yellow-500'
+                                                    : 'bg-card text-muted-foreground border-border hover:text-yellow-400 hover:border-yellow-300'}`}
                                             >
                                                 <Star className={`h-8 w-8 ${formData.doctor_interest >= star ? 'fill-current' : ''}`} />
                                             </button>
                                         ))}
                                     </div>
-                                    <p className="text-center sm:text-left text-base font-bold text-slate-700 mt-4 bg-white py-2 px-4 rounded-full border border-slate-200 inline-block">
+                                    <p className="text-center sm:text-left text-xs font-bold text-foreground mt-4 bg-card py-2 px-4 rounded-full border border-border inline-block">
                                         {formData.doctor_interest === 1 && "❌ Rechazo Frontal"}
                                         {formData.doctor_interest === 2 && "🤔 Escéptico / Barreras"}
                                         {formData.doctor_interest === 3 && "😐 Neutral / Informativo"}
@@ -745,15 +872,15 @@ export default function VisitExecutionPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Estado Emocional</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Estado Emocional del Especialista</label>
                                         <Select
                                             value={formData.emotional_state}
                                             onValueChange={(v) => setFormData({ ...formData, emotional_state: v })}
                                         >
-                                            <SelectTrigger className="bg-white border-slate-300 text-slate-900 h-12">
+                                            <SelectTrigger className="bg-card border-border text-foreground h-10">
                                                 <SelectValue placeholder="Seleccionar..." />
                                             </SelectTrigger>
-                                            <SelectContent className="bg-white border-slate-200 text-slate-900">
+                                            <SelectContent className="bg-card border-border text-foreground">
                                                 <SelectItem value="open">Abierto / Receptivo</SelectItem>
                                                 <SelectItem value="skeptical">Escéptico / Crítico</SelectItem>
                                                 <SelectItem value="indifferent">Indiferente</SelectItem>
@@ -763,15 +890,15 @@ export default function VisitExecutionPage() {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Motivador Detectado</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Motivador de Decisión Detectado</label>
                                         <Select
                                             value={formData.purchase_driver}
                                             onValueChange={(v) => setFormData({ ...formData, purchase_driver: v })}
                                         >
-                                            <SelectTrigger className="bg-white border-slate-300 text-slate-900 h-12">
+                                            <SelectTrigger className="bg-card border-border text-foreground h-10">
                                                 <SelectValue placeholder="Seleccionar..." />
                                             </SelectTrigger>
-                                            <SelectContent className="bg-white border-slate-200 text-slate-900">
+                                            <SelectContent className="bg-card border-border text-foreground">
                                                 <SelectItem value="price">Precio / Rentabilidad</SelectItem>
                                                 <SelectItem value="quality">Calidad / Eficacia</SelectItem>
                                                 <SelectItem value="relationship">Relación / Confianza</SelectItem>
@@ -786,7 +913,7 @@ export default function VisitExecutionPage() {
                                     rows={3}
                                     placeholder="Detalles de la conversación..."
                                     value={formData.notes}
-                                    onValueChange={(val) => setFormData({ ...formData, notes: val })}
+                                    onValueChange={(val) => { setFormData(prev => ({ ...prev, notes: val })); processVoiceHeuristics(val); }}
                                 />
                             </CardContent>
                         </Card>
@@ -815,8 +942,8 @@ export default function VisitExecutionPage() {
                                     />
                                 </div>
                             )}
-                            {(entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore') && scenario && scenario.type !== 'conquest' && (
-                                <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-lg">
+                             {(entityType === 'pharmacy' || entityType === 'store' || entityType === 'drugstore') && scenario && scenario.type !== 'conquest' && (
+                                <div className="bg-card rounded-lg border border-border p-3 shadow-premium-md">
                                     <CommercialAudit
                                         data={commercialData}
                                         onChange={(data) => {
@@ -829,11 +956,11 @@ export default function VisitExecutionPage() {
                             )}
                         </div>
                         <div className="flex justify-between mt-8">
-                            <Button variant="outline" onClick={() => goToTab("strategy")} className="border-slate-200 text-slate-600 hover:bg-slate-50 gap-2 h-12 px-6 rounded-xl font-medium">
-                                <Navigation className="h-5 w-5 rotate-180" /> Volver
+                            <Button variant="outline" size="sm" onClick={() => goToTab("strategy")} className="gap-2">
+                                <Navigation className="h-4 w-4 rotate-180" /> Volver
                             </Button>
-                            <Button onClick={() => goToTab("negotiation")} className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-200 rounded-xl h-12 px-6 gap-2 font-bold text-lg hover:scale-105 transition-transform">
-                                Ir a Negociación <Store className="h-5 w-5" />
+                            <Button variant="default" size="sm" onClick={() => goToTab("negotiation")} className="gap-2">
+                                Ir a Negociación <Store className="h-4 w-4" />
                             </Button>
                         </div>
                     </TabsContent >
@@ -841,34 +968,34 @@ export default function VisitExecutionPage() {
                     {/* TAB: NEGOCIACIÓN (NUEVA INTEGRACIÓN) */}
                     <TabsContent value="negotiation" className="space-y-6 animate-in fade-in-50">
                         <div className="grid grid-cols-1 gap-4">
-                            <div className="bg-gradient-to-r from-purple-50 to-white p-6 rounded-2xl border border-purple-200 shadow-sm">
+                            <div className="bg-gradient-to-r from-purple-50 to-white p-6 rounded-lg border border-purple-200 shadow-premium-md">
                                 <h3 className="text-xl font-bold text-purple-900 mb-2 flex items-center gap-2">
                                     <Store className="h-6 w-6 text-purple-600" /> Foco Comercial: Línea Femenina
                                 </h3>
-                                <p className="text-slate-400 mb-6">Selecciona un producto clave para iniciar la negociación y registrar acuerdos.</p>
+                                <p className="text-xs text-muted-foreground mb-6">Selecciona un producto clave para iniciar la negociación y registrar acuerdos.</p>
 
                                 {isWholesale && (
-                                    <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                    <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
                                         <h4 className="font-bold text-red-800 flex items-center gap-2 mb-4">
                                             <AlertCircle className="h-5 w-5" /> 🚨 Monitor de Inventario Central (Falla)
                                         </h4>
                                         <div className="space-y-4">
                                             {negotiationProducts.slice(0, 5).map(product => (
-                                                <div key={`alert-${product.id}`} className="flex items-center justify-between bg-white p-3 rounded-lg border border-red-100">
+                                                <div key={`alert-${product.id}`} className="flex items-center justify-between bg-card p-3 rounded-lg border border-red-100">
                                                     <span className="text-sm font-medium text-slate-700">{product.name}</span>
                                                     <Select
                                                         value={centralStockAlerts.find(a => a.productId === product.id)?.status || 'available'}
                                                         onValueChange={(v) => {
                                                             const newAlerts = centralStockAlerts.filter(a => a.productId !== product.id);
                                                             if (v !== 'available') {
-                                                                newAlerts.push({ productId: product.id, status: v });
-                                                                if (v === 'out_of_stock') {
+                                                                 newAlerts.push({ productId: product.id, status: v });
+                                                                 if (v === 'out_of_stock') {
                                                                     toast({
                                                                         title: "🔥 ALERTA DE FALLA",
                                                                         description: `Se ha registrado agotamiento de ${product.name} en esta droguería.`,
                                                                         variant: "destructive"
                                                                     });
-                                                                }
+                                                                 }
                                                             }
                                                             setCentralStockAlerts(newAlerts);
                                                         }}
@@ -879,7 +1006,7 @@ export default function VisitExecutionPage() {
                                                         <SelectContent>
                                                             <SelectItem value="available">🟢 Disponible</SelectItem>
                                                             <SelectItem value="low">🟡 Poca Existencia</SelectItem>
-                                                            <SelectItem value="out_of_stock">🔴 AGOTADO (Falla)</SelectItem>
+                                                            <SelectItem value="out_of_stock">🔴 Sin existencias</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>
@@ -890,18 +1017,20 @@ export default function VisitExecutionPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {negotiationProducts.map(product => (
-                                        <Card key={product.id} className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <Card key={product.id} className="bg-card border-border shadow-premium-md hover:shadow-premium-md transition-shadow rounded-lg">
                                             <CardContent className="p-4 flex flex-col justify-between h-full gap-4">
                                                 <div>
-                                                    <h4 className="font-bold text-slate-900 text-lg leading-tight">{product.name}</h4>
+                                                    <h4 className="font-bold text-foreground text-lg leading-tight">{product.name}</h4>
                                                     <p className="text-sm text-slate-500 mt-1">{product.active_ingredients || 'Producto Clave'}</p>
                                                     <div className="mt-2 text-emerald-600 font-mono font-bold">
                                                         ${product.price ? product.price.toFixed(2) : '0.00'}
                                                     </div>
                                                 </div>
                                                 <Button
+                                                    variant="default"
+                                                    size="sm"
                                                     onClick={() => handleNegotiate(product)}
-                                                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md shadow-purple-100"
+                                                    className="w-full"
                                                 >
                                                     💲 Negociar
                                                 </Button>
@@ -915,9 +1044,9 @@ export default function VisitExecutionPage() {
 
                     {/* TAB 3: CIERRE (MUESTRAS, POP, EVIDENCIA) */}
                     <TabsContent value="closing" className="space-y-8 animate-in fade-in-50 duration-500">
-                        <Card className="border-orange-100 bg-orange-50 shadow-lg rounded-2xl overflow-hidden">
+                        <Card className="border-orange-100 bg-orange-50 shadow-premium-md rounded-lg overflow-hidden">
                             <CardHeader className="bg-orange-50/50 pb-4 border-b border-orange-100">
-                                <CardTitle className="text-lg font-bold text-orange-700 flex items-center gap-2">
+                                <CardTitle className="text-base font-bold text-orange-700 flex items-center gap-2">
                                     <ActivityIcon className="h-5 w-5" /> Inteligencia Competitiva 360°
                                 </CardTitle>
                             </CardHeader>
@@ -926,7 +1055,7 @@ export default function VisitExecutionPage() {
                                     placeholder="¿Qué está haciendo la competencia en este punto? (Precios, promociones, visitas...)"
                                     value={formData.competitor_activity}
                                     onChange={(e) => setFormData(prev => ({ ...prev, competitor_activity: e.target.value }))}
-                                    className="w-full text-base p-4 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[100px]"
+                                    className="w-full text-sm p-4 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[100px]"
                                 />
                             </CardContent>
                         </Card>
@@ -937,11 +1066,15 @@ export default function VisitExecutionPage() {
                             <SampleDeliveryManager
                                 onUpdate={setDeliveredSamples}
                                 initialItems={deliveredSamples}
+                                specialty={specialty}
+                                isMedicalVisit={isMedicalVisit}
                             />
 
                             <POPDeliveryManager
                                 onUpdate={setDeliveredPOP}
                                 initialItems={deliveredPOP}
+                                specialty={specialty}
+                                isMedicalVisit={isMedicalVisit}
                             />
 
                             {/* Fallback legacy input if needed, can be hidden */}
@@ -956,8 +1089,8 @@ export default function VisitExecutionPage() {
 
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-md">
-                                <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                            <div className="bg-slate-50 rounded-lg p-6 border border-slate-200 shadow-premium-md text-slate-900">
+                                <h3 className="text-base font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
                                     <PenTool className="h-5 w-5 text-emerald-600" /> Evidencia y Firma
                                 </h3>
                                 <div className="space-y-6">
@@ -982,28 +1115,28 @@ export default function VisitExecutionPage() {
                             </div>
 
                             <div className="flex flex-col gap-6">
-                                <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100 shadow-md flex-grow">
+                                <div className="bg-blue-50 rounded-lg p-6 border border-blue-100 shadow-premium-md flex-grow text-slate-900">
                                     <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center gap-2">
                                         <Navigation className="h-5 w-5" /> Próximo Paso
                                     </h3>
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Acuerdo Alcanzado</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Acuerdo Operativo Alcanzado</label>
                                         <Textarea
                                             placeholder="¿Cuál es el compromiso para la siguiente visita?"
                                             value={formData.next_commitment}
                                             onChange={(e) => setFormData({ ...formData, next_commitment: e.target.value })}
-                                            className="w-full text-lg p-4 rounded-xl border border-blue-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 transition-all min-h-[120px]"
+                                            className="w-full text-sm p-4 rounded-lg border border-blue-200 bg-card text-foreground placeholder:text-muted-foreground focus:border-blue-500 transition-all min-h-[120px]"
                                         />
                                     </div>
                                 </div>
 
                                 <Button
-                                    className="w-full h-20 text-xl font-black bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-200 border border-slate-200 rounded-2xl group overflow-hidden relative"
+                                    variant="default"
+                                    size="lg"
+                                    className="w-full h-11 text-xs font-bold"
                                     onClick={handleCheckOut}
                                 >
-                                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <Square className="h-6 w-6 mr-3 fill-current group-hover:scale-110 transition-transform" />
-                                    FINALIZAR VISITA ESTRATÉGICA
+                                    <Square className="h-4 w-4 mr-2" /> FINALIZAR VISITA ESTRATÉGICA
                                 </Button>
                             </div>
                         </div>
@@ -1014,14 +1147,14 @@ export default function VisitExecutionPage() {
 
             {/* CALCULATOR MODAL */}
             <Dialog open={negotiationModalOpen} onOpenChange={setNegotiationModalOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-50 p-0 rounded-2xl border-0">
-                    <DialogHeader className="p-6 pb-2 bg-white">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-50 p-0 rounded-2xl border-0 text-slate-900">
+                    <DialogHeader className="p-6 pb-2 bg-card">
                         <DialogTitle className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                             <Calculator className="h-6 w-6 text-blue-600" />
                             Negociación: <span className="text-blue-600">{negotiationProduct?.name}</span>
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="p-6 pt-2 bg-slate-50">
+                    <div className="p-6 pt-2 bg-slate-50 text-slate-900">
                         {negotiationProduct && (
                             <CommercialCalculator
                                 basePrice={negotiationProduct.price || 0}
@@ -1037,7 +1170,47 @@ export default function VisitExecutionPage() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div >
+        
+            {/* FOCUS MODE OVERLAY (FRICTIONLESS) */}
+            {isFocusMode && (
+                <div className="fixed inset-x-0 bottom-0 z-[60] p-4 bg-card/90 backdrop-blur-2xl border-t border-border animate-in slide-in-from-bottom duration-500 shadow-premium-lg rounded-t-lg">
+                    <div className="max-w-4xl mx-auto space-y-8 pb-8">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-black text-slate-800 tracking-tighter">MODO <span className="text-emerald-500">MANOS LIBRES</span></h2>
+                            <Button variant="ghost" size="icon" onClick={() => setIsFocusMode(false)} className="rounded-full bg-slate-100 h-10 w-10 text-slate-900">
+                                <AlertCircle className="h-5 w-5 text-slate-400" />
+                            </Button>
+                        </div>
+                        <div className="bg-emerald-500 rounded-lg p-6 text-white shadow-premium-md">
+                            <VoiceInput label="Narra la visita (IA detectará campos)" rows={2} placeholder="Pisa el micro y cuenta qué pasó..." value={formData.notes} onValueChange={(val) => { setFormData(prev => ({ ...prev, notes: val })); processVoiceHeuristics(val); }} className="bg-background/10 border-white/20 text-white placeholder:text-emerald-100" />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Estado Emocional</Label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <QuickActionCard label="Receptivo" icon={<Smile />} selected={formData.emotional_state === 'open'} onClick={() => setFormData(prev => ({ ...prev, emotional_state: 'open' }))} color="emerald" description="Abierto" />
+                                    <QuickActionCard label="Escéptico" icon={<Meh />} selected={formData.emotional_state === 'skeptical'} onClick={() => setFormData(prev => ({ ...prev, emotional_state: 'skeptical' }))} color="amber" description="Dudas" />
+                                    <QuickActionCard label="Molesto" icon={<Frown />} selected={formData.emotional_state === 'closed'} onClick={() => setFormData(prev => ({ ...prev, emotional_state: 'closed' }))} color="rose" description="Bloqueado" />
+                                    <QuickActionCard label="Neutral" icon={<Meh />} selected={formData.emotional_state === 'indifferent'} onClick={() => setFormData(prev => ({ ...prev, emotional_state: 'indifferent' }))} color="blue" description="Indiferente" />
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Motivador Clave</Label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <QuickActionCard label="Rentable" icon={<BadgeDollarSign />} selected={formData.purchase_driver === 'price'} onClick={() => setFormData(prev => ({ ...prev, purchase_driver: 'price' }))} color="blue" description="Precio" />
+                                    <QuickActionCard label="Eficacia" icon={<AwardIcon />} selected={formData.purchase_driver === 'quality'} onClick={() => setFormData(prev => ({ ...prev, purchase_driver: 'quality' }))} color="indigo" description="Calidad" />
+                                    <QuickActionCard label="Apoyo" icon={<Handshake />} selected={formData.purchase_driver === 'relationship'} onClick={() => setFormData(prev => ({ ...prev, purchase_driver: 'relationship' }))} color="emerald" description="Confianza" />
+                                    <QuickActionCard label="Stock" icon={<TruckIcon />} selected={formData.purchase_driver === 'availability'} onClick={() => setFormData(prev => ({ ...prev, purchase_driver: 'availability' }))} color="amber" description="Falla" />
+                                </div>
+                            </div>
+                        </div>
+                        <Button variant="default" size="lg" className="w-full h-11 text-xs font-bold" onClick={handleCheckOut}>
+                            <Square className="h-4 w-4 mr-2 fill-emerald-500" /> TERMINAR VISITA AHORA
+                        </Button>
+                    </div>
+                </div>
+            )}
+</div >
     );
 }
 

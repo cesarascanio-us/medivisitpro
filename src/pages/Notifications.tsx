@@ -101,7 +101,7 @@ export default function Notifications() {
             case 'warning': return <AlertCircle className="h-5 w-5 text-yellow-500" />;
             case 'error': return <AlertCircle className="h-5 w-5 text-red-500" />;
             case 'reminder': return <Clock className="h-5 w-5 text-blue-500" />;
-            default: return <Info className="h-5 w-5 text-gray-500" />;
+            default: return <Info className="h-5 w-5 text-muted-foreground" />;
         }
     };
 
@@ -110,7 +110,7 @@ export default function Notifications() {
             urgent: "bg-red-100 text-red-800",
             high: "bg-orange-100 text-orange-800",
             normal: "bg-blue-100 text-blue-800",
-            low: "bg-gray-100 text-gray-800"
+            low: "bg-muted text-gray-800"
         };
         return <Badge className={styles[priority] || styles.normal}>{priority}</Badge>;
     };

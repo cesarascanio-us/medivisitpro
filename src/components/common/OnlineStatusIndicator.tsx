@@ -29,25 +29,19 @@ export const OnlineStatusIndicator = () => {
         <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 transition-all duration-300">
                 {isSyncing || showSyncBadge ? (
-                    <div className="animate-in fade-in zoom-in duration-300">
-                        <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30 flex items-center gap-1.5 px-2 py-0.5 animate-pulse">
-                            <Cloud className="w-3 h-3 animate-bounce" />
-                            <span className="text-[10px] font-bold uppercase tracking-tighter">Sincronizando...</span>
-                        </Badge>
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-500/5 border border-blue-500/10 rounded-full animate-pulse">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                        <span className="text-[9px] font-bold text-blue-500 uppercase tracking-widest hidden md:inline">Sincronizando</span>
                     </div>
                 ) : !isOnline ? (
-                    <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                        <Badge variant="outline" className="bg-amber-500/20 text-amber-500 border-amber-500/40 flex items-center gap-1.5 px-2 py-0.5">
-                            <WifiOff className="w-3 h-3" />
-                            <span className="text-[10px] font-bold uppercase tracking-tighter">Modo Offline Activo</span>
-                        </Badge>
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-amber-500/5 border border-amber-500/10 rounded-full">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                        <span className="text-[9px] font-bold text-amber-500 uppercase tracking-widest hidden md:inline">Offline</span>
                     </div>
                 ) : (
-                    <div className="animate-in fade-in duration-300">
-                        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center gap-1.5 px-2 py-0.5">
-                            <Wifi className="w-3 h-3" />
-                            <span className="text-[10px] font-bold uppercase tracking-tighter">Conectado</span>
-                        </Badge>
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/5 border border-emerald-500/10 rounded-full group hover:bg-emerald-500/10 transition-colors">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 group-hover:scale-110 transition-transform"></div>
+                        <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest hidden md:inline">Cloud Activa</span>
                     </div>
                 )}
             </div>

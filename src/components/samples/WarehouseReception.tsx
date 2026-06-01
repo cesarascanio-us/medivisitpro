@@ -204,9 +204,9 @@ export function WarehouseReception({ onReceive }: { onReceive: () => void }) {
     return (
         <div className="space-y-4">
             {incoming.map(stock => (
-                <Card key={stock.id} className={`border-l-4 ${stock.type === 'request' ? 'border-l-purple-500 bg-purple-50/10' : 'border-l-blue-500 bg-blue-50/10'}`}>
+                <Card key={stock.id} className={`border-l-4 ${stock.type === 'request' ? 'border-l-purple-500 bg-purple-500/5' : 'border-l-blue-500 bg-blue-500/5'}`}>
                     <CardHeader className="pb-2">
-                        <CardTitle className={`flex items-center gap-2 text-lg ${stock.type === 'request' ? 'text-purple-700' : 'text-blue-700'}`}>
+                        <CardTitle className={`flex items-center gap-2 text-lg ${stock.type === 'request' ? 'text-purple-400' : 'text-blue-400'}`}>
                             <Truck className="h-5 w-5" />
                             {stock.type === 'request' ? 'Envío de Almacén Central' : 'Asignación de Supervisor'}
                             <Badge variant="outline" className="ml-auto">En Tránsito</Badge>
@@ -228,7 +228,7 @@ export function WarehouseReception({ onReceive }: { onReceive: () => void }) {
                             </Button>
                         </div>
 
-                        <div className="rounded-md border bg-background">
+                        <div className="rounded-md border border-border/40 bg-card">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -245,7 +245,7 @@ export function WarehouseReception({ onReceive }: { onReceive: () => void }) {
                                                 {item.batch_number ? (
                                                     <Badge variant="secondary" className="font-mono">{item.batch_number}</Badge>
                                                 ) : (
-                                                    <span className="text-muted-foreground text-xs italic">N/A</span>
+                                                    <span className="text-muted-foreground text-xs ">N/A</span>
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-right font-bold text-primary">+{item.quantity}</TableCell>

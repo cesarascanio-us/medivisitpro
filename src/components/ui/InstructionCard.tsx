@@ -25,14 +25,14 @@ export function InstructionCard({ title, description, items, className }: Instru
                     <Lightbulb className="h-5 w-5 text-emerald-400" />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-lg font-bold text-white leading-tight tracking-tight">{title}</h3>
+                    <h3 className="text-lg font-bold text-foreground leading-tight tracking-tight">{title}</h3>
                     {description && (
-                        <p className="text-sm text-slate-400 leading-relaxed font-medium">{description}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed font-medium">{description}</p>
                     )}
                     {items && items.length > 0 && (
                         <ul className="space-y-3 mt-4">
                             {items.map((item, idx) => (
-                                <li key={idx} className="flex items-start gap-3 text-sm text-slate-300">
+                                <li key={idx} className="flex items-start gap-3 text-sm text-muted-foreground">
                                     <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500/50 shrink-0" />
                                     <span className="leading-relaxed">{item}</span>
                                 </li>

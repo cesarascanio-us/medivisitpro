@@ -138,12 +138,12 @@ export default function TicketList() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6 p-1">
+        <div className="flex flex-col min-h-full space-y-6 p-1">
             {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
+            <header className="bg-card px-10 md:px-12 py-8 rounded-elite-lg shadow-xl shadow-slate-200/50 dark:shadow-none border border-border relative overflow-hidden -mt-2 mx-1">
                 {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl opacity-60"></div>
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl opacity-60 text-slate-900"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div className="flex items-center gap-5">
@@ -151,31 +151,30 @@ export default function TicketList() {
                             <Ticket className="text-white h-8 w-8" />
                         </div>
                         <div>
-                            <p className="text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Centro de Ayuda</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <p className="text-blue-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Centro de Ayuda</p>
+                            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
                                 Soporte & Tickets
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestión centralizada de incidencias y soporte técnico</p>
+                            <p className="text-muted-foreground text-sm mt-1">Gestión centralizada de incidencias y soporte técnico</p>
                         </div>
                     </div>
 
                     <Button
                         onClick={fetchTickets}
-                        variant="outline"
-                        className="h-12 px-6 rounded-2xl border-slate-200 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 text-slate-600 font-bold uppercase text-[10px] tracking-widest"
+                        className="btn-elite-secondary"
                     >
-                        <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin text-blue-500' : ''}`} />
+                        <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin text-primary' : ''}`} />
                         Sincronizar Tickets
                     </Button>
                 </div>
             </header>
 
-            <Card className="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden mx-1">
-                <CardHeader className="border-b border-slate-50 dark:border-slate-800 pb-6 pt-8">
+            <Card className="border border-border shadow-premium-md bg-card rounded-xl overflow-hidden mx-1">
+                <CardHeader className="border-b border-border pb-6 pt-8">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Solicitudes Recientes</CardTitle>
-                            <CardDescription className="text-slate-400 dark:text-slate-500 font-medium">Bandeja de entrada de soporte consolidada</CardDescription>
+                            <CardTitle className="text-lg font-bold text-foreground tracking-tight">Solicitudes Recientes</CardTitle>
+                            <CardDescription className="text-xs text-muted-foreground mt-0.5 font-medium">Bandeja de entrada de soporte consolidada</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
@@ -183,22 +182,22 @@ export default function TicketList() {
                     {loading && tickets.length === 0 ? (
                         <div className="flex justify-center py-24">
                             <div className="flex flex-col items-center gap-4">
-                                <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                                <Loader2 className="w-10 h-10 animate-spin text-primary" />
                                 <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Cargando incidencias...</p>
                             </div>
                         </div>
                     ) : tickets.length === 0 ? (
                         <div className="text-center py-24 px-6">
-                            <div className="bg-slate-50 dark:bg-slate-800/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                                <Ticket className="w-10 h-10 text-slate-300 dark:text-slate-700" />
+                            <div className="bg-muted/50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                                <Ticket className="w-10 h-10 text-muted-foreground/30" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800 dark:text-white">Sin tickets pendientes</h3>
-                            <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-xs mx-auto">Todo parece funcionar correctamente en el sistema hoy.</p>
+                            <h3 className="text-lg font-black text-foreground">Sin tickets pendientes</h3>
+                            <p className="text-muted-foreground mt-2 max-w-xs mx-auto">Todo parece funcionar correctamente en el sistema hoy.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+                                <TableHeader className="bg-muted/50">
                                     <TableRow className="hover:bg-transparent border-none">
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6 pl-8">Asunto / Incidencia</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-6">Solicitante (Org)</TableHead>
@@ -212,19 +211,19 @@ export default function TicketList() {
                                     {tickets.map((ticket) => (
                                         <TableRow
                                             key={ticket.id}
-                                            className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-all cursor-pointer group"
+                                            className="border-b border-border hover:bg-muted/10 transition-all cursor-pointer group"
                                             onClick={() => openTicketDialog(ticket)}
                                         >
                                             <TableCell className="pl-8 py-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="font-bold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 transition-colors">{ticket.subject}</span>
-                                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate max-w-[280px]">{ticket.description}</span>
+                                                    <span className="font-bold text-foreground group-hover:text-primary transition-colors">{ticket.subject}</span>
+                                                    <span className="text-[10px] text-muted-foreground font-medium truncate max-w-[280px]">{ticket.description}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <div className="text-xs font-black text-slate-800 dark:text-slate-300 uppercase tracking-tighter">{ticket.organizations?.name || 'Sistema'}</div>
-                                                    <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500">{ticket.profiles?.email}</div>
+                                                    <div className="text-xs font-black text-foreground uppercase tracking-tighter">{ticket.organizations?.name || 'Sistema'}</div>
+                                                    <div className="text-[10px] font-bold text-muted-foreground">{ticket.profiles?.email}</div>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-5">
@@ -233,16 +232,16 @@ export default function TicketList() {
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="py-5">
-                                                <div className="flex items-center gap-2 capitalize text-[11px] font-black text-slate-600 dark:text-slate-400 tracking-tight">
+                                                <div className="flex items-center gap-2 capitalize text-[11px] font-black text-muted-foreground tracking-tight">
                                                     {getStatusIcon(ticket.status)}
                                                     {ticket.status.replace('_', ' ')}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-slate-400 dark:text-slate-500 text-sm font-black tabular-nums py-5 lowercase tracking-tighter">
+                                            <TableCell className="text-muted-foreground text-sm font-black tabular-nums py-5 lowercase tracking-tighter">
                                                 {new Date(ticket.created_at).toLocaleDateString()}
                                             </TableCell>
                                             <TableCell className="text-right pr-8 py-5">
-                                                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all">
+                                                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-all">
                                                     <Search className="h-4 w-4" />
                                                 </Button>
                                             </TableCell>
@@ -257,38 +256,44 @@ export default function TicketList() {
 
             {/* Ticket Dialog */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-[500px] bg-slate-900 border-slate-700 text-white">
-                    <DialogHeader>
-                        <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                            <Ticket className="w-5 h-5 text-emerald-500" />
-                            {selectedTicket?.subject}
-                        </DialogTitle>
-                        <div className="flex gap-2 mt-2">
-                            <Badge variant="outline" className={`${selectedTicket ? getPriorityColor(selectedTicket.priority) : ''} capitalize`}>{selectedTicket?.priority}</Badge>
-                            <Badge variant="secondary">{selectedTicket?.category}</Badge>
-                        </div>
-                    </DialogHeader>
+                <DialogContent className="sm:max-w-[500px] bg-card rounded-2xl border border-border shadow-premium-2xl p-0 overflow-hidden font-display">
+                    <div className="bg-muted/30 p-6 border-b border-border/80">
+                         <div className="flex items-center gap-4">
+                             <div className="w-10 h-10 rounded-xl bg-card flex items-center justify-center shadow-soft border border-border">
+                                 <Ticket className="h-5 w-5 text-primary" />
+                             </div>
+                             <div>
+                                 <DialogTitle className="text-lg font-bold text-foreground tracking-tight">
+                                     {selectedTicket?.subject}
+                                 </DialogTitle>
+                                 <div className="flex gap-2 mt-1">
+                                     <Badge className={`${selectedTicket ? getPriorityColor(selectedTicket.priority) : ''} border-none font-bold text-[9px] uppercase px-2 py-0.5 rounded-full capitalize`}>{selectedTicket?.priority}</Badge>
+                                     <Badge className="bg-blue-50 text-blue-700 border-none font-bold text-[9px] uppercase px-2 py-0.5 rounded-full">{selectedTicket?.category}</Badge>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
 
-                    <div className="space-y-4 py-4">
+                    <div className="p-8 space-y-4 bg-card">
                         <div className="space-y-1">
-                            <h4 className="text-sm font-medium text-slate-400">Solicitante</h4>
-                            <div className="text-sm text-slate-200 bg-slate-800/50 p-2 rounded-md border border-slate-700/50">
+                            <h4 className="text-xs font-semibold text-foreground/80">Solicitante</h4>
+                            <div className="text-xs text-foreground bg-muted/40 p-3 rounded-lg border border-border/80">
                                 <span className="font-bold">{selectedTicket?.organizations?.name || 'Sin Org'}</span>
-                                <span className="mx-2 text-slate-500">|</span>
-                                <span className="text-slate-400">{selectedTicket?.profiles?.email}</span>
+                                <span className="mx-2 text-slate-300">|</span>
+                                <span className="text-muted-foreground">{selectedTicket?.profiles?.email}</span>
                             </div>
                         </div>
 
                         <div className="space-y-1">
-                            <h4 className="text-sm font-medium text-slate-400">Descripción</h4>
-                            <p className="text-sm text-slate-200 bg-slate-800/50 p-3 rounded-md border border-slate-700/50">
+                            <h4 className="text-xs font-semibold text-foreground/80">Descripción</h4>
+                            <p className="text-xs text-foreground bg-muted/40 p-3 rounded-lg border border-border/80 leading-relaxed">
                                 {selectedTicket?.description}
                             </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-slate-200">Estado</Label>
+                                <Label className="text-xs font-semibold text-foreground/80">Estado</Label>
                                 <Select
                                     value={selectedTicket?.status}
                                     onValueChange={async (value: any) => {
@@ -302,20 +307,19 @@ export default function TicketList() {
                                         const { error } = await supabase.from('support_tickets').update({ status: value }).eq('id', selectedTicket.id);
                                         if (error) {
                                             toast({ title: 'Error', description: 'No se pudo actualizar el estado', variant: 'destructive' });
-                                            // Revert on error (could be improved)
                                         } else {
                                             toast({ title: 'Actualizado', description: `Estado cambiado a ${value}` });
                                         }
                                     }}
                                 >
-                                    <SelectTrigger className="bg-slate-950 border-slate-700 text-white">
+                                    <SelectTrigger className="input-elite h-11 w-full text-sm bg-card text-foreground">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="open">Abierto</SelectItem>
-                                        <SelectItem value="in_progress">En Proceso</SelectItem>
-                                        <SelectItem value="resolved">Resuelto</SelectItem>
-                                        <SelectItem value="closed">Cerrado</SelectItem>
+                                    <SelectContent className="rounded-xl border-border text-sm">
+                                        <SelectItem value="open" className="text-xs font-medium">Abierto</SelectItem>
+                                        <SelectItem value="in_progress" className="text-xs font-medium">En Proceso</SelectItem>
+                                        <SelectItem value="resolved" className="text-xs font-medium">Resuelto</SelectItem>
+                                        <SelectItem value="closed" className="text-xs font-medium">Cerrado</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -323,13 +327,13 @@ export default function TicketList() {
 
                         {selectedTicket?.attachment_url && (
                             <div className="space-y-2">
-                                <Label className="text-slate-200">Adjunto</Label>
-                                <div className="rounded-lg border border-slate-700 overflow-hidden bg-slate-950/50">
+                                <Label className="text-xs font-semibold text-foreground/80">Adjunto</Label>
+                                <div className="rounded-lg border border-border overflow-hidden bg-muted/20">
                                     <a href={selectedTicket.attachment_url} target="_blank" rel="noopener noreferrer">
                                         <img
                                             src={selectedTicket.attachment_url}
                                             alt="Captura del problema"
-                                            className="w-full h-auto max-h-[300px] object-contain hover:opacity-90 transition-opacity cursor-pointer"
+                                            className="w-full h-auto max-h-[220px] object-contain hover:opacity-90 transition-opacity cursor-pointer mx-auto"
                                         />
                                     </a>
                                 </div>
@@ -337,26 +341,26 @@ export default function TicketList() {
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="resolution" className="text-slate-200">Respuesta / Resolución</Label>
+                            <Label htmlFor="resolution" className="text-xs font-semibold text-foreground/80">Respuesta / Resolución</Label>
                             <Textarea
                                 id="resolution"
                                 placeholder="Escribe la solución o respuesta al usuario..."
-                                className="bg-slate-950 border-slate-700 text-white min-h-[100px]"
+                                className="input-elite min-h-[100px] w-full py-2.5 text-sm"
                                 value={resolutionText}
-                                onChange={(e) => setResolutionText(e.target.value)}
+                                onChange={(e) => setNewMessage(e.target.value)}
                             />
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3">
-                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="hover:bg-slate-800 text-slate-400 hover:text-white">Cancelar</Button>
+                    <div className="flex justify-end gap-3 p-6 pt-4 border-t border-border/40 bg-muted/10">
+                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="btn-elite-ghost h-10 px-5 text-xs font-semibold uppercase tracking-wider rounded-md">Cancelar</Button>
                         <Button
                             onClick={handleResolve}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="btn-elite-primary h-10 px-6 text-xs font-semibold uppercase tracking-wider rounded-md"
                             disabled={selectedTicket?.status === 'resolved'}
                         >
                             <CheckCircle2 className="w-4 h-4 mr-2" />
-                            {selectedTicket?.status === 'resolved' ? 'Resuelto' : 'Responder y Resolver'}
+                            {selectedTicket?.status === 'resolved' ? 'Resuelto' : 'Responder & Resolver'}
                         </Button>
                     </div>
                 </DialogContent>

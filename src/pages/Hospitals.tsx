@@ -21,9 +21,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrganization } from "@/hooks/useOrganization";
 import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, handlePrint } from "@/utils/exportUtils";
-import * as XLSX from 'xlsx';
 
 import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { InstructionCard } from "@/components/ui/InstructionCard";
@@ -48,6 +48,9 @@ interface Hospital {
 
 export default function Hospitals() {
     const { user, canViewAllData, isSupervisor, zoneId } = useAuth();
+    const { organization } = useOrganization();
+    const organizationId = organization?.id;
+    const organizationName = organization?.name;
     const { toast } = useToast();
     const [hospitals, setHospitals] = useState<Hospital[]>([]);
     const [loading, setLoading] = useState(true);
@@ -80,7 +83,7 @@ export default function Hospitals() {
                 .select('*')
                 .eq('contact_type', 'hospital');
 
-            if (isSupervisor && zoneId) {
+            if (isSupervisor && !canViewAllData && zoneId) {
                 query = query.eq('zone_id', zoneId);
                 if (adminFilters.repId && adminFilters.repId !== 'all') {
                     query = query.eq('user_id', adminFilters.repId);
@@ -164,6 +167,7 @@ export default function Hospitals() {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
+                    const XLSX = await import('xlsx');
                     const data = new Uint8Array(e.target?.result as ArrayBuffer);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const sheetName = workbook.SheetNames[0];
@@ -462,7 +466,7 @@ export default function Hospitals() {
                                     </div>
                                 )}
                                 {hospital.email && (
-                                    <div className="flex items-center text-sm text-muted-foreground break-all italic">
+                                    <div className="flex items-center text-sm text-muted-foreground break-all ">
                                         <Mail className="mr-3 h-4 w-4 text-primary shrink-0" />
                                         <span>{hospital.email}</span>
                                     </div>

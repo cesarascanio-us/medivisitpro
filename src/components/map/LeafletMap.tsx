@@ -158,7 +158,7 @@ function MapMarkerItem({ marker }: { marker: MapMarker }) {
         >
             {!isPopupOpen && (
                 <Tooltip direction="top" offset={[0, -32]} opacity={1} interactive={false}>
-                    <div className="px-2 py-1 bg-slate-900 border border-slate-700 rounded shadow-lg pointer-events-none">
+                    <div className="px-2 py-1 bg-slate-900 border border-slate-700 rounded shadow-lg pointer-events-none text-white">
                         <p className="font-bold text-sm text-white tracking-tight">{marker.name}</p>
                         <p className="text-[10px] text-emerald-400 uppercase font-semibold leading-none mt-0.5">
                             {marker.type === 'doctor' ? 'Médico' :

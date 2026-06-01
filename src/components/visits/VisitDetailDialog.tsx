@@ -5,32 +5,31 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
-
+ ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Calendar, Clock, FileText, UserRound, Building, Store, Package, Award, AlertCircle,
   TrendingUp, ShoppingCart, Truck, Loader2, Sparkles, Navigation, MapPinOff,
   Camera, Upload, MapPin, Calculator, XCircle, ChevronRight, Check, ChevronsUpDown, X,
-  Layers, Search, ShieldCheck, Map as MapIcon, Activity, Target
+  Layers, Search, ShieldCheck, Map as MapIcon, Activity, Target, Brain, LayoutGrid, CheckCircle,
+  Building2, Leaf, Info, Microscope, ClipboardCheck, GraduationCap, Package2
 } from "lucide-react";
 import { ShelfAuditForm } from "./ShelfAuditForm";
-import { PharmacyTrainingForm } from "./PharmacyTrainingForm";
+import { SampleDeliveryManager } from "./SampleDeliveryManager";
+import { SPINGuideAlert } from "./SPINGuideAlert";
+import { VisualAidModal } from "./VisualAidModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { useOrganization } from "@/hooks/useOrganization";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Command,
   CommandEmpty,
@@ -46,10 +45,10 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { SupervisorEvaluationModal } from "./SupervisorEvaluationModal";
+import { EliteButton } from "@/components/layout/DesignSystem";
 
-// Helper MultiSelect Component
+// Helper MultiSelect Component - Elite Dark Version
+// Helper MultiSelect Component - Elite Dark Version
 function MultiSelect({
   options,
   selected,
@@ -64,79 +63,34 @@ function MultiSelect({
   emptyMessage?: string;
 }) {
   const [open, setOpen] = useState(false);
-
-  const handleUnselect = (item: string) => {
-    onChange(selected.filter((i) => i !== item));
-  };
+  const handleUnselect = (item: string) => onChange(selected.filter((i) => i !== item));
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between h-auto min-h-[48px] px-3 py-2 border-slate-200 rounded-xl bg-white shadow-sm hover:border-indigo-400 transition-all"
-        >
-          <div className="flex flex-wrap gap-1">
-            {selected.length === 0 && <span className="text-slate-400 font-bold text-xs uppercase tracking-tight ml-1">{placeholder}</span>}
+        <Button variant="outline" role="combobox" className="w-full justify-between h-auto min-h-[48px] px-4 py-3 bg-muted/5 border-border/40 rounded-2xl hover:bg-muted/10 transition-all text-foreground">
+          <div className="flex flex-wrap gap-2">
+            {selected.length === 0 && <span className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest">{placeholder}</span>}
             {selected.map((item) => (
-              <Badge variant="secondary" key={item} className="mr-1 mb-1 bg-indigo-50 text-indigo-700 border-indigo-100 font-bold" onClick={(e) => {
-                e.stopPropagation();
-                handleUnselect(item);
-              }}>
+              <Badge key={item} className="badge-elite-info" onClick={(e) => { e.stopPropagation(); handleUnselect(item); }}>
                 {options.find(opt => opt.value === item)?.label || item}
-                <div
-                  className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleUnselect(item);
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleUnselect(item);
-                  }}
-                >
-                  <X className="h-3 w-3 text-indigo-400 hover:text-indigo-600" />
-                </div>
+                <X className="ml-1 h-3 w-3" />
               </Badge>
             ))}
           </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 rounded-2xl border-slate-100 shadow-2xl">
-        <Command className="rounded-2xl">
-          <CommandInput placeholder="Buscar..." className="h-12" />
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-card border-border/40 rounded-2xl shadow-3xl overflow-hidden">
+        <Command className="bg-card text-foreground">
+          <CommandInput placeholder="BUSCAR..." className="h-14 font-black uppercase tracking-widest" />
           <CommandList className="max-h-60 custom-scrollbar">
-            <CommandEmpty className="py-6 text-center text-xs font-bold text-slate-400 uppercase">{emptyMessage}</CommandEmpty>
+            <CommandEmpty className="py-8 text-center text-elite-xs font-black uppercase text-muted-foreground">{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.label}
-                  className="py-3 font-bold text-slate-700"
-                  onSelect={() => {
-                    if (selected.includes(option.value)) {
-                      onChange(selected.filter((item) => item !== option.value));
-                    } else {
-                      onChange([...selected, option.value]);
-                    }
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4 text-indigo-600",
-                      selected.includes(option.value) ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {option.label}
+                <CommandItem key={option.value} onSelect={() => onChange(selected.includes(option.value) ? selected.filter(i => i !== option.value) : [...selected, option.value])} className="py-4 px-6 hover:bg-muted/5 cursor-pointer border-b border-border/10 last:border-none">
+                  <Check className={cn("mr-3 h-4 w-4 text-primary", selected.includes(option.value) ? "opacity-100" : "opacity-0")} />
+                  <span className="font-bold text-xs uppercase">{option.label}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -153,42 +107,18 @@ interface VisitDetailDialogProps {
   onVisitSaved?: () => void;
 }
 
-interface Contact {
-  id: string;
-  name: string;
-  specialty: string | null;
-  contact_type: string;
-  address: string | null;
-  potential?: string;
-}
-
-const BUCKET_NAME = 'visit_attachments';
-
-const CONTACT_TYPE_LABELS: Record<string, { label: string; icon: typeof UserRound }> = {
-  doctor: { label: 'Médico', icon: UserRound },
-  pharmacy: { label: 'Farmacia', icon: Store },
-  hospital: { label: 'Hospital', icon: Building },
-  clinic: { label: 'Clínica', icon: Building },
-};
-
 export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDetailDialogProps) {
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
-  const { user, profile } = useAuth();
+  const { user, profile, organizationId } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic");
 
-  // Contacts state
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loadingContacts, setLoadingContacts] = useState(false);
-  const [openCombobox, setOpenCombobox] = useState(false);
-
-  // Resources state
+  // State
+  const [contacts, setContacts] = useState<any[]>([]);
   const [rawProducts, setRawProducts] = useState<any[]>([]);
-  const [rawSamples, setRawSamples] = useState<any[]>([]);
-  const [rawMaterials, setRawMaterials] = useState<any[]>([]);
+  const [productSellingPoints, setProductSellingPoints] = useState<any[]>([]);
 
   const [formData, setFormData] = useState({
     contact_id: visitData?.contact_id || "",
@@ -196,408 +126,232 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
     scheduled_time: visitData?.scheduled_date?.split('T')[1]?.slice(0, 5) || "09:00",
     arrival_time: visitData?.arrival_time || "",
     departure_time: visitData?.departure_time || "",
-    visit_type: visitData?.visit_type || "doctor",
+    visit_type: visitData?.visit_type || (visitData?.contacts?.contact_type) || "doctor",
     status: visitData?.status || "scheduled",
-    representative: visitData?.representative || "",
-    cycle_condition: visitData?.cycle_condition || "",
     visit_objective: visitData?.visit_objective || visitData?.objective || "",
     products_presented: visitData?.products_presented || [],
-    samples_delivered: visitData?.samples_delivered || "",
-    promotional_materials: visitData?.promotional_materials || "",
-    doctor_interest: visitData?.doctor_interest || "",
-    activity_performed: visitData?.activity_performed || "",
-    products_prescribed: visitData?.products_prescribed || "",
+    samples_delivered: visitData?.samples_delivered || [],
+    promotional_materials: visitData?.promotional_materials || [],
     results_notes: visitData?.results_notes || visitData?.notes || "",
-    pending_followup: visitData?.pending_followup || "",
     next_visit_date: visitData?.next_visit_date || "",
-    observations_feedback: visitData?.observations_feedback || visitData?.feedback || "",
-    key_contact: visitData?.key_contact || false,
-    competitor_activity: visitData?.competitor_activity || "",
-    shelf_photo_url: visitData?.shelf_photo_url || "",
-    purchase_driver: visitData?.purchase_driver || "",
-    detected_purchase_reason: visitData?.detected_purchase_reason || "",
-    next_step: visitData?.next_step || visitData?.next_steps || "",
-    closure_reason: visitData?.closure_reason || "",
+    competitor_brands_detected: visitData?.competitor_brands_detected || [],
     contact_reaction: visitData?.contact_reaction || "",
+    next_step: visitData?.next_step || visitData?.next_steps || "",
     main_objection: visitData?.main_objection || "",
+    objection_selector: visitData?.objection_selector || "",
     closure_commitment: visitData?.closure_commitment || visitData?.agreements || "",
-    file_url: visitData?.file_url || "",
     geolocation: visitData?.geolocation || "",
     selling_points: visitData?.selling_points || [],
     compromiso_inicio: visitData?.compromiso_inicio || 0,
-    objection_selector: visitData?.objection_selector || "",
-    sample_tracking_id: visitData?.sample_tracking_id || "",
-    competitor_brands_detected: visitData?.competitor_brands_detected || [],
-    pop_checklist_completed: visitData?.pop_checklist_completed || {},
+    sample_bank_status: visitData?.sample_bank_status || 'ok',
+    sample_bank_refill: visitData?.sample_bank_refill || 0,
+    academic_topic: visitData?.academic_topic || '',
+    academic_attendance: visitData?.academic_attendance || 0,
+    academic_context: visitData?.academic_context || '',
   });
 
-  const { organization } = useOrganization();
-  const orgSettings = (organization?.settings || {}) as any;
-  const competitorOptions = (orgSettings.competitor_brands || []).map((b: string) => ({ label: b, value: b }));
-  const popChecklist = orgSettings.pop_checklist || [];
-  const objectionScripts = orgSettings.objection_scripts || [];
-
-  const [dosingState, setDosingState] = useState({
-    weight: 0,
-    productDose: 0,
-    concentration: 0,
-    result: 0
-  });
-
-  const [productSellingPoints, setProductSellingPoints] = useState<any[]>([]);
-  const [nearbyPharmacies, setNearbyPharmacies] = useState<any[]>([]);
-  const [loadingNearby, setLoadingNearby] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      loadContacts();
-      loadResources();
-    }
-  }, [open]);
+  useEffect(() => { if (open) { loadContacts(); loadResources(); } }, [open]);
 
   useEffect(() => {
     const fetchProductTags = async () => {
       if (formData.products_presented.length > 0) {
-        const { data } = await supabase
-          .from('products')
-          .select('id, name, selling_points, dosage_config')
-          .in('name', formData.products_presented);
-
-        if (data) {
-          setProductSellingPoints(data);
-          const productsWithDosage = (data as any[]).filter(p => p.dosage_config && p.dosage_config.default_dose_mg_kg > 0);
-          if (productsWithDosage.length > 0) {
-            const config = productsWithDosage[0].dosage_config;
-            setDosingState(prev => ({
-              ...prev,
-              productDose: config.default_dose_mg_kg,
-              concentration: config.concentration_mg_ml,
-              result: (config.default_dose_mg_kg * (prev.weight || 0)) / (config.concentration_mg_ml || 1)
-            }));
-          }
-        }
-      } else {
-        setProductSellingPoints([]);
-      }
+        const { data } = await supabase.from('products').select('*').in('name', formData.products_presented);
+        if (data) setProductSellingPoints(data);
+      } else setProductSellingPoints([]);
     };
     fetchProductTags();
   }, [formData.products_presented]);
 
-  useEffect(() => {
-    const fetchNearby = async () => {
-      if (formData.visit_type === 'doctor' && formData.contact_id) {
-        setLoadingNearby(true);
-        try {
-          const { data, error } = await (supabase as any).rpc('get_visit_impact_correlation', {
-            p_doctor_id: formData.contact_id,
-            p_radius_km: 10.0
-          });
-          if (!error && data) {
-            setNearbyPharmacies((data as any[]).sort((a, b) => a.distance_km - b.distance_km).slice(0, 3));
-          }
-        } catch (e) { console.error(e); } finally { setLoadingNearby(false); }
-      } else { setNearbyPharmacies([]); }
-    };
-    fetchNearby();
-  }, [formData.contact_id, formData.visit_type]);
-
   const loadContacts = async () => {
-    if (!user) return;
-    setLoadingContacts(true);
+    if (!user || !organizationId) return;
     try {
-      const [contactsRes, doctorsRes, pharmaciesRes] = await Promise.all([
-        supabase.from('contacts').select('id, name, specialty, contact_type, address').eq('user_id', user.id),
-        supabase.from('doctors').select('id, name, specialty, address, user_id').eq('user_id', user.id),
-        supabase.from('pharmacies').select('id, name, address, user_id').eq('user_id', user.id)
-      ]);
-      const unifiedContactsMap = new Map<string, Contact>();
-      if (contactsRes.data) (contactsRes.data as any[]).forEach((c: any) => unifiedContactsMap.set(c.id, c));
-      if (doctorsRes.data) (doctorsRes.data as any[]).forEach((d: any) => { if (!unifiedContactsMap.has(d.id)) unifiedContactsMap.set(d.id, { id: d.id, name: d.name, specialty: d.specialty || 'General', contact_type: 'doctor', address: d.address }); });
-      if (pharmaciesRes.data) (pharmaciesRes.data as any[]).forEach((p: any) => { if (!unifiedContactsMap.has(p.id)) unifiedContactsMap.set(p.id, { id: p.id, name: p.name, specialty: 'Farmacia', contact_type: 'pharmacy', address: p.address }); });
-      setContacts(Array.from(unifiedContactsMap.values()).sort((a: Contact, b: Contact) => a.name.localeCompare(b.name)));
-    } catch (e) { console.error(e); } finally { setLoadingContacts(false); }
+      const { data: contactsData } = await supabase.from('unified_contacts').select('*').eq('organization_id', organizationId);
+      if (contactsData) setContacts(contactsData);
+    } catch (e) { console.error(e); }
   };
 
   const loadResources = async () => {
     if (!user || !profile?.organization_id) return;
     try {
-      const { data: productsData } = await supabase.from('products').select('id, name, medical_specialties').eq('organization_id', profile.organization_id).order('name');
+      const { data: productsData } = await supabase.from('products').select('*').eq('organization_id', profile.organization_id).order('name');
       if (productsData) setRawProducts(productsData);
-      const { data: samplesData } = await (supabase as any).from('sample_inventory').select('product_id, batch_number, products(name, medical_specialties)').eq('organization_id', profile.organization_id).gt('quantity_available', 0);
-      if (samplesData) setRawSamples(samplesData);
-      const { data: materialsData } = await (supabase as any).from('materiales_promocionales').select('id, nombre, product_id, products(medical_specialties)').eq('organization_id', profile.organization_id).gt('cantidad_disponible', 0);
-      if (materialsData) setRawMaterials(materialsData);
     } catch (e) { console.error(e); }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-    if (!formData.contact_id) { toast({ title: "Error", description: "Selecciona un contacto", variant: "destructive" }); return; }
-    if ((formData.status === 'missed' || formData.status === 'cancelled') && !formData.closure_reason) {
-      toast({ title: "Justificación Requerida", description: "Debe documentar el motivo del incumplimiento.", variant: "destructive" });
-      return;
-    }
-    if (formData.samples_delivered && (!formData.compromiso_inicio || formData.compromiso_inicio <= 0)) {
-      toast({ title: "Dato Obligatorio", description: "Al entregar muestras, debes registrar el Compromiso de Inicio (Recetas).", variant: "destructive" });
-      return;
-    }
+    e.preventDefault(); if (!user) return;
+    if (!formData.contact_id) { toast({ title: "Error Táctico", description: "Falta Entidad Objetivo" }); return; }
     setLoading(true);
     try {
       const scheduledDateTime = new Date(`${formData.scheduled_date}T${formData.scheduled_time}`);
       const visitPayload = {
-        contact_id: formData.contact_id,
-        scheduled_date: scheduledDateTime.toISOString(),
-        arrival_time: formData.arrival_time || null,
-        departure_time: formData.departure_time || null,
-        visit_type: formData.visit_type,
-        status: formData.status,
-        representative: formData.representative || null,
-        organization_id: profile?.organization_id,
-        cycle_condition: formData.cycle_condition || null,
-        visit_objective: formData.visit_objective || null,
-        objective: formData.visit_objective || null,
-        products_presented: formData.products_presented,
-        samples_delivered: formData.samples_delivered || null,
-        promotional_materials: formData.promotional_materials || null,
-        doctor_interest: formData.doctor_interest || null,
-        activity_performed: formData.activity_performed || null,
-        products_prescribed: formData.products_prescribed || null,
-        results_notes: formData.results_notes || null,
-        notes: formData.results_notes || null,
-        pending_followup: formData.pending_followup || null,
-        next_visit_date: formData.next_visit_date || null,
-        observations_feedback: formData.observations_feedback || null,
-        feedback: formData.observations_feedback || null,
-        key_contact: formData.key_contact,
-        competitor_activity: formData.competitor_activity || null,
-        shelf_photo_url: formData.shelf_photo_url || null,
-        purchase_driver: formData.purchase_driver || null,
-        detected_purchase_reason: formData.detected_purchase_reason || null,
-        next_step: formData.next_step || null,
-        next_steps: formData.next_step || null,
-        closure_reason: formData.closure_reason || null,
-        contact_reaction: formData.contact_reaction || null,
-        main_objection: formData.main_objection || null,
-        closure_commitment: formData.closure_commitment || null,
-        agreements: formData.closure_commitment || null,
-        file_url: formData.file_url || null,
-        geolocation: formData.geolocation || null,
-        selling_points: formData.selling_points,
-        compromiso_inicio: formData.compromiso_inicio,
-        user_id: user.id
+        ...formData, user_id: user.id, organization_id: profile?.organization_id,
+        scheduled_date: scheduledDateTime.toISOString(), results_notes: formData.results_notes || null,
+        objective: formData.visit_objective || null, agreements: formData.closure_commitment || null
       };
-      let result;
-      if (visitData) result = await supabase.from('visits').update(visitPayload).eq('id', visitData.id);
-      else result = await supabase.from('visits').insert([visitPayload]);
-      if (result.error) throw result.error;
-      toast({ title: visitData ? "Visita actualizada" : "Visita creada", variant: "default" });
-      setOpen(false);
-      onVisitSaved?.();
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    } finally { setLoading(false); }
+      if (visitData?.id) await supabase.from('visits').update(visitPayload).eq('id', visitData.id);
+      else await supabase.from('visits').insert([visitPayload]);
+      toast({ title: "Misión Sincronizada ✅" }); setOpen(false); onVisitSaved?.();
+    } catch (e: any) { toast({ title: "Error", description: e.message }); }
+    finally { setLoading(false); }
   };
 
-  const getFilteredOptions = (type: 'products' | 'samples' | 'materials') => {
-    let doctorSpecialty = '';
-    const shouldFilter = formData.visit_type === 'doctor' && contacts.find(c => c.id === formData.contact_id)?.contact_type === 'doctor';
-    if (shouldFilter) doctorSpecialty = contacts.find(c => c.id === formData.contact_id)?.specialty?.toLowerCase().trim() || '';
-    if (type === 'products') return rawProducts.filter(p => !shouldFilter || !doctorSpecialty || (p.medical_specialties && p.medical_specialties.toLowerCase().includes(doctorSpecialty))).map(p => ({ label: p.name, value: p.name }));
-    if (type === 'samples') return rawSamples.filter(s => !shouldFilter || !doctorSpecialty || (s.products?.medical_specialties && s.products.medical_specialties.toLowerCase().includes(doctorSpecialty))).map(s => ({ label: `${s.products?.name} (${s.batch_number})`, value: `${s.products?.name} (${s.batch_number})` }));
-    if (type === 'materials') return rawMaterials.filter(m => !shouldFilter || !doctorSpecialty || (m.products?.medical_specialties && m.products.medical_specialties.toLowerCase().includes(doctorSpecialty))).map(m => ({ label: m.nombre, value: m.nombre }));
-    return [];
-  };
+  const isDoctorVisit = formData.visit_type === 'doctor';
+  const isSalesVisit = ['pharmacy', 'natural_store', 'commerce', 'drugstore'].includes(formData.visit_type);
+  const isInstitutionVisit = formData.visit_type === 'hospital' || formData.visit_type === 'institution';
 
-  const productsList = getFilteredOptions('products');
-  const samplesList = getFilteredOptions('samples');
-  const materialsList = getFilteredOptions('materials');
-  const isDoctor = formData.visit_type === 'doctor';
-  const isPharmacy = formData.visit_type === 'pharmacy';
   const selectedContact = contacts.find(c => c.id === formData.contact_id);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-3xl rounded-[2rem] bg-white">
-        {/* Elite Header */}
-        <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 px-10 py-12 text-white relative">
-          <div className="absolute top-0 right-0 p-12 opacity-10">
-            <Activity className="w-40 h-40" />
-          </div>
-          <div className="relative z-10 flex items-center justify-between">
+      <DialogContent aria-describedby={undefined} className="max-w-5xl p-0 overflow-hidden border-none rounded-[2.5rem] bg-card shadow-premium-2xl font-display max-h-[95vh]">
+        <div className="bg-muted/5 px-10 py-8 text-foreground relative border-b border-border/40">
+          <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/20 flex items-center justify-center shadow-inner">
-                <FileText className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 rounded-2xl bg-primary text-white flex items-center justify-center shadow-premium-md border border-primary/20">
+                <FileText className="w-8 h-8" />
               </div>
               <div>
-                <DialogTitle className="text-3xl font-black tracking-tight text-white mb-1">
-                  {visitData ? 'Gestión de Impacto' : 'Planificación Estratégica'}
+                <DialogTitle className="text-2xl font-black uppercase tracking-tighter font-display text-foreground">
+                  {visitData ? 'Control de Misión Realizada' : 'Planificación de Misión Táctica'}
                 </DialogTitle>
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-emerald-500/20 text-emerald-300 border-none font-black text-[10px] uppercase tracking-widest px-3 py-1">
-                    {formData.status === 'completed' ? 'Visita Finalizada' : 'Visita en Ciclo'}
-                  </Badge>
-                  <p className="text-indigo-200/70 font-bold text-xs uppercase tracking-widest">
-                    MediVisitPro Elite 💎
-                  </p>
+                <div className="flex items-center gap-3 mt-2">
+                  <Badge className={cn("badge-elite-success border-none", formData.status !== 'completed' && "badge-elite-info")}>{formData.status === 'completed' ? 'FINALIZADA' : 'CICLO ACTIVO'}</Badge>
+                  <p className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest opacity-60">César Ascanio Intelligence Hub 💎</p>
                 </div>
               </div>
             </div>
+            {selectedContact && (
+              <div className="text-right hidden md:block">
+                <p className="text-foreground font-black uppercase text-lg leading-none font-display">{selectedContact.name}</p>
+                <p className="text-muted-foreground font-black uppercase text-elite-xs tracking-widest mt-2">{selectedContact.specialty} | {selectedContact.city}</p>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row h-[700px]">
+        <div className="flex flex-col md:flex-row h-[700px] overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
-            {/* Sidebar Navigation */}
-            <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-6 h-auto md:w-72 space-y-2">
-              <TabsTrigger value="basic" className="flex items-center justify-start gap-4 px-5 py-4 rounded-2xl font-black text-slate-400 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-lg transition-all text-xs uppercase tracking-widest">
-                <UserRound className="w-4 h-4" /> Perfil & Tiempo
+            <TabsList className="flex flex-row md:flex-col h-auto md:h-full w-full md:w-72 bg-muted/5 border-r border-border/40 p-4 justify-start gap-2 overflow-x-auto custom-scrollbar">
+              <TabsTrigger value="basic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-soft border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                <LayoutGrid className="w-4 h-4" /> PERFIL & AGENDA
               </TabsTrigger>
-              <TabsTrigger value="activity" className="flex items-center justify-start gap-4 px-5 py-4 rounded-2xl font-black text-slate-400 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-lg transition-all text-xs uppercase tracking-widest">
-                <Target className="w-4 h-4" /> Despliegue 360
-              </TabsTrigger>
-              {isPharmacy && (
-                <TabsTrigger value="audit" className="flex items-center justify-start gap-4 px-5 py-4 rounded-2xl font-black text-slate-400 data-[state=active]:bg-white data-[state=active]:text-emerald-700 data-[state=active]:shadow-lg transition-all text-xs uppercase tracking-widest">
-                  <Layers className="w-4 h-4" /> Auditoría Anaquel
+
+              {isDoctorVisit && (
+                <TabsTrigger value="medical" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-primary data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                  <Microscope className="w-4 h-4" /> PROMOCIÓN MÉDICA
                 </TabsTrigger>
               )}
-              <TabsTrigger value="results" className="flex items-center justify-start gap-4 px-5 py-4 rounded-2xl font-black text-slate-400 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-lg transition-all text-xs uppercase tracking-widest">
-                <TrendingUp className="w-4 h-4" /> Resultados & Feedback
+
+              {isSalesVisit && (
+                <TabsTrigger value="sales" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                  <ShoppingCart className="w-4 h-4" /> EJECUCIÓN COMERCIAL
+                </TabsTrigger>
+              )}
+
+              <TabsTrigger value="strategy" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-amber-500 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                <Target className="w-4 h-4" /> HITOS & CIERRE
               </TabsTrigger>
-              <TabsTrigger value="closure" className="flex items-center justify-start gap-4 px-5 py-4 rounded-2xl font-black text-slate-400 data-[state=active]:bg-white data-[state=active]:text-rose-700 data-[state=active]:shadow-lg transition-all text-xs uppercase tracking-widest">
-                <ShieldCheck className="w-4 h-4" /> Cierre Estratégico
+
+              <TabsTrigger value="geo" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                <MapIcon className="w-4 h-4" /> GEOPOSICIÓN CA
               </TabsTrigger>
+
+              {isInstitutionVisit && (
+                <>
+                  <TabsTrigger value="sample-bank" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                    <Package2 className="w-4 h-4" /> BANCO DE MUESTRAS
+                  </TabsTrigger>
+                  <TabsTrigger value="academic" className="justify-start gap-4 px-6 py-4 rounded-2xl font-black transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white border-none text-muted-foreground text-elite-xs uppercase tracking-widest">
+                    <GraduationCap className="w-4 h-4" /> ACTIVIDAD ACADÉMICA
+                  </TabsTrigger>
+                </>
+              )}
             </TabsList>
 
-            <div className="flex-1 overflow-y-auto bg-white">
-              <form onSubmit={handleSubmit} id="visit-detail-form" className="h-full">
-                {/* Basic Content */}
-                <TabsContent value="basic" className="p-10 space-y-8 m-0 animate-in fade-in slide-in-from-right-4">
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-1.5 h-8 bg-indigo-600 rounded-full" />
-                      <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Contexto de la Visita</h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Segmento de Canal</Label>
-                        <Select value={formData.visit_type} onValueChange={(val) => setFormData(prev => ({ ...prev, visit_type: val }))}>
-                          <SelectTrigger className="h-14 border-slate-200 rounded-2xl font-black text-slate-700 bg-slate-50/50">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-2xl border-none shadow-2xl">
-                            <SelectItem value="doctor" className="py-4 font-bold">🩺 Fichero Médico</SelectItem>
-                            <SelectItem value="pharmacy" className="py-4 font-bold">💊 Canal Farmacias</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estado de Gestión</Label>
-                        <Select value={formData.status} onValueChange={(val) => setFormData(prev => ({ ...prev, status: val }))}>
-                          <SelectTrigger className="h-14 border-slate-200 rounded-2xl font-black bg-white shadow-sm">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-2xl font-bold">
-                            <SelectItem value="scheduled">📅 Programada</SelectItem>
-                            <SelectItem value="in_progress">⚡ En Curso</SelectItem>
-                            <SelectItem value="completed">✅ Completada</SelectItem>
-                            <SelectItem value="cancelled">❌ Cancelada</SelectItem>
-                            <SelectItem value="missed">⚠️ No Lograda</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
+            <div className="flex-1 overflow-y-auto bg-card p-10 custom-scrollbar">
+              <form onSubmit={handleSubmit} id="visit-detail-form" className="space-y-10">
+                <TabsContent value="basic" className="mt-0 space-y-8 animate-in fade-in duration-500">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Contacto Registrado</Label>
-                      <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="h-14 w-full justify-between border-slate-200 rounded-2xl font-black text-slate-800 bg-white hover:bg-slate-50 transition-all shadow-sm">
-                            <div className="flex items-center gap-3">
-                              <Search className="w-4 h-4 text-slate-300" />
-                              {formData.contact_id ? contacts.find(c => c.id === formData.contact_id)?.name : "Buscar contacto en base de datos..."}
-                            </div>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0 border-none shadow-3xl rounded-[2rem]">
-                          <Command className="rounded-[2rem]">
-                            <CommandInput placeholder="Filtrar por nombre o especialidad..." className="h-14" />
-                            <CommandList className="max-h-80 custom-scrollbar">
-                              <CommandEmpty className="py-10 text-center font-bold text-slate-400">Sin coincidencias</CommandEmpty>
-                              <CommandGroup>
-                                {contacts.filter(c => c.contact_type === formData.visit_type).map(contact => (
-                                  <CommandItem key={contact.id} onSelect={() => { setFormData(prev => ({ ...prev, contact_id: contact.id })); setOpenCombobox(false); }} className="py-4 px-6 border-b border-slate-50 font-bold hover:bg-indigo-50/50">
-                                    <Check className={cn("mr-3 h-5 w-5 text-indigo-600", formData.contact_id === contact.id ? "opacity-100" : "opacity-0")} />
-                                    <div className="flex flex-col">
-                                      <span className="text-sm font-black">{contact.name}</span>
-                                      <span className="text-[10px] text-slate-400 uppercase tracking-tighter">{contact.specialty} • {contact.address}</span>
-                                    </div>
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Canal de Misión</Label>
+                      <Select value={formData.visit_type} onValueChange={(val) => setFormData(p => ({ ...p, visit_type: val }))}>
+                        <SelectTrigger className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground uppercase tracking-widest"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase shadow-xl rounded-xl">
+                          <SelectItem value="doctor">🩺 FICHERO MÉDICO</SelectItem>
+                          <SelectItem value="hospital">🏥 CENTRO DE SALUD</SelectItem>
+                          <SelectItem value="pharmacy">💊 CANAL FARMACIAS</SelectItem>
+                          <SelectItem value="natural_store">🌿 TIENDA NATURISTA</SelectItem>
+                          <SelectItem value="commerce">🛒 CANAL COMERCIO</SelectItem>
+                          <SelectItem value="drugstore">🏢 DROGUERÍA</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
+                    <div className="space-y-3">
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Estatus del Ciclo</Label>
+                      <Select value={formData.status} onValueChange={(val) => setFormData(p => ({ ...p, status: val }))}>
+                        <SelectTrigger className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground uppercase tracking-widest"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase shadow-xl rounded-xl">
+                          <SelectItem value="scheduled">📅 PROGRAMADA</SelectItem>
+                          <SelectItem value="in_progress">⚡ EN CURSO</SelectItem>
+                          <SelectItem value="completed">✅ FINALIZADA</SelectItem>
+                          <SelectItem value="cancelled">❌ CANCELADA</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Fecha de Plan</Label>
-                        <Input type="date" value={formData.scheduled_date} onChange={(e) => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))} className="h-14 border-slate-200 rounded-2xl font-black" />
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Agenda Horaria</Label>
-                        <Input type="time" value={formData.scheduled_time} onChange={(e) => setFormData(prev => ({ ...prev, scheduled_time: e.target.value }))} className="h-14 border-slate-200 rounded-2xl font-black" />
-                      </div>
+                  <div className="space-y-3">
+                    <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Objetivo Estratégico (Planificación)</Label>
+                    <Textarea value={formData.visit_objective} onChange={(e) => setFormData(p => ({ ...p, visit_objective: e.target.value }))} placeholder="REDACTE EL OBJETIVO SMART DE LA VISITA..." rows={2} className="bg-muted/5 border-border/40 rounded-[1.5rem] text-foreground font-black uppercase px-6 py-4 placeholder:text-muted-foreground/30" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Fecha de Ejecución</Label>
+                      <Input type="date" value={formData.scheduled_date} onChange={(e) => setFormData(p => ({ ...p, scheduled_date: e.target.value }))} className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground uppercase px-6" />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground/60 ml-1">Hora Estimada</Label>
+                      <Input type="time" value={formData.scheduled_time} onChange={(e) => setFormData(p => ({ ...p, scheduled_time: e.target.value }))} className="h-14 bg-muted/5 border-border/40 rounded-2xl font-black text-foreground text-center" />
                     </div>
                   </div>
                 </TabsContent>
 
-                {/* Activity Content */}
-                <TabsContent value="activity" className="p-10 space-y-10 m-0 animate-in fade-in slide-in-from-right-4">
-                  <div className="space-y-8">
-                    <div className="flex items-center gap-3">
-                      <div className="w-1.5 h-8 bg-indigo-600 rounded-full" />
-                      <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Despliegue de Recursos</h3>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label className="text-[10px] font-black uppercase text-indigo-600 ml-1">Portafolio Presentado</Label>
-                      <MultiSelect options={productsList} selected={formData.products_presented} onChange={(s) => setFormData(prev => ({ ...prev, products_presented: s }))} placeholder="Elegir productos..." />
+                {isDoctorVisit && (
+                  <TabsContent value="medical" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
+                    <SPINGuideAlert entityType="doctor" />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div className="space-y-8">
+                        <div className="space-y-3">
+                          <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Portafolio en Despliegue</Label>
+                          <MultiSelect options={rawProducts.map(p => ({ label: p.name, value: p.name }))} selected={formData.products_presented} onChange={(s) => setFormData(p => ({ ...p, products_presented: s }))} />
+                        </div>
+                        <div className="p-6 bg-muted/5 rounded-[2rem] border border-border/40 space-y-4">
+                          <h4 className="text-elite-xs font-black text-primary uppercase tracking-[0.4em]">Herramientas de Apoyo</h4>
+                          <VisualAidModal />
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Gestión de Muestras Biológicas</Label>
+                        <SampleDeliveryManager onUpdate={(items) => setFormData(p => ({ ...p, samples_delivered: items }))} specialty={selectedContact?.specialty} isMedicalVisit={true} />
+                      </div>
                     </div>
 
                     {productSellingPoints.length > 0 && (
-                      <div className="p-8 bg-slate-900 rounded-[2rem] space-y-6 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 opacity-5"><Activity className="w-24 h-24 text-white" /></div>
-                        <h4 className="text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-indigo-400" /> Inteligencia de Mensaje 360
-                        </h4>
-                        <div className="space-y-4">
+                      <div className="p-8 bg-primary/5 rounded-[2.5rem] border border-primary/20 space-y-6">
+                        <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3"><Sparkles className="w-5 h-5 text-primary" /> Inteligencia de Producto Activa</h4>
+                        <div className="grid grid-cols-1 gap-4">
                           {productSellingPoints.map(prod => (
-                            <div key={prod.id} className="space-y-3 border-l-2 border-indigo-500/30 pl-5">
-                              <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{prod.name}</p>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div key={prod.id} className="border-l-2 border-primary/30 pl-5">
+                              <p className="text-elite-xs font-black text-primary uppercase tracking-widest mb-3">{prod.name}</p>
+                              <div className="flex flex-wrap gap-2">
                                 {prod.selling_points && Object.entries(prod.selling_points).map(([cat, val]: [string, any]) => val && (
-                                  <div key={cat} className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all cursor-pointer group" onClick={() => {
+                                  <Badge key={cat} className={cn("px-4 py-2 rounded-xl border border-border/40 cursor-pointer transition-all text-[9px] font-bold uppercase", formData.selling_points.includes(`${prod.name}: ${val}`) ? "bg-primary text-white" : "bg-muted/10 text-muted-foreground hover:bg-muted/20")} onClick={() => {
                                     const tag = `${prod.name}: ${val}`;
-                                    setFormData(p => ({
-                                      ...p,
-                                      selling_points: p.selling_points.includes(tag) ? p.selling_points.filter(t => t !== tag) : [...p.selling_points, tag]
-                                    }));
-                                  }}>
-                                    <div className={cn("w-5 h-5 rounded-md border-2 border-indigo-500/50 flex items-center justify-center transition-all", formData.selling_points.includes(`${prod.name}: ${val}`) && "bg-indigo-500 border-indigo-500")}>
-                                      {formData.selling_points.includes(`${prod.name}: ${val}`) && <Check className="w-3 h-3 text-white" />}
-                                    </div>
-                                    <div className="flex flex-col">
-                                      <span className="text-[8px] font-black text-slate-500 uppercase">{cat}</span>
-                                      <span className="text-xs font-bold text-slate-300 group-hover:text-white transition-colors">{val}</span>
-                                    </div>
-                                  </div>
+                                    setFormData(p => ({ ...p, selling_points: p.selling_points.includes(tag) ? p.selling_points.filter(t => t !== tag) : [...p.selling_points, tag] }));
+                                  }}>{cat}: {val}</Badge>
                                 ))}
                               </div>
                             </div>
@@ -605,165 +359,115 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
                         </div>
                       </div>
                     )}
+                  </TabsContent>
+                )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Muestras Médicas</Label>
-                        <MultiSelect options={samplesList} selected={formData.samples_delivered ? formData.samples_delivered.split(', ').filter(Boolean) : []} onChange={(s) => setFormData(p => ({ ...p, samples_delivered: s.join(', ') }))} />
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Material Promocional</Label>
-                        <MultiSelect options={materialsList} selected={formData.promotional_materials ? formData.promotional_materials.split(', ').filter(Boolean) : []} onChange={(s) => setFormData(p => ({ ...p, promotional_materials: s.join(', ') }))} />
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* Audit Content */}
-                {isPharmacy && (
-                  <TabsContent value="audit" className="p-10 space-y-8 m-0 animate-in fade-in slide-in-from-right-4">
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-emerald-600 rounded-full" />
-                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Auditoría Visual de Anaquel</h3>
-                      </div>
-                      {visitData?.id ? (
-                        <ShelfAuditForm
-                          visitId={visitData.id}
-                          pharmacyId={visitData.pharmacy_id || visitData.contact_id}
-                          pharmacyName={selectedContact?.name || "Canal Seleccionado"}
-                        />
-                      ) : (
-                        <div className="p-20 text-center border-4 border-dashed border-slate-100 rounded-[3rem] bg-slate-50/50">
-                          <Store className="w-20 h-20 text-slate-200 mx-auto mb-6" />
-                          <h2 className="text-xl font-black text-slate-400 mb-2">VISITA NO GUARDADA</h2>
-                          <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Guarda la ficha básica para habilitar auditoría</p>
+                {isSalesVisit && (
+                  <TabsContent value="sales" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
+                    <div className="grid grid-cols-1 gap-12">
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-elite-xs font-black text-emerald-400 uppercase tracking-[0.4em] mb-4 flex items-center gap-3"><ClipboardCheck className="w-5 h-5" /> Auditoría de Piso & Anaquel</h4>
+                          <EliteButton variant="secondary" onClick={() => navigate('/transfer-orders', { state: { initialContact: { id: formData.contact_id, name: selectedContact?.name || "" }, orderType: formData.visit_type === 'drugstore' ? 'direct' : 'transfer' } })} className="bg-emerald-600 hover:bg-emerald-700 h-12" icon={ShoppingCart}>GENERAR PEDIDO</EliteButton>
                         </div>
-                      )}
+                        <ShelfAuditForm visitId={visitData?.id} pharmacyId={formData.contact_id} />
+                      </div>
                     </div>
                   </TabsContent>
                 )}
 
-                {/* Results Content */}
-                <TabsContent value="results" className="p-10 space-y-10 m-0 animate-in fade-in slide-in-from-right-4">
-                  <div className="space-y-8">
-                    <div className="flex items-center gap-3">
-                      <div className="w-1.5 h-8 bg-indigo-600 rounded-full" />
-                      <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Impacto Logrado</h3>
-                    </div>
-
-                    <div className="bg-emerald-50/50 p-8 rounded-[2rem] border border-emerald-100/50 space-y-6">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-[10px] font-black uppercase text-emerald-800 tracking-widest flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4" /> Proyección de Mercado
-                        </h4>
-                        <Badge className="bg-emerald-600 text-white border-none font-black text-[10px] h-6 px-3">VALOR CRÍTICO</Badge>
+                {isInstitutionVisit && (
+                  <>
+                    <TabsContent value="sample-bank" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
+                      <div className="p-8 bg-muted/5 rounded-[2.5rem] border border-border/40 space-y-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-10 opacity-5"><Package2 className="w-40 h-40 text-primary" /></div>
+                        <div className="relative z-10">
+                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3"><Package2 className="w-5 h-5 text-primary" /> Suministro Institucional CA</h4>
+                          <p className="text-muted-foreground text-elite-xs font-bold uppercase tracking-widest mb-10 opacity-60">Control de Reposición y Stock en Banco de Muestras Hospitalario</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                            <div className="space-y-3">
+                              <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Estatus del Banco en Sede</label>
+                              <Select value={formData.sample_bank_status || 'ok'} onValueChange={(v) => setFormData(p => ({ ...p, sample_bank_status: v }))}>
+                                <SelectTrigger className="h-14 bg-muted/10 border-border/40 rounded-xl font-black uppercase text-foreground"><SelectValue placeholder="EVALUAR..." /></SelectTrigger>
+                                <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase"><SelectItem value="low">⚠️ BAJO (REPOSICIÓN)</SelectItem><SelectItem value="ok">✅ ÓPTIMO</SelectItem><SelectItem value="full">📦 SATURADO</SelectItem></SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-3">
+                              <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Unidades Repuestas Hoy</label>
+                              <Input type="number" value={formData.sample_bank_refill || 0} onChange={(e) => setFormData(p => ({ ...p, sample_bank_refill: parseInt(e.target.value) }))} className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-center text-primary" />
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-3">
-                        <Label className="text-sm font-black text-emerald-900">¿Cuántas recetas/unidades proyecta este contacto al mes?</Label>
-                        <Input
-                          type="number"
-                          value={formData.compromiso_inicio}
-                          onChange={(e) => setFormData(p => ({ ...p, compromiso_inicio: Number(e.target.value) }))}
-                          className="h-16 text-3xl font-black text-center bg-white border-emerald-200 rounded-3xl text-emerald-600 focus:ring-emerald-500/20"
-                        />
+                    </TabsContent>
+
+                    <TabsContent value="academic" className="mt-0 space-y-10 animate-in slide-in-from-right-4 duration-500">
+                       <div className="p-8 bg-muted/5 rounded-[2.5rem] border border-border/40 space-y-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-10 opacity-5"><GraduationCap className="w-40 h-40 text-primary" /></div>
+                        <div className="relative z-10">
+                          <h4 className="text-foreground font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3"><GraduationCap className="w-5 h-5 text-primary" /> Actividad Académica Corporativa</h4>
+                          <p className="text-muted-foreground text-elite-xs font-bold uppercase tracking-widest mb-10 opacity-60">Despliegue de Charlas Científicas y Apoyo a Actividades en Sede</p>
+                          <div className="space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                              <div className="space-y-3">
+                                <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Tema / Título de la Charla</label>
+                                <Input value={formData.academic_topic || ''} onChange={(e) => setFormData(p => ({ ...p, academic_topic: e.target.value }))} placeholder="EJ: BENEFICIOS TERAPÉUTICOS CA" className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-foreground uppercase tracking-tight" />
+                              </div>
+                              <div className="space-y-3">
+                                <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Asistencia Estimada</label>
+                                <Input type="number" value={formData.academic_attendance || 0} onChange={(e) => setFormData(p => ({ ...p, academic_attendance: parseInt(e.target.value) }))} className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-center text-primary" />
+                              </div>
+                            </div>
+                            <div className="space-y-3">
+                              <label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Contexto / Departamento</label>
+                              <Input value={formData.academic_context || ''} onChange={(e) => setFormData(p => ({ ...p, academic_context: e.target.value }))} placeholder="EJ: SERVICIO DE CARDIOLOGÍA" className="h-14 bg-muted/10 border-border/40 rounded-xl font-black text-foreground uppercase tracking-tight" />
+                            </div>
+                            <div className="pt-6 border-t border-border/40">
+                               <label className="text-elite-xs font-black uppercase text-primary ml-1 mb-4 block">Herramientas de Presentación Científica</label>
+                               <VisualAidModal />
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </TabsContent>
+                  </>
+                )}
 
-                    <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Notas de Resultados (Cuantitativo/Cualitativo)</Label>
-                      <Textarea
-                        value={formData.results_notes}
-                        onChange={(e) => setFormData(p => ({ ...p, results_notes: e.target.value }))}
-                        placeholder="Escriba los logros clave de la sesión..."
-                        className="min-h-[150px] border-slate-200 rounded-[2rem] p-6 font-bold text-slate-800 bg-slate-50/30"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <TabsContent value="strategy" className="mt-0 space-y-10 animate-in fade-in duration-500">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div className="space-y-8">
                       <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Compromiso por Marcas Competitivas</Label>
-                        <MultiSelect options={competitorOptions} selected={formData.competitor_brands_detected} onChange={(s) => setFormData(p => ({ ...p, competitor_brands_detected: s }))} />
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Próxima Fecha de Contacto</Label>
-                        <Input type="date" value={formData.next_visit_date} onChange={(e) => setFormData(p => ({ ...p, next_visit_date: e.target.value }))} className="h-14 border-slate-200 rounded-2xl font-black" />
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* Closure Content */}
-                <TabsContent value="closure" className="p-10 space-y-10 m-0 animate-in fade-in slide-in-from-right-4">
-                  <div className="space-y-8">
-                    <div className="flex items-center gap-3">
-                      <div className="w-1.5 h-8 bg-rose-600 rounded-full" />
-                      <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Cierre de Gestión</h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Reacción Detectada</Label>
-                        <Select value={formData.contact_reaction} onValueChange={(val) => setFormData(p => ({ ...p, contact_reaction: val }))}>
-                          <SelectTrigger className="h-14 border-slate-200 rounded-2xl font-black bg-white shadow-sm">
-                            <SelectValue placeholder="Evaluar reacción..." />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-2xl font-bold">
-                            <SelectItem value="Muy Positiva" className="py-3 font-bold">💎 Muy Positiva</SelectItem>
-                            <SelectItem value="Positiva" className="py-3 font-bold">✅ Positiva</SelectItem>
-                            <SelectItem value="Neutral" className="py-3 font-bold">⚖️ Neutral</SelectItem>
-                            <SelectItem value="Negativa" className="py-3 font-bold">⚠️ Negativa</SelectItem>
-                          </SelectContent>
+                        <Label className="text-elite-xs font-black uppercase text-amber-500 ml-1">Reacción del Activo</Label>
+                        <Select value={formData.contact_reaction} onValueChange={(v) => setFormData(p => ({ ...p, contact_reaction: v }))}>
+                          <SelectTrigger className="h-14 bg-muted/10 border-border/40 rounded-2xl font-black uppercase text-foreground"><SelectValue placeholder="EVALUAR..." /></SelectTrigger>
+                          <SelectContent className="bg-card border-border/40 text-foreground font-bold uppercase"><SelectItem value="Muy Positiva">💎 MUY POSITIVA</SelectItem><SelectItem value="Positiva">✅ POSITIVA</SelectItem><SelectItem value="Neutral">⚖️ NEUTRAL</SelectItem><SelectItem value="Negativa">⚠️ NEGATIVA</SelectItem></SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-3">
-                        <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Próximo Paso Inmediato</Label>
-                        <Input value={formData.next_step} onChange={(e) => setFormData(p => ({ ...p, next_step: e.target.value }))} placeholder="Ej: Enviar brochure mañana..." className="h-14 border-slate-200 rounded-2xl font-black" />
+                        <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Siguiente Hito Táctico</Label>
+                        <Input value={formData.next_step} onChange={(e) => setFormData(p => ({ ...p, next_step: e.target.value }))} placeholder="PRÓXIMA ACCIÓN..." className="h-14 bg-muted/10 border-border/40 rounded-2xl font-black uppercase px-6 text-foreground" />
                       </div>
                     </div>
-
-                    <div className="p-8 bg-rose-50/50 rounded-[2rem] border border-rose-100 space-y-4">
-                      <Label className="text-[10px] font-black uppercase text-rose-800 tracking-widest flex items-center gap-2">
-                        <Target className="w-4 h-4" /> Manejo de Objeciones (PDS Expert)
-                      </Label>
-                      <Select value={formData.objection_selector} onValueChange={(val) => setFormData(p => ({ ...p, objection_selector: val, main_objection: objectionScripts.find((s: any) => s.objection === val)?.script || p.main_objection }))}>
-                        <SelectTrigger className="h-14 border-rose-200 rounded-2xl font-black bg-white text-rose-900">
-                          <SelectValue placeholder="¿Hubo alguna objeción crítica?" />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-2xl font-bold">
-                          {objectionScripts.map((s: any, idx: number) => (
-                            <SelectItem key={idx} value={s.objection} className="py-3 font-bold">{s.objection}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Compromisos & Acuerdos Finales</Label>
-                      <Textarea
-                        value={formData.closure_commitment}
-                        onChange={(e) => setFormData(p => ({ ...p, closure_commitment: e.target.value }))}
-                        placeholder="Registre los acuerdos pactados en esta sesión..."
-                        className="min-h-[150px] border-slate-200 rounded-[2rem] p-6 font-bold text-slate-800 bg-slate-50/30 shadow-inner"
-                      />
+                      <Label className="text-elite-xs font-black uppercase text-muted-foreground ml-1">Hallazgos & Notas de Misión</Label>
+                      <Textarea value={formData.results_notes} onChange={(e) => setFormData(p => ({ ...p, results_notes: e.target.value }))} placeholder="DIAGNOSTIQUE EL IMPACTO AQUÍ..." rows={6} className="bg-muted/10 border-border/40 rounded-[2rem] text-foreground font-black uppercase p-8 px-8" />
                     </div>
+                  </div>
+                  <div className="p-8 bg-amber-500/5 rounded-[2.5rem] border border-amber-500/20 space-y-4 shadow-inner">
+                    <Label className="text-elite-xs font-black uppercase text-amber-600 ml-1 flex items-center gap-2"><Award className="w-4 h-4" /> Pacto de Cierre & Compromisos</Label>
+                    <Textarea value={formData.closure_commitment} onChange={(e) => setFormData(p => ({ ...p, closure_commitment: e.target.value }))} placeholder="REDACTE EL ACUERDO FINAL..." rows={3} className="bg-card border-border/40 rounded-[2rem] text-foreground font-black uppercase p-8 px-8 shadow-inner" />
+                  </div>
+                </TabsContent>
 
-                    <div className="flex items-center gap-4 p-6 bg-slate-900 rounded-[2rem] shadow-xl">
-                      <div className="flex-1">
-                        <p className="text-white font-black text-xs uppercase tracking-widest mb-1">Geolocalización de Visita</p>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase">{formData.geolocation || "Pendiente de captura"}</p>
-                      </div>
-                      <Button type="button" onClick={() => {
-                        if (navigator.geolocation) {
-                          navigator.geolocation.getCurrentPosition(pos => {
-                            setFormData(p => ({ ...p, geolocation: `${pos.coords.latitude}, ${pos.coords.longitude}` }));
-                            toast({ title: "Ubicación Capturada ✅" });
-                          });
-                        }
-                      }} className="h-14 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all">
-                        <Navigation className="w-5 h-5 mr-3" /> Capturar GPS
-                      </Button>
+                <TabsContent value="geo" className="mt-0 space-y-10 animate-in zoom-in-95 duration-500">
+                  <div className="flex flex-col items-center justify-center p-20 bg-muted/5 rounded-[3rem] border border-border/40 border-dashed space-y-8 relative overflow-hidden text-foreground">
+                    <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]" />
+                    <div className="w-24 h-24 rounded-full bg-blue-500/10 flex items-center justify-center animate-pulse shadow-glow shadow-blue-500/10"><MapPin className="w-12 h-12 text-blue-500" /></div>
+                    <div className="text-center relative z-10">
+                      <h4 className="text-xl font-black text-foreground uppercase tracking-tighter mb-2 font-display">Validación Geográfica CA</h4>
+                      <p className="text-muted-foreground font-black text-elite-xs uppercase tracking-widest opacity-60">{formData.geolocation || "Buscando coordenadas de mando..."}</p>
                     </div>
+                    <EliteButton variant="secondary" className="bg-blue-600 hover:bg-blue-700 h-16 px-12 scale-105" icon={MapPin} onClick={() => { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { setFormData(p => ({ ...p, geolocation: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` })); toast({ title: "Geo-Sincronización Exitosa ✅" }); }); } }}>CAPTURA GPS DE SEGURIDAD</EliteButton>
                   </div>
                 </TabsContent>
               </form>
@@ -771,24 +475,11 @@ export function VisitDetailDialog({ trigger, visitData, onVisitSaved }: VisitDet
           </Tabs>
         </div>
 
-        {/* Footer Elite */}
-        <div className="bg-slate-50 border-t border-slate-100 px-10 py-8 flex items-center justify-between gap-6">
-          <Button variant="ghost" onClick={() => setOpen(false)} className="h-14 px-8 font-black text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-2xl text-[10px] uppercase tracking-[0.2em] transition-all">
-            Abandonar Gestión
-          </Button>
-          <div className="flex items-center gap-4">
-            <Button type="button" onClick={() => {
-              const tabs = ["basic", "activity", "results", "closure"];
-              if (isPharmacy) tabs.splice(2, 0, "audit");
-              const currentIdx = tabs.indexOf(activeTab);
-              if (currentIdx < tabs.length - 1) setActiveTab(tabs[currentIdx + 1]);
-            }} variant="outline" className="h-14 px-8 border-slate-200 rounded-2xl font-black text-[10px] uppercase tracking-widest text-slate-500 hover:bg-white hover:text-indigo-600 shadow-sm">
-              Siguiente Sección <ChevronRight className="w-4 h-4 ml-3" />
-            </Button>
-            <Button type="submit" form="visit-detail-form" disabled={loading} className="h-14 px-12 bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl shadow-3xl shadow-indigo-500/30 transition-all hover:scale-[1.05] active:scale-95">
-              {loading && <Loader2 className="mr-3 h-4 w-4 animate-spin" />}
-              {visitData ? 'Sincronizar Gestión' : 'Finalizar & Reportar'}
-            </Button>
+        <div className="bg-muted/5 border-t border-border/40 px-10 py-8 flex items-center justify-between gap-6">
+          <Button variant="ghost" onClick={() => setOpen(false)} className="h-14 px-8 font-black uppercase text-rose-500 hover:text-rose-400 hover:bg-rose-500/5 rounded-2xl text-elite-xs tracking-widest hidden sm:flex">DESCARTAR</Button>
+          <div className="flex items-center gap-4 flex-1 sm:flex-none">
+            <EliteButton variant="secondary" className="h-14 px-8" icon={ChevronRight} onClick={() => { const tabs = ["basic", isDoctorVisit ? "medical" : null, isSalesVisit ? "sales" : null, "strategy", "geo"].filter(t => t !== null); const currentIdx = tabs.indexOf(activeTab); setActiveTab(tabs[currentIdx < tabs.length - 1 ? currentIdx + 1 : 0] as string); }}>SIGUIENTE</EliteButton>
+            <EliteButton type="submit" form="visit-detail-form" disabled={loading} className="h-14 px-12 min-w-[200px]" icon={loading ? Loader2 : CheckCircle}>{visitData?.id ? 'SINCRONIZAR REPORTE' : 'DESPLEGAR MISIÓN'}</EliteButton>
           </div>
         </div>
       </DialogContent>

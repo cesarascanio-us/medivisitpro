@@ -112,7 +112,7 @@ export function SmartScheduleWidget({
                             </Button>
                         </div>
                     ) : (
-                        <p className="text-sm bg-white/50 p-2 rounded-lg border">
+                        <p className="text-sm bg-background/50 p-2 rounded-lg border">
                             {suggestedObjective}
                         </p>
                     )}
@@ -156,7 +156,7 @@ export function SmartScheduleWidget({
                             </Button>
                         </div>
                     ) : (
-                        <p className="text-sm bg-white/50 p-2 rounded-lg border capitalize">
+                        <p className="text-sm bg-background/50 p-2 rounded-lg border capitalize">
                             📅 {formatDate(suggestedDate)}
                         </p>
                     )}

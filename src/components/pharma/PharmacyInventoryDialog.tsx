@@ -9,7 +9,7 @@
 
 
 import { useState, useEffect } from "react";
-import { ClipboardList, Download, Search, AlertCircle, History, Loader2, Trash2 } from "lucide-react";
+import { ClipboardList, Download, Search, AlertCircle, History, Loader2, Trash2, TrendingUp } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -32,7 +32,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useDemoData } from "@/contexts/MockDataProvider";
-import * as XLSX from 'xlsx';
 
 interface PharmacyInventoryDialogProps {
     pharmacyId: string;
@@ -46,6 +45,7 @@ interface PharmacyStockItem {
     product_name: string;
     tiene_stock: boolean;
     pvp: number;
+    faces: number;
     last_audit_date: string | null;
     audit_id?: string;
 }
@@ -60,6 +60,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
     const [selectedProductId, setSelectedProductId] = useState("");
     const [newQuantity, setNewQuantity] = useState("0");
     const [newPvp, setNewPvp] = useState("0");
+    const [newFaces, setNewFaces] = useState("1");
     const [saving, setSaving] = useState(false);
     const { toast } = useToast();
     const demoData = useDemoData();
@@ -77,7 +78,6 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
 
             if (demoData) {
                 console.log("PharmacyInventory: Using mock demo data");
-                // In demo mode, we use mock inventory if available
                 const mockStock = (demoData.pharmacyInventory || [])
                     .filter((s: any) => s.pharmacy_id === pharmacyId);
                 setStock(mockStock);
@@ -110,6 +110,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                     product_name: p.name,
                     tiene_stock: stockInfo?.tiene_stock ?? false,
                     pvp: stockInfo?.pvp ?? 0,
+                    faces: stockInfo?.faces ?? 0,
                     last_audit_date: stockInfo?.last_audit_date ?? null,
                     audit_id: stockInfo?.audit_id,
                 };
@@ -174,6 +175,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                 .from('registro_pvp_farmacia')
                 .select('cantidad_actual')
                 .eq('producto_id', selectedProductId)
+                .eq('pharmacy_id', pharmacyId)
                 .order('created_at', { ascending: false })
                 .limit(1)
                 .maybeSingle();
@@ -185,13 +187,13 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                 .from('registro_pvp_farmacia')
                 .insert({
                     producto_id: selectedProductId,
-                    pharmacy_id: pharmacyId, // We might need to add this column if it doesn't exist, but typically it's linked via visit or pharmacy context
+                    pharmacy_id: pharmacyId,
                     tiene_stock: cantActual > 0,
                     pvp: parseFloat(newPvp),
+                    faces: parseInt(newFaces),
                     cantidad_actual: cantActual,
                     cantidad_anterior: cantAnterior,
                     ventas_estimadas: 0,
-                    // Note: visit_id is null here as it's a manual entry
                 });
 
             if (error) throw error;
@@ -207,6 +209,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
             setSelectedProductId("");
             setNewQuantity("0");
             setNewPvp("0");
+            setNewFaces("1");
         } catch (error: any) {
             console.error("Error adding stock:", error);
             toast({
@@ -219,10 +222,12 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
         }
     };
 
-    const handleExport = () => {
+    const handleExport = async () => {
+        const XLSX = await import('xlsx');
         const exportData = stock.map(item => ({
             'Producto': item.product_name,
             'Tiene Stock': item.tiene_stock ? 'Sí' : 'No',
+            'Caras (Faces)': item.faces || 0,
             'PVP Registrado': item.pvp || 0,
             'Fecha Auditoría': item.last_audit_date ? new Date(item.last_audit_date).toLocaleDateString() : 'N/A'
         }));
@@ -281,17 +286,17 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                 )}
             </DialogTrigger>
             <DialogContent
-                className="max-w-4xl max-h-[85vh] flex flex-col"
+                className="max-w-5xl max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
                 onPointerDown={(e) => e.stopPropagation()}
             >
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <ClipboardList className="h-5 w-5 text-primary" />
+                    <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+                        <ClipboardList className="h-6 w-6 text-primary" />
                         Stock en Anaquel - {pharmacyName}
                     </DialogTitle>
                     <DialogDescription>
-                        Información basada en las auditorías realizadas durante las visitas o ingresos manuales.
+                        Fase 3: Auditoría Quirúrgica. Registro de inventario propio y visibilidad en tiempo real.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -321,9 +326,9 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                     </div>
 
                     {isAdding && (
-                        <div className="bg-muted/30 p-4 rounded-lg border border-primary/10 grid grid-cols-1 md:grid-cols-4 gap-4 items-end animate-in fade-in slide-in-from-top-2">
-                            <div className="space-y-2">
-                                <label className="text-xs font-semibold">Producto</label>
+                        <div className="bg-muted/30 p-5 rounded-xl border-2 border-primary/20 grid grid-cols-1 md:grid-cols-5 gap-4 items-end animate-in fade-in zoom-in-95 duration-200">
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Producto</label>
                                 <select
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     value={selectedProductId}
@@ -336,55 +341,71 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                                 </select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold">Cantidad Actual</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Cantidad</label>
                                 <Input
                                     type="number"
                                     value={newQuantity}
                                     onChange={(e) => setNewQuantity(e.target.value)}
+                                    className="font-mono"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold">Precio (PVP)</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">PVP ($)</label>
                                 <Input
                                     type="number"
                                     step="0.01"
                                     value={newPvp}
                                     onChange={(e) => setNewPvp(e.target.value)}
+                                    className="font-mono text-blue-600 font-bold"
                                 />
                             </div>
-                            <Button onClick={handleAddStock} disabled={saving}>
-                                {saving ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        Guardando...
-                                    </>
-                                ) : "Guardar"}
-                            </Button>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                                    <TrendingUp className="h-3 w-3" /> Caras
+                                </label>
+                                <Input
+                                    type="number"
+                                    value={newFaces}
+                                    onChange={(e) => setNewFaces(e.target.value)}
+                                    className="font-mono text-emerald-600 font-bold"
+                                />
+                            </div>
+                            <div className="md:col-start-5">
+                                <Button onClick={handleAddStock} disabled={saving} className="w-full">
+                                    {saving ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            Guardando...
+                                        </>
+                                    ) : "Registrar"}
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </div>
 
-                <div className="flex-1 overflow-auto border rounded-md">
+                <div className="flex-1 overflow-auto border rounded-xl shadow-inner scrollbar-hide">
                     <Table>
-                        <TableHeader className="sticky top-0 bg-background z-10">
-                            <TableRow>
-                                <TableHead>Producto</TableHead>
-                                <TableHead className="text-center">Estado</TableHead>
-                                <TableHead className="text-right">PVP Última Visita</TableHead>
-                                <TableHead className="text-right">Fecha Auditoría</TableHead>
+                        <TableHeader className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 border-b">
+                            <TableRow className="hover:bg-transparent">
+                                <TableHead className="font-bold">Producto</TableHead>
+                                <TableHead className="text-center font-bold">Estado</TableHead>
+                                <TableHead className="text-center font-bold">Caras (Faces)</TableHead>
+                                <TableHead className="text-right font-bold">PVP Auditado</TableHead>
+                                <TableHead className="text-right font-bold">Última Auditoría</TableHead>
                                 <TableHead className="w-[50px]"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center h-24">
+                                    <TableCell colSpan={6} className="text-center h-24">
                                         <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
                                     </TableCell>
                                 </TableRow>
                             ) : filteredStock.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center h-32">
+                                    <TableCell colSpan={6} className="text-center h-32">
                                         <div className="flex flex-col items-center justify-center text-muted-foreground">
                                             <History className="h-8 w-8 mb-2 opacity-20" />
                                             <p>No hay registros de auditoría recientes.</p>
@@ -393,27 +414,32 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                                 </TableRow>
                             ) : (
                                 filteredStock.map((item) => (
-                                    <TableRow key={item.producto_id}>
-                                        <TableCell className="font-medium">{item.product_name}</TableCell>
+                                    <TableRow key={item.producto_id} className="group transition-colors hover:bg-muted/50">
+                                        <TableCell className="font-semibold text-primary">{item.product_name}</TableCell>
                                         <TableCell className="text-center">
                                             {item.last_audit_date === null ? (
-                                                <Badge variant="outline" className="text-gray-400 bg-gray-50 border-gray-200">
-                                                    Sin Auditoría
+                                                <Badge variant="outline" className="text-muted-foreground bg-muted border-border uppercase text-[10px]">
+                                                    Pendiente
                                                 </Badge>
                                             ) : item.tiene_stock ? (
-                                                <Badge variant="outline" className="text-green-600 bg-green-50 border-green-200">
+                                                <Badge variant="outline" className="text-green-600 bg-green-50 border-green-200 uppercase text-[10px] font-bold">
                                                     En Stock
                                                 </Badge>
                                             ) : (
-                                                <Badge variant="destructive">
-                                                    Agotado
+                                                <Badge variant="destructive" className="uppercase text-[10px] font-bold">
+                                                    Quiebre
                                                 </Badge>
                                             )}
                                         </TableCell>
-                                        <TableCell className="text-right font-mono">
+                                        <TableCell className="text-center">
+                                            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${item.faces > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
+                                                {item.faces || 0}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-right font-mono font-bold text-blue-600">
                                             {item.pvp ? `$${item.pvp.toFixed(2)}` : '-'}
                                         </TableCell>
-                                        <TableCell className="text-right text-muted-foreground text-sm">
+                                        <TableCell className="text-right text-muted-foreground text-sm font-medium">
                                             {item.last_audit_date ? new Date(item.last_audit_date).toLocaleDateString() : 'N/A'}
                                         </TableCell>
                                         <TableCell>
@@ -421,7 +447,7 @@ export function PharmacyInventoryDialog({ pharmacyId, pharmacyName, trigger }: P
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="h-8 w-8 text-destructive hover:text-destructive/90 hover:bg-destructive/10 p-0"
+                                                    className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive/90 hover:bg-destructive/10 p-0"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleDeleteStock(item.audit_id!);

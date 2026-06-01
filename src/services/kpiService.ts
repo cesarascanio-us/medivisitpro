@@ -8,6 +8,14 @@
 ======================================================================== */
 
 import { supabase } from "@/integrations/supabase/client";
+import { MOCK_DATA } from "@/data/mockDemoData";
+
+const isDemoMode = () => {
+    return typeof window !== 'undefined' && (
+        window.location.pathname.includes('/demo') ||
+        localStorage.getItem('sb-medivisit-auth-token')?.includes('demo.medivisitpro@gmail.com')
+    );
+};
 
 export interface KpiSummary {
     coverage: number;
@@ -29,6 +37,18 @@ export const kpiService = {
      * Calculate all key metrics for a representative
      */
     async getSummary(userId: string): Promise<KpiSummary> {
+        if (isDemoMode()) {
+            return {
+                coverage: 85.5,
+                frequency: 1.8,
+                marketShare: 15.4,
+                dailyAverage: 3.5,
+                paretoCompliance: 90.0,
+                salesQuota: 100,
+                salesActual: 82
+            };
+        }
+
         try {
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

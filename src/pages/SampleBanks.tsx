@@ -32,7 +32,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { useTexts } from "@/hooks/useTexts";
+
 export default function SampleBanks() {
+    const t = useTexts();
     const { user } = useAuth();
     const { toast } = useToast();
     const demoData = useDemoData();
@@ -186,117 +190,105 @@ export default function SampleBanks() {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground">Bancos de Muestras</h1>
-                    <p className="text-muted-foreground">Gestión completa de inventario y dispensación</p>
-                </div>
-                <Button onClick={loadAllData}>
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                    Actualizar
-                </Button>
-            </div>
+        <div className="space-y-8 animate-in fade-in duration-700">
+            <EliteHeader
+                title={t.samples_title}
+                subtitle={t.samples_subtitle}
+                icon={Package}
+                badgeText="Inventario"
+                statusText={loading ? "Sincronizando..." : "Sistema en línea"}
+                statusColor={loading ? "bg-amber-500" : "bg-emerald-500"}
+                rightContent={
+                    <Button 
+                        onClick={loadAllData} 
+                        variant="outline"
+                        className="h-12 px-6 rounded-xl border-border/40 bg-card text-foreground font-bold text-xs hover:bg-muted/10 transition-all shadow-sm active:scale-95"
+                    >
+                        <RotateCcw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                        Sincronizar
+                    </Button>
+                }
+            />
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Inventario Total</p>
-                                <p className="text-2xl font-bold">{stats.inventario}</p>
-                            </div>
-                            <Package className="h-8 w-8 text-primary" />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Entregas Realizadas</p>
-                                <p className="text-2xl font-bold">{stats.entregas}</p>
-                            </div>
-                            <Building2 className="h-8 w-8 text-blue-500" />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Materiales Promo</p>
-                                <p className="text-2xl font-bold">{stats.materiales}</p>
-                            </div>
-                            <Gift className="h-8 w-8 text-purple-500" />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Próximos a Vencer</p>
-                                <p className="text-2xl font-bold text-orange-500">{stats.proximosVencer}</p>
-                            </div>
-                            <AlertTriangle className="h-8 w-8 text-orange-500" />
-                        </div>
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <EliteKPICard
+                    title="Inventario total"
+                    value={stats.inventario}
+                    icon={Package}
+                    color="blue"
+                />
+                <EliteKPICard
+                    title="Entregas realizadas"
+                    value={stats.entregas}
+                    icon={Building2}
+                    color="emerald"
+                />
+                <EliteKPICard
+                    title="Material promocional"
+                    value={stats.materiales}
+                    icon={Gift}
+                    color="purple"
+                />
+                <EliteKPICard
+                    title="Próximos a vencer"
+                    value={stats.proximosVencer}
+                    icon={AlertTriangle}
+                    color="amber"
+                />
             </div>
 
             {/* Main Tabs */}
-            <Tabs defaultValue="inventario" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-                    <TabsTrigger value="inventario">Inventario</TabsTrigger>
-                    <TabsTrigger value="entregas">Entregas</TabsTrigger>
-                    <TabsTrigger value="detalles">Detalles</TabsTrigger>
-                    <TabsTrigger value="reposiciones">Reposiciones</TabsTrigger>
-                    <TabsTrigger value="dispensacion">Dispensación</TabsTrigger>
-                    <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
-                    <TabsTrigger value="visitas">Visitas</TabsTrigger>
-                    <TabsTrigger value="materiales">Materiales</TabsTrigger>
+            <Tabs defaultValue="inventario" className="w-full space-y-6">
+                <TabsList className="flex flex-wrap h-auto p-1 bg-muted/20 rounded-xl border border-border shadow-inner overflow-x-auto">
+                    <TabsTrigger value="inventario" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Inventario</TabsTrigger>
+                    <TabsTrigger value="entregas" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Entregas</TabsTrigger>
+                    <TabsTrigger value="detalles" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Detalles</TabsTrigger>
+                    <TabsTrigger value="reposiciones" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Reposiciones</TabsTrigger>
+                    <TabsTrigger value="dispensacion" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Dispensación</TabsTrigger>
+                    <TabsTrigger value="pacientes" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Pacientes</TabsTrigger>
+                    <TabsTrigger value="visitas" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Visitas</TabsTrigger>
+                    <TabsTrigger value="materiales" className="flex-1 rounded-lg font-bold text-[11px] data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-9 px-4 uppercase tracking-widest">Materiales</TabsTrigger>
                 </TabsList>
 
                 {/* TAB 1: INVENTARIO */}
-                <TabsContent value="inventario" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Package className="mr-2 h-5 w-5" />
-                                Inventario de Muestras
+                <TabsContent value="inventario" className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+                        <CardHeader className="pb-4 bg-muted/10 border-b border-border">
+                            <CardTitle className="flex items-center text-sm font-bold tracking-tight uppercase tracking-widest font-display">
+                                <Package className="mr-2 h-5 w-5 text-primary" />
+                                Inventario de muestras
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center space-x-2 mb-4">
-                                <Input
-                                    placeholder="Buscar por producto, lote..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="max-w-sm"
-                                />
-                                <Button>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="flex-1 relative">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Buscar por producto o lote..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="h-11 pl-10 bg-muted/20 border-none rounded-xl font-semibold text-xs shadow-inner text-foreground"
+                                    />
+                                </div>
+                                <Button className="h-11 px-6 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs shadow-md transition-all active:scale-95">
                                     <Plus className="mr-2 h-4 w-4" />
-                                    Nuevo Lote
+                                    Nuevo lote
                                 </Button>
                             </div>
 
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Producto</TableHead>
-                                        <TableHead>Lote</TableHead>
-                                        <TableHead>Fabricación</TableHead>
-                                        <TableHead>Vencimiento</TableHead>
-                                        <TableHead>Cantidad</TableHead>
-                                        <TableHead>Estado</TableHead>
-                                    </TableRow>
-                                </TableHeader>
+                            <div className="rounded-xl border border-border overflow-hidden shadow-sm">
+                                <Table>
+                                    <TableHeader className="bg-muted/10">
+                                        <TableRow className="border-border hover:bg-transparent">
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Producto</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Lote</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Fabricación</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Vencimiento</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Cantidad</TableHead>
+                                            <TableHead className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground">Estado</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
                                 <TableBody>
                                     {inventario.map((item) => (
                                         <TableRow key={item.id}>
@@ -312,6 +304,7 @@ export default function SampleBanks() {
                                     ))}
                                 </TableBody>
                             </Table>
+                            </div>
 
                             {inventario.length === 0 && (
                                 <div className="text-center py-8 text-muted-foreground">
@@ -324,10 +317,10 @@ export default function SampleBanks() {
 
                 {/* TAB 2: ENTREGAS BANCO */}
                 <TabsContent value="entregas" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Building2 className="mr-2 h-5 w-5" />
+                    <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+                        <CardHeader className="pb-4 bg-muted/10 border-b border-border">
+                            <CardTitle className="flex items-center text-sm font-bold tracking-tight uppercase tracking-widest font-display">
+                                <Building2 className="mr-2 h-5 w-5 text-primary" />
                                 Entregas a Centros de Salud
                             </CardTitle>
                         </CardHeader>
@@ -468,10 +461,10 @@ export default function SampleBanks() {
 
                 {/* TAB 8: MATERIALES PROMOCIONALES */}
                 <TabsContent value="materiales" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Gift className="mr-2 h-5 w-5" />
+                    <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+                        <CardHeader className="pb-4 bg-muted/10 border-b border-border">
+                            <CardTitle className="flex items-center text-sm font-bold tracking-tight uppercase tracking-widest font-display">
+                                <Gift className="mr-2 h-5 w-5 text-primary" />
                                 Materiales Promocionales
                             </CardTitle>
                         </CardHeader>

@@ -46,31 +46,34 @@ interface PharmacyFormDialogProps {
     onSubmit: () => void;
     isEditing?: boolean;
     trigger?: React.ReactNode;
+    showTrigger?: boolean;
 }
 
-export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, onSubmit, isEditing = false, trigger }: PharmacyFormDialogProps) {
+export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, onSubmit, isEditing = false, trigger, showTrigger = true }: PharmacyFormDialogProps) {
     const [activeTab, setActiveTab] = useState("basico");
     const { toast } = useToast();
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            {trigger ? (
-                <DialogTrigger asChild>{trigger}</DialogTrigger>
-            ) : (
-                <DialogTrigger asChild>
-                    <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 font-bold px-6 rounded-xl transition-all">
-                        <Plus className="mr-2 h-4 w-4" /> Nueva Farmacia
-                    </Button>
-                </DialogTrigger>
+            {showTrigger && (
+                trigger ? (
+                    <DialogTrigger asChild>{trigger}</DialogTrigger>
+                ) : (
+                    <DialogTrigger asChild>
+                        <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 font-bold px-6 rounded-xl transition-all">
+                            <Plus className="mr-2 h-4 w-4" /> Nueva Farmacia
+                        </Button>
+                    </DialogTrigger>
+                )
             )}
-            <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
+            <DialogContent aria-describedby={undefined} className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
                 {/* Header Section */}
-                <div className="bg-gradient-to-r from-blue-700 to-indigo-800 px-8 py-10 text-white relative overflow-hidden">
+                <div className="bg-primary px-8 py-10 text-white relative overflow-hidden shrink-0">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <Building2 className="w-32 h-32" />
                     </div>
                     <div className="relative z-10 flex items-center gap-5">
-                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
+                        <div className="w-16 h-16 rounded-2xl bg-background/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-2xl">
                             <Plus className="w-8 h-8 text-white" />
                         </div>
                         <div>
@@ -84,46 +87,30 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row h-[600px]">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col md:flex-row w-full h-full">
-                        {/* Sidebar Navigation */}
-                        <TabsList className="flex flex-row md:flex-col items-stretch justify-start bg-slate-50 border-r border-slate-100 p-4 h-auto md:w-64 space-y-1">
-                            <TabsTrigger
-                                value="basico"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Info className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Información Básica</span>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col w-full min-h-0">
+                    <div className="px-8 pt-4 pb-2 border-b border-border/40 shrink-0 bg-background">
+                        <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 bg-muted/50 p-1 rounded-xl">
+                            <TabsTrigger value="basico" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Info className="w-3.5 h-3.5" /> <span className="hidden md:inline">Información Básica</span><span className="md:hidden">Básico</span>
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="contacto"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Phone className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Contacto Detalle</span>
+                            <TabsTrigger value="contacto" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Phone className="w-3.5 h-3.5" /> <span className="hidden md:inline">Contacto Detalle</span><span className="md:hidden">Contacto</span>
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="segmentacion"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Target className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Segmentación</span>
+                            <TabsTrigger value="segmentacion" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Target className="w-3.5 h-3.5" /> <span className="hidden md:inline">Segmentación</span><span className="md:hidden">Segment.</span>
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="seguimiento"
-                                className="flex items-center justify-start gap-3 px-4 py-3 rounded-xl font-bold text-slate-500 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm transition-all"
-                            >
-                                <Activity className="w-4 h-4" />
-                                <span className="text-xs uppercase tracking-tight">Seguimiento</span>
+                            <TabsTrigger value="seguimiento" className="rounded-lg font-bold text-[11px] uppercase tracking-wider flex items-center gap-2">
+                                <Activity className="w-3.5 h-3.5" /> <span className="hidden md:inline">Seguimiento</span><span className="md:hidden">Seguim.</span>
                             </TabsTrigger>
                         </TabsList>
+                    </div>
 
-                        <div className="flex-1 overflow-y-auto bg-white">
+                    <div className="px-8 py-6 overflow-y-auto custom-scrollbar flex-1 bg-card">
                             {/* Tab 1: Información Básica */}
-                            <TabsContent value="basico" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="basico" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Datos Legales</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -197,7 +184,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                     </div>
 
                                     {/* Geocoding Section Card */}
-                                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
+                                    <div className="bg-card rounded-2xl p-6 border border-border/40 shadow-sm space-y-4">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -251,10 +238,10 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             </TabsContent>
 
                             {/* Tab 2: Contacto */}
-                            <TabsContent value="contacto" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="contacto" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Canales de Comunicación</h3>
                                     </div>
 
@@ -305,10 +292,10 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                         </div>
                                     </div>
 
-                                    <Separator className="bg-slate-100" />
+                                    <Separator className="bg-slate-100 text-slate-900" />
 
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Responsables</h3>
                                     </div>
 
@@ -354,10 +341,10 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             </TabsContent>
 
                             {/* Tab 3: Segmentación */}
-                            <TabsContent value="segmentacion" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="segmentacion" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-8">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Perfil Estratégico</h3>
                                     </div>
 
@@ -365,7 +352,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Nivel de Segmentación</Label>
                                             <Select value={formData.segmentation} onValueChange={(v) => setFormData({ ...formData, segmentation: v })}>
-                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner group transition-all">
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner group transition-all text-slate-900">
                                                     <SelectValue placeholder="Categorizar..." />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
@@ -379,7 +366,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Potencial de Venta</Label>
                                             <Select value={formData.potential} onValueChange={(v) => setFormData({ ...formData, potential: v })}>
-                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner">
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 shadow-inner text-slate-900">
                                                     <SelectValue placeholder="Potencial..." />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
@@ -418,7 +405,7 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                                     onClick={() => setFormData({ ...formData, priority: p })}
                                                     className={`flex-1 py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest transition-all ${formData.priority === p
                                                         ? 'bg-blue-600 border-blue-600 text-white shadow-lg'
-                                                        : 'bg-white border-slate-100 text-slate-400 hover:border-blue-100'
+                                                        : 'bg-card border-border/40 text-slate-400 hover:border-blue-100'
                                                         }`}
                                                 >
                                                     {p === 'high' ? 'Crítica' : p === 'medium' ? 'Regular' : 'Baja'}
@@ -430,10 +417,10 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                             </TabsContent>
 
                             {/* Tab 4: Seguimiento */}
-                            <TabsContent value="seguimiento" className="p-8 space-y-8 m-0 animate-in fade-in slide-in-from-right-2">
+                            <TabsContent value="seguimiento" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                                        <div className="w-1.5 h-6 bg-blue-600 rounded-full text-white" />
                                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Control & Status</h3>
                                     </div>
 
@@ -444,13 +431,13 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                                 type="date"
                                                 value={formData.last_visit}
                                                 onChange={(e) => setFormData({ ...formData, last_visit: e.target.value })}
-                                                className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50"
+                                                className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 text-slate-900"
                                             />
                                         </div>
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-black uppercase text-slate-500 ml-1">Estado de la Cuenta</Label>
                                             <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50">
+                                                <SelectTrigger className="h-14 rounded-2xl border-slate-200 font-bold bg-slate-50 text-slate-900">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
@@ -473,10 +460,9 @@ export function PharmacyFormDialog({ open, onOpenChange, formData, setFormData, 
                                 </section>
                             </TabsContent>
                         </div>
-                    </Tabs>
-                </div>
+                </Tabs>
 
-                <div className="bg-slate-50 border-t border-slate-100 px-8 py-6 flex items-center justify-between gap-4">
+                <div className="bg-muted/10 border-t border-border/40 px-8 py-6 flex items-center justify-between gap-4 shrink-0">
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}

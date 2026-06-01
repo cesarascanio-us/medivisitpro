@@ -5,49 +5,22 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
-import { useState, useEffect, cloneElement } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Plus, Edit, Trash2, Lock, Save, RefreshCw, LayoutDashboard, Search } from "lucide-react";
+import { Shield, Save, RefreshCw } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AppRole {
-    id: string;
     slug: string;
     name: string;
-    description: string;
     is_system: boolean;
-    color: string;
-    permissions?: string[]; // Code array
 }
 
 interface AppPermission {
@@ -57,24 +30,25 @@ interface AppPermission {
     description: string;
 }
 
+interface RolePermission {
+    role_slug: string;
+    permission_code: string;
+    access_level: 'full' | 'read_only';
+}
+
+// Matrix State: [roleSlug][permissionCode] = 'full' | 'read_only' | null
+type MatrixState = Record<string, Record<string, 'full' | 'read_only' | null>>;
+
 export default function RoleManager() {
     const { isMaster } = useAuth();
+    const { toast } = useToast();
+    
     const [roles, setRoles] = useState<AppRole[]>([]);
     const [permissions, setPermissions] = useState<AppPermission[]>([]);
+    const [matrix, setMatrix] = useState<MatrixState>({});
+    const [originalMatrix, setOriginalMatrix] = useState<MatrixState>({});
     const [loading, setLoading] = useState(true);
-
-    // Dialog State
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [editingRole, setEditingRole] = useState<AppRole | null>(null);
-
-    // Form State
-    const [formData, setFormData] = useState({
-        slug: "",
-        name: "",
-        description: "",
-        color: "bg-slate-100 text-slate-800",
-        selectedPermissions: [] as string[]
-    });
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (isMaster) {
@@ -85,44 +59,58 @@ export default function RoleManager() {
     const loadData = async () => {
         setLoading(true);
         try {
-            // 1. Fetch Roles
+            // Fetch Roles (Only show non-system or roles meant for the matrix)
             const { data: rolesData, error: rolesError } = await supabase
                 .from('app_roles')
                 .select('*')
+                // .eq('is_system', false) // Optional: exclude master/admin from grid if desired.
+                .not('slug', 'in', '("master")') // Let's hide master from being edited
                 .order('name');
-
             if (rolesError) throw rolesError;
 
-            // 2. Fetch Permissions
+            // Fetch Permissions
             const { data: permsData, error: permsError } = await supabase
                 .from('app_permissions')
                 .select('*')
-                .order('module, name');
-
+                .order('module, code');
             if (permsError) throw permsError;
-            setPermissions(permsData || []);
 
-            // 3. Fetch Role-Permissions
+            // Fetch mappings
             const { data: rolePermsData, error: rpError } = await supabase
                 .from('role_permissions')
-                .select('role_slug, permission_code');
+                .select('role_slug, permission_code, access_level');
+            if (rpError) {
+                // If the column doesn't exist yet, it will throw an error. 
+                // We'll fallback to a basic fetch if access_level column is missing.
+                console.warn("access_level column might be missing. Run the migration.");
+            }
 
-            if (rpError) throw rpError;
+            // Build Matrix State
+            const initialState: MatrixState = {};
+            rolesData?.forEach(r => {
+                initialState[r.slug] = {};
+                permsData?.forEach(p => {
+                    initialState[r.slug][p.code] = null;
+                });
+            });
 
-            // Map permissions to roles
-            const rolesWithPerms = rolesData?.map(role => ({
-                ...role,
-                permissions: rolePermsData
-                    ?.filter(rp => rp.role_slug === role.slug)
-                    .map(rp => rp.permission_code) || []
-            })) || [];
+            rolePermsData?.forEach(rp => {
+                if (initialState[rp.role_slug]) {
+                    // Si no existe access_level en la DB (error viejo), por defecto será full
+                    initialState[rp.role_slug][rp.permission_code] = rp.access_level || 'full';
+                }
+            });
 
-            setRoles(rolesWithPerms);
+            setRoles(rolesData || []);
+            setPermissions(permsData || []);
+            setMatrix(JSON.parse(JSON.stringify(initialState)));
+            setOriginalMatrix(JSON.parse(JSON.stringify(initialState)));
+
         } catch (error: any) {
-            console.error('Error loading RBAC data:', error);
+            console.error('Error loading RBAC matrix:', error);
             toast({
-                title: "Error cargando roles",
-                description: error.message,
+                title: "Error cargando matriz",
+                description: "Asegúrate de haber ejecutado el script SQL para añadir 'access_level'.",
                 variant: "destructive"
             });
         } finally {
@@ -130,116 +118,75 @@ export default function RoleManager() {
         }
     };
 
-    const handleOpenDialog = (role?: AppRole) => {
-        if (role) {
-            setEditingRole(role);
-            setFormData({
-                slug: role.slug,
-                name: role.name,
-                description: role.description || "",
-                color: role.color || "bg-slate-100 text-slate-800",
-                selectedPermissions: role.permissions || []
-            });
-        } else {
-            setEditingRole(null);
-            setFormData({
-                slug: "",
-                name: "",
-                description: "",
-                color: "bg-slate-100 text-slate-800",
-                selectedPermissions: []
-            });
-        }
-        setIsDialogOpen(true);
-    };
+    const handleToggleCell = (roleSlug: string, permCode: string) => {
+        setMatrix(prev => {
+            const current = prev[roleSlug][permCode];
+            let next: 'full' | 'read_only' | null = null;
 
-    const handleSaveRole = async () => {
-        try {
-            if (!formData.slug || !formData.name) {
-                toast({ title: "Error", description: "Nombre y SLUG son obligatorios", variant: "destructive" });
-                return;
-            }
+            if (current === null) next = 'full';
+            else if (current === 'full') next = 'read_only';
+            else next = null;
 
-            // 1. Upsert Role
-            const rolePayload = {
-                slug: formData.slug, // ID for update if exists (simplified logic for this UI, usually ID is better but slug is key here)
-                name: formData.name,
-                description: formData.description,
-                color: formData.color,
-                // Only allow editing slug if it's new. If existing, slug shouldn't change easily without cascading.
-                // For this simple implementation, we assume slug is immutable for existing roles.
-            };
-
-            if (editingRole && editingRole.slug !== formData.slug) {
-                toast({ title: "Error", description: "No se puede cambiar el ID (slug) de un rol existente.", variant: "destructive" });
-                return;
-            }
-
-            const { error: roleError } = await supabase
-                .from('app_roles')
-                .upsert(rolePayload, { onConflict: 'slug' });
-
-            if (roleError) throw roleError;
-
-            // 2. Update Permissions
-            // Delete existing
-            const { error: delError } = await supabase
-                .from('role_permissions')
-                .delete()
-                .eq('role_slug', formData.slug);
-
-            if (delError) throw delError;
-
-            // Insert new
-            if (formData.selectedPermissions.length > 0) {
-                const rpPayload = formData.selectedPermissions.map(code => ({
-                    role_slug: formData.slug,
-                    permission_code: code
-                }));
-
-                const { error: insError } = await supabase
-                    .from('role_permissions')
-                    .insert(rpPayload);
-
-                if (insError) throw insError;
-            }
-
-            toast({ title: "Rol Guardado", description: "Los cambios se han aplicado correctamente." });
-            setIsDialogOpen(false);
-            loadData();
-        } catch (error: any) {
-            console.error('Save role error:', error);
-            toast({ title: "Error", description: error.message, variant: "destructive" });
-        }
-    };
-
-    const handleDeleteRole = async (slug: string) => {
-        if (!confirm(`¿Estás seguro de eliminar el rol '${slug}'? Esto afectará a los usuarios asignados.`)) return;
-
-        try {
-            const { error } = await supabase.from('app_roles').delete().eq('slug', slug);
-            if (error) throw error;
-            toast({ title: "Rol Eliminado" });
-            loadData();
-        } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
-        }
-    };
-
-    const togglePermission = (code: string) => {
-        setFormData(prev => {
-            const exists = prev.selectedPermissions.includes(code);
             return {
                 ...prev,
-                selectedPermissions: exists
-                    ? prev.selectedPermissions.filter(p => p !== code)
-                    : [...prev.selectedPermissions, code]
+                [roleSlug]: {
+                    ...prev[roleSlug],
+                    [permCode]: next
+                }
             };
         });
     };
 
+    const handleSaveMatrix = async () => {
+        setSaving(true);
+        try {
+            // 1. Delete all existing permissions for the roles shown in the matrix
+            const slugs = roles.map(r => r.slug);
+            const { error: delError } = await supabase
+                .from('role_permissions')
+                .delete()
+                .in('role_slug', slugs);
+
+            if (delError) throw delError;
+
+            // 2. Build bulk insert payload
+            const inserts: RolePermission[] = [];
+            roles.forEach(role => {
+                permissions.forEach(perm => {
+                    const access = matrix[role.slug][perm.code];
+                    if (access !== null) {
+                        inserts.push({
+                            role_slug: role.slug,
+                            permission_code: perm.code,
+                            access_level: access
+                        });
+                    }
+                });
+            });
+
+            // 3. Insert new matrix
+            if (inserts.length > 0) {
+                const { error: insError } = await supabase
+                    .from('role_permissions')
+                    .insert(inserts);
+                if (insError) throw insError;
+            }
+
+            setOriginalMatrix(JSON.parse(JSON.stringify(matrix)));
+            toast({ title: "Matriz Guardada", description: "Todos los privilegios han sido actualizados." });
+
+        } catch (error: any) {
+            console.error('Save matrix error:', error);
+            toast({ title: "Error al guardar", description: error.message, variant: "destructive" });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const hasChanges = JSON.stringify(matrix) !== JSON.stringify(originalMatrix);
+
     // Group permissions by module
-    const permissionsByModule = permissions.reduce((acc, curr) => {
+    const groupedPermissions = permissions.reduce((acc, curr) => {
         if (!acc[curr.module]) acc[curr.module] = [];
         acc[curr.module].push(curr);
         return acc;
@@ -248,201 +195,110 @@ export default function RoleManager() {
     if (!isMaster) return <div className="p-8 text-center text-red-500">Acceso Denegado</div>;
 
     return (
-    return (
-        <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 space-y-6">
-            {/* Premium White Header Container */}
-            <header className="bg-white dark:bg-slate-900 px-6 py-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 relative overflow-hidden -mt-2 mx-1">
-                {/* Decorative backgrounds */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-60"></div>
-                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-60"></div>
-
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none transform transition-transform hover:scale-105">
-                            <Shield className="text-white h-8 w-8" />
-                        </div>
-                        <div>
-                            <p className="text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Administración de Seguridad</p>
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                                Gestión de Roles y Permisos
-                            </h1>
-                            <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-none font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">
-                                    RBAC Control
-                                </Badge>
-                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter">{roles.length} Roles Activos</span>
-                                </div>
-                            </div>
-                        </div>
+        <div className="flex flex-col h-full bg-[#FAFBFC] space-y-4 p-4 md:p-6 overflow-hidden max-w-[100vw]">
+            
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm shrink-0">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[#EEF5F8] rounded-xl flex items-center justify-center">
+                        <Shield className="text-[#0B5C6E] h-6 w-6" />
                     </div>
-
-                    <div className="flex items-center gap-3">
-                        <Button
-                            onClick={loadData}
-                            size="icon"
-                            variant="outline"
-                            className="w-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 group"
-                        >
-                            <RefreshCw className={cn("h-5 w-5 text-slate-500 group-hover:text-indigo-600 transition-colors", loading && "animate-spin")} />
-                        </Button>
-                        <Button
-                            onClick={() => handleOpenDialog()}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl h-12 px-6 font-black shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95 flex items-center gap-2"
-                        >
-                            <Plus className="h-5 w-5" />
-                            Nuevo Rol
-                        </Button>
+                    <div>
+                        <h1 className="text-xl font-bold text-[#1A2332]">Matriz de Accesos</h1>
+                        <p className="text-sm text-slate-500">Configuración global de privilegios</p>
                     </div>
                 </div>
-            </header>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {roles.map(role => (
-                    <Card key={role.slug} className="relative overflow-hidden border-none shadow-xl shadow-slate-200/40 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] group hover:scale-[1.02] transition-all duration-300">
-                        <div className={cn("absolute top-0 left-0 w-1.5 h-full", role.color.split(' ')[0] || 'bg-slate-200')} />
-                        <CardHeader className="p-6 pb-2">
-                            <div className="flex justify-between items-start">
-                                <CardTitle className="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                                    {role.name}
-                                    {role.is_system && <Lock className="h-4 w-4 text-amber-500" />}
-                                </CardTitle>
-                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-indigo-600" onClick={() => handleOpenDialog(role)}>
-                                        <Edit className="h-4.5 w-4.5" />
-                                    </Button>
-                                    {!role.is_system && (
-                                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-slate-500 hover:text-rose-600" onClick={() => handleDeleteRole(role.slug)}>
-                                            <Trash2 className="h-4.5 w-4.5" />
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                            <CardDescription className="text-slate-500 font-medium text-xs mt-1">
-                                {role.description || "Sin descripción detallada"}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-xs text-muted-foreground mb-2">Permisos ({role.permissions?.length || 0}):</div>
-                            <div className="flex flex-wrap gap-1">
-                                {role.permissions?.slice(0, 5).map(code => (
-                                    <Badge key={code} variant="outline" className="text-[10px] px-1 py-0 h-5">
-                                        {permissions.find(p => p.code === code)?.name || code}
-                                    </Badge>
-                                ))}
-                                {(role.permissions?.length || 0) > 5 && (
-                                    <Badge variant="secondary" className="text-[10px] px-1 py-0 h-5">
-                                        +{role.permissions!.length - 5} más
-                                    </Badge>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                <div className="flex flex-wrap items-center gap-6 text-sm text-[#6B7A8D] bg-[#F7F8FA] px-6 py-3 rounded-xl border border-slate-200">
+                    <span className="flex items-center gap-2"><span className="text-[#1D9E75] text-lg font-bold">✓</span> Acceso completo</span>
+                    <span className="flex items-center gap-2"><span className="text-[#B45309] text-lg font-bold">◐</span> Acceso parcial / lectura</span>
+                    <span className="flex items-center gap-2"><span className="text-[#D1D5DB] text-lg font-bold">—</span> Sin acceso</span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <Button onClick={loadData} variant="outline" size="icon" className="h-10 w-10 shrink-0" disabled={loading || saving}>
+                        <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+                    </Button>
+                    <Button 
+                        onClick={handleSaveMatrix} 
+                        disabled={!hasChanges || saving}
+                        className="bg-[#0B5C6E] hover:bg-[#084A59] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        {saving ? "Guardando..." : "Guardar Matriz"}
+                    </Button>
+                </div>
             </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[90vh] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col">
-                    <DialogHeader className="bg-slate-50 dark:bg-slate-900 p-8 pb-6 border-b border-slate-100 dark:border-slate-800">
-                        <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                            {editingRole ? 'Configurar Rol' : 'Nuevo Rol del Sistema'}
-                        </DialogTitle>
-                        <DialogDescription className="text-slate-500 font-medium">
-                            Defina las capacidades y nivel de acceso para este perfil de usuario.
-                        </DialogDescription>
-                    </DialogHeader>
+            <Tabs defaultValue={Object.keys(groupedPermissions)[0]} className="flex-1 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-slate-200 bg-[#F7F8FA]">
+                    <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent justify-start">
+                        {Object.keys(groupedPermissions).map(moduleName => (
+                            <TabsTrigger 
+                                key={moduleName} 
+                                value={moduleName}
+                                className="uppercase text-xs font-bold tracking-wider data-[state=active]:bg-[#0B5C6E] data-[state=active]:text-white data-[state=active]:shadow-md"
+                            >
+                                {moduleName}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                </div>
 
-                    <ScrollArea className="flex-1 px-8">
-                        <div className="space-y-6 py-4">
-                            {/* Role Details */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Nombre del Rol</Label>
-                                    <Input
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="Ej: Auditor Senior"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Identificador (Slug)</Label>
-                                    <Input
-                                        value={formData.slug}
-                                        onChange={e => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
-                                        placeholder="ej: auditor_senior"
-                                        disabled={!!editingRole} // Lock slug for edits
-                                    />
-                                </div>
-                                <div className="col-span-2 space-y-2">
-                                    <Label>Descripción</Label>
-                                    <Textarea
-                                        value={formData.description}
-                                        onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                        rows={2}
-                                    />
-                                </div>
-                                <div className="col-span-2 space-y-2">
-                                    <Label>Color (Clases Tailwind)</Label>
-                                    <Input
-                                        value={formData.color}
-                                        onChange={e => setFormData({ ...formData, color: e.target.value })}
-                                        placeholder="ej: bg-blue-100 text-blue-800"
-                                    />
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        Preview: <Badge className={formData.color}>Rol Badge</Badge>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Permissions Grid */}
-                            <div className="space-y-4 border-t pt-4">
-                                <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Permisos del Sistema</h3>
-                                {Object.entries(permissionsByModule).map(([module, perms]) => (
-                                    <div key={module} className="space-y-3">
-                                        <h4 className="text-sm font-medium bg-slate-50 p-2 rounded">{module}</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pl-2">
-                                            {perms.map(p => (
-                                                <div key={p.code} className="flex items-start space-x-2">
-                                                    <Checkbox
-                                                        id={`perm-${p.code}`}
-                                                        checked={formData.selectedPermissions.includes(p.code)}
-                                                        onCheckedChange={() => togglePermission(p.code)}
-                                                    />
-                                                    <div className="grid gap-1.5 leading-none">
-                                                        <Label
-                                                            htmlFor={`perm-${p.code}`}
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                {Object.entries(groupedPermissions).map(([moduleName, perms]) => (
+                    <TabsContent key={moduleName} value={moduleName} className="flex-1 m-0 p-0 outline-none">
+                        <ScrollArea className="h-full w-full">
+                            <div className="min-w-[max-content] p-0 pb-8">
+                                <table className="w-full border-collapse text-left text-[11px] font-sans">
+                                    <thead className="sticky top-0 z-20 bg-[#F7F8FA] shadow-[0_1px_0_#E2E6EA]">
+                                        <tr>
+                                            <th className="p-4 border-r border-[#E2E6EA] font-semibold text-[#1A2332] uppercase tracking-wider min-w-[280px] bg-[#F7F8FA] sticky left-0 z-30 shadow-[1px_0_0_#E2E6EA]">
+                                                Acción
+                                            </th>
+                                            {roles.map(role => (
+                                                <th key={role.slug} className="border-r border-[#E2E6EA] align-bottom bg-[#F7F8FA]">
+                                                    <div className="w-[45px] h-[160px] mx-auto flex items-end pb-4 justify-center">
+                                                        <span 
+                                                            className="text-[10px] font-semibold text-[#6B7A8D] whitespace-nowrap"
+                                                            style={{ writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}
                                                         >
-                                                            {p.name}
-                                                        </Label>
-                                                        <p className="text-[11px] text-muted-foreground">
-                                                            {p.description}
-                                                        </p>
+                                                            {role.name}
+                                                        </span>
                                                     </div>
-                                                </div>
+                                                </th>
                                             ))}
-                                        </div>
-                                    </div>
-                                ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {perms.map(perm => (
+                                            <tr key={perm.code} className="hover:bg-[#FAFBFC] transition-colors border-b border-[#E2E6EA]">
+                                                <td className="px-4 py-3 text-[#1A2332] font-medium sticky left-0 bg-white border-r border-[#E2E6EA] group-hover:bg-[#FAFBFC] z-10 shadow-[1px_0_0_#E2E6EA]">
+                                                    {perm.name}
+                                                </td>
+                                                {roles.map(role => {
+                                                    const val = matrix[role.slug]?.[perm.code];
+                                                    return (
+                                                        <td 
+                                                            key={`${role.slug}-${perm.code}`} 
+                                                            className="border-r border-[#E2E6EA] text-center p-0 cursor-pointer hover:bg-slate-50 transition-colors"
+                                                            onClick={() => handleToggleCell(role.slug, perm.code)}
+                                                        >
+                                                            <div className="w-full h-full min-h-[40px] flex items-center justify-center select-none">
+                                                                {val === 'full' && <span className="text-[#1D9E75] text-sm font-bold">✓</span>}
+                                                                {val === 'read_only' && <span className="text-[#B45309] text-sm font-bold">◐</span>}
+                                                                {val === null && <span className="text-[#D1D5DB] text-xs font-bold">—</span>}
+                                                            </div>
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    </ScrollArea>
-
-                    <DialogFooter className="bg-slate-50 dark:bg-slate-900 p-6 px-8 border-t border-slate-100 dark:border-slate-800">
-                        <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-xl font-bold">
-                            Cancelar
-                        </Button>
-                        <Button
-                            onClick={handleSaveRole}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 font-black shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95"
-                        >
-                            <Save className="h-4 w-4 mr-2" />
-                            Guardar Cambios
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                        </ScrollArea>
+                    </TabsContent>
+                ))}
+            </Tabs>
         </div>
     );
 }

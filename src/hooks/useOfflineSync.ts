@@ -13,7 +13,11 @@ import {
     getPendingCount,
     processPendingSync,
     registerSyncCallback,
-    PendingOperation
+    PendingOperation,
+    getSyncConflicts,
+    resolveSyncConflict,
+    SyncConflict,
+    enqueueSyncConflict
 } from '@/lib/offlineSync';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -29,12 +33,15 @@ interface UseOfflineSyncReturn {
         data: Record<string, unknown>
     ) => Promise<string>;
     forceSync: () => Promise<void>;
+    conflicts: SyncConflict[];
+    resolveConflict: (id: string) => Promise<void>;
 }
 
 export function useOfflineSync(): UseOfflineSyncReturn {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [pendingCount, setPendingCount] = useState(0);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [conflicts, setConflicts] = useState<SyncConflict[]>([]);
 
     // Update online status
     useEffect(() => {
@@ -65,11 +72,17 @@ export function useOfflineSync(): UseOfflineSyncReturn {
         };
     }, []);
 
+    const updateConflicts = useCallback(async () => {
+        const c = await getSyncConflicts();
+        setConflicts(c.filter(item => item.status === 'pending'));
+    }, []);
+
     // Update pending count
     const updatePendingCount = useCallback(async () => {
         const count = await getPendingCount();
         setPendingCount(count);
-    }, []);
+        await updateConflicts();
+    }, [updateConflicts]);
 
     useEffect(() => {
         updatePendingCount();
@@ -88,6 +101,31 @@ export function useOfflineSync(): UseOfflineSyncReturn {
                     if (error) throw error;
                 } else if (action === 'update') {
                     const { id, ...updateData } = data;
+                    
+                    // Fetch remote state to check for conflicts
+                    const { data: remoteData, error: fetchError } = await supabase
+                        .from(table as any)
+                        .select('*')
+                        .eq('id', id)
+                        .single();
+
+                    if (!fetchError && remoteData) {
+                        const remote = remoteData as any;
+                        const local = data as any;
+                        
+                        // SIMPLE CONFLICT DETECTION: If remote updated_at is newer than our local data's context
+                        if (remote.updated_at && local.updated_at && new Date(remote.updated_at) > new Date(local.updated_at)) {
+                            console.warn('[OfflineSync] Conflict detected on table:', table);
+                            await enqueueSyncConflict({
+                                operationId: operation.id,
+                                table,
+                                localData: data,
+                                remoteData: remote
+                            });
+                            return false; // Skip this sync, handled by conflict queue
+                        }
+                    }
+
                     const { error } = await supabase.from(table as any).update(updateData).eq('id', id);
                     if (error) throw error;
                 } else if (action === 'delete') {
@@ -141,8 +179,8 @@ export function useOfflineSync(): UseOfflineSyncReturn {
 
             if (result.failed > 0) {
                 toast({
-                    title: "Algunas operaciones fallaron",
-                    description: `${result.failed} operación(es) pendiente(s)`,
+                    title: "Acciones pendientes",
+                    description: `${result.failed} operación(es) fallaron o tienen conflictos`,
                     variant: "destructive"
                 });
             }
@@ -151,11 +189,18 @@ export function useOfflineSync(): UseOfflineSyncReturn {
         }
     }, [isOnline, updatePendingCount]);
 
+    const resolveConflict = useCallback(async (id: string) => {
+        await resolveSyncConflict(id);
+        await updateConflicts();
+    }, [updateConflicts]);
+
     return {
         isOnline,
         pendingCount,
         isSyncing,
         enqueueOperation,
-        forceSync
+        forceSync,
+        conflicts,
+        resolveConflict
     };
 }

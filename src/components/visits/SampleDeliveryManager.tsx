@@ -13,10 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Package, Plus, Minus, AlertCircle, ShoppingBag } from "lucide-react";
+import { Package, Plus, Minus, AlertCircle, ShoppingBag, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
 import { useDemoData } from "@/contexts/MockDataProvider";
 
 export interface DeliveryItem {
@@ -30,9 +29,11 @@ export interface DeliveryItem {
 interface SampleDeliveryManagerProps {
     onUpdate: (items: DeliveryItem[]) => void;
     initialItems?: DeliveryItem[];
+    specialty?: string;
+    isMedicalVisit?: boolean;
 }
 
-export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDeliveryManagerProps) {
+export function SampleDeliveryManager({ onUpdate, initialItems = [], specialty, isMedicalVisit }: SampleDeliveryManagerProps) {
     const [inventory, setInventory] = useState<any[]>([]);
     const [selectedItems, setSelectedItems] = useState<DeliveryItem[]>(initialItems);
     const [loading, setLoading] = useState(true);
@@ -41,33 +42,54 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
 
     useEffect(() => {
         loadInventory();
-    }, []);
+    }, [specialty, isMedicalVisit]);
 
     const loadInventory = async () => {
         try {
             if (demoData) {
                 console.log("SampleDeliveryManager: Loading demo inventory");
-                setInventory(demoData.inventory || []);
+                let items = demoData.inventory || [];
+                if (isMedicalVisit && specialty) {
+                    const spec = specialty.toLowerCase().trim();
+                    items = items.filter((item: any) => {
+                        const pSpec = (item.products?.medical_specialties || '').toLowerCase();
+                        const pCat = (item.products?.category || '').toLowerCase();
+                        const isLaunch = pCat.includes('launch') || pCat.includes('lanzamiento');
+                        return isLaunch || pSpec.includes(spec);
+                    });
+                }
+                setInventory(items);
                 return;
             }
 
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
 
-            // Direct query to 'inventario_muestras' (correct table per migration)
             const { data: invData, error: invError } = await supabase
                 .from('inventario_muestras' as any)
                 .select(`
                     product_id,
                     quantity:cantidad_asignada,
                     lote,
-                    products:products(name, presentation)
+                    products:products(name, presentation, medical_specialties, category)
                 `)
                 .eq('user_id', user.id)
-                .gt('cantidad_asignada', 0); // Only show items with stock
+                .gt('cantidad_asignada', 0);
 
             if (invError) throw invError;
-            setInventory(invData || []);
+
+            let filteredData = invData || [];
+            if (isMedicalVisit && specialty) {
+                const spec = specialty.toLowerCase().trim();
+                filteredData = filteredData.filter((item: any) => {
+                    const pSpec = (item.products?.medical_specialties || '').toLowerCase();
+                    const pCat = (item.products?.category || '').toLowerCase();
+                    const isLaunch = pCat.includes('launch') || pCat.includes('lanzamiento');
+                    return isLaunch || pSpec.includes(spec);
+                });
+            }
+
+            setInventory(filteredData);
         } catch (error) {
             console.error("Error loading inventory:", error);
             toast({
@@ -132,12 +154,12 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
         onUpdate(newItems);
     };
 
-    if (loading) return <div className="p-4 text-center text-sm text-slate-500">Cargando inventario...</div>;
+    if (loading) return <div className="p-4 text-center text-sm text-muted-foreground">Cargando inventario...</div>;
 
     if (inventory.length === 0) {
         return (
-            <Card className="border-dashed border-slate-700 bg-slate-900/50">
-                <CardContent className="p-6 text-center text-slate-400">
+            <Card className="border-dashed border-border bg-muted/10">
+                <CardContent className="p-6 text-center text-muted-foreground">
                     <Package className="h-8 w-8 mx-auto mb-2 opacity-50" />
                     <p>No tienes muestras disponibles en tu inventario para entregar.</p>
                 </CardContent>
@@ -146,30 +168,29 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
     }
 
     return (
-        <Card className="border-blue-500/20 shadow-lg bg-slate-900/50 backdrop-blur-sm">
-            <CardHeader className="pb-3 border-b border-blue-500/10 bg-blue-500/5">
-                <CardTitle className="text-lg flex items-center gap-2 text-blue-400">
+        <Card className="border-primary/20 shadow-lg bg-muted/10 backdrop-blur-sm">
+            <CardHeader className="pb-3 border-b border-blue-500/10 bg-primary/5">
+                <CardTitle className="text-lg flex items-center gap-2 text-primary">
                     <ShoppingBag className="h-5 w-5" />
                     Entregar Muestras
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-                {/* Selected Summary */}
                 {selectedItems.length > 0 && (
-                    <div className="space-y-3 mb-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                        <Label className="text-xs font-semibold text-blue-300 uppercase tracking-wider flex items-center gap-2">
+                    <div className="space-y-3 mb-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                        <Label className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-2">
                             <AlertCircle className="h-3 w-3" />
                             Muestras a Entregar (Requiere Lote)
                         </Label>
                         {selectedItems.map(item => (
-                            <div key={item.product_id} className="flex flex-col gap-2 bg-slate-800 p-2 rounded border border-slate-700 shadow-sm">
+                            <div key={item.product_id} className="flex flex-col gap-2 bg-card p-2 rounded border border-border shadow-sm">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-slate-200">{item.product_name}</span>
+                                    <span className="text-sm font-medium text-foreground">{item.product_name}</span>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border border-blue-500/30">x{item.quantity}</Badge>
+                                        <Badge variant="secondary" className="bg-blue-500/20 text-primary border border-blue-500/30">x{item.quantity}</Badge>
                                         <button
                                             onClick={() => handleRemoveItem(item.product_id)}
-                                            className="hover:bg-red-500/20 p-1 rounded-full text-slate-400 hover:text-red-400 transition-colors"
+                                            className="hover:bg-red-500/20 p-1 rounded-full text-muted-foreground hover:text-red-400 transition-colors"
                                         >
                                             <Minus className="h-3 w-3" />
                                         </button>
@@ -178,7 +199,7 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
                                 <input
                                     type="text"
                                     placeholder="Lote (Obligatorio)"
-                                    className="text-xs border border-slate-600 bg-slate-950 text-white rounded px-2 py-1 w-full focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
+                                    className="text-xs border border-slate-600 bg-muted/20 text-white rounded px-2 py-1 w-full focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
                                     value={item.lotNumber || ''}
                                     onChange={(e) => {
                                         const newItems = selectedItems.map(i =>
@@ -193,9 +214,8 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
                     </div>
                 )}
 
-                {/* Inventory List */}
                 <div className="space-y-1">
-                    <Label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tu Inventario Disponible</Label>
+                    <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tu Inventario Disponible</Label>
                     <ScrollArea className="h-[200px] pr-4">
                         <div className="grid grid-cols-1 gap-2">
                             {inventory.map((item) => {
@@ -207,14 +227,14 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
                                     <div
                                         key={item.product_id}
                                         className={`flex items-center justify-between p-3 rounded-lg border transition-all ${remaining === 0
-                                            ? 'bg-slate-900/50 border-slate-800 opacity-40'
-                                            : 'bg-slate-950 border-slate-800 hover:border-blue-500/50 hover:shadow-md hover:bg-slate-900'
+                                            ? 'bg-muted/10 border-border opacity-40'
+                                            : 'bg-muted/20 border-border hover:border-blue-500/50 hover:shadow-md hover:bg-slate-900'
                                             }`}
                                     >
                                         <div>
-                                            <p className="font-medium text-sm text-slate-200">{item.products?.name}</p>
-                                            <p className="text-xs text-slate-500">
-                                                Disponible: <span className={remaining < 5 ? "text-orange-400 font-bold" : "text-slate-400"}>{remaining}</span>
+                                            <p className="font-medium text-sm text-foreground">{item.products?.name}</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                Disponible: <span className={remaining < 5 ? "text-orange-400 font-bold" : "text-muted-foreground"}>{remaining}</span>
                                                 <span className="mx-1 text-slate-600">/</span>
                                                 Total: {item.quantity}
                                             </p>
@@ -222,7 +242,7 @@ export function SampleDeliveryManager({ onUpdate, initialItems = [] }: SampleDel
                                         <Button
                                             size="sm"
                                             variant={remaining === 0 ? "ghost" : "outline"}
-                                            className={`h-8 w-8 p-0 rounded-full ${remaining > 0 ? 'border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300' : 'text-slate-600'}`}
+                                            className={`h-8 w-8 p-0 rounded-full ${remaining > 0 ? 'border-blue-500/30 text-primary hover:bg-primary/5 hover:text-primary' : 'text-slate-600'}`}
                                             onClick={() => remaining > 0 && handleAddItem(item)}
                                             disabled={remaining === 0}
                                         >

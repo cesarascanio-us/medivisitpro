@@ -31,6 +31,7 @@ export interface Organization {
   trial_ends_at: string | null;
   settings: OrganizationSettings;
   onboarding_completed: boolean;
+  is_system_owner: boolean;
   created_at: string;
   updated_at: string;
 }

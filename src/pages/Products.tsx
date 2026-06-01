@@ -27,8 +27,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { exportToCSV } from "@/utils/exportUtils";
-import * as XLSX from 'xlsx';
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
+import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
+import { cn } from "@/lib/utils";
 
 import { useDemoData } from "@/contexts/MockDataProvider";
 
@@ -40,18 +41,19 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const { toast } = useToast();
-  const { isFavorite, toggleFavorite, getFavoriteProductIds, loading: favoritesLoading } = useFavorites();
+  const { isFavorite, toggleFavorite, getFavoriteProductIds } = useFavorites();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [showProductView, setShowProductView] = useState(false);
   const demoData = useDemoData();
+
+  const canManageCatalog = isMaster || ["admin", "manager"].includes(user?.app_metadata?.role || user?.user_metadata?.role || "representative"); // Simplified role check based on typical usage, or just use the hook
+
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [organizationId]);
 
   useEffect(() => {
     filterProducts();
@@ -62,29 +64,28 @@ export default function Products() {
       setLoading(true);
 
       if (demoData) {
-        console.log("Products: Loading demo products");
         setProducts(demoData.products || []);
         return;
       }
 
-      console.log("DEBUG: Query Organization ID:", organizationId);
+      if (!organizationId) {
+          setLoading(false);
+          return;
+      }
 
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .eq('organization_id', organizationId) // Make sure this matches!
+        .eq('organization_id', organizationId)
         .order('name', { ascending: true });
 
-      console.log("DEBUG: Products Fetch Result:", { dataLength: data?.length, error }); // NEW DEBUG LOG
-
       if (error) throw error;
-
       setProducts(data || []);
     } catch (error) {
       console.error('Error loading products:', error);
       toast({
         title: "Error de carga",
-        description: "No se pudieron cargar los productos. Verificando conexión.",
+        description: "No se pudieron cargar los productos.",
         variant: "destructive"
       });
     } finally {
@@ -120,15 +121,10 @@ export default function Products() {
 
   const handleExport = () => {
     if (filteredProducts.length === 0) {
-      toast({
-        title: "Sin datos",
-        description: "No hay productos para exportar.",
-        variant: "destructive"
-      });
+      toast({ title: "Sin datos", description: "No hay productos para exportar.", variant: "destructive" });
       return;
     }
 
-    // Format for export - flatten arrays if needed
     const exportData = filteredProducts.map(p => ({
       ...p,
       active_ingredients: Array.isArray(p.active_ingredients) ? p.active_ingredients.join(", ") : p.active_ingredients,
@@ -136,119 +132,148 @@ export default function Products() {
     }));
 
     exportToCSV(exportData, `productos_${new Date().toISOString().split('T')[0]}`);
-    toast({
-      title: "Exportación exitosa",
-      description: "El catálogo se ha descargado correctamente."
-    });
+    toast({ title: "Exportación exitosa", description: "El catálogo se ha descargado correctamente." });
   };
 
-  const triggerImport = () => {
-    fileInputRef.current?.click();
-  };
+  const triggerImport = () => fileInputRef.current?.click();
 
   const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
     setImporting(true);
 
     try {
       const reader = new FileReader();
-
       reader.onload = async (e) => {
         try {
+          const XLSX = await import('xlsx');
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-          if (!jsonData || jsonData.length === 0) {
-            throw new Error("El archivo está vacío o no tiene el formato correcto.");
-          }
+          const parsedProducts = jsonData.map((row: any) => {
+            // Flexible name detection
+            let productName = row['Nombre'] || row['nombre'] || row['Producto'] || row['Descripcion'] || row['Descripción'] || '';
+            let assignedTherapeuticArea = row['Área Terapéutica'] || row['Area Terapeutica'] || row['Categoria'] || row['categoria'] || null;
 
-          const productsToInsert = jsonData.map((row: any) => ({
-            user_id: user?.id,
-            // Basic
-            product_code: row['Codigo'] || row['codigo'] || row['Código'] || row['Product Code'] || row['ID_Producto'] || null,
-            name: row['Nombre'] || row['nombre'] || row['Name'] || row['Nombre del Producto'] || '',
-            active_ingredients: row['Principios Activos'] || row['principios_activos'] || row['Active Ingredients'] || null,
-            presentation: row['Presentacion'] || row['presentacion'] || row['Presentación'] || row['Composicion'] || row['Presentation'] || null,
-            category: row['Categoria'] || row['categoria'] || row['Categoría'] || row['Category'] || 'General',
+            // Fallback for old format
+            if (!productName) {
+              if (row['LÍNEA GASTRICA']) { productName = row['LÍNEA GASTRICA']; assignedTherapeuticArea = 'Línea Gástrica'; }
+              else if (row['LÍNEA PEDIÁTRICA']) { productName = row['LÍNEA PEDIÁTRICA']; assignedTherapeuticArea = 'Línea Pediátrica'; }
+              else if (row['ESPECIALIDADES FARMACÉUTICAS']) { productName = row['ESPECIALIDADES FARMACÉUTICAS']; assignedTherapeuticArea = 'Especialidades Farmacéuticas'; }
+              else if (row['LIÍNEA OFICINALES']) { productName = row['LIÍNEA OFICINALES']; assignedTherapeuticArea = 'Línea Oficinal'; }
+              else if (row['LÍNEA COSMETICA / CUIDADO PERSONAL']) { productName = row['LÍNEA COSMETICA / CUIDADO PERSONAL']; assignedTherapeuticArea = 'Cuidado Personal'; }
+              else if (row['LÍNEA DE ALCOHOL']) { productName = row['LÍNEA DE ALCOHOL']; assignedTherapeuticArea = 'Línea de Alcohol'; }
+              else if (row['COMPLEMENTOS NUTRICIONALES']) { productName = row['COMPLEMENTOS NUTRICIONALES']; assignedTherapeuticArea = 'Nutracéutica'; }
+            }
 
-            // Medical
-            indications: row['Indicaciones'] || row['indicaciones'] || row['Indications'] || null,
-            medical_specialties: row['Especialidades'] || row['especialidades'] || row['Medical Specialties'] || null,
-            dosage: row['Dosificacion'] || row['dosificacion'] || row['Dosificación'] || row['Dosage'] || null,
-            safety_info: row['Seguridad'] || row['seguridad'] || row['Safety'] || row['Contraindicaciones'] || null,
+            // The user's Excel file has separate columns:
+            // "Código PRD" (e.g., AC2418U) -> maps to product_code
+            // "GTIN / SKU" (e.g., 7591616002418) -> maps to sku
+            const productCode = row['Código PRD'] || row['Codigo PRD'] || row['Codigo'] || row['CODIGO'] || row['ID_Producto'] || null;
+            const skuValue = row['GTIN / SKU'] || row['GTIN'] || row['SKU'] || row['CODIGO DE BARRA'] || row['Codigo de Barra'] || row['Codigo_Barra'] || null;
+            
+            return {
+              user_id: user?.id,
+              organization_id: organizationId,
+              product_code: productCode ? String(productCode).trim() : null,
+              sku: skuValue ? String(skuValue).trim() : null,
+              name: productName,
+              active_ingredients: row['Principios Activos'] || row['principios_activos'] || null,
+              presentation: row['Presentacion'] || row['presentacion'] || row['U.M'] || null,
+              category: assignedTherapeuticArea || 'General',
+              description: row['DESCRIPCIÓN'] || row['Descripción'] || row['descripcion'] || row['Indicaciones'] || row['indicaciones'] || null,
+              indications: row['DESCRIPCIÓN'] || row['Descripción'] || row['descripcion'] || row['Indicaciones'] || row['indicaciones'] || null,
+              therapeutic_area: null,
+              price: row['P.U'] || row['Precio_Final'] || row['Precio_Mayo'] || row['Precio'] ? parseFloat(String(row['P.U'] || row['Precio_Final'] || row['Precio_Mayo'] || row['Precio']).replace(/[^0-9.]/g, '')) : null,
+              image_url: row['Imagen'] || row['imagen'] || row['Image'] || row['image_url'] || null,
+            };
+          }).filter(p => p.name);
 
-            // Resources
-            key_message: row['Mensaje Clave'] || row['mensaje_clave'] || row['Key Message'] || null,
-            image_url: row['Imagen'] || row['imagen'] || row['Image'] || row['Image URL'] || null,
-            pdf_link: row['PDF'] || row['pdf'] || row['Link PDF'] || row['PDF Link'] || null,
+          if (parsedProducts.length === 0) throw new Error("No se encontraron productos válidos.");
 
-            // Legacy
-            description: row['Descripcion'] || row['descripcion'] || row['Descripción'] || row['Description'] || null,
-            therapeutic_area: row['Area Terapeutica'] || row['area_terapeutica'] || row['Área Terapéutica'] || row['Therapeutic Area'] || null,
-            price: (row['Precio'] || row['precio'] || row['Price']) ? parseFloat(String(row['Precio'] || row['precio'] || row['Price']).replace(/[^0-9.]/g, '')) : null,
-            contraindications: row['Contraindicaciones'] || row['contraindicaciones'] || null,
-            side_effects: row['Efectos Secundarios'] || row['efectos_secundarios'] || row['Side Effects'] || null
-          })).filter(p => p.name);
+          // Deduplicate by name to prevent "ON CONFLICT DO UPDATE command cannot affect row a second time"
+          const uniqueProductsMap = new Map();
+          const seenCodes = new Set();
+          const seenSkus = new Set();
+          
+          parsedProducts.forEach(product => {
+            const key = product.name.trim().toLowerCase();
+            
+            // Check for duplicate product_codes to prevent 'products_product_code_key' unique constraint errors
+            if (product.product_code) {
+              const codeStr = String(product.product_code).trim();
+              if (seenCodes.has(codeStr)) {
+                // Duplicate product code found! Nullify to prevent DB crash, but still import the product by name.
+                product.product_code = null;
+              } else {
+                seenCodes.add(codeStr);
+              }
+            }
 
-          if (productsToInsert.length === 0) {
-            throw new Error("No se encontraron productos válidos para importar.");
-          }
+            // Check for duplicate SKUs (barcodes) to prevent possible sku unique constraint errors
+            if (product.sku) {
+              const skuStr = String(product.sku).trim();
+              if (seenSkus.has(skuStr)) {
+                product.sku = null;
+              } else {
+                seenSkus.add(skuStr);
+              }
+            }
+            
+            uniqueProductsMap.set(key, product);
+          });
+          const productsToInsert = Array.from(uniqueProductsMap.values());
 
           const { error } = await supabase
             .from('products')
-            .insert(productsToInsert);
+            .upsert(productsToInsert, { onConflict: 'name, organization_id' });
 
-          if (error) throw error;
-
-          toast({
-            title: "Importación completa",
-            description: `Se han importado ${productsToInsert.length} productos correctamente.`
-          });
+          if (error) {
+            console.error("Supabase Import Error:", error);
+            // Mostrar un alert gigante para capturar el error exacto que la base de datos está arrojando
+            alert(`🚨 ERROR DE BASE DE DATOS 🚨\n\nMensaje: ${error.message}\nDetalles: ${error.details || 'Ninguno'}\nHint: ${error.hint || 'Ninguno'}\nCódigo: ${error.code}\n\nPor favor, tómale captura a este mensaje.`);
+            throw new Error(`Error al importar a base de datos: ${error.message}`);
+          }
+          
           loadProducts();
-
+          toast({ title: "Importación completa", description: `Se han importado ${productsToInsert.length} productos.` });
         } catch (error: any) {
-          console.error("Import parsing error:", error);
-          toast({
-            title: "Error de Importación",
-            description: error.message || "Hubo un error al procesar el archivo.",
-            variant: "destructive"
-          });
+          toast({ title: "Error de Importación", description: error.message, variant: "destructive" });
         } finally {
           setImporting(false);
           if (fileInputRef.current) fileInputRef.current.value = "";
         }
       };
-
       reader.readAsArrayBuffer(file);
     } catch (error) {
-      console.error("File reading error:", error);
       setImporting(false);
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`¿Estás seguro de que deseas eliminar el producto "${name}"?`)) return;
-
-    const { error } = await supabase.from('products').delete().eq('id', id);
-    if (error) {
-      toast({
-        title: "Error",
-        description: "No se pudo eliminar el producto.",
-        variant: "destructive"
-      });
-    } else {
-      toast({
-        title: "Producto eliminado",
-        description: "El producto ha sido eliminado correctamente."
-      });
-      loadProducts();
+  const handleClearCatalog = async () => {
+    if (!confirm("¿Estás seguro de que deseas eliminar TODOS los productos del catálogo? Esta acción no se puede deshacer y también eliminará el inventario asociado en las droguerías.")) return;
+    
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('organization_id', organizationId);
+        
+      if (error) throw error;
+      
+      toast({ title: "Catálogo limpio", description: "Se han eliminado todos los productos exitosamente." });
+      setProducts([]);
+      setFilteredProducts([]);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
   const productStats = {
@@ -260,447 +285,198 @@ export default function Products() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Hidden File Input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleImport}
-        accept=".csv"
-        className="hidden"
+    <div className="space-y-8 pb-10">
+      <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx, .xls, .csv" className="hidden" />
+
+      <EliteHeader
+        title="Vademécum Alpha"
+        subtitle="Gestión de Inteligencia de Producto e Inventario Científico"
+        icon={Package}
+        badgeText="Sincronizado"
+        statusText={`${products.length} Activos en Red`}
+        statusColor="bg-emerald-500"
+        rightContent={
+          <div className="flex items-center gap-4">
+            {canManageCatalog && (
+              <ProductFormDialog
+                onSuccess={loadProducts}
+                trigger={
+                  <Button className="btn-elite-primary h-12 px-8">
+                    <Plus className="h-5 w-5 mr-2" /> Alta de Producto
+                  </Button>
+                }
+              />
+            )}
+            <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-12 h-12 rounded-xl hover:bg-amber-50 text-amber-500 transition-all">
+              <Lightbulb className="h-6 w-6" />
+            </Button>
+          </div>
+        }
       />
 
-      {/* Header */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -mr-32 -mt-32 transition-colors group-hover:bg-indigo-100/50" />
-        <div className="relative z-10">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-xl shadow-indigo-200">
-              <Package className="h-7 w-7 text-white" />
-            </div>
-            Catálogo Maestro
-          </h1>
-          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-3 ml-18">Portafolio Farmacéutico & Recursos Científicos</p>
-        </div>
-        <div className="flex items-center gap-3 relative z-10">
-          <Button variant="ghost" size="icon" onClick={() => setShowHelp(!showHelp)} className="w-11 h-11 rounded-xl hover:bg-slate-50">
-            <Lightbulb className="h-5 w-5 text-amber-500" />
-          </Button>
-          <ProductFormDialog
-            onSuccess={loadProducts}
-            trigger={
-              <Button className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl shadow-indigo-500/20 transition-all hover:scale-[1.02] flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Alta de Producto
-              </Button>
-            }
-          />
-        </div>
-      </div>
-
-      {showHelp && (
-        <InstructionCard
-          title="Gestión de Productos"
-          description="Aquí administras tu catálogo de medicamentos y muestras. Puedes filtrar, editar o agregar nuevos productos."
-          items={[
-            "Usa 'Importar' para cargar productos masivamente desde Excel.",
-            "En la pestaña 'Favoritos' verás los productos que has marcado con el corazón.",
-            "Puedes gestionar el stock de muestras directamente desde cada tarjeta de producto."
-          ]}
-        />
-      )}
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total SKU</p>
-              <p className="text-3xl font-black text-slate-900 tracking-tighter">{productStats.total}</p>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center">
-              <Package className="h-6 w-6 text-indigo-600" />
-            </div>
-          </div>
-        </Card>
-
-        {Object.entries(productStats.byCategory).slice(0, 3).map(([category, count]) => (
-          <Card key={category} className="bg-white border-slate-100 rounded-2xl shadow-sm p-6 group hover:border-indigo-100 transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 truncate max-w-[120px]">{category}</p>
-                <p className="text-3xl font-black text-slate-900 tracking-tighter">{count as number}</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-indigo-400" />
-              </div>
-            </div>
-          </Card>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <EliteKPICard title="Total Activos" value={productStats.total} icon={Package} color="blue" subtitle="Inventario General" />
+        {Object.entries(productStats.byCategory).slice(0, 3).map(([category, count], i) => (
+          <EliteKPICard key={category} title={category} value={count as number} icon={Package} color={i % 2 === 0 ? "indigo" : "emerald"} subtitle="Segmento Red" />
         ))}
       </div>
 
-      {/* Action Bar */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar productos, principios activos, categorías..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+      <Card className="card-elite p-6 border border-border/40 bg-card rounded-[2rem] shadow-premium-sm">
+        <div className="flex flex-col xl:flex-row gap-6">
+          <div className="flex-1 relative group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <Input
+              placeholder="LOCALIZAR POR NOMBRE, PRINCIPIO ACTIVO O INDICACIÓN..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="h-14 pl-16 bg-muted/10 border-none focus-visible:ring-primary/20 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner placeholder:text-muted-foreground/30 text-foreground"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="h-14 w-full md:w-64 bg-muted/10 border-none focus:ring-primary/20 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-inner text-foreground px-8">
+                <SelectValue placeholder="CATEGORÍA" />
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl border-border/40 bg-card font-black text-[10px] uppercase tracking-widest">
+                <SelectItem value="all">TODOS LOS PRODUCTOS</SelectItem>
+                {categories.map(category => (
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="h-8 w-[1px] bg-border/40 mx-2 hidden xl:block" />
+            {canManageCatalog && (
+              <>
+                <Button variant="outline" onClick={handleClearCatalog} disabled={loading || products.length === 0} className="h-14 px-6 border-red-200 text-red-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all shadow-premium-sm flex items-center gap-2">
+                  <Trash2 className="h-5 w-5" /> Vaciar
+                </Button>
+                <Button variant="outline" onClick={triggerImport} disabled={importing} className="h-14 px-8 border-border/40 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all shadow-premium-sm flex items-center gap-3">
+                  {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />} Importar
+                </Button>
+              </>
+            )}
+            <Button variant="outline" onClick={handleExport} className="h-14 px-8 border-border/40 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 hover:text-primary transition-all shadow-premium-sm flex items-center gap-3">
+              <Download className="h-5 w-5" /> Exportar
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setHelpDialogOpen(true)} className="h-14 w-14 border border-border/40 rounded-2xl bg-muted/10 shadow-inner hover:bg-card text-muted-foreground hover:text-primary transition-all">
+              <HelpCircle className="h-6 w-6" />
+            </Button>
+          </div>
         </div>
+      </Card>
 
-        <div className="flex items-center gap-2">
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Categoría" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas las categorías</SelectItem>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" title="Ayuda de Importación">
-                <HelpCircle className="h-5 w-5 text-muted-foreground" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Estructura de Archivo para Importación</DialogTitle>
-                <DialogDescription>Para importar productos, utiliza un archivo Excel o CSV con estas columnas:</DialogDescription>
-              </DialogHeader>
-              <div className="border rounded-md overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Columna</TableHead>
-                      <TableHead>Descripción</TableHead>
-                      <TableHead>Ejemplo</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-mono">Nombre</TableCell>
-                      <TableCell>Nombre del producto (Obligatorio)</TableCell>
-                      <TableCell>CardioMax Pro</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-mono">Categoria</TableCell>
-                      <TableCell>Categoría (General por defecto)</TableCell>
-                      <TableCell>Cardiovascular</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-mono">Principios Activos</TableCell>
-                      <TableCell>Ingredientes activos</TableCell>
-                      <TableCell>Losartán 50mg</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-mono">Precio</TableCell>
-                      <TableCell>Precio unitario</TableCell>
-                      <TableCell>45.99</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Button variant="outline" onClick={triggerImport} disabled={importing} title="Importar desde Excel">
-            {importing ? <FileSpreadsheet className="h-4 w-4 animate-pulse md:mr-2" /> : <Upload className="h-4 w-4 md:mr-2" />}
-            <span className="hidden md:inline">Importar</span>
-          </Button>
-
-          <Button variant="outline" onClick={handleExport} title="Exportar a CSV">
-            <Download className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Exportar</span>
-          </Button>
-
-          <ProductFormDialog
-            onSuccess={loadProducts}
-            trigger={
-              <Button className="btn-medical">
-                <Plus className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">Nuevo Producto</span>
-              </Button>
-            }
-          />
-        </div>
-      </div>
-
-      {/* Products Grid */}
-      <Tabs defaultValue="grid" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="grid">Vista Rejilla</TabsTrigger>
-          <TabsTrigger value="list">Vista Lista</TabsTrigger>
-          <TabsTrigger value="favorites">Favoritos</TabsTrigger>
+      <Tabs defaultValue="grid" className="w-full space-y-8">
+        <TabsList className="flex w-full md:w-[400px] p-1 bg-muted/10 rounded-2xl border border-border/40 shadow-inner">
+          <TabsTrigger value="grid" className="flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary transition-all h-10">Cuadrícula</TabsTrigger>
+          <TabsTrigger value="list" className="flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary transition-all h-10">Lista</TabsTrigger>
+          <TabsTrigger value="favorites" className="flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-rose-500 transition-all h-10">Favoritos</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="grid" className="mt-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <TabsContent value="grid" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="bg-white border border-slate-200 hover:shadow-lg hover:border-emerald-300 transition-all duration-200 group">
-                <CardContent className="p-4">
-                  {/* Product Image or Placeholder */}
-                  <div className="relative mb-4">
-                    {product.image_url ? (
-                      <div className="aspect-square w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100">
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                          }}
-                        />
-                        <div className="hidden w-full h-full bg-gradient-to-br from-indigo-50/50 to-slate-50 flex items-center justify-center">
-                          <Package className="h-10 w-10 text-indigo-200" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="aspect-square w-full rounded-2xl bg-gradient-to-br from-indigo-50/50 to-slate-50 flex items-center justify-center border border-indigo-50/50">
-                        <Package className="h-10 w-10 text-indigo-200" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Header with actions */}
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className={`h-7 w-7 ${isFavorite(product.id) ? 'text-red-500' : 'text-slate-400'} hover:text-red-500`}
-                        onClick={(e) => handleToggleFavorite(e, product.id)}
-                      >
-                        <Heart className={`h-4 w-4 ${isFavorite(product.id) ? 'fill-current' : ''}`} />
-                      </Button>
-                      <ProductFormDialog
-                        productToEdit={product}
-                        onSuccess={loadProducts}
-                        trigger={
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-emerald-600">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        }
-                      />
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-500" onClick={() => handleDelete(product.id, product.name)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Product Name */}
-                  <h3 className="font-semibold text-slate-800 text-sm mb-1 line-clamp-2 min-h-[40px]">
-                    {product.name}
-                  </h3>
-
-                  {/* Category & Price */}
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 text-[9px] px-2.5 py-1 font-black uppercase tracking-widest border-none">
-                      {product.category || 'General'}
-                    </Badge>
-                    {product.price && (
-                      <span className="text-sm font-black text-slate-900">
-                        ${product.price}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 h-9 text-[10px] font-black uppercase tracking-widest border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl"
-                          onClick={() => setSelectedProductId(product.id)}
-                        >
-                          <Eye className="mr-1.5 h-3.5 w-3.5" />
-                          View
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[2rem]">
-                        <ProductDetailView
-                          productId={product.id}
-                          onBack={() => setSelectedProductId(null)}
-                        />
-                      </DialogContent>
-                    </Dialog>
-
-                    <ProductSamplesDialog
-                      trigger={
-                        <Button size="sm" className="flex-1 h-9 text-[10px] font-black uppercase tracking-widest bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-200 transition-all">
-                          Muestras
-                        </Button>
-                      }
-                      productData={product}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+              <ProductCard key={product.id} product={product} loadProducts={loadProducts} isFavorite={isFavorite(product.id)} toggleFavorite={toggleFavorite} />
             ))}
-            {filteredProducts.length === 0 && !loading && (
-              <div className="col-span-full">
-                <PremiumEmptyState
-                  icon={Package}
-                  title="No se encontraron productos"
-                  description="Intenta ajustar tu búsqueda o añade nuevos productos a tu catálogo para ampliar tu portafolio médico."
-                  actionLabel="Nuevo Producto"
-                  onAction={() => { }} /* The dialog trigger is already in the header */
-                />
-              </div>
-            )}
           </div>
         </TabsContent>
 
-        <TabsContent value="list" className="mt-6">
+        <TabsContent value="list" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="space-y-4">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="medical-card-hover">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-foreground">{product.name}</h3>
-                        <div className="flex items-center space-x-2">
-                          <ProductFormDialog
-                            productToEdit={product}
-                            onSuccess={loadProducts}
-                            trigger={
-                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                                <Edit className="h-4 w-4 mr-1" /> Editar
-                              </Button>
-                            }
-                          />
-                          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive" onClick={() => handleDelete(product.id, product.name)}>
-                            <Trash2 className="h-4 w-4 mr-1" /> Eliminar
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-2 mb-3">
-                        <Badge variant="secondary" className="bg-primary/10 text-primary">
-                          {product.category}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">•</span>
-                        <span className="text-sm font-medium text-success">€{product.price || '0.00'}</span>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground mb-3">{product.description}</p>
-
-                      <div className="flex items-center space-x-2 mt-4">
-                        <ProductDetailDialog
-                          trigger={
-                            <Button variant="outline" size="sm">
-                              <Eye className="mr-2 h-3 w-3" />
-                              Ver Detalles
-                            </Button>
-                          }
-                          productData={product}
-                        />
-                        <ProductSamplesDialog
-                          trigger={
-                            <Button size="sm" className="btn-success">
-                              Gestionar Muestras
-                            </Button>
-                          }
-                          productData={product}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ProductListItem key={product.id} product={product} loadProducts={loadProducts} />
             ))}
           </div>
         </TabsContent>
 
-        <TabsContent value="favorites" className="mt-6">
-          {favoritesLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : getFavoriteProductIds().length === 0 ? (
-            <PremiumEmptyState
-              icon={Heart}
-              title="No tienes favoritos aún"
-              description="Marca tus productos más utilizados con el icono del corazón para acceder a ellos rápidamente desde esta sección."
-            />
+        <TabsContent value="favorites" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {products.filter(p => isFavorite(p.id)).length === 0 ? (
+            <PremiumEmptyState icon={Heart} title="Sin favoritos" description="Marca productos para acceso rápido." />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {products
-                .filter(product => isFavorite(product.id))
-                .map((product) => (
-                  <Card key={product.id} className="bg-white border border-slate-200 hover:shadow-lg hover:border-red-300 transition-all duration-200 group">
-                    <CardContent className="p-4">
-                      {/* Header with icon and actions */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-red-50 to-pink-50 rounded-lg flex items-center justify-center border border-red-100">
-                          <Package className="h-6 w-6 text-red-400" />
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-red-500 hover:text-red-600"
-                          onClick={(e) => handleToggleFavorite(e, product.id)}
-                        >
-                          <Heart className="h-4 w-4 fill-current" />
-                        </Button>
-                      </div>
-
-                      {/* Product Name */}
-                      <h3 className="font-semibold text-slate-800 text-sm mb-1 line-clamp-2 min-h-[40px]">
-                        {product.name}
-                      </h3>
-
-                      {/* Category & Price */}
-                      <div className="flex items-center justify-between mb-3">
-                        <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 font-medium">
-                          {product.category || 'General'}
-                        </Badge>
-                        {product.price && (
-                          <span className="text-sm font-bold text-emerald-600">
-                            ${product.price}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-2">
-                        <ProductDetailDialog
-                          trigger={
-                            <Button variant="outline" size="sm" className="flex-1 h-8 text-xs border-slate-200 text-slate-600 hover:bg-slate-50">
-                              <Eye className="mr-1.5 h-3 w-3" />
-                              Detalles
-                            </Button>
-                          }
-                          productData={product}
-                        />
-
-                        <ProductSamplesDialog
-                          trigger={
-                            <Button size="sm" className="flex-1 h-8 text-xs bg-emerald-500 hover:bg-emerald-600 text-white">
-                              Muestras
-                            </Button>
-                          }
-                          productData={product}
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {products.filter(p => isFavorite(p.id)).map((product) => (
+                <ProductCard key={product.id} product={product} loadProducts={loadProducts} isFavorite={true} toggleFavorite={toggleFavorite} />
+              ))}
             </div>
           )}
         </TabsContent>
       </Tabs>
-    </div >
+    </div>
+  );
+}
+
+function ProductCard({ product, loadProducts, isFavorite, toggleFavorite }: any) {
+  return (
+    <Card className="border-border/40 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
+      <CardContent className="p-4">
+        <div className="relative mb-4 rounded-[1.5rem] overflow-hidden bg-muted/10 border border-border/40 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+          {product.image_url ? (
+            <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+          ) : (
+            <Package className="h-10 w-10 text-muted-foreground/20" />
+          )}
+          <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button variant="secondary" size="icon" className="h-8 w-8 rounded-lg shadow-premium-sm" onClick={(e) => { e.stopPropagation(); toggleFavorite(product.id); }}>
+              <Heart className={cn("h-4 w-4", isFavorite && "fill-rose-500 text-rose-500")} />
+            </Button>
+            <ProductFormDialog productToEdit={product} onSuccess={loadProducts} trigger={
+              <Button variant="secondary" size="icon" className="h-8 w-8 rounded-lg shadow-premium-sm"><Edit className="h-4 w-4" /></Button>
+            } />
+          </div>
+        </div>
+        <div className="space-y-3">
+          <Badge className="bg-muted/20 text-muted-foreground border-none font-black text-[8px] h-4 px-2 uppercase tracking-widest">{product.category || 'General'}</Badge>
+          <h3 className="text-xs font-black text-foreground tracking-tight line-clamp-2 min-h-[32px] leading-tight uppercase font-display">{product.name}</h3>
+          <div className="flex items-center justify-between pt-3 border-t border-border/10">
+            <p className="text-base font-black text-foreground font-display tracking-tighter">${product.price || '0.00'}</p>
+            <div className="flex gap-2">
+              <Dialog>
+                <DialogTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary"><Eye className="h-4 w-4" /></Button></DialogTrigger>
+                <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]">
+                  <DialogTitle className="sr-only">Detalles del Producto</DialogTitle>
+                  <DialogDescription className="sr-only">Información detallada del producto</DialogDescription>
+                  <ProductDetailView productId={product.id} onBack={() => {}} />
+                </DialogContent>
+              </Dialog>
+              <ProductSamplesDialog trigger={<Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary"><Package className="h-4 w-4" /></Button>} productData={product} />
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ProductListItem({ product, loadProducts }: any) {
+  return (
+    <Card className="border-border/40 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden hover:shadow-premium-md transition-all duration-500 group">
+      <CardContent className="p-6">
+        <div className="flex flex-col lg:flex-row gap-6 items-center">
+          <div className="w-16 h-16 rounded-2xl bg-muted/10 border border-border/40 flex items-center justify-center shrink-0">
+            {product.image_url ? <img src={product.image_url} alt={product.name} className="w-full h-full object-cover rounded-2xl" /> : <Package className="h-8 w-8 text-muted-foreground/20" />}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <h3 className="text-base font-black text-foreground tracking-tighter uppercase font-display">{product.name}</h3>
+              <Badge className="bg-muted/20 text-muted-foreground border-none font-black text-[8px] h-4 px-2 uppercase tracking-widest">{product.category || 'General'}</Badge>
+            </div>
+            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight line-clamp-1">{product.description || "S/D"}</p>
+          </div>
+          <div className="flex items-center gap-6">
+            <p className="text-xl font-black text-foreground font-display tracking-tighter">${product.price || '0.00'}</p>
+            <div className="flex gap-2">
+              <ProductSamplesDialog trigger={<Button variant="outline" className="h-10 px-6 border-border/40 rounded-xl font-black uppercase text-[9px] tracking-widest">Muestras</Button>} productData={product} />
+              <Dialog>
+                <DialogTrigger asChild><Button className="h-10 w-10 bg-primary text-white rounded-xl shadow-premium-md flex items-center justify-center"><Eye className="h-4 w-4" /></Button></DialogTrigger>
+                <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden border-none shadow-2xl rounded-[3rem]">
+                  <DialogTitle className="sr-only">Detalles del Producto</DialogTitle>
+                  <DialogDescription className="sr-only">Información detallada del producto</DialogDescription>
+                  <ProductDetailView productId={product.id} onBack={() => {}} />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

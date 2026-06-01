@@ -5,10 +5,10 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 import { Quote, TransferOrderItem } from '@/types/commercial';
 
 // Define the shape of data we expect for printing
@@ -79,7 +79,8 @@ export const generatePDF = (data: OrderData) => {
         `$${item.total.toFixed(2)}`
     ]);
 
-    autoTable(doc, {
+    // Use autoTable from the doc instance (added by the plugin)
+    (doc as any).autoTable({
         startY: 80,
         head: [['Producto', 'Cant.', 'P. Unit', 'Total']],
         body: tableBody,

@@ -1,53 +1,30 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
-
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { MOCK_VISITS } from "@/data/mockDemoData";
+import { CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   MapPin,
   Navigation,
   Package,
-  DollarSign,
   RefreshCcw,
-  LogOut,
   CheckCircle2,
-  AlertTriangle,
-  Bell,
   ChevronRight,
-  X,
-  Wifi,
-  WifiOff,
-  Target,
-  Users,
   TrendingUp,
   Clock,
   Plus,
+  Calendar,
+  Zap,
+  Activity
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useKpiSummary } from "@/hooks/queries/useDashboardQueries";
-import { StatsCard } from "./StatsCard";
 import { QuickScheduleWizard } from "../visits/QuickScheduleWizard";
+import { EliteHeader, EliteKPICard, EliteCard, EliteButton } from "@/components/layout/DesignSystem";
+import { cn } from "@/lib/utils";
 
-
-// =============================================================================
-// MOCK DATA - Structured for easy Supabase integration later
-// =============================================================================
 interface VisitItem {
   id: string;
   scheduledTime: string;
@@ -56,6 +33,7 @@ interface VisitItem {
   status: "pending" | "completed";
   latitude?: number;
   longitude?: number;
+  category?: string;
 }
 
 interface DailyMetrics {
@@ -65,158 +43,103 @@ interface DailyMetrics {
   salesQuota: number;
 }
 
-interface StockAlert {
-  id: string;
-  productName: string;
-  currentStock: number;
-  minStock: number;
-  type: "stock" | "general";
-}
-
-const MOCK_VISITS: VisitItem[] = [
-  {
-    id: "1",
-    scheduledTime: "08:30",
-    contactName: "Dr. María González",
-    address: "Centro Médico Plaza, Piso 3",
-    status: "completed",
-  },
-  {
-    id: "2",
-    scheduledTime: "10:00",
-    contactName: "Farmacia San Rafael",
-    address: "Av. Urdaneta, Local 25",
-    status: "pending",
-  },
-  {
-    id: "3",
-    scheduledTime: "11:30",
-    contactName: "Dr. Carlos Mendoza",
-    address: "Clínica Santa María, Consultorio 12",
-    status: "pending",
-  },
-  {
-    id: "4",
-    scheduledTime: "14:00",
-    contactName: "Farmacia Central",
-    address: "Calle Real, Centro Comercial",
-    status: "pending",
-  },
-];
-
-const MOCK_METRICS: DailyMetrics = {
-  visitedToday: 1,
-  totalPlanned: 4,
-  salesAmount: 2450,
-  salesQuota: 5000,
-};
-
-const MOCK_ALERTS: StockAlert[] = [
-  {
-    id: "a1",
-    productName: "CardioPlus 50mg",
-    currentStock: 2,
-    minStock: 10,
-    type: "stock",
-  },
-  {
-    id: "a2",
-    productName: "VitaMax 100mg",
-    currentStock: 5,
-    minStock: 15,
-    type: "stock",
-  },
-];
-
-// =============================================================================
-// COMPONENT
-// =============================================================================
 export default function DashboardRep() {
-  const { user, signOut, role, organizationName } = useAuth();
+  const { user, profile, organizationName, isDemo } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [visits, setVisits] = useState<VisitItem[]>([]);
   const [metrics, setMetrics] = useState<DailyMetrics>({ visitedToday: 0, totalPlanned: 0, salesAmount: 0, salesQuota: 0 });
-  const [stockAlerts, setStockAlerts] = useState<StockAlert[]>([]);
-  const [alertsOpen, setAlertsOpen] = useState(false);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const { isOnline } = useOfflineSync();
+  const { data: kpis } = useKpiSummary(user?.id || '');
 
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [lastSync, setLastSync] = useState<string | null>(localStorage.getItem('lastSyncTime'));
-
-  const { isOnline, pendingCount: syncPendingCount, isSyncing, forceSync } = useOfflineSync();
-
-  // Get user's first name from metadata or fallback
-  const userName =
-    user?.user_metadata?.first_name ||
-    user?.email?.split("@")[0] ||
-    "Representante";
-
-  // Calculate pending visits count
+  const userName = profile?.first_name || user?.user_metadata?.first_name || user?.email?.split("@")[0] || "Representante";
   const pendingCount = visits.filter((v) => v.status === "pending").length;
 
-  // Calculate progress percentages
-  const routeProgress =
-    metrics.totalPlanned > 0
-      ? Math.round((metrics.visitedToday / metrics.totalPlanned) * 100)
-      : 0;
-  const salesProgress =
-    metrics.salesQuota > 0
-      ? Math.round((metrics.salesAmount / metrics.salesQuota) * 100)
-      : 0;
-
-  // Alerts count for badge
-  const alertsCount = stockAlerts.length;
-
-  const { data: kpis, isLoading: kpisLoading } = useKpiSummary(user?.id || '');
-
-
-  // ---------------------------------------------------------------------------
-  // Data Loading (Structured for Supabase)
-  // ---------------------------------------------------------------------------
   const loadDashboardData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
 
+    if (isDemo) {
+      console.log("[DashboardRep] Offline Demo Mode active. Loading local virtual route...");
+      const mappedVisits: VisitItem[] = (MOCK_VISITS || []).map((v: any) => {
+        const rawType = v.contacts?.contact_type || v.visit_type;
+        const displayCategory = rawType === 'doctor' ? 'Médico' : 
+                                rawType === 'pharmacy' ? 'Farmacia' : 
+                                rawType === 'health_center' ? 'Centro de Salud' : 
+                                rawType === 'drugstore' ? 'Droguería' :
+                                rawType === 'natural_store' ? 'Tienda Naturista' : 
+                                rawType === 'commerce' ? 'Comercio/Retail' : rawType;
+
+        return {
+          id: v.id,
+          scheduledTime: new Date(v.scheduled_date || Date.now()).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          contactName: v.contacts?.name || v.contact_name || "Sin nombre",
+          address: v.contacts?.address || v.address || "Sin dirección",
+          status: v.status === "completed" ? "completed" : "pending",
+          latitude: v.contacts?.latitude || v.latitude,
+          longitude: v.contacts?.longitude || v.longitude,
+          category: displayCategory
+        };
+      });
+      setVisits(mappedVisits);
+
+      const completedCount = mappedVisits.filter((v) => v.status === "completed").length;
+      setMetrics((prev) => ({
+        ...prev,
+        visitedToday: completedCount,
+        totalPlanned: mappedVisits.length,
+      }));
+      setLoading(false);
+      return;
+    }
+
     try {
       const today = new Date().toISOString().split("T")[0];
-
-      // Fetch today's visits from Supabase
       const { data: visitsData, error } = await supabase
         .from("visits")
-        .select(
-          `
+        .select(`
           id,
           scheduled_date,
           status,
-          contacts (name, address, latitude, longitude)
-        `
-        )
+          contacts (name, address, latitude, longitude, contact_type)
+        `)
         .eq("user_id", user.id)
         .gte("scheduled_date", `${today}T00:00:00`)
         .lt("scheduled_date", `${today}T23:59:59`)
         .order("scheduled_date", { ascending: true });
 
       if (!error) {
-        const mappedVisits: VisitItem[] = (visitsData || []).map((v: any) => ({
-          id: v.id,
-          scheduledTime: new Date(v.scheduled_date).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          contactName: v.contacts?.name || "Sin nombre",
-          address: v.contacts?.address || "Sin dirección",
-          status: v.status === "completed" ? "completed" : "pending",
-          latitude: v.contacts?.latitude,
-          longitude: v.contacts?.longitude,
-        }));
+        const mappedVisits: VisitItem[] = (visitsData || []).map((v: any) => {
+          const rawType = v.contacts?.contact_type;
+          const displayCategory = rawType === 'doctor' ? 'Médico' : 
+                                  rawType === 'pharmacy' ? 'Farmacia' : 
+                                  rawType === 'health_center' ? 'Centro de Salud' : 
+                                  rawType === 'drugstore' ? 'Droguería' :
+                                  rawType === 'natural_store' ? 'Tienda Naturista' : 
+                                  rawType === 'commerce' ? 'Comercio/Retail' : rawType;
+
+          return {
+            id: v.id,
+            scheduledTime: new Date(v.scheduled_date).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            contactName: v.contacts?.name || "Sin nombre",
+            address: v.contacts?.address || "Sin dirección",
+            status: v.status === "completed" ? "completed" : "pending",
+            latitude: v.contacts?.latitude,
+            longitude: v.contacts?.longitude,
+            category: displayCategory
+          };
+        });
         setVisits(mappedVisits);
 
-        // Update metrics based on real data
-        const completedCount = mappedVisits.filter(
-          (v) => v.status === "completed"
-        ).length;
+        const completedCount = mappedVisits.filter((v) => v.status === "completed").length;
         setMetrics((prev) => ({
           ...prev,
           visitedToday: completedCount,
@@ -231,25 +154,9 @@ export default function DashboardRep() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      loadDashboardData();
-    }
-
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    const syncTimer = setInterval(() => {
-      setLastSync(localStorage.getItem('lastSyncTime'));
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-      clearInterval(syncTimer);
-    };
+    if (user) loadDashboardData();
   }, [user, loadDashboardData]);
 
-  // Sync metrics with KPI data
   useEffect(() => {
     if (kpis) {
       setMetrics(prev => ({
@@ -260,224 +167,193 @@ export default function DashboardRep() {
     }
   }, [kpis]);
 
-  // ---------------------------------------------------------------------------
-  // Event Handlers
-  // ---------------------------------------------------------------------------
-  const handleStartVisit = (visitId: string) => {
-    navigate(`/visits?start=${visitId}`);
-  };
-
-  const handleOpenNavigation = (visit: VisitItem) => {
-    if (visit.latitude && visit.longitude) {
-      window.open(
-        `https://www.google.com/maps/dir/?api=1&destination=${visit.latitude},${visit.longitude}`,
-        "_blank"
-      );
-    }
-  };
-
-  const handleLogout = async () => {
-    await signOut();
-    navigate("/auth");
-  };
-
-  const handleDismissAlert = (alertId: string) => {
-    setStockAlerts((prev) => prev.filter((a) => a.id !== alertId));
-  };
-
-  // ---------------------------------------------------------------------------
-  // RENDER
-  // ---------------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-text-main p-4 sm:p-6 lg:p-8 font-sans">
-      {/* 1. Header (Greeting and Summary Title) */}
-      <div className="mb-8 space-y-1">
-        <p className="text-text-muted text-sm font-bold uppercase tracking-widest opacity-70">Panel Representative</p>
-        <h1 className="text-4xl font-extrabold text-text-main tracking-tight">
-          Hola, {userName}
-        </h1>
-        <div className="pt-6">
-          <h2 className="text-2xl font-bold text-text-main/90">Tu Resumen Hoy</h2>
-        </div>
+    <div className="space-y-10 pb-10">
+      <EliteHeader 
+        title={`Bienvenido, ${userName}`}
+        subtitle={organizationName || "MediVisitPro Representante"}
+        icon={Zap}
+        badgeText="Panel Representative"
+        statusText={isOnline ? "Conectado" : "Modo Offline"}
+        statusColor={isOnline ? "bg-emerald-500" : "bg-amber-500"}
+        rightContent={
+          <EliteButton onClick={() => setIsWizardOpen(true)} icon={Plus}>
+            Nueva Visita
+          </EliteButton>
+        }
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <EliteKPICard
+          title="Ruta Diaria"
+          value={`${metrics.visitedToday} / ${metrics.totalPlanned}`}
+          subtitle="Visitas completadas hoy"
+          icon={MapPin}
+          trend={metrics.totalPlanned > 0 ? Math.round((metrics.visitedToday / metrics.totalPlanned) * 100) : 0}
+          color="blue"
+        />
+        <EliteKPICard
+          title="Ventas del Mes"
+          value={`$${metrics.salesAmount.toLocaleString()}`}
+          subtitle={`Meta: $${metrics.salesQuota.toLocaleString()}`}
+          icon={TrendingUp}
+          trend={metrics.salesQuota > 0 ? Math.round((metrics.salesAmount / metrics.salesQuota) * 100) : 0}
+          color="emerald"
+        />
+        <EliteKPICard
+          title="Cobertura"
+          value={`${kpis?.coverage || 0}%`}
+          subtitle="Cumplimiento de zona"
+          icon={Activity}
+          color="indigo"
+        />
+        <EliteKPICard
+          title="Frecuencia"
+          value={`${kpis?.frequency || 0}%`}
+          subtitle="Impacto recurrente"
+          icon={RefreshCcw}
+          color="blue"
+        />
       </div>
 
-      {/* 2. Progress Indicators (Ruta Diaria and Cuota Ventas) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        {/* Ruta Diaria */}
-        <div className="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col justify-center">
-          <div className="flex justify-between items-end text-sm mb-3">
-            <span className="text-text-muted font-bold uppercase tracking-wider text-xs">Ruta Diaria</span>
-            <span className="text-primary font-bold">{metrics.visitedToday} / {metrics.totalPlanned}</span>
-          </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(0,86,179,0.3)]"
-              style={{ width: `${metrics.totalPlanned > 0 ? (metrics.visitedToday / metrics.totalPlanned) * 100 : 0}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Cuota Ventas */}
-        <div className="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col justify-center">
-          <div className="flex justify-between items-end text-sm mb-3">
-            <span className="text-text-muted font-bold uppercase tracking-wider text-xs">Cuota Ventas</span>
-            <span className="text-secondary font-bold">${metrics.salesAmount.toLocaleString()} / ${metrics.salesQuota.toLocaleString()}</span>
-          </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-secondary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(0,160,233,0.3)]"
-              style={{ width: `${metrics.salesQuota > 0 ? (metrics.salesAmount / metrics.salesQuota) * 100 : 0}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Tu Ruta Timeline */}
-        <div className="lg:col-span-2">
-          <Card className="bg-white border-none shadow-xl rounded-[2rem] overflow-hidden text-slate-900 border-t-4 border-t-primary">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-50 px-8 py-6">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
-                <CardTitle className="text-text-main text-lg font-bold">Tu Ruta</CardTitle>
-              </div>
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-none px-4 py-1.5 font-bold rounded-full">
-                {pendingCount} Pendientes
-              </Badge>
-            </CardHeader>
-            <CardContent className="p-0">
-              {visits.length > 0 ? (
-                <div className="divide-y divide-slate-50">
-                  {visits.map((visit, index) => {
-                    const isCompleted = visit.status === 'completed';
-                    return (
-                      <div
-                        key={visit.id}
-                        className="flex items-start gap-6 px-8 py-7 hover:bg-gray-50/80 transition-all group relative cursor-pointer"
-                        onClick={() => !isCompleted && handleStartVisit(visit.id)}
-                      >
-                        {/* Timeline Connector */}
-                        <div className="flex flex-col items-center pt-1.5 w-12 flex-shrink-0">
-                          <span className="text-[10px] font-bold text-text-muted mb-1.5">{visit.scheduledTime}</span>
-                          <div className={`w-3.5 h-3.5 rounded-full border-2 z-10 transition-all ${isCompleted ? "bg-secondary border-secondary scale-110" : "bg-white border-primary group-hover:scale-110"
-                            }`} />
-                          {index < visits.length - 1 && (
-                            <div className={`w-0.5 h-20 -mb-6 mt-1.5 ${isCompleted ? "bg-secondary/40" : "bg-gray-200"
-                              }`} />
-                          )}
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <h4 className={`font-bold text-lg truncate transition-colors ${isCompleted ? "text-text-muted/60 line-through" : "text-text-main group-hover:text-primary"
-                            }`}>
-                            {visit.contactName}
-                          </h4>
-                          <p className="text-text-muted text-sm truncate mt-1">
-                            {visit.address}
-                          </p>
-                        </div>
-
-                        {/* Status Icon */}
-                        <div className="flex-shrink-0 pt-1">
-                          {isCompleted ? (
-                            <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center">
-                              <CheckCircle2 className="h-5 w-5 text-secondary" />
-                            </div>
-                          ) : (
-                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white transform translate-x-4 group-hover:translate-x-0">
-                              <Navigation className="h-5 w-5" />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-10">
+          <section>
+            <div className="flex items-center justify-between mb-8 px-2">
+              <div className="flex items-center gap-5">
+                <div className="icon-box-primary">
+                  <Calendar className="h-7 w-7" />
                 </div>
+                <div>
+                  <h2 className="text-elite-title text-foreground font-display">Tu Ruta de Hoy</h2>
+                  <p className="text-elite-sm text-muted-foreground">{pendingCount} visitas pendientes de ejecución</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-6">
+              {loading ? (
+                [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-card rounded-elite-lg border border-border animate-pulse shadow-sm"></div>)
+              ) : visits.length > 0 ? (
+                visits.map((visit, index) => {
+                  const isCompleted = visit.status === 'completed';
+                  return (
+                    <EliteCard 
+                      key={visit.id} 
+                      onClick={() => !isCompleted && navigate(`/visits?start=${visit.id}`)} 
+                      delay={index * 100}
+                      className={cn(isCompleted && "opacity-60 grayscale-[0.5]")}
+                    >
+                      <CardContent className="p-8">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                          <div className="flex items-center gap-6">
+                            <div className={cn(
+                              "h-16 w-16 rounded-2xl flex items-center justify-center border border-border shadow-inner transition-all duration-500",
+                              isCompleted ? "bg-emerald-500/10 text-emerald-500" : "bg-muted/20 text-muted-foreground group-hover:bg-primary group-hover:text-white"
+                            )}>
+                              {isCompleted ? <CheckCircle2 className="h-8 w-8" /> : <Navigation className="h-8 w-8" />}
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className={cn(
+                                "text-xl font-black tracking-tight transition-colors uppercase font-display",
+                                isCompleted ? "text-muted-foreground line-through" : "text-foreground group-hover:text-primary"
+                              )}>
+                                {visit.contactName}
+                              </h4>
+                              <div className="flex items-center gap-3">
+                                <Badge className="badge-elite-info bg-muted/30 border-none">
+                                  {visit.scheduledTime}
+                                </Badge>
+                                <Badge className="badge-elite-info">
+                                  {visit.category || 'General'}
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <p className="hidden md:block text-elite-xs text-muted-foreground max-w-[200px] truncate">{visit.address}</p>
+                            <Badge className={cn(
+                              "badge-elite px-6 py-2 rounded-full",
+                              isCompleted ? "badge-elite-success" : "badge-elite-warning"
+                            )}>
+                              {isCompleted ? 'Completada' : 'Pendiente'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </EliteCard>
+                  );
+                })
               ) : (
-                <div className="p-16 text-center text-text-muted">
-                  <RefreshCcw className="h-12 w-12 mx-auto mb-5 opacity-20 animate-spin text-primary" />
-                  <p className="font-bold text-lg">No hay visitas agendadas para hoy</p>
-                </div>
+                <EliteCard className="border-dashed border-border/60 bg-muted/5">
+                  <div className="p-24 text-center">
+                    <div className="w-24 h-24 bg-card rounded-elite-lg shadow-premium-sm border border-border flex items-center justify-center mx-auto mb-8 text-muted-foreground/20">
+                      <Calendar className="h-12 w-12" />
+                    </div>
+                    <h3 className="text-elite-title text-foreground font-display mb-3">Sin visitas agendadas</h3>
+                    <p className="text-elite-sm text-muted-foreground">Tu agenda está despejada por el momento</p>
+                  </div>
+                </EliteCard>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </section>
         </div>
 
-        {/* Right Column: Key Metrics and Actions */}
-        <div className="space-y-6">
-          {/* Real-time KPIs mini grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-soft border-l-4 border-l-primary">
-              <p className="text-text-muted text-[10px] uppercase font-bold tracking-widest mb-2 opacity-60">Cobertura</p>
-              <p className="text-2xl font-black text-text-main">{kpisLoading ? "..." : `${kpis?.coverage || 0}%`}</p>
-            </div>
-            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-soft border-l-4 border-l-secondary">
-              <p className="text-text-muted text-[10px] uppercase font-bold tracking-widest mb-2 opacity-60">Frecuencia</p>
-              <p className="text-2xl font-black text-text-main">{kpisLoading ? "..." : kpis?.frequency || 0}%</p>
-            </div>
-          </div>
-
-          <Card className="bg-white border-gray-100 text-text-main rounded-3xl overflow-hidden shadow-xl border-t-4 border-t-secondary">
-            <CardHeader className="pb-3 px-6 pt-6 bg-gray-50/50 border-b border-gray-100">
-              <CardTitle className="text-xs font-bold text-text-muted uppercase tracking-widest">Accesos Rápidos</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4 p-6">
-              <Button
-                variant="outline"
-                className="flex flex-col h-auto py-5 bg-white border-gray-200 hover:border-primary hover:text-primary text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl"
-                onClick={() => navigate('/products')}
-              >
-                <div className="p-3 bg-primary/10 rounded-xl">
-                  <Package className="h-6 w-6 text-primary" />
-                </div>
-                <span className="text-xs font-bold">Inventario</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-col h-auto py-5 bg-white border-gray-200 hover:border-secondary hover:text-secondary text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl"
-                onClick={() => navigate('/expenses')}
-              >
-                <div className="p-3 bg-secondary/10 rounded-xl">
-                  <TrendingUp className="h-6 w-6 text-secondary" />
-                </div>
-                <span className="text-xs font-bold">Gastos</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-col h-auto py-5 bg-white border-gray-200 hover:border-indigo-600 hover:text-indigo-600 text-text-main gap-2 transition-all active:scale-95 shadow-sm rounded-2xl col-span-2"
-                onClick={() => setIsWizardOpen(true)}
-              >
-                <div className="p-3 bg-indigo-50 rounded-xl">
-                  <Plus className="h-6 w-6 text-indigo-600" />
-                </div>
-                <span className="text-xs font-bold">Agendar Visita</span>
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Sync Status Card */}
-          <div className="bg-white border border-gray-100 rounded-[1.5rem] p-5 flex items-center justify-between shadow-soft">
-            <div className="flex items-center gap-4">
-              <div className="w-3 h-3 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_rgba(0,160,233,0.5)]" />
-              <div>
-                <p className="text-sm font-bold text-text-main">Sincronizado</p>
-                <p className="text-xs text-text-muted font-medium">Hace unos momentos</p>
+        <div className="space-y-10">
+          <section>
+            <div className="flex items-center gap-5 mb-8 px-2">
+              <div className="icon-box-primary">
+                <Zap className="h-7 w-7" />
               </div>
+              <h3 className="text-elite-title text-foreground font-display">Accesos Rápidos</h3>
             </div>
-            <RefreshCcw className="h-5 w-5 text-secondary/30" />
-          </div>
-        </div>
-      </div>
+            <div className="grid grid-cols-1 gap-6">
+              <EliteCard onClick={() => navigate('/products')} className="p-6">
+                <div className="flex items-center gap-6">
+                  <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                    <Package className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-black uppercase tracking-tight font-display">Inventario</p>
+                    <p className="text-elite-xs text-muted-foreground">Banco de muestras y material</p>
+                  </div>
+                  <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
+                </div>
+              </EliteCard>
+              <EliteCard onClick={() => navigate('/sales-pipeline')} className="p-6">
+                <div className="flex items-center gap-6">
+                  <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500">
+                    <Clock className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-black uppercase tracking-tight font-display">Pipeline</p>
+                    <p className="text-elite-xs text-muted-foreground">Seguimiento de cierres</p>
+                  </div>
+                  <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
+                </div>
+              </EliteCard>
+            </div>
+          </section>
 
-      {/* Floating Action Button (Matches Demo Screenshot) */}
-      <div className="fixed bottom-8 right-8 z-50">
-        <Button
-          className="w-16 h-16 rounded-full bg-primary hover:bg-primary-dark shadow-2xl shadow-primary/30 p-0 flex items-center justify-center transition-all hover:scale-110 active:scale-90 border-4 border-white"
-          onClick={() => setIsWizardOpen(true)}
-        >
-          <Plus className="h-8 w-8 text-white" />
-        </Button>
+          <EliteCard className="p-8 bg-primary/5 border-primary/20">
+             <div className="flex items-center gap-4 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+                  <RefreshCcw className="h-5 w-5" />
+                </div>
+                <p className="font-black uppercase tracking-widest text-[10px]">Estado de Sincronización</p>
+             </div>
+             <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-elite-sm text-muted-foreground">Base de Datos</span>
+                  <Badge className="badge-elite-success">Online</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-elite-sm text-muted-foreground">Última Carga</span>
+                  <span className="text-elite-xs font-black">Hace instantes</span>
+                </div>
+             </div>
+          </EliteCard>
+        </div>
       </div>
 
       <QuickScheduleWizard

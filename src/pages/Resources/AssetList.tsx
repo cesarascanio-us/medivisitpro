@@ -15,10 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Search, Box, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Loader2, Search, Box, ShieldCheck, AlertTriangle, RefreshCw, Filter } from "lucide-react";
 import { FixedAsset } from "@/types/resources";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { EliteKPICard, EliteHeader } from "@/components/layout/DesignSystem";
 
 export default function AssetList() {
     const { toast } = useToast();
@@ -31,12 +33,10 @@ export default function AssetList() {
     }, []);
 
     const loadAssets = async () => {
+        setLoading(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
-
-            // Managers see all, Reps see theirs (handled by RLS basically, but let's be explicit if needed)
-            // RLS policy: "Fixed Assets Access" for SELECT is (get_my_role() IN ('master', 'admin', 'manager') OR assigned_to = auth.uid())
 
             const { data, error } = await supabase
                 .from('fixed_assets')
@@ -60,113 +60,147 @@ export default function AssetList() {
 
     const getConditionBadge = (condition: string) => {
         switch (condition) {
-            case 'new': return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200">Nuevo</Badge>;
-            case 'good': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200">Bueno</Badge>;
-            case 'fair': return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-200">Regular</Badge>;
-            case 'poor': return <Badge className="bg-red-100 text-red-700 hover:bg-red-200">Malo</Badge>;
-            default: return <Badge variant="outline">{condition}</Badge>;
+            case 'new': return <Badge className="status-active">Nuevo</Badge>;
+            case 'good': return <Badge className="status-info">Bueno</Badge>;
+            case 'fair': return <Badge className="status-pending">Regular</Badge>;
+            case 'poor': return <Badge variant="destructive" className="font-bold">Malo</Badge>;
+            default: return <Badge variant="outline" className="font-bold uppercase tracking-widest text-[9px]">{condition}</Badge>;
         }
     };
 
-    if (loading) return <div className="p-8 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-blue-600" /></div>;
+    if (loading && assets.length === 0) return (
+        <div className="h-[60vh] flex flex-col items-center justify-center space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary opacity-20" />
+            <p className="text-muted-foreground font-black text-[10px] uppercase tracking-[0.3em]">Sincronizando Búnker de Activos...</p>
+        </div>
+    );
 
     return (
-        <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
-                        <Box className="h-8 w-8 text-blue-600" /> Mis Activos
-                    </h1>
-                    <p className="text-slate-500">Equipos y materiales asignados a tu cargo</p>
-                </div>
-                <div className="w-full md:w-72 relative">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                    <Input
-                        placeholder="Buscar por nombre o código..."
-                        className="pl-9"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
-                </div>
+        <div className="flex flex-col min-h-full space-y-10 p-1 animate-in fade-in duration-700">
+            {/* HEADER INDUSTRIAL ELITE */}
+            <EliteHeader
+                title="Búnker de Activos"
+                subtitle="Control de Equipamiento y Recursos Asignados"
+                icon={Box}
+                badgeText="V6.0 ASSET CONTROL"
+                statusText="Inventario Verificado"
+                statusColor="bg-blue-500"
+                rightContent={
+                    <div className="flex items-center gap-4">
+                        <Button
+                            onClick={loadAssets}
+                            size="icon"
+                            variant="ghost"
+                            className="w-14 h-14 rounded-2xl bg-card border border-border hover:bg-muted/10 transition-all shadow-sm group"
+                        >
+                            <RefreshCw className={cn("h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors", loading && "animate-spin text-primary")} />
+                        </Button>
+                    </div>
+                }
+            />
+
+            {/* KPI GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <EliteKPICard 
+                    title="Total Asignado" 
+                    value={assets.length} 
+                    icon={Box} 
+                    color="blue" 
+                />
+                <EliteKPICard 
+                    title="Estado Óptimo" 
+                    value={assets.filter(a => ['new', 'good'].includes(a.condition)).length} 
+                    icon={ShieldCheck} 
+                    color="emerald" 
+                />
+                <EliteKPICard 
+                    title="Requieren Atención" 
+                    value={assets.filter(a => ['fair', 'poor'].includes(a.condition)).length} 
+                    icon={AlertTriangle} 
+                    color="amber" 
+                />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500">Total Asignado</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold">{assets.length}</div>
-                        <p className="text-xs text-slate-400 mt-1">items bajo tu responsabilidad</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500">Estado Óptimo</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-emerald-600">
-                            {assets.filter(a => ['new', 'good'].includes(a.condition)).length}
+            {/* MAIN CONTENT AREA */}
+            <div className="space-y-8">
+                <div className="flex flex-col md:flex-row gap-6">
+                    <Card className="bg-card border border-border rounded-[2.5rem] shadow-premium-sm p-6 flex-1 relative overflow-hidden group/search">
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground group-focus-within/search:text-primary transition-colors" />
+                            <Input 
+                                placeholder="LOCALIZAR ACTIVO POR NOMBRE O CÓDIGO..." 
+                                value={searchTerm} 
+                                onChange={e => setSearchTerm(e.target.value)} 
+                                className="pl-16 h-16 bg-muted/20 border-transparent focus-visible:ring-primary/20 font-black rounded-2xl text-foreground placeholder:text-muted-foreground/50 transition-all text-xs tracking-widest shadow-inner uppercase" 
+                            />
                         </div>
-                        <p className="text-xs text-slate-400 mt-1">Nuevos o en buen estado</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500">Requieren Atención</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-amber-600">
-                            {assets.filter(a => ['fair', 'poor'].includes(a.condition)).length}
-                        </div>
-                        <p className="text-xs text-slate-400 mt-1">Regular o mal estado</p>
-                    </CardContent>
-                </Card>
-            </div>
+                    </Card>
+                </div>
 
-            <Card className="overflow-hidden border-slate-200">
-                <Table>
-                    <TableHeader className="bg-slate-50">
-                        <TableRow>
-                            <TableHead>Código</TableHead>
-                            <TableHead>Descripción</TableHead>
-                            <TableHead>Estado</TableHead>
-                            <TableHead>Fecha Asignación</TableHead>
-                            <TableHead className="text-right">Acciones</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {filteredAssets.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={5} className="text-center py-12 text-slate-500">
-                                    <ShieldCheck className="h-12 w-12 mx-auto text-slate-200 mb-3" />
-                                    No se encontraron activos asignados.
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            filteredAssets.map(asset => (
-                                <TableRow key={asset.id} className="hover:bg-slate-50">
-                                    <TableCell className="font-mono text-xs">{asset.code}</TableCell>
-                                    <TableCell>
-                                        <div className="font-medium text-slate-900">{asset.name}</div>
-                                        {asset.description && <div className="text-xs text-slate-500">{asset.description}</div>}
-                                    </TableCell>
-                                    <TableCell>{getConditionBadge(asset.condition)}</TableCell>
-                                    <TableCell className="text-slate-500 text-sm">
-                                        {asset.assigned_date ? format(new Date(asset.assigned_date), "PPP", { locale: es }) : '-'}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" onClick={() => toast({ title: "Reporte Enviado", description: "Se ha notificado al administrador sobre este activo." })}>
-                                            <AlertTriangle className="h-4 w-4 text-amber-500 mr-2" />
-                                            Reportar Problema
-                                        </Button>
-                                    </TableCell>
+                <Card className="bg-card rounded-[2.5rem] border border-border shadow-premium-sm overflow-hidden p-6">
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="border-b border-border hover:bg-transparent">
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Identificador</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Descripción del Recurso</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Estado Técnico</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6">Asignación</TableHead>
+                                    <TableHead className="font-black text-[10px] text-muted-foreground uppercase tracking-widest py-6 text-right">Acciones</TableHead>
                                 </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-            </Card>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredAssets.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center py-24 text-muted-foreground">
+                                            <div className="flex flex-col items-center">
+                                                <Box className="h-12 w-12 opacity-10 mb-4" />
+                                                <p className="font-black text-[10px] uppercase tracking-[0.3em]">No se detectaron activos en el sector</p>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    filteredAssets.map(asset => (
+                                        <TableRow key={asset.id} className="border-b border-border/50 hover:bg-muted/30 group transition-colors">
+                                            <TableCell className="py-6 font-mono text-[11px] font-black text-primary tracking-tighter">
+                                                {asset.code}
+                                            </TableCell>
+                                            <TableCell className="py-6">
+                                                <div className="flex flex-col">
+                                                    <span className="font-black text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{asset.name}</span>
+                                                    {asset.description && <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">{asset.description}</span>}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-6">
+                                                {getConditionBadge(asset.condition)}
+                                            </TableCell>
+                                            <TableCell className="py-6">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] text-foreground font-black uppercase tracking-widest">
+                                                        {asset.assigned_date ? format(new Date(asset.assigned_date), "dd MMM yyyy", { locale: es }) : '-'}
+                                                    </span>
+                                                    <span className="text-[9px] text-muted-foreground font-bold uppercase">Protocolo de Entrega</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-6 text-right">
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm" 
+                                                    onClick={() => toast({ title: "Protocolo de Alerta", description: "Se ha notificado al departamento de IT sobre este activo." })}
+                                                    className="h-10 rounded-xl font-black text-[10px] uppercase tracking-widest text-amber-500 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20"
+                                                >
+                                                    <AlertTriangle className="h-4 w-4 mr-2" />
+                                                    Reportar Incidencia
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </Card>
+            </div>
         </div>
     );
 }

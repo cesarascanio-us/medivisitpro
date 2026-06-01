@@ -238,7 +238,7 @@ export default function WeeklyScheduler() {
                 const dayOfWeek = dayMapping[selectedSlot.day] ?? 1;
                 const preferredTime = selectedSlot.turn === 'AM' ? '09:00:00' : '14:00:00';
 
-                // @ts-ignore - RPC function created in recurring_visits.sql
+                // @ts-expect-error - RPC function created in recurring_visits.sql
                 const { data, error } = await supabase.rpc('create_visit_series', {
                     p_user_id: userId,
                     p_contact_id: directoryItem.id,
@@ -394,7 +394,7 @@ export default function WeeklyScheduler() {
                         </CardHeader>
                         <CardContent className="flex-1 p-2 space-y-2 overflow-y-auto">
                             {TURNS.map((turn) => (
-                                <div key={turn} className="flex flex-col gap-2 p-2 rounded-lg bg-slate-50 border h-1/2">
+                                <div key={turn} className="flex flex-col gap-2 p-2 rounded-lg bg-slate-50 border h-1/2 text-slate-900">
                                     <div className="flex justify-between items-center">
                                         <Badge variant="secondary" className="text-xs">{turn}</Badge>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openAddDialog(day.key, turn as 'AM' | 'PM')}>
@@ -404,8 +404,8 @@ export default function WeeklyScheduler() {
 
                                     <div className="space-y-2 overflow-y-auto pr-1">
                                         {planDetails?.filter(d => d.day_of_week === day.key && d.turn === turn).map((detail) => (
-                                            <div key={detail.id} className="text-xs bg-white dark:bg-slate-800 p-2 rounded border shadow-sm group relative hover:border-primary transition-colors">
-                                                <div className="font-semibold truncate text-slate-900 dark:text-white">{detail.directory_item?.name || "⚠️ Sin nombre"}</div>
+                                            <div key={detail.id} className="text-xs bg-muted p-2 rounded border shadow-sm group relative hover:border-primary transition-colors">
+                                                <div className="font-semibold truncate text-foreground">{detail.directory_item?.name || "⚠️ Sin nombre"}</div>
                                                 <div className="text-muted-foreground flex items-center gap-1">
                                                     <MapPin className="h-3 w-3" />
                                                     <span className="truncate">{detail.directory_item?.city || detail.directory_item?.address || "Sin dirección"}</span>
@@ -432,7 +432,7 @@ export default function WeeklyScheduler() {
                                             </div>
                                         ))}
                                         {planDetails?.filter(d => d.day_of_week === day.key && d.turn === turn).length === 0 && (
-                                            <div className="text-center py-4 opacity-30 text-xs italic">
+                                            <div className="text-center py-4 opacity-30 text-xs ">
                                                 Sin visitas
                                             </div>
                                         )}

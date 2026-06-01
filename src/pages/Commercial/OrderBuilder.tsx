@@ -273,7 +273,7 @@ export default function OrderBuilder() {
                     </CardHeader>
                     <CardContent className="flex-1 overflow-y-auto pt-0">
                         {selectedContact && selectedContact.contact_type === 'doctor' && (
-                            <Alert className="mb-4 bg-blue-50 border-blue-200">
+                            <Alert className="mb-4 bg-blue-50 border-blue-200 text-slate-900">
                                 <AlertCircle className="h-4 w-4 text-blue-600" />
                                 <AlertTitle className="text-blue-800">Filtrado por Especialidad</AlertTitle>
                                 <AlertDescription className="text-blue-700 text-xs">
@@ -291,10 +291,10 @@ export default function OrderBuilder() {
                                 </div>
                             ) : (
                                 filteredProducts.map(product => (
-                                    <div key={product.id} className="border rounded-lg p-3 hover:border-blue-400 transition-colors bg-white shadow-sm flex flex-col justify-between">
+                                    <div key={product.id} className="border rounded-lg p-3 hover:border-blue-400 transition-colors bg-card shadow-sm flex flex-col justify-between">
                                         <div>
                                             <div className="flex justify-between items-start">
-                                                <h4 className="font-semibold text-sm line-clamp-2 text-slate-900">{product.name}</h4>
+                                                <h4 className="font-semibold text-sm line-clamp-2 text-foreground">{product.name}</h4>
                                                 <span className="font-bold text-green-600 text-sm">${product.price}</span>
                                             </div>
                                             <p className="text-xs text-slate-600 mt-1 line-clamp-2">
@@ -325,7 +325,7 @@ export default function OrderBuilder() {
             {/* Right: Cart / Builder */}
             <div className="w-full lg:w-[450px] flex flex-col gap-4">
                 <Card className="h-full flex flex-col shadow-lg border-blue-100">
-                    <CardHeader className="bg-slate-50 border-b pb-4">
+                    <CardHeader className="bg-slate-50 border-b pb-4 text-slate-900">
                         <div className="flex justify-between items-center mb-4">
                             <CardTitle className="flex items-center gap-2">
                                 <ShoppingCart className="h-5 w-5 text-blue-600" />
@@ -475,10 +475,10 @@ export default function OrderBuilder() {
                         )}
                     </CardContent>
 
-                    <div className="p-4 bg-slate-50 border-t">
+                    <div className="p-4 bg-slate-50 border-t text-slate-900">
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-muted-foreground">Total Estimado</span>
-                            <span className="text-2xl font-bold text-slate-900">${calculateTotal().toFixed(2)}</span>
+                            <span className="text-2xl font-bold text-foreground">${calculateTotal().toFixed(2)}</span>
                         </div>
                         <Button className="w-full h-12 text-lg font-bold gap-2 btn-medical" onClick={handleSave} disabled={loading}>
                             {loading ? 'Guardando...' : (

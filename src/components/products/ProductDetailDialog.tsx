@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Package, FileText, Download, Heart, Share2, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { DosageCalculator } from "./DosageCalculator";
 
 interface ProductDetailDialogProps {
   trigger: React.ReactNode;
@@ -25,12 +26,14 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="bg-slate-900 px-8 py-6 text-white rounded-t-2xl">
+      <DialogContent 
+        aria-describedby={undefined}
+        className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="bg-primary px-8 py-6 text-white rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center">
-                <Package className="h-5 w-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-xl bg-background/10 backdrop-blur-md flex items-center justify-center">
+                <Package className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <DialogTitle className="text-xl font-black tracking-tight m-0 uppercase line-clamp-1">{productData.name}</DialogTitle>
@@ -38,10 +41,10 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-white/10 text-white">
+              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-background/10 text-white">
                 <Heart className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-white/10 text-white">
+              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-background/10 text-white">
                 <Share2 className="h-4 w-4" />
               </Button>
             </div>
@@ -52,13 +55,13 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
           {/* Product Header */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-1">
-              <div className="aspect-square bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center justify-center mb-6 overflow-hidden">
-                <Package className="h-16 w-16 text-slate-200" />
+              <div className="aspect-square bg-card border border-border rounded-[2rem] flex items-center justify-center mb-6 overflow-hidden">
+                <Package className="h-16 w-16 text-muted-foreground" />
               </div>
               {productData.price && (
-                <div className="text-center bg-indigo-50/50 p-6 rounded-[2rem] border border-indigo-100">
-                  <span className="text-3xl font-black text-indigo-600 tracking-tighter">${productData.price}</span>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Market Value</p>
+                <div className="text-center bg-muted/10 p-6 rounded-[2rem] border border-indigo-100">
+                  <span className="text-3xl font-black text-primary tracking-tighter">${productData.price}</span>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Market Value</p>
                 </div>
               )}
             </div>
@@ -66,28 +69,28 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
             <div className="md:col-span-2 space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-3xl font-black text-slate-900 tracking-tight">{productData.name}</h2>
-                  <Badge className="bg-indigo-600/10 text-indigo-700 font-black uppercase text-[10px] tracking-widest px-3 py-1 border-none">
+                  <h2 className="text-3xl font-black text-foreground tracking-tight">{productData.name}</h2>
+                  <Badge className="bg-primary/10 text-indigo-700 font-black uppercase text-[10px] tracking-widest px-3 py-1 border-none">
                     {productData.category}
                   </Badge>
                 </div>
-                <p className="text-slate-500 font-medium leading-relaxed">{productData.description || 'Sin descripción disponible para este producto en el catálogo maestro.'}</p>
+                <p className="text-muted-foreground font-medium leading-relaxed">{productData.description || 'Sin descripción disponible para este producto en el catálogo maestro.'}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Área Terapéutica</label>
-                  <p className="text-slate-800 font-bold">{productData.therapeutic_area || 'General'}</p>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Área Terapéutica</label>
+                  <p className="text-foreground font-bold">{productData.therapeutic_area || 'General'}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Presentación</label>
-                  <p className="text-slate-800 font-bold">{productData.presentation || 'No especificada'}</p>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Presentación</label>
+                  <p className="text-foreground font-bold">{productData.presentation || 'No especificada'}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Dosificación</label>
-                  <p className="text-slate-800 font-bold">{productData.dosage || 'Consulte prospecto'}</p>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Dosificación</label>
+                  <p className="text-foreground font-bold">{productData.dosage || 'Consulte prospecto'}</p>
                 </div>
-                <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 justify-start px-4">
+                <Button variant="outline" className="h-11 rounded-xl border-border font-bold text-slate-600 justify-start px-4">
                   <Download className="mr-2 h-4 w-4 text-indigo-500" /> Descargar Prospecto PDF
                 </Button>
               </div>
@@ -98,12 +101,13 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
 
           {/* Product Details Tabs */}
           <Tabs defaultValue="composition" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="composition">Composición</TabsTrigger>
               <TabsTrigger value="indications">Indicaciones</TabsTrigger>
               <TabsTrigger value="contraindications">Contraindicaciones</TabsTrigger>
               <TabsTrigger value="effects">Efectos</TabsTrigger>
               <TabsTrigger value="documents">Documentos</TabsTrigger>
+              <TabsTrigger value="calculator">Dosificación</TabsTrigger>
             </TabsList>
 
             <TabsContent value="composition" className="space-y-4">
@@ -221,7 +225,7 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
                       <span className="font-medium text-foreground">Moderados</span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '15%' }}></div>
+                      <div className="bg-primary h-2 rounded-full text-white" style={{ width: '15%' }}></div>
                     </div>
                   </div>
 
@@ -286,21 +290,25 @@ export function ProductDetailDialog({ trigger, productData }: ProductDetailDialo
                 </div>
               </div>
             </TabsContent>
+
+            <TabsContent value="calculator" className="space-y-4">
+              <DosageCalculator productName={productData.name} />
+            </TabsContent>
           </Tabs>
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-6 border-t px-8 pb-8">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-              <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+              <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
                 Data Sync: {new Date().toLocaleDateString('es-ES')}
               </div>
             </div>
             <div className="flex space-x-3">
-              <Button variant="outline" className="h-10 px-6 rounded-xl border-slate-200 font-bold text-slate-500">
+              <Button variant="outline" className="h-10 px-6 rounded-xl border-border font-bold text-muted-foreground">
                 Favoritos
               </Button>
-              <Button className="h-10 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02]">
+              <Button className="h-10 px-8 bg-primary hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02]">
                 Usar en Visita
               </Button>
             </div>

@@ -15,7 +15,12 @@ type EventName =
     | 'click_whatsapp'
     | 'click_login'
     | 'click_pricing_plan'
-    | 'calculate_commissions';
+    | 'calculate_commissions'
+    | 'submit_contact_form_init'
+    | 'submit_contact_form_success'
+    | 'submit_contact_form_error'
+    | 'click_demo_header'
+    | 'click_demo_hero';
 
 interface EventProperties {
     [key: string]: string | number | boolean;

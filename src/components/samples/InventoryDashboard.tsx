@@ -80,7 +80,7 @@ export function InventoryDashboard() {
                 products: productsMap.get(item.product_id) || { name: 'Producto Desconocido' }
             }));
 
-            // @ts-ignore
+            // @ts-expect-error - Array mapping
             setData(joinedData);
         } catch (error) {
             console.error('Error loading dashboard:', error);

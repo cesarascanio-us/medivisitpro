@@ -1,12 +1,3 @@
-/* ========================================================================
- MASTER FRAMEWORK - EMPRESA CA
- Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
-
- Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
- Queda estrictamente prohibida la copia, modificación, distribución,
- ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,7 +5,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -23,17 +13,13 @@ import {
     Mail,
     Lock,
     User,
-    ShieldCheck,
-    Shield,
-    Rocket,
-    CheckCircle2,
-    MapPin,
-    PieChart,
-    Zap,
-    ArrowRight
+    Rocket
 } from 'lucide-react';
+import { SEO } from '@/components/common/SEO';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function AuthPage() {
+    const { theme } = useTheme();
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const { toast } = useToast();
@@ -71,78 +57,63 @@ export default function AuthPage() {
             toast({ title: '¡Bienvenido!', description: 'Has iniciado sesión correctamente.' });
             navigate('/dashboard');
         } catch (error: any) {
+            const errorStr = (error.message || error.toString() || '').toLowerCase();
+            const isNetworkError = errorStr.includes('failed to fetch') || 
+                                   errorStr.includes('net::err') || 
+                                   errorStr.includes('not_resolved') ||
+                                   !navigator.onLine;
+
+            if (isNetworkError) {
+                console.log('[AuthPage] Network error detected. Activating local demo mode fallback...');
+                toast({
+                    title: '🔌 Base de Datos Offline',
+                    description: 'No pudimos conectar con el servidor. Activando modo demostración local sin conexión...',
+                });
+
+                // Trigger local demo session setup
+                const mockSession = {
+                    access_token: "mock-jwt-token-for-local-demo-purposes",
+                    token_type: "bearer",
+                    expires_in: 315360000, // 10 years
+                    refresh_token: "mock-refresh-token",
+                    user: {
+                        id: "d3300000-0000-0000-0000-000000000001",
+                        aud: "authenticated",
+                        role: "authenticated",
+                        email: "demo.medivisitpro@gmail.com",
+                        email_confirmed_at: new Date().toISOString(),
+                        phone: "",
+                        confirmed_at: new Date().toISOString(),
+                        last_sign_in_at: new Date().toISOString(),
+                        app_metadata: {
+                            provider: "email",
+                            providers: ["email"]
+                        },
+                        user_metadata: {
+                            first_name: "Usuario",
+                            last_name: "Demo",
+                            organization_id: "d3300000-0000-0000-0000-000000000001",
+                            role: "representative"
+                        },
+                        identities: [],
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    },
+                    expires_at: Math.floor(Date.now() / 1000) + 315360000
+                };
+
+                localStorage.setItem('sb-medivisit-auth-token', JSON.stringify(mockSession));
+
+                setTimeout(() => {
+                    window.location.href = '/demo/dashboard';
+                }, 1000);
+                return;
+            }
+
             toast({
                 title: 'Error de inicio de sesión',
                 description: error.message || 'Credenciales inválidas.',
                 variant: 'destructive',
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDemoLogin = async () => {
-        setLoading(true);
-        const demoEmail = 'demo.medivisitpro@gmail.com';
-        const demoPass = 'demo123456';
-        const demoOrgId = 'd3300000-0000-0000-0000-000000000001';
-
-        try {
-            console.log('Intentando login demo...', demoEmail);
-            // 1. Intentar iniciar sesión
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-                email: demoEmail,
-                password: demoPass,
-            });
-
-            if (signInError) {
-                console.warn('SignIn Error details:', signInError);
-
-                // Si el error es que el usuario no existe, intentar registrarlo (Self-Healing)
-                if (signInError.message?.toLowerCase().includes('invalid login credentials') ||
-                    signInError.message?.toLowerCase().includes('no user found')) {
-
-                    console.log('Usuario demo no encontrado, intentando registro automático...');
-                    const { error: signUpError } = await supabase.auth.signUp({
-                        email: demoEmail,
-                        password: demoPass,
-                        options: {
-                            data: {
-                                first_name: 'Usuario',
-                                last_name: 'Demo',
-                                organization_id: demoOrgId,
-                                role: 'representative'
-                            }
-                        }
-                    });
-
-                    if (signUpError) {
-                        console.error('SignUp Error details:', signUpError);
-                        throw signUpError;
-                    }
-
-                    toast({
-                        title: 'Modo Demo Inicializado',
-                        description: 'La cuenta demo ha sido creada. Iniciando sesión...'
-                    });
-                } else {
-                    throw signInError;
-                }
-            }
-
-            // 2. Éxito
-            toast({
-                title: 'Modo Demo Activo',
-                description: 'Explorando Demo Medical Corp con permisos de Representante.'
-            });
-            navigate('/dashboard');
-
-        } catch (error: any) {
-            console.error('Demo login error', error);
-            toast({
-                title: 'Error en Modo Demo',
-                description: `No se pudo acceder a la demo: ${error.message || 'Error desconocido'}`,
-                variant: 'destructive'
             });
         } finally {
             setLoading(false);
@@ -177,238 +148,214 @@ export default function AuthPage() {
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                        <Stethoscope className="h-5 w-5 text-primary" strokeWidth={1.5} />
+                    </div>
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#f8f9fa] flex flex-col lg:flex-row overflow-hidden font-sans">
-            {/* Left Side: Hero & Features - Corporate Blue Gradient */}
-            <div className="hidden lg:flex flex-1 relative flex-col justify-center p-12 xl:p-24 overflow-hidden bg-primary-dark">
-                {/* Decorative Pattern / Mesh Gradient */}
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px] -mr-48 -mt-48 animate-pulse" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] -ml-32 -mb-32" />
+        <div className="min-h-screen flex flex-col justify-center items-center p-4 bg-muted/30 font-sans">
+            <SEO
+                title={`${theme?.texts?.login_welcome || "Acceso"} — ${theme?.app_name || "MediVisitPro"}`}
+                description="Accede a tu centro de gestión farmacéutica."
+            />
 
-                <div className="relative z-10 max-w-2xl">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full mb-10 backdrop-blur-sm">
-                        <Zap className="w-4 h-4 text-secondary" />
-                        <span className="text-xs font-bold text-white uppercase tracking-widest">Nueva Era en Visita Médica</span>
+            <div className="w-full max-w-[420px]">
+                {/* Header Logo */}
+                <div className="flex flex-col items-center mb-8">
+                    <div className="w-12 h-12 rounded-xl bg-card shadow-sm border border-border flex items-center justify-center mb-4">
+                        <img src={theme?.logo_url || "/favicon.svg"} className="w-8 h-8 object-contain" alt="Logo" />
                     </div>
-
-                    <h1 className="text-5xl xl:text-7xl font-bold text-white leading-tight mb-8">
-                        Optimiza tu fuerza <br />
-                        <span className="text-secondary">Comercial Médica</span>
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                        {theme?.app_name || 'MediVisitPro'}
                     </h1>
-
-                    <p className="text-xl text-blue-100/80 mb-12 leading-relaxed font-medium">
-                        Gestiona visitas, muestras, farmacias y análisis de mercado en una única plataforma diseñada para el éxito farmacéutico.
+                    <p className="text-sm text-muted-foreground mt-1 text-center">
+                        {theme?.texts?.login_hero_subtitle || "Controla tu fuerza de ventas, rutas y muestras médicas."}
                     </p>
-
-                    <div className="grid grid-cols-2 gap-10 mb-16">
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-4 group">
-                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
-                                    <MapPin className="w-6 h-6 text-secondary" />
-                                </div>
-                                <span className="font-semibold text-white text-lg">Rutas Geocalizadas</span>
-                            </div>
-                            <div className="flex items-center gap-4 group">
-                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
-                                    <PieChart className="w-6 h-6 text-secondary" />
-                                </div>
-                                <span className="font-semibold text-white text-lg">Analytics Avanzado</span>
-                            </div>
-                        </div>
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-4 group">
-                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
-                                    <Stethoscope className="w-6 h-6 text-secondary" />
-                                </div>
-                                <span className="font-semibold text-white text-lg">Panel de Doctores</span>
-                            </div>
-                            <div className="flex items-center gap-4 group">
-                                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
-                                    <CheckCircle2 className="w-6 h-6 text-secondary" />
-                                </div>
-                                <span className="font-semibold text-white text-lg">Control de Muestras</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Trust Badges */}
-                    <div className="flex items-center gap-10 pt-10 border-t border-white/10">
-                        <div className="flex flex-col gap-2 items-center opacity-70 hover:opacity-100 transition-opacity">
-                            <ShieldCheck className="w-6 h-6 text-white" />
-                            <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">HIPAA Compliant</span>
-                        </div>
-                        <div className="flex flex-col gap-2 items-center opacity-70 hover:opacity-100 transition-opacity">
-                            <Lock className="w-6 h-6 text-white" />
-                            <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">SSL Secure</span>
-                        </div>
-                        <div className="flex flex-col gap-2 items-center opacity-70 hover:opacity-100 transition-opacity">
-                            <Shield className="w-6 h-6 text-white" />
-                            <span className="text-[10px] uppercase tracking-widest text-white/60 font-bold">ISO 27001 Certified</span>
-                        </div>
-                    </div>
                 </div>
-            </div>
 
-            {/* Right Side: Auth Form - Clean Light Style */}
-            <div className="flex-1 flex flex-col justify-center items-center p-6 bg-white lg:bg-[#f8f9fa] relative">
-                <div className="w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="lg:hidden text-center mb-12">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary shadow-lg shadow-primary/20 mb-4 transition-transform hover:scale-110">
-                            <Stethoscope className="h-7 w-7 text-white" />
-                        </div>
-                        <h1 className="text-3xl font-bold text-text-main tracking-tight">MediVisitPro</h1>
-                    </div>
+                {/* Main Card */}
+                <div className="bg-card border border-border shadow-premium-xl rounded-xl overflow-hidden">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 bg-muted/50 rounded-none border-b border-border h-12 p-0">
+                            <TabsTrigger
+                                value="login"
+                                className="rounded-none h-full text-xs font-semibold data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none border-r border-border data-[state=active]:border-b-2 data-[state=active]:border-b-primary"
+                            >
+                                Iniciar Sesión
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="signup"
+                                className="rounded-none h-full text-xs font-semibold data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-b-primary"
+                            >
+                                Registrarse
+                            </TabsTrigger>
+                        </TabsList>
 
-                    <div className="mb-10 hidden lg:block">
-                        <h2 className="text-3xl font-bold text-text-main mb-3">Comienza ahora</h2>
-                        <p className="text-text-muted text-lg font-medium">Ingresa tus credenciales para acceder al panel profesional.</p>
-                    </div>
-
-                    {/* Demo Banner Button - Primary Blue */}
-                    <Button
-                        onClick={handleDemoLogin}
-                        className="w-full mb-10 bg-primary hover:bg-primary-dark text-white font-bold h-14 rounded-xl shadow-xl shadow-primary/10 transition-all hover:-translate-y-1 group relative overflow-hidden"
-                    >
-                        <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
-                        <Rocket className="mr-3 w-5 h-5" />
-                        PROBAR DEMO EN VIVO
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-
-                    <div className="relative mb-10">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-gray-200" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-[#f8f9fa] px-4 text-text-muted font-bold tracking-widest">O accede con tu cuenta</span>
-                        </div>
-                    </div>
-
-                    <Card className="border-gray-200 bg-white shadow-2xl rounded-2xl overflow-hidden border-t-4 border-t-primary">
-                        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 bg-gray-50 p-1 rounded-none border-b border-gray-100">
-                                <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md text-text-muted text-sm font-bold transition-all">Login</TabsTrigger>
-                                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md text-text-muted text-sm font-bold transition-all">Registro</TabsTrigger>
-                            </TabsList>
-
-                            <CardContent className="pt-8 pb-10">
-                                <TabsContent value="login" className="mt-0 animate-in fade-in duration-300">
-                                    <form onSubmit={handleLogin} className="space-y-6">
-                                        <div className="space-y-3">
-                                            <Label htmlFor="login-email" className="text-text-main text-sm font-bold uppercase tracking-wider opacity-80">Email Corporativo</Label>
-                                            <div className="relative">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    id="login-email"
-                                                    type="email"
-                                                    placeholder="nombre@laboratorio.com"
-                                                    value={loginEmail}
-                                                    onChange={(e) => setLoginEmail(e.target.value)}
-                                                    className="pl-12 h-14 bg-gray-50 border-gray-200 text-text-main placeholder:text-gray-400 focus:ring-primary focus:border-primary rounded-xl text-base transition-all"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <Label htmlFor="login-password" className="text-text-main text-sm font-bold uppercase tracking-wider opacity-80">Contraseña</Label>
-                                            <div className="relative">
-                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    id="login-password"
-                                                    type="password"
-                                                    placeholder="••••••••"
-                                                    value={loginPassword}
-                                                    onChange={(e) => setLoginPassword(e.target.value)}
-                                                    className="pl-12 h-14 bg-gray-50 border-gray-200 text-text-main placeholder:text-gray-400 focus:ring-primary focus:border-primary rounded-xl text-base transition-all"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold h-14 rounded-xl transition-all shadow-lg text-lg group" disabled={loading}>
-                                            {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : (
-                                                <span className="flex items-center gap-2">
-                                                    Acceder al Sistema
-                                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                                </span>
-                                            )}
-                                        </Button>
-                                    </form>
-                                </TabsContent>
-
-                                <TabsContent value="signup" className="mt-0 animate-in fade-in duration-300">
-                                    <form onSubmit={handleSignup} className="space-y-5">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="signup-name" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Nombre Completo</Label>
+                        <div className="p-6">
+                            {/* LOGIN TAB */}
+                            <TabsContent value="login" className="mt-0">
+                                <form onSubmit={handleLogin} className="space-y-5">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-medium text-foreground">
+                                            {theme?.texts?.login_form_email_label || "Correo Electrónico"}
+                                        </Label>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
                                             <Input
-                                                id="signup-name"
-                                                placeholder="Ej: Manuel García"
-                                                value={signupFullName}
-                                                onChange={(e) => setSignupFullName(e.target.value)}
-                                                className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
+                                                type="email"
+                                                id="login-email"
+                                                placeholder="usuario@empresa.com"
+                                                value={loginEmail}
+                                                onChange={(e) => setLoginEmail(e.target.value)}
+                                                className="pl-9 h-10 text-sm border-border focus:border-primary"
                                                 required
                                             />
                                         </div>
+                                    </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="signup-email" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Email</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-medium text-foreground">
+                                            {theme?.texts?.login_form_password_label || "Contraseña"}
+                                        </Label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
+                                            <Input
+                                                type="password"
+                                                id="login-password"
+                                                placeholder="••••••••"
+                                                value={loginPassword}
+                                                onChange={(e) => setLoginPassword(e.target.value)}
+                                                className="pl-9 h-10 text-sm border-border focus:border-primary"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="button"
+                                            className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                                            onClick={() => toast({ title: 'Recuperar contraseña', description: 'Contacta a tu administrador.' })}
+                                        >
+                                            ¿Olvidaste tu contraseña?
+                                        </button>
+                                    </div>
+
+                                    <Button
+                                        type="submit"
+                                        id="login-submit"
+                                        className="w-full h-10 text-sm font-semibold"
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? <Loader2 className="h-4 w-4 animate-spin" />
+                                            : (theme?.texts?.login_form_button || 'Iniciar Sesión')
+                                        }
+                                    </Button>
+                                </form>
+                            </TabsContent>
+
+                            {/* SIGNUP TAB */}
+                            <TabsContent value="signup" className="mt-0">
+                                <form onSubmit={handleSignup} className="space-y-5">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-medium text-foreground">Nombre Completo</Label>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
+                                            <Input
+                                                id="signup-name"
+                                                placeholder="Tu nombre completo"
+                                                value={signupFullName}
+                                                onChange={(e) => setSignupFullName(e.target.value)}
+                                                className="pl-9 h-10 text-sm border-border focus:border-primary"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-medium text-foreground">Correo Electrónico</Label>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
                                             <Input
                                                 id="signup-email"
                                                 type="email"
-                                                placeholder="email@ejemplo.com"
+                                                placeholder="email@empresa.com"
                                                 value={signupEmail}
                                                 onChange={(e) => setSignupEmail(e.target.value)}
-                                                className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
+                                                className="pl-9 h-10 text-sm border-border focus:border-primary"
                                                 required
                                             />
                                         </div>
+                                    </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label htmlFor="signup-password" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Password</Label>
-                                                <Input
-                                                    id="signup-password"
-                                                    type="password"
-                                                    value={signupPassword}
-                                                    onChange={(e) => setSignupPassword(e.target.value)}
-                                                    className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="signup-confirm" className="text-text-main text-xs font-bold uppercase tracking-wider opacity-80">Confirma</Label>
-                                                <Input
-                                                    id="signup-confirm"
-                                                    type="password"
-                                                    value={signupConfirmPassword}
-                                                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                                                    className="bg-gray-50 border-gray-200 text-text-main h-12 rounded-xl focus:ring-primary"
-                                                    required
-                                                />
-                                            </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-medium text-foreground">Contraseña</Label>
+                                            <Input
+                                                id="signup-password"
+                                                type="password"
+                                                placeholder="••••••••"
+                                                value={signupPassword}
+                                                onChange={(e) => setSignupPassword(e.target.value)}
+                                                className="h-10 text-sm border-border focus:border-primary"
+                                                required
+                                            />
                                         </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-medium text-foreground">Confirmar</Label>
+                                            <Input
+                                                id="signup-confirm"
+                                                type="password"
+                                                placeholder="••••••••"
+                                                value={signupConfirmPassword}
+                                                onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                                                className="h-10 text-sm border-border focus:border-primary"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
 
-                                        <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold h-12 rounded-xl mt-6 shadow-lg active:scale-95 transition-all" disabled={loading}>
-                                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Crear Cuenta'}
-                                        </Button>
-                                    </form>
-                                </TabsContent>
-                            </CardContent>
-                        </Tabs>
-                    </Card>
-
-                    <p className="mt-10 text-center text-xs text-text-muted leading-relaxed max-w-xs mx-auto font-medium">
-                        Al continuar, aceptas nuestros <strong className="text-primary cursor-pointer hover:underline">Términos de Servicio</strong> y la <strong className="text-primary cursor-pointer hover:underline">Política de Privacidad</strong> para el manejo de datos médicos.
-                    </p>
+                                    <Button
+                                        type="submit"
+                                        id="signup-submit"
+                                        className="w-full h-10 text-sm font-semibold"
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? <Loader2 className="h-4 w-4 animate-spin" />
+                                            : 'Crear Cuenta'
+                                        }
+                                    </Button>
+                                </form>
+                            </TabsContent>
+                        </div>
+                    </Tabs>
                 </div>
+
+                {/* Direct Demo Bypass Access */}
+                <div className="mt-4">
+                    <Button
+                        variant="outline"
+                        onClick={() => navigate('/demo?code=CA-72-TEST')}
+                        className="w-full h-10 text-xs font-extrabold border-dashed border-primary/40 hover:border-primary/80 hover:bg-primary/5 transition-all text-primary flex items-center justify-center gap-2 shadow-sm rounded-xl"
+                    >
+                        <Rocket className="h-4.5 w-4.5 animate-pulse" />
+                        Acceso Rápido a Demo (Base de Datos Offline)
+                    </Button>
+                </div>
+
+                {/* Footer */}
+                <p className="mt-8 text-center text-xs text-muted-foreground font-medium">
+                    {theme?.texts?.footer_text || "© 2026 MediVisitPro · Master Framework"}
+                </p>
             </div>
         </div>
     );

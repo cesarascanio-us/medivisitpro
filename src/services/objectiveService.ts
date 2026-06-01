@@ -30,7 +30,7 @@ export async function refreshObjectivesProgress(userId: string) {
             const endDate = objective.end_date;
 
             switch (objective.category) {
-                case 'visits':
+                case 'visits': {
                     // Count completed visits in period
                     const { count: visitCount } = await supabase
                         .from('visits')
@@ -41,8 +41,9 @@ export async function refreshObjectivesProgress(userId: string) {
                         .lte('actual_start_time', endDate);
                     newValue = visitCount || 0;
                     break;
+                }
 
-                case 'contacts':
+                case 'contacts': {
                     // Count new contacts in period
                     const { count: contactCount } = await supabase
                         .from('contacts')
@@ -52,8 +53,9 @@ export async function refreshObjectivesProgress(userId: string) {
                         .lte('created_at', endDate);
                     newValue = contactCount || 0;
                     break;
+                }
 
-                case 'samples':
+                case 'samples': {
                     // Count samples distributed in period (using 'promotion' movement type)
                     const { data: sampleData } = await supabase
                         .from('sample_movements')
@@ -65,8 +67,9 @@ export async function refreshObjectivesProgress(userId: string) {
 
                     newValue = (sampleData as { quantity: number }[] || []).reduce((sum, s) => sum + (s.quantity || 0), 0);
                     break;
+                }
 
-                case 'events':
+                case 'events': {
                     // Count completed events in period
                     const { count: eventCount } = await supabase
                         .from('events')
@@ -77,8 +80,9 @@ export async function refreshObjectivesProgress(userId: string) {
                         .lte('scheduled_date', endDate);
                     newValue = eventCount || 0;
                     break;
+                }
 
-                case 'sales':
+                case 'sales': {
                     // Sum total of direct sales in period
                     const { data: salesData } = await (supabase as any)
                         .from('transfer_orders')
@@ -91,6 +95,7 @@ export async function refreshObjectivesProgress(userId: string) {
 
                     newValue = (salesData as { total: number }[] || []).reduce((sum, s) => sum + (Number(s.total) || 0), 0);
                     break;
+                }
             }
 
             // Update objective if value changed

@@ -10,7 +10,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { X, Lightbulb } from "lucide-react";
+import { X, Lightbulb, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SPINGuide {
     id: string;
@@ -37,7 +38,6 @@ export function SPINGuideAlert({ productId, entityType }: SPINGuideAlertProps) {
     const loadGuides = async () => {
         setLoading(true);
         try {
-            // Cast to any because sales_guides table is not in generated types yet
             const supabaseAny = supabase as any;
 
             let query = supabaseAny
@@ -77,27 +77,48 @@ export function SPINGuideAlert({ productId, entityType }: SPINGuideAlertProps) {
         return labels[type] || type;
     };
 
+    const getTypeColor = (type: string) => {
+        const colors: Record<string, string> = {
+            situation: "text-blue-400",
+            problem: "text-amber-400",
+            implication: "text-rose-400",
+            need_payoff: "text-emerald-400"
+        };
+        return colors[type] || "text-primary";
+    };
+
     return (
-        <Alert className="bg-blue-50 border-blue-200 relative">
+        <Alert className="bg-primary/5 border-primary/20 relative text-foreground rounded-[2rem] p-8 shadow-inner overflow-hidden font-display">
+            <div className="absolute top-0 right-0 p-8 opacity-5">
+                <Sparkles className="w-24 h-24 text-primary" />
+            </div>
+            
             <button
                 onClick={() => setDismissed(true)}
-                className="absolute top-2 right-2 text-blue-400 hover:text-blue-600"
+                className="absolute top-4 right-4 text-muted-foreground/40 hover:text-foreground transition-colors"
             >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
             </button>
-            <div className="flex gap-3">
-                <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            
+            <div className="flex gap-6 relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner border border-primary/20 shrink-0">
+                    <Lightbulb className="h-6 w-6" />
+                </div>
+                
                 <div className="flex-1">
-                    <h4 className="font-semibold text-blue-900 mb-2">
-                        💡 Guía de Preguntas SPIN
+                    <h4 className="text-sm font-black uppercase tracking-[0.3em] text-foreground mb-6 flex items-center gap-2">
+                        Guía de Inteligencia SPIN CA
                     </h4>
-                    <AlertDescription className="text-blue-800 space-y-2">
-                        {guides.map((guide, index) => (
-                            <div key={guide.id} className="text-sm">
-                                <span className="font-medium text-blue-700">
-                                    {getQuestionTypeLabel(guide.question_type)}:
-                                </span>{" "}
-                                {guide.question_text}
+                    
+                    <AlertDescription className="space-y-4">
+                        {guides.map((guide) => (
+                            <div key={guide.id} className="group p-4 bg-muted/5 rounded-xl border border-border/40 hover:border-primary/20 transition-all">
+                                <span className={cn("text-elite-xs font-black uppercase tracking-widest block mb-2", getTypeColor(guide.question_type))}>
+                                    {getQuestionTypeLabel(guide.question_type)}
+                                </span>
+                                <p className="text-xs font-bold text-foreground/80 leading-relaxed uppercase">
+                                    {guide.question_text}
+                                </p>
                             </div>
                         ))}
                     </AlertDescription>

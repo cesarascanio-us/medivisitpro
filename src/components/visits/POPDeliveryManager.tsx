@@ -29,9 +29,11 @@ export interface POPDeliveryItem {
 interface POPDeliveryManagerProps {
     onUpdate: (items: POPDeliveryItem[]) => void;
     initialItems?: POPDeliveryItem[];
+    specialty?: string;
+    isMedicalVisit?: boolean;
 }
 
-export function POPDeliveryManager({ onUpdate, initialItems = [] }: POPDeliveryManagerProps) {
+export function POPDeliveryManager({ onUpdate, initialItems = [], specialty, isMedicalVisit }: POPDeliveryManagerProps) {
     const [inventory, setInventory] = useState<any[]>([]);
     const [selectedItems, setSelectedItems] = useState<POPDeliveryItem[]>(initialItems);
     const [loading, setLoading] = useState(true);
@@ -40,16 +42,23 @@ export function POPDeliveryManager({ onUpdate, initialItems = [] }: POPDeliveryM
 
     useEffect(() => {
         loadInventory();
-    }, []);
+    }, [specialty, isMedicalVisit]);
 
     const loadInventory = async () => {
         try {
             if (demoData) {
                 console.log("POPDeliveryManager: Loading demo inventory");
-                // Map mock data keys to expected component keys if necessary
-                // In demoData.materialPop: { id, name, quantity, category }
-                // Component expects: { id, nombre, cantidad_disponible, tipo }
-                const mappedData = (demoData.materialPop || []).map(item => ({
+                let items = demoData.materialPop || [];
+                if (isMedicalVisit && specialty) {
+                    const spec = specialty.toLowerCase().trim();
+                    items = items.filter((item: any) => {
+                        const pSpec = (item.medical_specialties || '').toLowerCase();
+                        const pCat = (item.category || '').toLowerCase();
+                        const isLaunch = pCat.includes('launch') || pCat.includes('lanzamiento');
+                        return isLaunch || pSpec.includes(spec);
+                    });
+                }
+                const mappedData = items.map((item: any) => ({
                     id: item.id,
                     nombre: item.name,
                     cantidad_disponible: item.quantity,
@@ -68,13 +77,26 @@ export function POPDeliveryManager({ onUpdate, initialItems = [] }: POPDeliveryM
                     id,
                     nombre,
                     cantidad_disponible,
-                    tipo
+                    tipo,
+                    products:products(medical_specialties, category)
                 `)
                 .eq('user_id', user.id)
                 .gt('cantidad_disponible', 0);
 
             if (invError) throw invError;
-            setInventory(invData || []);
+
+            let filteredData = invData || [];
+            if (isMedicalVisit && specialty) {
+                const spec = specialty.toLowerCase().trim();
+                filteredData = filteredData.filter((item: any) => {
+                    const pSpec = (item.products?.medical_specialties || '').toLowerCase();
+                    const pCat = (item.products?.category || '').toLowerCase();
+                    const isLaunch = pCat.includes('launch') || pCat.includes('lanzamiento');
+                    return isLaunch || pSpec.includes(spec);
+                });
+            }
+
+            setInventory(filteredData);
         } catch (error) {
             console.error("Error loading POP inventory:", error);
             toast({
@@ -161,7 +183,6 @@ export function POPDeliveryManager({ onUpdate, initialItems = [] }: POPDeliveryM
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-                {/* Selected Summary */}
                 {selectedItems.length > 0 && (
                     <div className="space-y-3 mb-4 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
                         <Label className="text-xs font-semibold text-orange-300 uppercase tracking-wider flex items-center gap-2">
@@ -169,7 +190,7 @@ export function POPDeliveryManager({ onUpdate, initialItems = [] }: POPDeliveryM
                             Materiales a Entregar
                         </Label>
                         {selectedItems.map(item => (
-                            <div key={item.id} className="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700 shadow-sm">
+                            <div key={item.id} className="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700 shadow-sm text-white">
                                 <span className="text-sm font-medium text-slate-200">{item.product_name}</span>
                                 <div className="flex items-center gap-2">
                                     <Badge variant="secondary" className="bg-orange-500/20 text-orange-300 border border-orange-500/30">x{item.quantity}</Badge>
@@ -185,7 +206,6 @@ export function POPDeliveryManager({ onUpdate, initialItems = [] }: POPDeliveryM
                     </div>
                 )}
 
-                {/* Inventory List */}
                 <div className="space-y-1">
                     <Label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tu Stock de Materiales</Label>
                     <ScrollArea className="h-[200px] pr-4">

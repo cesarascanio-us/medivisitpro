@@ -5,7 +5,7 @@
  Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
  Queda estrictamente prohibida la copia, modificación, distribución,
  ingeniería inversa o uso no autorizado de este código fuente.
-======================================================================== */
+ ======================================================================== */
 
 import { LucideIcon, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,45 +20,45 @@ interface StatsCardProps {
 }
 
 export const StatsCard = ({ title, value, subtitle, icon: Icon, trending, variant = "default" }: StatsCardProps) => {
-  const getVariantStyles = () => {
+  const getVibrantClass = () => {
     switch (variant) {
-      case "primary": return "bg-primary/5 border-primary/20 text-primary";
-      case "success": return "bg-secondary/10 border-secondary/20 text-secondary";
-      case "warning": return "bg-amber-500/10 border-amber-500/20 text-amber-600";
-      case "destructive": return "bg-red-500/10 border-red-500/20 text-red-600";
-      default: return "bg-gray-50 border-gray-200 text-gray-500";
+      case "primary": return "icon-vibrant-primary";
+      case "success": return "icon-vibrant-success";
+      case "warning": return "icon-vibrant-warning";
+      case "destructive": return "icon-vibrant-purple"; // using purple for destructive/alt
+      default: return "icon-vibrant-info";
     }
   };
 
-  const styleClasses = getVariantStyles();
-  const iconColor = styleClasses.split(' ').pop();
+  const vibrantClass = getVibrantClass();
 
   return (
-    <Card className="group relative overflow-hidden border-gray-200 bg-white shadow-soft hover:shadow-card transition-all duration-300 rounded-2xl">
-      <div className={`absolute top-0 left-0 w-1 h-full ${variant === 'primary' ? 'bg-primary' : variant === 'success' ? 'bg-secondary' : 'bg-transparent'}`}></div>
+    <Card className="group relative overflow-hidden border-none bg-background/80 backdrop-blur-sm shadow-soft hover:shadow-card transition-all duration-500 rounded-3xl">
+      <div className={`absolute top-0 left-0 w-1.5 h-full ${variant === 'primary' ? 'bg-primary' : variant === 'success' ? 'bg-emerald-500' : 'bg-transparent'}`}></div>
       <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-5">
-          <div className={`p-3 rounded-xl ${styleClasses.split(' ').slice(0, 2).join(' ')} shadow-sm group-hover:scale-110 transition-transform duration-500`}>
-            <Icon className={`h-6 w-6 ${iconColor}`} />
+        <div className="flex items-center justify-between mb-6">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-3 ${vibrantClass}`}>
+            <Icon className="h-7 w-7" />
           </div>
           {trending !== undefined && (
-            <div className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-600 border border-green-100 uppercase tracking-tight">
+            <div className="flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm">
               <TrendingUp className="h-3.5 w-3.5" />
-              {trending}%
+              +{trending}%
             </div>
           )}
         </div>
         <div>
-          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-gray-500 transition-colors">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-1.5">
             {title}
           </p>
           <div className="flex items-baseline gap-2">
-            <h3 className="text-3xl font-bold text-text-main tracking-tight tabular-nums">
+            <h3 className="text-3xl font-extrabold text-foreground tracking-tight tabular-nums drop-shadow-sm">
               {value}
             </h3>
           </div>
           {subtitle && (
-            <p className="text-xs text-text-muted mt-2 font-medium opacity-80 group-hover:opacity-100 transition-opacity">
+            <p className="text-[11px] text-slate-500 mt-2 font-semibold flex items-center gap-1.5">
+              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
               {subtitle}
             </p>
           )}

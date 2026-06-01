@@ -20,6 +20,21 @@ interface OfflineDBSchema extends DBSchema {
         key: string;
         value: CachedItem;
     };
+    syncConflicts: {
+        key: string;
+        value: SyncConflict;
+        indexes: { 'by-timestamp': number };
+    };
+}
+
+export interface SyncConflict {
+    id: string;
+    operationId: string;
+    timestamp: number;
+    table: string;
+    localData: Record<string, unknown>;
+    remoteData: Record<string, unknown>;
+    status: 'pending' | 'resolved';
 }
 
 export interface PendingOperation {
@@ -41,7 +56,7 @@ interface CachedItem {
 }
 
 const DB_NAME = 'medivisitpro-offline';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbInstance: IDBPDatabase<OfflineDBSchema> | null = null;
 
@@ -55,6 +70,11 @@ async function getDB(): Promise<IDBPDatabase<OfflineDBSchema>> {
                 const store = db.createObjectStore('pendingOperations', { keyPath: 'id' });
                 store.createIndex('by-timestamp', 'timestamp');
             }
+            // Store for sync conflicts
+            if (!db.objectStoreNames.contains('syncConflicts')) {
+                const store = db.createObjectStore('syncConflicts', { keyPath: 'id' });
+                store.createIndex('by-timestamp', 'timestamp');
+            }
             // Store for cached data
             if (!db.objectStoreNames.contains('cachedData')) {
                 db.createObjectStore('cachedData', { keyPath: 'key' });
@@ -63,6 +83,17 @@ async function getDB(): Promise<IDBPDatabase<OfflineDBSchema>> {
     });
 
     return dbInstance;
+}
+
+/**
+ * RESET FOR TESTING ONLY
+ * Closes and clears the singleton DB instance
+ */
+export async function __resetOfflineDB(): Promise<void> {
+    if (dbInstance) {
+        dbInstance.close();
+        dbInstance = null;
+    }
 }
 
 // Generate unique ID
@@ -112,6 +143,45 @@ export async function updatePendingOperation(op: PendingOperation): Promise<void
 export async function getPendingCount(): Promise<number> {
     const db = await getDB();
     return db.count('pendingOperations');
+}
+
+// ============ SYNC CONFLICTS ============
+
+export async function enqueueSyncConflict(
+    conflict: Omit<SyncConflict, 'id' | 'timestamp' | 'status'>
+): Promise<string> {
+    const db = await getDB();
+    const c: SyncConflict = {
+        ...conflict,
+        id: generateId(),
+        timestamp: Date.now(),
+        status: 'pending'
+    };
+    await db.put('syncConflicts', c);
+    console.log('[OfflineSync] Conflict enqueued:', c.id);
+    return c.id;
+}
+
+export async function getSyncConflicts(): Promise<SyncConflict[]> {
+    const db = await getDB();
+    const tx = db.transaction('syncConflicts', 'readonly');
+    const store = tx.objectStore('syncConflicts');
+    const index = store.index('by-timestamp');
+    return index.getAll();
+}
+
+export async function removeSyncConflict(id: string): Promise<void> {
+    const db = await getDB();
+    await db.delete('syncConflicts', id);
+}
+
+export async function resolveSyncConflict(id: string): Promise<void> {
+    const db = await getDB();
+    const c = await db.get('syncConflicts', id);
+    if (c) {
+        c.status = 'resolved';
+        await db.put('syncConflicts', c);
+    }
 }
 
 // ============ CACHED DATA ============
