@@ -1,0 +1,108 @@
+
+<h2 class="sr-only">Matrix completa de roles y permisos de MediVisitPro con acceso por módulo para los 12 roles de usuario</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,sans-serif}
+.wrap{overflow-x:auto;font-size:11px}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th,td{padding:7px 10px;border:1px solid #E2E6EA;text-align:center;white-space:nowrap}
+thead th{background:#F7F8FA;font-weight:600;color:#1A2332;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+thead th:first-child{text-align:left;min-width:160px}
+tbody th{text-align:left;font-weight:500;color:#1A2332;background:#FAFBFC;padding-left:12px}
+.g{color:#1D9E75;font-size:14px}
+.p{color:#B45309;font-size:14px}
+.n{color:#D1D5DB;font-size:12px}
+.role-col{font-size:10px;font-weight:600;color:#6B7A8D;writing-mode:vertical-lr;transform:rotate(180deg);padding:8px 4px;max-width:36px}
+.section{background:#EEF5F8;font-weight:700;color:#0B5C6E;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.section td{background:#EEF5F8}
+.legend{display:flex;gap:16px;padding:10px 0;font-size:11px;color:#6B7A8D;align-items:center}
+.legend span{display:flex;align-items:center;gap:4px}
+</style>
+<div class="legend">
+  <span><span class="g">✓</span> Acceso completo</span>
+  <span><span class="p">◐</span> Acceso parcial / solo lectura</span>
+  <span><span class="n">—</span> Sin acceso</span>
+</div>
+<div class="wrap">
+<table>
+<thead>
+<tr>
+  <th>Módulo / Acción</th>
+  <th><div class="role-col">Admin</div></th>
+  <th><div class="role-col">Gerente</div></th>
+  <th><div class="role-col">Jefe</div></th>
+  <th><div class="role-col">Coordinador</div></th>
+  <th><div class="role-col">Supervisor</div></th>
+  <th><div class="role-col">Telemarketing</div></th>
+  <th><div class="role-col">Rep. Comercial</div></th>
+  <th><div class="role-col">Visit. Médico</div></th>
+  <th><div class="role-col">Rep. Integral</div></th>
+  <th><div class="role-col">Farmacia</div></th>
+  <th><div class="role-col">Médico</div></th>
+  <th><div class="role-col">Compras</div></th>
+</tr>
+</thead>
+<tbody>
+
+<tr class="section"><th colspan="13">DASHBOARD</th></tr>
+<tr><th>Panel ejecutivo (KPIs nacionales)</th><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Panel regional (KPIs por zona)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Panel táctico (agenda del día)</th><td class="p">◐</td><td class="p">◐</td><td class="p">◐</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Portal externo (cliente/médico)</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td></tr>
+
+<tr class="section"><th colspan="13">VISITAS MÉDICAS</th></tr>
+<tr><th>Ver historial de visitas (propio)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="p">◐</td><td class="n">—</td></tr>
+<tr><th>Ver visitas de todo el equipo</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Registrar visita médica</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Registrar auditoría de farmacia</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="p">◐</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Evaluación de coaching (campo)</th><td class="n">—</td><td class="n">—</td><td class="p">◐</td><td class="n">—</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>GPS / radar de equipo en tiempo real</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+
+<tr class="section"><th colspan="13">DIRECTORIO MÉDICO</th></tr>
+<tr><th>Ver médicos (todos)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Crear / editar médico</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="p">◐</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Solicitar visita (desde portal)</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="n">—</td></tr>
+
+<tr class="section"><th colspan="13">FARMACIAS Y COMERCIAL</th></tr>
+<tr><th>Ver farmacias (todas)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="p">◐</td></tr>
+<tr><th>Crear transferencia / pedido</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Ver precios y aplicar descuentos</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="g">✓</td></tr>
+<tr><th>Aprobar transferencias (alto volumen)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Ver stock / inventario droguerías</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="g">✓</td></tr>
+<tr><th>Ver historial de compras (propio)</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="n">—</td><td class="g">✓</td></tr>
+<tr><th>Negociar licitaciones institucionales</th><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td></tr>
+
+<tr class="section"><th colspan="13">MUESTRAS MÉDICAS</th></tr>
+<tr><th>Ver banco de muestras (propio)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="p">◐</td><td class="n">—</td></tr>
+<tr><th>Entregar muestras / descontar stock</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Solicitar reposición de muestras</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="g">✓</td><td class="n">—</td></tr>
+<tr><th>Aprobar / asignar lotes de muestras</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+
+<tr class="section"><th colspan="13">PLANIFICACIÓN Y CICLOS</th></tr>
+<tr><th>Crear / editar ciclos promocionales</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Asignar ficheros / rutas a representantes</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Ver agenda propia del día</th><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Ver agenda de todo el equipo</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+
+<tr class="section"><th colspan="13">REPORTES Y ANÁLISIS</th></tr>
+<tr><th>Reportes nacionales / globales</th><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Reportes regionales / por zona</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Exportar datos (Excel/PDF)</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="p">◐</td><td class="n">—</td><td class="g">✓</td></tr>
+<tr><th>Monitor financiero / KPIs de costo</th><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="p">◐</td></tr>
+
+<tr class="section"><th colspan="13">ADMINISTRACIÓN</th></tr>
+<tr><th>Crear / editar usuarios de la org</th><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Gestionar zonas / territorios</th><td class="g">✓</td><td class="g">✓</td><td class="g">✓</td><td class="p">◐</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Theme Builder / personalización visual</th><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+<tr><th>Ver facturación / licencias SaaS</th><td class="g">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+
+</tbody>
+</table>
+</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button onclick="sendPrompt('La matrix de roles se ve correcta. Procede a redactar la instrucción completa para antigravity que implemente estos 12 roles con sus permisos exactos en MediVisitPro')" style="flex:1;padding:9px;font-size:12px;font-weight:500;border-radius:6px;background:#E6F4F7;color:#0B5C6E;border:1px solid #B8D9E0;cursor:pointer">
+  Matrix correcta → Redactar instrucción para antigravity ↗
+</button>
+<button onclick="sendPrompt('Necesito corregir el acceso del rol ')" style="flex:1;padding:9px;font-size:12px;border-radius:6px;background:#F7F8FA;color:#6B7A8D;border:1px solid #E2E6EA;cursor:pointer">
+  Corregir un rol ↗
+</button>
+</div>
