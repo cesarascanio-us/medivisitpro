@@ -12,8 +12,8 @@ BEGIN
   -- Esto evita por completo consultar la tabla auth.users (lo que causa el error de permisos)
   user_email := auth.jwt() ->> 'email';
   
-  -- Check for both allowed master emails
-  RETURN user_email IN ('cesar.ascanio@gmail.com', 'cesarascaniofp.us@gmail.com');
+  -- Check for the single allowed master email
+  RETURN user_email = 'cesar.ascanio@gmail.com';
 END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = '';
 
