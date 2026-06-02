@@ -255,9 +255,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // [INDUSTRIAL] Secure Master Verification via Database RPC
             // FIX: Hardcoded owner emails to prevent catastrophic lockouts if RPC changes
             const lowerEmail = email.toLowerCase();
-            const isHardcodedOwner = lowerEmail === 'cesar.ascanio@gmail.com' || 
-                                     lowerEmail === 'cesarascaniofp.us@gmail.com' || 
-                                     lowerEmail === 'cesarascaniofo.us@gmail.com';
+            const isHardcodedOwner = lowerEmail === 'cesar.ascanio@gmail.com';
 
             let isOwnerCheck = isHardcodedOwner;
 
