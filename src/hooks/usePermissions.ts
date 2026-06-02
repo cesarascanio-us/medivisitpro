@@ -43,14 +43,26 @@ export function usePermissions() {
     enabled: !!profile?.id // Solo ejecuta si el usuario está cargado
   });
 
-  // Obtenemos los módulos del plan desde organization via useOrganizationPlan si fuera necesario
-  // Para evitar dependencia circular, simplemente traemos el módulo por la DB
+  // Obtenemos los módulos del plan desde la base de datos de forma dinámica
   const { data: orgModules } = useQuery({
     queryKey: ['org_modules', organizationId],
     queryFn: async () => {
-      // The billing_plans → plan_modules FK doesn't exist in the current schema.
-      // Return empty array so the fallback basicModules list below handles access.
-      return [] as string[];
+      if (!organizationId) return [] as string[];
+
+      const { data, error } = await supabase
+        .from('organizations')
+        .select('plan_tier')
+        .eq('id', organizationId)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error('Error fetching org plan_tier:', error);
+        return [] as string[];
+      }
+
+      const tier = data.plan_tier || 'starter';
+      const { DEFAULT_PLAN_MODULES } = await import('@/config/systemModules');
+      return DEFAULT_PLAN_MODULES[tier] || DEFAULT_PLAN_MODULES['starter'];
     },
     enabled: !!organizationId && !isDemo
   });
