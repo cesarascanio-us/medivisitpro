@@ -89,11 +89,7 @@ export default defineConfig(({ mode }) => {
           warn(warning);
         },
         output: {
-          manualChunks: {
-            'vendor-base': ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query', 'framer-motion', 'lucide-react'],
-            'vendor-supabase': ['@supabase/supabase-js'],
-            'vendor-ui-radix': ['@radix-ui/react-dialog', '@radix-ui/react-tabs', '@radix-ui/react-select'],
-          }
+          // Eliminamos manualChunks para evitar errores de ReferenceError (circular dependencies en vendor)
         }
       }
     }
