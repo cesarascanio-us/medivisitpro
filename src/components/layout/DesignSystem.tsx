@@ -70,9 +70,10 @@ interface EliteKPICardProps {
     onClick?: () => void;
     className?: string;
     isActive?: boolean;
+    delay?: number;
 }
 
-export function EliteKPICard({ title, value, subtitle, icon: Icon, trend, color = 'primary', onClick, className, isActive }: EliteKPICardProps) {
+export function EliteKPICard({ title, value, subtitle, icon: Icon, trend, color = 'primary', onClick, className, isActive, delay }: EliteKPICardProps) {
   const colorMap: Record<string, { bg: string, icon: string, bar: string }> = {
     primary:  { bg: 'bg-accent',          icon: 'text-primary',     bar: 'bg-primary'     },
     success:  { bg: 'bg-green-50',        icon: 'text-green-700',   bar: 'bg-green-600'   },
@@ -126,13 +127,14 @@ interface EliteCardProps {
     className?: string;
     title?: string;
     description?: string;
+    icon?: LucideIcon;
     action?: React.ReactNode;
     onClick?: () => void;
     delay?: number;
 }
 
 export const EliteCard = React.forwardRef<HTMLDivElement, EliteCardProps>(
-  ({ children, className, title, description, action, onClick, delay }, ref) => {
+  ({ children, className, title, description, icon: Icon, action, onClick, delay }, ref) => {
     return (
       <div 
         ref={ref} 
@@ -141,9 +143,12 @@ export const EliteCard = React.forwardRef<HTMLDivElement, EliteCardProps>(
       >
         {(title || action) && (
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-            <div>
-              {title && <h3 className="text-sm font-semibold text-foreground">{title}</h3>}
-              {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+            <div className="flex items-center gap-2">
+              {Icon && <Icon className="w-4 h-4 text-primary" strokeWidth={1.5} />}
+              <div>
+                {title && <h3 className="text-sm font-semibold text-foreground">{title}</h3>}
+                {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+              </div>
             </div>
             {action && <div className="flex items-center gap-2">{action}</div>}
           </div>
@@ -160,26 +165,14 @@ EliteCard.displayName = "EliteCard";
 export const EliteInput = React.forwardRef<
     HTMLInputElement,
     React.ComponentProps<typeof Input> & { icon?: LucideIcon }
->(({ icon: Icon, className, ...props }, ref) => {
-  return (
-    <div className="relative w-full">
-      {Icon && (
-        <Icon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" strokeWidth={1.5} />
-      )}
-      <Input
-        ref={ref}
-        className={cn(
-          "h-8 text-sm border-border bg-background",
-          "placeholder:text-muted-foreground",
-          "focus:ring-1 focus:ring-primary focus:border-primary",
-          Icon && "pl-8",
-          className
-        )}
-        {...props}
-      />
-    </div>
-  )
-})
+>(({ className, icon: Icon, ...props }, ref) => {
+    return (
+        <div className="relative">
+            {Icon && <Icon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />}
+            <Input ref={ref} className={cn(Icon && "pl-8", className)} {...props} />
+        </div>
+    );
+});
 EliteInput.displayName = "EliteInput";
 
 // ─── EliteTable ───────────────────────────────────────────────────────────────
@@ -352,7 +345,7 @@ export function EliteLoadingSkeleton({ rows = 3 }: { rows?: number }) {
 // Just forwarding to standard shadcn button to avoid breaking imports
 export const EliteButton = React.forwardRef<
     HTMLButtonElement,
-    React.ComponentProps<typeof Button> & {
+    Omit<React.ComponentProps<typeof Button>, 'variant'> & {
         variant?: 'primary' | 'secondary' | 'ghost' | 'default' | 'outline';
         icon?: LucideIcon;
     }
