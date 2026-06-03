@@ -57,9 +57,9 @@ export default function Objectives() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("general");
 
-    // Team Management
-    const [teamMembers, setTeamMembers] = useState<{ id: string, user_id: string, first_name: string, last_name: string, email: string }[]>([]);
-    const [targetUserId, setTargetUserId] = useState<string>("self");
+    const [zones, setZones] = useState<{ id: string, name: string }[]>([]);
+    const [assignmentType, setAssignmentType] = useState<"global" | "zone">("global");
+    const [targetZoneId, setTargetZoneId] = useState<string>("");
 
     const [formData, setFormData] = useState({
         title: "",
@@ -79,26 +79,22 @@ export default function Objectives() {
         if (user) {
             loadObjectives();
             if (isLeader) {
-                loadTeamMembers();
+                loadZones();
             }
         }
     }, [user, isLeader]);
 
-    const loadTeamMembers = async () => {
+    const loadZones = async () => {
         try {
-            // Fetch users from the same organization
-            // Note: In a real scenario, we might want to filter by hierarchy (e.g. only my subordinates)
-            // For now, we fetch all profiles in the org context (RLS should handle org isolation)
             const { data, error } = await supabase
-                .from('profiles')
-                .select('id, user_id, first_name, last_name, email')
-                .neq('user_id', user?.id) 
-                .order('first_name');
+                .from('zones')
+                .select('id, name')
+                .order('name');
 
             if (error) throw error;
-            setTeamMembers(data || []);
+            setZones(data || []);
         } catch (error) {
-            console.error("Error loading team:", error);
+            console.error("Error loading zones:", error);
         }
     };
 
@@ -156,11 +152,13 @@ export default function Objectives() {
     const handleSubmit = async () => {
         if (!user || !formData.title) return;
 
-        const assignedUser = (canAssign && targetUserId && targetUserId !== "self") ? targetUserId : user.id;
+        if (canAssign && assignmentType === "zone" && !targetZoneId) {
+            toast({ title: "Error", description: "Debes seleccionar una zona para continuar.", variant: "destructive" });
+            return;
+        }
 
         try {
-            const { error } = await supabase.from('objectives').insert({
-                user_id: assignedUser,
+            const insertPayload: any = {
                 title: formData.title,
                 description: formData.description || null,
                 objective_type: formData.objective_type,
@@ -172,18 +170,27 @@ export default function Objectives() {
                 end_date: formData.end_date,
                 priority: formData.priority,
                 status: 'active'
-            });
+            };
+
+            if (canAssign) {
+                insertPayload.is_global = assignmentType === 'global';
+                insertPayload.zone_id = assignmentType === 'zone' ? targetZoneId : null;
+                // Leave user_id undefined or null for global/zone objectives
+            } else {
+                insertPayload.user_id = user.id;
+            }
+
+            const { error } = await supabase.from('objectives').insert(insertPayload);
 
             if (error) throw error;
 
             toast({
                 title: "Objetivo creado",
-                description: isLeader && targetUserId
-                    ? "Objetivo asignado al usuario exitosamente."
-                    : "El objetivo ha sido creado exitosamente."
+                description: "El objetivo ha sido creado exitosamente."
             });
             setDialogOpen(false);
-            setTargetUserId("self"); // Reset
+            setAssignmentType("global"); // Reset
+            setTargetZoneId("");
             loadObjectives();
         } catch (error) {
             toast({ title: "Error", description: "No se pudo crear el objetivo.", variant: "destructive" });
@@ -363,27 +370,43 @@ export default function Objectives() {
                             <TabsContent value="general" className="m-0 space-y-8 mt-0 animate-in fade-in slide-in-from-right-2">
                                 <section className="space-y-6">
                                     {canAssign && (
-                                        <div className="space-y-2">
-                                            <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Asignar a (Opcional)</Label>
-                                            <Select value={targetUserId} onValueChange={setTargetUserId}>
-                                                <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm">
-                                                    <SelectValue placeholder="Seleccionar miembro del equipo..." />
-                                                </SelectTrigger>
-                                                <SelectContent className="rounded-2xl border-none shadow-2xl">
-                                                    <SelectItem value="self" className="font-bold py-3">Asignarme a mí mismo</SelectItem>
-                                                    {teamMembers.map((member, idx) => {
-                                                        const val = member.id || member.user_id || `fallback-${idx}`;
-                                                        return (
-                                                            <SelectItem key={val} value={val} className="font-bold py-3">
-                                                                {member.first_name} {member.last_name}
-                                                            </SelectItem>
-                                                        );
-                                                    })}
-                                                </SelectContent>
-                                            </Select>
-                                            <p className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-wide">
-                                                Si seleccionas un usuario, el objetivo se creará en su tablero.
-                                            </p>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Tipo de Asignación</Label>
+                                                <Select value={assignmentType} onValueChange={(v: any) => setAssignmentType(v)}>
+                                                    <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                                        <SelectItem value="global" className="font-bold py-3">Global (Toda la Organización)</SelectItem>
+                                                        <SelectItem value="zone" className="font-bold py-3">Por Zona Territorial</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            
+                                            {assignmentType === "zone" ? (
+                                                <div className="space-y-2">
+                                                    <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Seleccionar Zona</Label>
+                                                    <Select value={targetZoneId} onValueChange={setTargetZoneId}>
+                                                        <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm">
+                                                            <SelectValue placeholder="Elegir zona..." />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="rounded-2xl border-none shadow-2xl">
+                                                            {zones.map((zone) => (
+                                                                <SelectItem key={zone.id} value={zone.id} className="font-bold py-3">
+                                                                    {zone.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col justify-center">
+                                                    <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-wide leading-relaxed pt-6">
+                                                        Se aplicará a toda la organización.
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
