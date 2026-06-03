@@ -1,17 +1,16 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Skeleton } from '@/components/ui/skeleton';
-import DashboardMaster from './DashboardMaster';
-import DashboardManager from './DashboardManager';
-import DashboardRep from './DashboardRep';
-import DashboardDoctor from './DashboardDoctor';
-import DashboardSupervisor from '@/pages/DashboardSupervisor';
-import DashboardTelemarketing from '@/pages/DashboardTelemarketing';
-import DashboardJefe from './DashboardJefe';
-import PortalFarmacia from '@/pages/portals/PortalFarmacia';
-import PortalCompras from '@/pages/portals/PortalCompras';
 
-// Un fallback o skeleton se usa en React.Suspense que envuelve este componente desde App.tsx
+const DashboardMaster = lazy(() => import('./DashboardMaster'));
+const DashboardManager = lazy(() => import('./DashboardManager'));
+const DashboardRep = lazy(() => import('./DashboardRep'));
+const DashboardDoctor = lazy(() => import('./DashboardDoctor'));
+const DashboardSupervisor = lazy(() => import('@/pages/DashboardSupervisor'));
+const DashboardTelemarketing = lazy(() => import('@/pages/DashboardTelemarketing'));
+const DashboardJefe = lazy(() => import('./DashboardJefe'));
+const PortalFarmacia = lazy(() => import('@/pages/portals/PortalFarmacia'));
+const PortalCompras = lazy(() => import('@/pages/portals/PortalCompras'));
+
 const DashboardDefault = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
     <p className="text-muted-foreground text-sm">Cargando su panel de control personalizado...</p>
@@ -53,7 +52,6 @@ export default function DashboardRouter() {
 
   // 5. Campo → DashboardRep (Comercial, Médico, Integral)
   if (['rep_comercial', 'visitador_medico', 'rep_integral', 'representative'].includes(role)) {
-    // Definimos el modo basado en el rol específico para personalizar la vista
     const mode = role === 'rep_comercial' ? 'comercial' : 
                  role === 'visitador_medico' ? 'medico' : 'integral';
     return <DashboardRep mode={mode as any} />;
