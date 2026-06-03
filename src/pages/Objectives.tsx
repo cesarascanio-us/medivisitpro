@@ -89,8 +89,8 @@ export default function Objectives() {
             // For now, we fetch all profiles in the org context (RLS should handle org isolation)
             const { data, error } = await supabase
                 .from('profiles')
-                .select('id, first_name, last_name, email')
-                .neq('id', user?.id) // Exclude self if desired, or keep to assign to self? Let's keep self out for "Assign" dropdown, or maybe include.
+                .select('id, user_id, first_name, last_name, email')
+                .neq('user_id', user?.id) 
                 .order('first_name');
 
             if (error) throw error;
@@ -341,11 +341,14 @@ export default function Objectives() {
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-border/40 bg-card shadow-premium-md">
                                         <SelectItem value="self">Asignarme a mí mismo</SelectItem>
-                                        {teamMembers.map(member => (
-                                            <SelectItem key={member.id} value={member.id} className="font-bold">
-                                                {member.first_name} {member.last_name}
-                                            </SelectItem>
-                                        ))}
+                                        {teamMembers.map((member, idx) => {
+                                            const val = member.id || member.user_id || `fallback-${idx}`;
+                                            return (
+                                                <SelectItem key={val} value={val} className="font-bold">
+                                                    {member.first_name} {member.last_name}
+                                                </SelectItem>
+                                            );
+                                        })}
                                     </SelectContent>
                                 </Select>
                                 <p className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-wide">
