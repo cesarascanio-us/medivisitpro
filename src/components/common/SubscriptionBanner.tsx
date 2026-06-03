@@ -3,13 +3,21 @@ import { AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useOrganizationPlan } from '@/hooks/useOrganizationPlan';
 import { useAuth } from '@/hooks/useAuth';
+import { useOrganization } from '@/hooks/useOrganization';
 
 export function SubscriptionBanner() {
   const { daysUntilExpiry, isExpired, subscriptionStatus } = useOrganizationPlan();
-  const { profile } = useAuth();
+  const { profile, isMaster } = useAuth();
+  const { organization } = useOrganization();
+
+  // El master (dueño de la plataforma) NUNCA ve banners de suscripción
+  if (isMaster) return null;
+
+  // La organización system owner (MediVisit Pro) nunca muestra banners de suscripción
+  if (organization?.is_system_owner) return null;
 
   // Solo mostrar a manager/admin — no molestar a representantes en campo
-  if (!profile || !['manager','admin', 'master'].includes(profile?.role)) return null;
+  if (!profile || !['manager','admin'].includes(profile?.role)) return null;
   if (subscriptionStatus === 'active' && (!daysUntilExpiry || daysUntilExpiry > 14)) return null;
 
   if (isExpired) return (

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-
-const DashboardMaster = React.lazy(() => import('./DashboardMaster'));
-const DashboardManager = React.lazy(() => import('./DashboardManager'));
-const DashboardRep = React.lazy(() => import('./DashboardRep'));
-const DashboardDoctor = React.lazy(() => import('./DashboardDoctor'));
+import { Skeleton } from '@/components/ui/skeleton';
+import DashboardMaster from './DashboardMaster';
+import DashboardManager from './DashboardManager';
+import DashboardRep from './DashboardRep';
+import DashboardDoctor from './DashboardDoctor';
+import DashboardSupervisor from '@/pages/DashboardSupervisor';
+import DashboardTelemarketing from '@/pages/DashboardTelemarketing';
+import DashboardJefe from './DashboardJefe';
+import PortalFarmacia from '@/pages/portals/PortalFarmacia';
+import PortalCompras from '@/pages/portals/PortalCompras';
 
 // Un fallback o skeleton se usa en React.Suspense que envuelve este componente desde App.tsx
 const DashboardDefault = () => (
@@ -26,16 +31,47 @@ export default function DashboardRouter() {
     return <DashboardMaster />;
   }
 
-  if (role === 'manager' || role === 'organization_admin' || role === 'coordinator' || role === 'supervisor' || role === 'store_manager') {
+  // 1. Ejecutivos → DashboardManager (Admin, Gerente)
+  if (['admin', 'gerente', 'manager', 'organization_admin'].includes(role)) {
     return <DashboardManager organizationId={organizationId} />;
   }
 
-  if (role === 'representative' || role === 'telemarketing') {
-    return <DashboardRep />;
+  // 2. Jefe Regional → DashboardJefe
+  if (['jefe', 'chief'].includes(role)) {
+    return <DashboardJefe organizationId={organizationId} />;
   }
 
-  if (role === 'doctor') {
-    return <DashboardDoctor organizationId={organizationId} doctorId={profile.id} />;
+  // 3. Supervisión táctica → DashboardSupervisor
+  if (['coordinador', 'coordinator', 'supervisor'].includes(role)) {
+    return <DashboardSupervisor />;
+  }
+
+  // 4. Telemarketing → DashboardTelemarketing
+  if (role === 'telemarketing') {
+    return <DashboardTelemarketing />;
+  }
+
+  // 5. Campo → DashboardRep (Comercial, Médico, Integral)
+  if (['rep_comercial', 'visitador_medico', 'rep_integral', 'representative'].includes(role)) {
+    // Definimos el modo basado en el rol específico para personalizar la vista
+    const mode = role === 'rep_comercial' ? 'comercial' : 
+                 role === 'visitador_medico' ? 'medico' : 'integral';
+    return <DashboardRep mode={mode as any} />;
+  }
+
+  // 6. Portal Médico
+  if (['medico', 'doctor'].includes(role)) {
+    return <DashboardDoctor organizationId={organizationId} doctorId={profile?.id || ''} />;
+  }
+
+  // 7. Portal Farmacia (B2B)
+  if (['farmacia', 'pharmacist'].includes(role)) {
+    return <PortalFarmacia />;
+  }
+
+  // 8. Portal Compras (Institucional)
+  if (['compras', 'buyer'].includes(role)) {
+    return <PortalCompras />;
   }
 
   return (

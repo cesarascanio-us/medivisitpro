@@ -32,7 +32,8 @@ import {
   Globe,
   ChevronLeft,
   ChevronDown,
-  Database
+  Database,
+  Settings as SettingsIcon
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -101,80 +102,151 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
   const pendingTransfers = (isManager || role === 'representative') ? 5 : 0;
   const hasActiveVisit = role === 'representative';
 
+  // Determinar grupo según rol del perfil
+  const getRoleGroup = () => {
+    if (['master', 'admin', 'gerente', 'manager', 'jefe', 'chief'].includes(role)) return 'ejecutivo';
+    if (['coordinador', 'coordinator', 'supervisor'].includes(role)) return 'supervision';
+    if (role === 'telemarketing') return 'telemarketing';
+    if (['rep_comercial', 'visitador_medico', 'rep_integral', 'representative'].includes(role)) return 'campo';
+    if (['farmacia', 'medico', 'compras', 'pharmacist', 'doctor', 'buyer'].includes(role)) return 'externo';
+    return 'ejecutivo'; // fallback
+  };
+
+  const roleGroup = getRoleGroup();
+
+  const NAV_GROUPS: Record<string, any[]> = {
+    ejecutivo: [
+      {
+        title: "Administración SaaS",
+        visible: canSeeMaster,
+        items: [
+          { name: "Consola Sentinel", href: "/master-panel", icon: Crown, visible: canSeeMaster },
+          { name: "Matriz de Roles", href: "/roles", icon: Shield, visible: canSeeMaster },
+          { name: "Planes & Capacidad", href: "/master/plans", icon: Shield, visible: canSeeMaster },
+          { name: "Cobros & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
+          { name: "Auditoría Global", href: "/master/logs", icon: Database, visible: canSeeMaster },
+          { name: "Soporte Técnico", href: "/master/tickets", icon: ClipboardList, visible: canSeeMaster },
+          { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
+        ]
+      },
+      {
+        title: "Estrategia",
+        visible: true,
+        items: [
+          { name: "Resumen Gerencial", href: "/dashboard", icon: Home, visible: true },
+          { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: can('reports.national') || can('reports.regional') },
+          { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: true },
+          { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: can('reports.financial') },
+        ]
+      },
+      {
+        title: "Gestión Territorial",
+        visible: true,
+        items: [
+          { name: "Capital Humano", href: "/hr", icon: Shield, visible: can('admin.users') },
+          { name: texts.users_title, href: "/users", icon: Users, visible: can('admin.users') },
+          { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: can('admin.zones') },
+          { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: can('dashboard.regional') || can('dashboard.executive') },
+          { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: canSeeMaster },
+        ]
+      }
+    ],
+    supervision: [
+      {
+        title: "Control de Campo",
+        visible: true,
+        items: [
+          { name: "Dashboard", href: "/dashboard", icon: Home, visible: true },
+          { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: can('visits.coaching') || true },
+          { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: can('planning.routes') || true },
+          { name: "Agenda de Equipo", href: "/agenda", icon: Calendar, visible: can('planning.agenda_team') || true },
+          { name: "Historial de Visitas", href: "/visits", icon: ClipboardList, visible: true },
+        ]
+      },
+      {
+        title: "Gestión Comercial",
+        visible: true,
+        items: [
+          { name: "Muestras", href: "/sample-banks", icon: Pill, visible: true },
+          { name: "Material POP", href: "/material-pop", icon: Gift, visible: true },
+          { name: "Aprobaciones", href: "/transfer-orders", icon: Truck, visible: true },
+        ]
+      }
+    ],
+    telemarketing: [
+      {
+        title: "Ventas Internas",
+        visible: true,
+        items: [
+          { name: "Panel Operativo", href: "/dashboard", icon: Home, visible: true },
+          { name: "Directorio", href: "/contacts", icon: Users, visible: true },
+          { name: "Pedidos", href: "/transfer-orders", icon: ShoppingCart, visible: true },
+          { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: true },
+        ]
+      }
+    ],
+    campo: [
+      {
+        title: "Mi Día",
+        visible: true,
+        items: [
+          { name: "Dashboard", href: "/dashboard", icon: Home, visible: true },
+          { name: "Plan Diario", href: "/planner", icon: Calendar, visible: true },
+          { name: "Mis Visitas", href: "/visits", icon: ClipboardList, visible: true },
+          { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
+        ]
+      },
+      {
+        title: "Cartera",
+        visible: true,
+        items: [
+          { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: can('directory.view') || true },
+          { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: can('commercial.pharmacies') || true },
+          { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: can('commercial.stock') },
+          { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: can('commercial.pharmacies') },
+        ]
+      },
+      {
+        title: "Herramientas",
+        visible: true,
+        items: [
+          { name: "Catálogo Interactivo", href: "/products", icon: ShoppingCart, visible: true },
+          { name: "Gestión de Baremos", href: "/baremos", icon: FileText, visible: true },
+          { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck, visible: true },
+          { name: "Banco de Muestras", href: "/sample-banks", icon: Pill, visible: true },
+        ]
+      }
+    ],
+    externo: [
+      {
+        title: "Portal",
+        visible: true,
+        items: [
+          { name: "Mi Panel", href: "/dashboard", icon: Home, visible: true },
+          { name: "Catálogo", href: "/products", icon: ShoppingCart, visible: true },
+          { name: "Mis Pedidos", href: "/transfer-orders", icon: Truck, visible: true },
+        ]
+      }
+    ]
+  };
+
+  const commonGroup = {
+    title: "Soporte",
+    visible: true,
+    items: [
+      { name: "Configuración", href: "/settings", icon: SettingsIcon, visible: true },
+      { name: "Ayuda", href: "/help", icon: ShieldCheck, visible: true },
+    ]
+  };
+
   const filteredNav = [
-    {
-      title: "Administración SaaS",
-      items: [
-        { name: "Consola Sentinel", href: "/master-panel", icon: Crown, visible: canSeeMaster },
-        { name: "Matriz de Roles", href: "/roles", icon: Shield, visible: canSeeMaster },
-        { name: "Planes & Capacidad", href: "/master/plans", icon: Shield, visible: canSeeMaster },
-        { name: "Cobros & Facturación", href: "/master/billing", icon: DollarSign, visible: canSeeMaster },
-        { name: "Auditoría Global", href: "/master/logs", icon: Database, visible: canSeeMaster },
-        { name: "Soporte Técnico", href: "/master/tickets", icon: ClipboardList, visible: canSeeMaster },
-        { name: "Editor de Homepage", href: "/master/landing", icon: Globe, visible: canSeeMaster },
-      ]
-    },
-    {
-      title: "Panel de Control",
-      items: [
-        { name: "Resumen de Actividad", href: "/dashboard", icon: Home, visible: can('dashboard.executive') || can('dashboard.regional') || can('dashboard.tactical') || can('dashboard.external') || true },
-        { name: texts.finance_title, href: "/finance-monitor", icon: DollarSign, visible: can('reports.financial') },
-        { name: "Personalizador Visual", href: "/admin/theme-builder", icon: Palette, visible: canSeeMaster || can('admin.theme') },
-        { name: texts.documents_title, href: "/documentos", icon: FileText, visible: can('reports.export') },
-        { name: "Mis Eventos", href: "/events", icon: Calendar, visible: true },
-        { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
-        { name: "Preguntas y Respuestas", href: "/faq", icon: ShieldCheck, visible: true },
-      ]
-    },
-    {
-      title: "Gestión Médica",
-      items: [
-        { name: "Ciclos Promocionales", href: "/promotional-cycles", icon: GitBranch, visible: can('planning.cycles') },
-        { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: can('planning.routes') },
-        { name: "Plan Diario", href: "/planner", icon: Calendar, visible: can('planning.agenda_own') },
-        { name: texts.agenda_title, href: "/agenda", icon: Calendar, visible: can('planning.agenda_own') || can('planning.agenda_team') },
-        { name: texts.visits_title, href: "/visits", icon: ClipboardList, visible: can('visits.history') || can('visits.team') || can('visits.create') },
-        { name: texts.samples_title, href: "/sample-banks", icon: Pill, visible: can('samples.bank') },
-        { name: texts.doctors_title, href: "/doctors", icon: Stethoscope, visible: can('directory.view') },
-        { name: "Especialidades", href: "/specialties", icon: Users, visible: can('directory.view') },
-      ]
-    },
-    {
-      title: "Formación y Beneficios",
-      items: [
-        { name: "Universidad Biofarco", href: "/university", icon: GraduationCap, visible: true },
-        { name: "Tienda de Premios", href: "/rewards", icon: Gift, visible: true },
-      ]
-    },
-    {
-      title: "Gestión Comercial",
-      items: [
-        { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: can('visits.coaching') },
-        { name: texts.users_title, href: "/users", icon: Users, visible: can('admin.users') },
-        { name: "Capital Humano", href: "/hr", icon: Shield, visible: can('admin.users') },
-        { name: "Pipeline de Ventas", href: "/sales-pipeline", icon: TrendingUp, visible: can('commercial.transfer') },
-        { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: can('reports.national') || can('reports.regional') },
-        { name: "Catálogo Interactivo", href: "/products", icon: ShoppingCart, visible: true },
-        { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: can('commercial.transfer') },
-        { name: texts.zones_title, href: "/zones", icon: GitBranch, visible: can('admin.zones') },
-        { name: "Modelado de Procesos", href: "/work-processes", icon: Layers, visible: canSeeMaster },
-      ]
-    },
-    {
-      title: "Logística y Cobertura",
-      items: [
-        { name: texts.transfers_title, href: "/transfer-orders", icon: Truck, visible: can('commercial.transfer') },
-        { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: can('commercial.pharmacies') },
-        { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: can('commercial.pharmacies') },
-        { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: can('commercial.stock') },
-        { name: "Gestión de Baremos", href: "/baremos", icon: FileText, visible: can('commercial.prices') },
-        { name: texts.coverage_title, href: "/coverage-map", icon: Map, visible: can('dashboard.regional') || can('dashboard.executive') },
-      ]
-    }
+    ...(NAV_GROUPS[roleGroup] || []),
+    // commonGroup
   ]
+    .filter(group => group.visible)
     .map(group => ({
       ...group,
-      items: group.items.filter(item => item.visible)
+      items: group.items.filter((item: any) => item.visible)
     }))
     .filter(group => group.items.length > 0);
 

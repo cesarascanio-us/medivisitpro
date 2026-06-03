@@ -17,22 +17,33 @@ const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
 const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
 
 // Role definitions (Dynamic, but providing autocomplete for core roles)
+// 12 Operational Roles + legacy aliases
 export type UserRole =
     | 'master'
     | 'admin'
-    | 'manager'
-    | 'chief'
-    | 'coordinator'
-    | 'supervisor'
-    | 'telemarketing'
-    | 'commercial_rep'
-    | 'medical_visitor'
-    | 'integral_rep'
-    | 'pharmacy'
-    | 'doctor'
-    | 'buyer'
-    | 'representative' // legacy
-    | 'pharmacist' // legacy
+    | 'gerente'           // Master de su organización
+    | 'jefe'              // Jefe Regional
+    | 'coordinador'       // Planificación táctica
+    | 'supervisor'        // Supervisión en terreno
+    | 'telemarketing'     // Ventas internas
+    | 'rep_comercial'     // Representante Comercial (farmacias)
+    | 'visitador_medico'  // Visitador Médico (visitas científicas)
+    | 'rep_integral'      // Representante Integral (comercial + médico)
+    | 'farmacia'          // Portal Farmacia B2B externo
+    | 'medico'            // Portal Médico externo
+    | 'compras'           // Compras Institucional
+    // Legacy aliases (backward compatibility)
+    | 'manager'           // alias → gerente
+    | 'chief'             // alias → jefe
+    | 'coordinator'       // alias → coordinador
+    | 'commercial_rep'    // alias → rep_comercial
+    | 'medical_visitor'   // alias → visitador_medico
+    | 'integral_rep'      // alias → rep_integral
+    | 'pharmacy'          // alias → farmacia
+    | 'doctor'            // alias → medico
+    | 'buyer'             // alias → compras
+    | 'representative'    // legacy field rep
+    | 'pharmacist'        // legacy
     | (string & {});
 
 export interface UserProfile {
@@ -62,17 +73,22 @@ interface AuthContextType {
     // Derived state
     isAuthenticated: boolean;
     isDemo: boolean;
-    // Role checks
+    // Role checks — 12 operational roles
     isMaster: boolean;
     isOrgAdmin: boolean;
     isAdmin: boolean;
-    isManager: boolean;
-    isChief: boolean;
-    isCoordinator: boolean;
+    isManager: boolean;      // gerente | manager (legacy)
+    isChief: boolean;        // jefe | chief (legacy)
+    isCoordinator: boolean;  // coordinador | coordinator (legacy)
     isSupervisor: boolean;
     isTelemarketing: boolean;
     isRepresentative: boolean;
-    // Specialized checks
+    // New specialized role checks
+    isGerente: boolean;      // Exact gerente check
+    isJefe: boolean;         // Exact jefe check
+    isFieldRep: boolean;     // rep_comercial | visitador_medico | rep_integral
+    isExternalPortal: boolean; // farmacia | medico | compras
+    // Specialized checks (legacy + new)
     isDoctor: boolean;
     isPharmacist: boolean;
     isServiceChief: boolean;
@@ -83,6 +99,7 @@ interface AuthContextType {
     canViewAllData: boolean;
     canManageCompany: boolean;
     canApproveExpenses: boolean;
+    canApproveTransfers: boolean;
     canAssignObjectives: boolean;
     canManageZones: boolean;
     canViewAnalytics: boolean;
@@ -407,17 +424,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const isOrgAdmin = role === 'organization_admin' || (role === 'master' && !isMaster); // Fallback for transition
     const isAdmin = role === 'admin' || isOrgAdmin;
-    const isManager = role === 'manager' || role === 'store_manager' || isAdmin;
-    const isChief = isManager || role === 'chief';
-    const isCoordinator = isChief || role === 'coordinator';
-    const isSupervisor = isCoordinator || role === 'supervisor';
-    const isTelemarketing = isSupervisor || role === 'telemarketing';
-    const isRepresentative = role === 'representative';
 
-    const isDoctor = role === 'doctor';
-    const isPharmacist = role === 'pharmacist';
+    // 12 Operational Roles — with backward compatibility
+    const isGerente = role === 'gerente' || role === 'manager';  // Gerente = Master de su org
+    const isManager = isGerente || role === 'store_manager' || isAdmin;
+    const isJefe = role === 'jefe' || role === 'chief';
+    const isChief = isManager || isJefe;
+    const isCoordinator = role === 'coordinador' || role === 'coordinator';
+    const isSupervisor = role === 'supervisor';
+    const isTelemarketing = role === 'telemarketing';
+    const isRepresentative = role === 'representative' || role === 'rep_comercial' || role === 'visitador_medico' || role === 'rep_integral';
+
+    // New specialized checks
+    const isFieldRep = ['rep_comercial', 'visitador_medico', 'rep_integral', 'representative', 'commercial_rep', 'medical_visitor', 'integral_rep'].includes(role);
+    const isExternalPortal = ['farmacia', 'medico', 'compras', 'pharmacy', 'doctor', 'buyer'].includes(role);
+
+    const isDoctor = role === 'doctor' || role === 'medico';
+    const isPharmacist = role === 'pharmacist' || role === 'farmacia';
     const isServiceChief = role === 'service_chief';
-    const isSpecializedRole = isDoctor || isPharmacist || isServiceChief;
+    const isSpecializedRole = isDoctor || isPharmacist || isServiceChief || isExternalPortal;
+
+    // Hierarchy helpers for permission cascading
+    const isAtLeastSupervisor = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator || isSupervisor;
+    const isAtLeastCoordinator = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator;
+    const isAtLeastJefe = isMaster || isSaaSStaff || isAdmin || isManager || isJefe;
 
     // SaaS Staff Flags
     const isSaaSAdmin = role === 'admin_saas';
@@ -450,11 +480,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isOrgAdmin,
         isAdmin,
         isManager,
+        isGerente,
+        isJefe,
         isChief,
         isCoordinator,
         isSupervisor,
         isTelemarketing,
         isRepresentative,
+        isFieldRep,
+        isExternalPortal,
         isDoctor,
         isPharmacist,
         isServiceChief,
@@ -463,20 +497,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSaaSSupport,
         isSaaSDev,
         isSaaSStaff,
-        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin',
-        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isCoordinator || isSupervisor,
+        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isGerente,
+        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isAtLeastCoordinator,
         canViewAllData: isSaaSStaff || isAdmin || isManager,
-        canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager,
-        canApproveExpenses: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
-        canAssignObjectives: isMaster || isSaaSAdmin || isManager || role === 'supervisor' || role === 'coordinator',
-        canManageZones: isMaster || isSaaSAdmin || role === 'admin' || isManager,
-        canViewAnalytics: isSaaSStaff || isManager || role === 'coordinator',
+        canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isGerente,
+        canApproveExpenses: isMaster || isSaaSAdmin || isManager || isJefe || isSupervisor || isCoordinator,
+        canApproveTransfers: isMaster || isSaaSAdmin || isManager || isJefe,
+        canAssignObjectives: isMaster || isSaaSAdmin || isManager || isJefe || isCoordinator,
+        canManageZones: isMaster || isSaaSAdmin || role === 'admin' || isManager || isJefe,
+        canViewAnalytics: isSaaSStaff || isManager || isJefe || isCoordinator,
         canManageProducts: isMaster || isSaaSAdmin || isManager,
-        canViewProducts: isSaaSStaff || isManager || isPharmacist || isDoctor,
-        canManageSamples: isMaster || isSaaSAdmin || isManager || isPharmacist,
-        canViewMedicalInfo: isSaaSStaff || isSupervisor || isDoctor,
+        canViewProducts: isSaaSStaff || isManager || isPharmacist || isDoctor || isFieldRep,
+        canManageSamples: isMaster || isSaaSAdmin || isManager || isJefe,
+        canViewMedicalInfo: isSaaSStaff || isAtLeastSupervisor || isDoctor,
         canManageService: isMaster || isSaaSAdmin || isServiceChief || isManager,
-        canViewVisitHistory: isSaaSStaff || isSupervisor || isDoctor || isPharmacist,
+        canViewVisitHistory: isSaaSStaff || isAtLeastSupervisor || isDoctor || isPharmacist,
         zoneId: profile?.zone_id || null,
         organizationId: profile?.organization_id || null,
         companyId: profile?.company_id || null,
@@ -485,7 +520,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Feature Flags (Default logic)
         canUseSales: isMaster || features.sales_module !== false, // Default ON
         canUseWarehouse: isMaster || features.warehouse_module === true || role === 'store_manager', // Default OFF
-        canUseTelemarketing: isMaster || features.telemarketing_module === true, // Default OFF
+        canUseTelemarketing: isMaster || features.telemarketing_module === true || isTelemarketing, // Default OFF
         canUseEvents: isMaster || features.events_module === true, // Default OFF
 
         // Audit Mode

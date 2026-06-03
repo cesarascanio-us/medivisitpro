@@ -38,6 +38,11 @@ export default function MasterPanel() {
     const [billingPlans, setBillingPlans] = useState<any[]>([]);
     const [payments, setPayments] = useState<any[]>([]);
     const [systemRoles, setSystemRoles] = useState<any[]>([]);
+    const [permissionsList, setPermissionsList] = useState<any[]>([]);
+    const [rolePermissions, setRolePermissions] = useState<any[]>([]);
+    const [planAvailability, setPlanAvailability] = useState<any[]>([]);
+
+    const [selectedRoleForMatrix, setSelectedRoleForMatrix] = useState<any>(null);
 
     const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = useState(false);
     const [editingOrg, setEditingOrg] = useState<any>(null);
@@ -79,12 +84,17 @@ export default function MasterPanel() {
                 setBillingPlans(plansData || []);
             }
             if (activeTab === 'roles') {
-                // Mock system roles for matrix
-                setSystemRoles([
-                    { id: '1', role: 'admin', name: 'SaaS Admin', users: 12 },
-                    { id: '2', role: 'manager', name: 'Gerente Operativo', users: 45 },
-                    { id: '3', role: 'representative', name: 'Visitador Médico', users: 340 },
+                const [rolesRes, permsRes, matrixRes, plansRes] = await Promise.all([
+                    supabase.from('app_roles').select('*').order('name'),
+                    supabase.from('app_permissions').select('*').order('module, name'),
+                    supabase.from('role_permissions').select('*'),
+                    supabase.from('plan_available_roles').select('*')
                 ]);
+                
+                setSystemRoles(rolesRes.data || []);
+                setPermissionsList(permsRes.data || []);
+                setRolePermissions(matrixRes.data || []);
+                setPlanAvailability(plansRes.data || []);
             }
         } catch (error: any) { 
             toast({ title: "Error de Núcleo", description: error.message, variant: "destructive" }); 
@@ -165,6 +175,49 @@ export default function MasterPanel() {
             toast({ title: "Error", description: error.message, variant: "destructive" });
         }
     };
+
+    // Role Matrix Handlers
+    const handleTogglePermission = async (roleSlug: string, permissionCode: string, hasPermission: boolean) => {
+        try {
+            if (hasPermission) {
+                await supabase.from('role_permissions').delete().eq('role_slug', roleSlug).eq('permission_code', permissionCode);
+            } else {
+                await supabase.from('role_permissions').insert({ role_slug: roleSlug, permission_code: permissionCode });
+            }
+            // Update local state without full refetch for snappy UI
+            setRolePermissions(prev => 
+                hasPermission 
+                ? prev.filter(p => !(p.role_slug === roleSlug && p.permission_code === permissionCode))
+                : [...prev, { role_slug: roleSlug, permission_code: permissionCode }]
+            );
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    };
+
+    const handleTogglePlan = async (roleSlug: string, planTier: string, isAvailable: boolean) => {
+        try {
+            if (isAvailable) {
+                await supabase.from('plan_available_roles').delete().eq('role_slug', roleSlug).eq('plan_tier', planTier);
+            } else {
+                await supabase.from('plan_available_roles').insert({ role_slug: roleSlug, plan_tier: planTier });
+            }
+            setPlanAvailability(prev => 
+                isAvailable 
+                ? prev.filter(p => !(p.role_slug === roleSlug && p.plan_tier === planTier))
+                : [...prev, { role_slug: roleSlug, plan_tier: planTier }]
+            );
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    };
+
+    // Derived data for Matrix
+    const groupedPermissions = permissionsList.reduce((acc, p) => {
+        if (!acc[p.module]) acc[p.module] = [];
+        acc[p.module].push(p);
+        return acc;
+    }, {} as Record<string, any[]>);
 
     const updateUserRole = async (userId: string, newRole: string, orgId: string) => {
         try {
@@ -320,25 +373,125 @@ export default function MasterPanel() {
                 {/* Las pestañas de Planes y Facturación fueron removidas para evitar duplicidad con /master/plans y /master/billing */}
 
                 <TabsContent value="roles" className="animate-in slide-in-from-right-10 duration-500">
-                    <div className="card-elite p-8">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="icon-box-primary w-12 h-12 !rounded-xl"><Key className="w-6 h-6" /></div>
-                            <div>
-                                <h3 className="text-lg font-black uppercase text-foreground">Matriz de Permisos Base</h3>
-                                <p className="text-xs text-muted-foreground font-semibold">app_permissions base por cada app_role global</p>
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="text-lg font-black uppercase tracking-tight text-foreground">Matriz de Roles y Privilegios</h3>
+                            <p className="text-xs text-muted-foreground font-semibold">Configura dinámicamente qué hace cada rol y en qué planes están disponibles</p>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Columna 1: Lista de Roles */}
+                        <div className="lg:col-span-3 space-y-3">
+                            <h4 className="font-bold text-xs uppercase tracking-widest text-muted-foreground mb-4">Roles del Sistema</h4>
+                            {systemRoles.map((role: any) => {
+                                const isSelected = selectedRoleForMatrix?.slug === role.slug;
+                                return (
+                                    <div 
+                                        key={role.slug}
+                                        onClick={() => setSelectedRoleForMatrix(role)}
+                                        className={cn(
+                                            "p-3 rounded-xl border cursor-pointer transition-all",
+                                            isSelected 
+                                                ? "border-primary bg-primary/5 shadow-sm" 
+                                                : "border-border hover:border-primary/30 hover:bg-muted/30"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${role.color}15` }}>
+                                                <Shield className="w-4 h-4" style={{ color: role.color }} />
+                                            </div>
+                                            <div className="overflow-hidden">
+                                                <p className={cn("font-bold text-sm truncate", isSelected ? "text-primary" : "text-foreground")}>{role.name}</p>
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-widest truncate">{role.slug}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Columna 2 y 3: Matrix de Permisos y Planes */}
+                        {selectedRoleForMatrix ? (
+                            <>
+                                {/* Permisos */}
+                                <div className="lg:col-span-6 bg-card border border-border rounded-2xl p-6 shadow-sm">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div>
+                                            <h4 className="font-black text-sm uppercase tracking-wider flex items-center gap-2">
+                                                <Key className="w-4 h-4 text-primary" /> 
+                                                Permisos: {selectedRoleForMatrix.name}
+                                            </h4>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2 scrollbar-thin">
+                                        {Object.entries(groupedPermissions).map(([module, perms]) => (
+                                            <div key={module} className="space-y-3">
+                                                <h5 className="font-bold text-xs uppercase tracking-widest text-muted-foreground border-b pb-1">{module}</h5>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    {perms.map((p: any) => {
+                                                        const hasPermission = rolePermissions.some(rp => rp.role_slug === selectedRoleForMatrix.slug && rp.permission_code === p.code);
+                                                        return (
+                                                            <div 
+                                                                key={p.code}
+                                                                onClick={() => handleTogglePermission(selectedRoleForMatrix.slug, p.code, hasPermission)}
+                                                                className={cn(
+                                                                    "flex items-center justify-between p-2.5 rounded-lg border cursor-pointer transition-colors",
+                                                                    hasPermission ? "border-emerald-500/30 bg-emerald-500/5" : "border-border hover:bg-muted"
+                                                                )}
+                                                            >
+                                                                <div className="min-w-0 flex-1">
+                                                                    <p className="font-bold text-[11px] leading-tight truncate">{p.name}</p>
+                                                                    <p className="text-[9px] text-muted-foreground font-mono truncate">{p.code}</p>
+                                                                </div>
+                                                                {hasPermission ? <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 ml-2" /> : <div className="w-4 h-4 rounded-full border border-border flex-shrink-0 ml-2" />}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Planes Disponibles */}
+                                <div className="lg:col-span-3 space-y-6">
+                                    <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                                        <h4 className="font-black text-sm uppercase tracking-wider flex items-center gap-2 mb-4">
+                                            <DollarSign className="w-4 h-4 text-amber-500" /> 
+                                            Disponibilidad
+                                        </h4>
+                                        <p className="text-xs text-muted-foreground mb-4">Selecciona en qué planes de suscripción estará disponible este rol.</p>
+                                        
+                                        <div className="space-y-3">
+                                            {['starter', 'pro', 'team', 'enterprise'].map(tier => {
+                                                const isAvailable = planAvailability.some(pa => pa.role_slug === selectedRoleForMatrix.slug && pa.plan_tier === tier);
+                                                return (
+                                                    <div 
+                                                        key={tier}
+                                                        onClick={() => handleTogglePlan(selectedRoleForMatrix.slug, tier, isAvailable)}
+                                                        className={cn(
+                                                            "flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-colors",
+                                                            isAvailable ? "border-amber-500/30 bg-amber-500/5" : "border-border hover:bg-muted"
+                                                        )}
+                                                    >
+                                                        <span className="font-black text-xs uppercase tracking-widest">{tier}</span>
+                                                        {isAvailable ? <CheckCircle2 className="w-4 h-4 text-amber-500" /> : <XCircle className="w-4 h-4 text-muted-foreground/30" />}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="lg:col-span-9 flex flex-col items-center justify-center p-12 border border-dashed rounded-2xl text-center h-[500px]">
+                                <Shield className="w-12 h-12 text-muted-foreground/20 mb-4" />
+                                <h4 className="font-bold text-lg text-foreground">Selecciona un Rol</h4>
+                                <p className="text-sm text-muted-foreground max-w-sm mt-2">Haz clic en cualquier rol de la lista para gestionar sus permisos granulares y disponibilidad por plan.</p>
                             </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {systemRoles.map((role: any) => (
-                                <Card key={role.id} className="border border-border/50 bg-background/50 hover:border-primary/30 transition-colors">
-                                    <CardContent className="p-6">
-                                        <h4 className="font-black text-sm uppercase mb-1">{role.name}</h4>
-                                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4">SLUG: {role.role}</p>
-                                        <Badge className="bg-primary/10 text-primary border-none">{role.users} usuarios</Badge>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
+                        )}
                     </div>
                 </TabsContent>
 

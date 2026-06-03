@@ -65,6 +65,9 @@ const Specialties = lazy(() => import("./pages/Specialties"));
 const Drugstores = lazy(() => import("./pages/Drugstores_Elite"));
 const DemoPage = lazy(() => import("./pages/DemoPage"));
 
+const PortalFarmacia = lazy(() => import("./pages/portals/PortalFarmacia"));
+const PortalCompras = lazy(() => import("./pages/portals/PortalCompras"));
+
 const Users = lazy(() => import("./pages/Users"));
 const Zones = lazy(() => import("./pages/Zones"));
 const MasterPanel = lazy(() => import("./pages/MasterPanel"));
@@ -224,6 +227,18 @@ const AppContent = () => (
         <ModuleGuard moduleKey="pharmacies">
           <Layout><Drugstores /></Layout>
         </ModuleGuard>
+      </ProtectedRoute>
+    } />
+
+    {/* Portales Externos B2B/Institucional */}
+    <Route path="portal/farmacia" element={
+      <ProtectedRoute allowedRoles={['farmacia', 'pharmacist', 'master']}>
+        <Layout><PortalFarmacia /></Layout>
+      </ProtectedRoute>
+    } />
+    <Route path="portal/compras" element={
+      <ProtectedRoute allowedRoles={['compras', 'buyer', 'master']}>
+        <Layout><PortalCompras /></Layout>
       </ProtectedRoute>
     } />
 
