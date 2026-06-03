@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { DEFAULT_PLAN_MODULES } from '@/config/systemModules';
 
 export function usePermissions() {
   const { profile, organizationId, isDemo } = useAuth();
@@ -61,7 +62,6 @@ export function usePermissions() {
       }
 
       const tier = data.plan_tier || 'starter';
-      const { DEFAULT_PLAN_MODULES } = await import('@/config/systemModules');
       return DEFAULT_PLAN_MODULES[tier] || DEFAULT_PLAN_MODULES['starter'];
     },
     enabled: !!organizationId && !isDemo
