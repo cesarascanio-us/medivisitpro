@@ -25,7 +25,7 @@ export function useAppRoles() {
             const isDemo = typeof window !== 'undefined' && (
                 window.location.pathname.startsWith('/demo') || 
                 window.location.pathname.includes('/demo') ||
-                localStorage.getItem('sb-medivisit-auth-token')?.includes('demo.medivisitpro@gmail.com')
+                localStorage.getItem('sb-medivisit-auth-token')?.includes('"email":"demo.medivisitpro@gmail.com"')
             );
 
             if (isDemo) {

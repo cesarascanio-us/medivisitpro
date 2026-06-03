@@ -442,12 +442,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         isAuthenticated: !!user,
         // Masters and SaaS Staff are NEVER in demo mode for navigation purposes
-        // Un entorno es DEMO si la organización es la compartida O si está en periodo de prueba (trialing)
-        // Esto permite que n8n cree organizaciones reales auditales que se comporten como demo
         isDemo: !isSaaSStaff && (
             profile?.organization_id === 'd3300000-0000-0000-0000-000000000001' || 
-            features?.trial_mode === true ||
-            organizationName?.toLowerCase().includes('demo')
+            user?.email?.toLowerCase() === 'demo.medivisitpro@gmail.com'
         ),
         isMaster,
         isOrgAdmin,
