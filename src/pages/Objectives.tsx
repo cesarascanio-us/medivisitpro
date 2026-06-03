@@ -324,7 +324,7 @@ export default function Objectives() {
             )}
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="bg-card border-none shadow-2xl rounded-[3rem] max-w-md p-0 overflow-hidden font-sans border border-border/40">
+                <DialogContent className="bg-card border-none shadow-2xl rounded-[3rem] max-w-md p-0 overflow-y-auto overflow-x-hidden max-h-[90vh] font-sans border border-border/40">
                     <div className="bg-primary p-10 text-white relative">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-card/10 rounded-full -mr-32 -mt-32 blur-3xl" />
                         <DialogTitle className="text-3xl font-black uppercase tracking-tighter font-display leading-none relative z-10">Nuevo Objetivo</DialogTitle>
