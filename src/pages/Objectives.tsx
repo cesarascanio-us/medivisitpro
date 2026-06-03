@@ -56,7 +56,7 @@ export default function Objectives() {
     const [dialogOpen, setDialogOpen] = useState(false);
 
     // Team Management
-    const [teamMembers, setTeamMembers] = useState<{ id: string, first_name: string, last_name: string, email: string }[]>([]);
+    const [teamMembers, setTeamMembers] = useState<{ id: string, user_id: string, first_name: string, last_name: string, email: string }[]>([]);
     const [targetUserId, setTargetUserId] = useState<string>("self");
 
     const [formData, setFormData] = useState({
