@@ -344,11 +344,11 @@ export default function AuthPage() {
                 <div className="mt-4">
                     <Button
                         variant="outline"
-                        onClick={() => navigate('/demo?code=CA-72-TEST')}
+                        onClick={() => window.location.href = '/#contacto'}
                         className="w-full h-10 text-xs font-extrabold border-dashed border-primary/40 hover:border-primary/80 hover:bg-primary/5 transition-all text-primary flex items-center justify-center gap-2 shadow-sm rounded-xl"
                     >
                         <Rocket className="h-4.5 w-4.5 animate-pulse" />
-                        Acceso Rápido a Demo (Base de Datos Offline)
+                        Solicitar Acceso a Demo
                     </Button>
                 </div>
 

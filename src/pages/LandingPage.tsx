@@ -119,7 +119,7 @@ export default function LandingPage() {
                             <button
                                 onClick={() => {
                                     trackEvent('click_demo_header');
-                                    window.open("https://cesarascanioweb.vercel.app/#demos", "_blank");
+                                    document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
                                 }}
                                 className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-0.5 active:scale-95"
                             >
@@ -159,7 +159,7 @@ export default function LandingPage() {
                                 <button
                                     onClick={() => {
                                         trackEvent('click_demo_hero');
-                                        window.open("https://cesarascanioweb.vercel.app/#demos", "_blank");
+                                        document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                     className="w-full sm:w-auto px-10 h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl shadow-blue-600/20 transition-all text-lg font-bold group flex items-center justify-center gap-3 active:scale-95"
                                 >
