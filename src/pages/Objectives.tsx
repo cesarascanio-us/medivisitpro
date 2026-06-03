@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import { Plus, Target, TrendingUp, CheckCircle, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -57,7 +57,7 @@ export default function Objectives() {
 
     // Team Management
     const [teamMembers, setTeamMembers] = useState<{ id: string, first_name: string, last_name: string, email: string }[]>([]);
-    const [targetUserId, setTargetUserId] = useState<string>("");
+    const [targetUserId, setTargetUserId] = useState<string>("self");
 
     const [formData, setFormData] = useState({
         title: "",
@@ -154,7 +154,7 @@ export default function Objectives() {
     const handleSubmit = async () => {
         if (!user || !formData.title) return;
 
-        const assignedUser = (canAssign && targetUserId) ? targetUserId : user.id;
+        const assignedUser = (canAssign && targetUserId && targetUserId !== "self") ? targetUserId : user.id;
 
         try {
             const { error } = await supabase.from('objectives').insert({
@@ -181,7 +181,7 @@ export default function Objectives() {
                     : "El objetivo ha sido creado exitosamente."
             });
             setDialogOpen(false);
-            setTargetUserId(""); // Reset
+            setTargetUserId("self"); // Reset
             loadObjectives();
         } catch (error) {
             toast({ title: "Error", description: "No se pudo crear el objetivo.", variant: "destructive" });
@@ -328,6 +328,7 @@ export default function Objectives() {
                     <div className="bg-primary p-10 text-white relative">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-card/10 rounded-full -mr-32 -mt-32 blur-3xl" />
                         <DialogTitle className="text-3xl font-black uppercase tracking-tighter font-display leading-none relative z-10">Nuevo Objetivo</DialogTitle>
+                        <DialogDescription className="sr-only">Formulario para crear o asignar un nuevo objetivo de desempeño.</DialogDescription>
                         <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mt-4 relative z-10">Meta de Desempeño Élite</p>
                     </div>
                     <div className="p-10 space-y-6 bg-muted/30">
@@ -339,7 +340,7 @@ export default function Objectives() {
                                         <SelectValue placeholder="Seleccionar miembro del equipo..." />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-border/40 bg-card shadow-premium-md">
-                                        <SelectItem value="">Asignarme a mí mismo</SelectItem>
+                                        <SelectItem value="self">Asignarme a mí mismo</SelectItem>
                                         {teamMembers.map(member => (
                                             <SelectItem key={member.id} value={member.id} className="font-bold">
                                                 {member.first_name} {member.last_name}
