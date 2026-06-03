@@ -43,7 +43,11 @@ interface DailyMetrics {
   salesQuota: number;
 }
 
-export default function DashboardRep() {
+interface DashboardRepProps {
+  mode?: 'comercial' | 'medico' | 'integral';
+}
+
+export default function DashboardRep({ mode = 'comercial' }: DashboardRepProps) {
   const { user, profile, organizationName, isDemo } = useAuth();
   const navigate = useNavigate();
 
