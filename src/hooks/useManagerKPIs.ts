@@ -160,7 +160,7 @@ export function useManagerKPIs() {
           // 2. Active transfers
           supabase
             .from('transfer_orders')
-            .select('id, pharmacy_name, total_amount, status, created_at, user_id, items_count')
+            .select('id, total, status, created_at, user_id, contact:contacts(name)')
             .eq('organization_id', organizationId)
             .in('status', ['pending', 'processing'])
             .order('created_at', { ascending: false }),
@@ -286,8 +286,14 @@ export function useManagerKPIs() {
             user_name: userNames[e.user_id] || 'Sin nombre',
           })),
           pendingTransfers: transfers.map(t => ({
-            ...t,
+            id: t.id,
+            pharmacy_name: t.contact?.name || 'Desconocido',
+            total_amount: t.total || 0,
+            status: t.status,
+            created_at: t.created_at,
+            user_id: t.user_id,
             user_name: userNames[t.user_id] || 'Sin nombre',
+            items_count: 0
           })),
           repStats,
           weeklyVisits,
