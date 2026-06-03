@@ -89,6 +89,7 @@ export default function Objectives() {
             const { data, error } = await supabase
                 .from('zones')
                 .select('id, name')
+                .eq('organization_id', organizationId)
                 .order('name');
 
             if (error) throw error;
@@ -169,7 +170,8 @@ export default function Objectives() {
                 start_date: formData.start_date,
                 end_date: formData.end_date,
                 priority: formData.priority,
-                status: 'active'
+                status: 'active',
+                organization_id: organizationId
             };
 
             if (canAssign) {
