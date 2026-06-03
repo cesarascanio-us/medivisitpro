@@ -389,13 +389,13 @@ export default function Objectives() {
                                             {assignmentType === "zone" ? (
                                                 <div className="space-y-2">
                                                     <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Seleccionar Zona</Label>
-                                                    <Select value={targetZoneId} onValueChange={setTargetZoneId}>
+                                                    <Select value={targetZoneId || undefined} onValueChange={setTargetZoneId}>
                                                         <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm">
                                                             <SelectValue placeholder="Elegir zona..." />
                                                         </SelectTrigger>
                                                         <SelectContent className="rounded-2xl border-none shadow-2xl">
                                                             {zones.map((zone) => (
-                                                                <SelectItem key={zone.id} value={zone.id} className="font-bold py-3">
+                                                                <SelectItem key={zone.id} value={zone.id || "unknown"} className="font-bold py-3">
                                                                     {zone.name}
                                                                 </SelectItem>
                                                             ))}
@@ -440,7 +440,7 @@ export default function Objectives() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Categoría</Label>
-                                            <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                                            <Select value={formData.category || undefined} onValueChange={(v) => setFormData({ ...formData, category: v })}>
                                                 <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm"><SelectValue /></SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
                                                     <SelectItem value="visits" className="font-bold py-3">Visitas</SelectItem>
@@ -452,7 +452,7 @@ export default function Objectives() {
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Período</Label>
-                                            <Select value={formData.objective_type} onValueChange={(v) => setFormData({ ...formData, objective_type: v })}>
+                                            <Select value={formData.objective_type || undefined} onValueChange={(v) => setFormData({ ...formData, objective_type: v })}>
                                                 <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm"><SelectValue /></SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
                                                     <SelectItem value="daily" className="font-bold py-3">Diario</SelectItem>
@@ -476,7 +476,7 @@ export default function Objectives() {
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Prioridad</Label>
-                                            <Select value={formData.priority} onValueChange={(v) => setFormData({ ...formData, priority: v })}>
+                                            <Select value={formData.priority || undefined} onValueChange={(v) => setFormData({ ...formData, priority: v })}>
                                                 <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm"><SelectValue /></SelectTrigger>
                                                 <SelectContent className="rounded-2xl border-none shadow-2xl">
                                                     <SelectItem value="low" className="font-bold py-3">Baja</SelectItem>
