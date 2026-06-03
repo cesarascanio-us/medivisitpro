@@ -444,16 +444,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isServiceChief = role === 'service_chief';
     const isSpecializedRole = isDoctor || isPharmacist || isServiceChief || isExternalPortal;
 
-    // Hierarchy helpers for permission cascading
-    const isAtLeastSupervisor = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator || isSupervisor;
-    const isAtLeastCoordinator = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator;
-    const isAtLeastJefe = isMaster || isSaaSStaff || isAdmin || isManager || isJefe;
-
     // SaaS Staff Flags
     const isSaaSAdmin = role === 'admin_saas';
     const isSaaSSupport = role === 'soporte_saas';
     const isSaaSDev = role === 'desarrollo_saas';
     const isSaaSStaff = isMaster || isSaaSAdmin || isSaaSSupport || isSaaSDev;
+
+    // Hierarchy helpers for permission cascading
+    const isAtLeastSupervisor = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator || isSupervisor;
+    const isAtLeastCoordinator = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator;
+    const isAtLeastJefe = isMaster || isSaaSStaff || isAdmin || isManager || isJefe;
 
     const hasPermission = (code: string) => {
         if (isMaster || isSaaSAdmin) return true;
