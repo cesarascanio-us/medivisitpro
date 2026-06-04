@@ -63,7 +63,7 @@ export default function Objectives() {
     const [assignmentType, setAssignmentType] = useState<"global" | "zone">("global");
     const [targetZoneIds, setTargetZoneIds] = useState<string[]>([]);
 
-    const [formData, setFormData] = useState({
+    const initialFormState = {
         title: "",
         description: "",
         objective_type: "monthly",
