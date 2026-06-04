@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useSearchParams } from "react-router-dom";
 
 export default function CoachingDashboard() {
   const { user, role } = useAuth();
@@ -28,8 +29,11 @@ export default function CoachingDashboard() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   // Form state
+  const [searchParams] = useSearchParams();
+  const repParam = searchParams.get('rep');
+  
   const [formData, setFormData] = useState({
-    representative_id: "",
+    representative_id: repParam || "",
     score_vademecum: 3,
     score_objection_handling: 3,
     score_closing_skills: 3,
@@ -39,6 +43,12 @@ export default function CoachingDashboard() {
     areas_for_improvement: "",
     action_plan: ""
   });
+
+  useEffect(() => {
+    if (repParam) {
+      setDialogOpen(true);
+    }
+  }, [repParam]);
 
   useEffect(() => {
     if (user) {

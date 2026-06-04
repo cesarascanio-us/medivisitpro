@@ -389,6 +389,42 @@ export default function Planner() {
             return;
         }
         try {
+            const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
+
+            if (isSupervisorPlanningOwnRoute) {
+                const { data: routes } = await supabase
+                    .from('supervisor_routes')
+                    .select('representative_id, routing_days')
+                    .eq('organization_id', organizationId)
+                    .eq('supervisor_id', user?.id)
+                    .ilike('routing_days', `%${day}%`);
+                
+                if (routes && routes.length > 0) {
+                    const repIds = routes.map((r: any) => r.representative_id);
+                    const { data: profiles } = await supabase
+                        .from('profiles')
+                        .select('id, first_name, last_name')
+                        .in('id', repIds);
+                    
+                    const teamContacts: RoutedContact[] = routes.map((route: any) => {
+                        const p = profiles?.find((pr: any) => pr.id === route.representative_id);
+                        return {
+                            id: route.representative_id,
+                            name: p ? `${p.first_name || ''} ${p.last_name || ''}`.trim() : 'Representante',
+                            address: 'En Campo',
+                            contact_type: 'team',
+                            type_label: 'Equipo de Trabajo',
+                            routing_days: route.routing_days,
+                            source: 'supervisor_routes'
+                        };
+                    });
+                    setRoutedContacts(teamContacts);
+                } else {
+                    setRoutedContacts([]);
+                }
+                return;
+            }
+
             const sources = [
                 { table: 'doctors',        field: 'days',         type: 'doctor',        label: 'Médico' },
                 { table: 'pharmacies',     field: 'schedule',     type: 'pharmacy',      label: 'Farmacia' },
@@ -517,6 +553,7 @@ export default function Planner() {
                 title: `Visita: ${contact.name}`, description: contact.type_label,
                 scheduled_time: null, duration_minutes: 30, status: 'pending',
                 priority: items.length, organization_id: organizationId,
+                contact_id: contact.id,
             });
             if (error) throw error;
             toast({ title: "✅ Visita agregada", description: `${contact.name} añadido al plan.` });
@@ -541,6 +578,7 @@ export default function Planner() {
                 title: `Visita: ${contact.name}`, description: contact.type_label,
                 scheduled_time: null, duration_minutes: 30, status: 'pending',
                 priority: items.length + idx, organization_id: organizationId,
+                contact_id: contact.id,
             }));
             const { error } = await supabase.from('daily_plan_items').insert(inserts);
             if (error) throw error;
@@ -903,12 +941,27 @@ export default function Planner() {
                                                     <span className="flex items-center gap-1">
                                                         <Clock className="h-3 w-3" /> {item.duration_minutes} min
                                                     </span>
-                                                    {item.status === 'completed' && (
+                                                    {item.status === 'completed' && item.description !== 'Equipo de Trabajo' && (
                                                         <Badge className="text-[9px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black uppercase tracking-widest">
                                                             <CheckCircle className="h-2.5 w-2.5 mr-1" /> Completado · Registrado en Agenda
                                                         </Badge>
                                                     )}
                                                 </div>
+                                                {item.description === 'Equipo de Trabajo' && item.status !== 'completed' && !isViewingOtherRep && (
+                                                    <div className="mt-3">
+                                                        <Link to={`/coaching?rep=${item.contact_id}`}>
+                                                            <Button size="sm" className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px]">
+                                                                <Target className="w-3 h-3 mr-2" />
+                                                                Realizar Coaching
+                                                            </Button>
+                                                        </Link>
+                                                    </div>
+                                                )}
+                                                {item.description === 'Equipo de Trabajo' && item.status === 'completed' && (
+                                                    <Badge className="text-[9px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black uppercase tracking-widest mt-2">
+                                                        <CheckCircle className="h-2.5 w-2.5 mr-1" /> Coaching Realizado
+                                                    </Badge>
+                                                )}
                                             </div>
                                         </div>
                                     </CardContent>

@@ -58,7 +58,8 @@ export default function RoutePlanner() {
     const [contacts, setContacts] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [selectedDay, setSelectedDay] = useState("Lunes");
-    const [selectedType, setSelectedType] = useState("doctor");
+    const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
+    const [selectedType, setSelectedType] = useState(isSupervisorPlanningOwnRoute ? "team" : "doctor");
     const [hasActiveCycle, setHasActiveCycle] = useState<boolean | null>(null);
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
     const [selectedRepId, setSelectedRepId] = useState<string>('');
@@ -164,6 +165,64 @@ export default function RoutePlanner() {
     const loadContacts = async () => {
         try {
             setLoading(true);
+
+            const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
+
+            if (isSupervisorPlanningOwnRoute) {
+                // Fetch team members directly if not loaded, or use existing teamMembers
+                let currentTeam = teamMembers;
+                if (!currentTeam || currentTeam.length === 0) {
+                    const { data: rolesData } = await supabase
+                        .from('user_roles_plain')
+                        .select('user_id, role')
+                        .eq('organization_id', organizationId)
+                        .in('role', ['representative', 'commercial_rep', 'visitador_medico']);
+                    
+                    if (rolesData && rolesData.length > 0) {
+                        const userIds = rolesData.map((d: any) => d.user_id);
+                        const { data: profiles } = await supabase
+                            .from('profiles')
+                            .select('user_id, first_name, last_name')
+                            .in('user_id', userIds);
+                        
+                        currentTeam = rolesData.map((d: any) => {
+                            const p = profiles?.find((pr: any) => pr.user_id === d.user_id);
+                            return {
+                                user_id: d.user_id,
+                                name: p ? `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'Representante' : 'Representante',
+                                role: d.role
+                            };
+                        });
+                        setTeamMembers(currentTeam);
+                    }
+                }
+
+                if (currentTeam && currentTeam.length > 0) {
+                    const { data: routeData } = await supabase
+                        .from("supervisor_routes")
+                        .select("representative_id, routing_days")
+                        .eq("supervisor_id", user?.id);
+
+                    const teamContacts = currentTeam.map((member: any) => {
+                        const route = routeData?.find((r: any) => r.representative_id === member.user_id);
+                        return {
+                            id: member.user_id,
+                            name: member.name,
+                            specialty: 'Representante de Ventas',
+                            address: 'Trabajo de Campo',
+                            contact_type: 'team',
+                            source: 'supervisor_routes',
+                            routing_days: route ? route.routing_days : null
+                        };
+                    });
+                    setContacts(teamContacts);
+                } else {
+                    setContacts([]);
+                }
+                setLoading(false);
+                return;
+            }
+
             const { data, error } = await supabase
                 .from("unified_contacts")
                 .select("id, name, specialty, address, contact_type, source")
@@ -221,16 +280,30 @@ export default function RoutePlanner() {
             }
 
             const newDaysStr = daysArray.join(", ");
-            const columnToUpdate = contact.source === 'doctors' ? 'days'
-                : contact.source === 'pharmacies' ? 'schedule'
-                : 'routing_days';
 
-            const { error } = await supabase
-                .from(contact.source)
-                .update({ [columnToUpdate]: newDaysStr || null })
-                .eq("id", contact.id);
+            if (contact.source === 'supervisor_routes') {
+                const { error } = await supabase
+                    .from('supervisor_routes')
+                    .upsert({
+                        supervisor_id: user?.id,
+                        representative_id: contact.id,
+                        routing_days: newDaysStr || null,
+                        organization_id: organizationId
+                    }, { onConflict: 'supervisor_id, representative_id' });
+                
+                if (error) throw error;
+            } else {
+                const columnToUpdate = contact.source === 'doctors' ? 'days'
+                    : contact.source === 'pharmacies' ? 'schedule'
+                    : 'routing_days';
 
-            if (error) throw error;
+                const { error } = await supabase
+                    .from(contact.source)
+                    .update({ [columnToUpdate]: newDaysStr || null })
+                    .eq("id", contact.id);
+
+                if (error) throw error;
+            }
 
             setContacts(contacts.map(c =>
                 c.id === contact.id ? { ...c, routing_days: newDaysStr || null } : c
@@ -396,44 +469,60 @@ export default function RoutePlanner() {
                     )}
 
                     {/* ── Contact type selector ── */}
-                    <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
-                        {CONTACT_TYPES.map((type) => {
-                            const countInType = contacts.filter(c =>
-                                c.contact_type === type.id &&
-                                c.routing_days?.split(",").map((d: string) => d.trim()).includes(selectedDay)
-                            ).length;
-                            const totalInType = contacts.filter(c => c.contact_type === type.id).length;
+                    {!isRepresentative && !isViewingOtherRep ? (
+                        <div className="grid grid-cols-1 gap-3">
+                            <EliteButton
+                                variant="secondary"
+                                className="h-24 flex-col gap-2 rounded-[1.5rem] border border-primary/40 bg-primary/10 text-primary shadow-inner scale-105 transition-all duration-300 relative"
+                                onClick={() => setSelectedType('team')}
+                            >
+                                <Users className="h-5 w-5 text-primary" />
+                                <span className="font-black text-[9px] uppercase tracking-widest">Equipo de Trabajo</span>
+                                <span className="text-[8px] font-black text-primary">
+                                    {contacts.length} asignables
+                                </span>
+                            </EliteButton>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
+                            {CONTACT_TYPES.map((type) => {
+                                const countInType = contacts.filter(c =>
+                                    c.contact_type === type.id &&
+                                    c.routing_days?.split(",").map((d: string) => d.trim()).includes(selectedDay)
+                                ).length;
+                                const totalInType = contacts.filter(c => c.contact_type === type.id).length;
 
-                            return (
-                                <EliteButton
-                                    key={type.id}
-                                    variant={selectedType === type.id ? "secondary" : "ghost"}
-                                    className={cn(
-                                        "h-24 flex-col gap-2 rounded-[1.5rem] border border-border/40 transition-all duration-300 relative",
-                                        selectedType === type.id && "bg-primary/10 border-primary/40 text-primary shadow-inner scale-105"
-                                    )}
-                                    onClick={() => setSelectedType(type.id)}
-                                >
-                                    <type.icon className={cn("h-5 w-5", selectedType === type.id ? "text-primary" : "text-muted-foreground opacity-60")} />
-                                    <span className="font-black text-[9px] uppercase tracking-widest">{type.label}</span>
-                                    {totalInType > 0 && (
-                                        <span className={cn(
-                                            "text-[8px] font-black",
-                                            countInType > 0 ? "text-primary" : "text-muted-foreground/50"
-                                        )}>
-                                            {countInType}/{totalInType}
-                                        </span>
-                                    )}
-                                </EliteButton>
-                            );
-                        })}
-                    </div>
+                                return (
+                                    <EliteButton
+                                        key={type.id}
+                                        variant={selectedType === type.id ? "secondary" : "ghost"}
+                                        className={cn(
+                                            "h-24 flex-col gap-2 rounded-[1.5rem] border border-border/40 transition-all duration-300 relative",
+                                            selectedType === type.id && "bg-primary/10 border-primary/40 text-primary shadow-inner scale-105"
+                                        )}
+                                        onClick={() => setSelectedType(type.id)}
+                                    >
+                                        <type.icon className={cn("h-5 w-5", selectedType === type.id ? "text-primary" : "text-muted-foreground opacity-60")} />
+                                        <span className="font-black text-[9px] uppercase tracking-widest">{type.label}</span>
+                                        {totalInType > 0 && (
+                                            <span className={cn(
+                                                "text-[8px] font-black",
+                                                countInType > 0 ? "text-primary" : "text-muted-foreground/50"
+                                            )}>
+                                                {countInType}/{totalInType}
+                                            </span>
+                                        )}
+                                    </EliteButton>
+                                );
+                            })}
+                        </div>
+                    )}
 
                     {/* ── Search ── */}
                     <div className="relative">
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder={`Buscar ${CONTACT_TYPES.find(t => t.id === selectedType)?.label} para asignar al ${selectedDay}...`}
+                            placeholder={`Buscar ${selectedType === 'team' ? 'Representante' : CONTACT_TYPES.find(t => t.id === selectedType)?.label} para asignar al ${selectedDay}...`}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="pl-10 h-12 rounded-xl bg-muted/5 border-border/40 font-black text-foreground uppercase text-sm shadow-inner focus:bg-card"
