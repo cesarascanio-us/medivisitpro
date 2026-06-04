@@ -176,23 +176,25 @@ export default function RoutePlanner() {
                         .from('user_roles_plain')
                         .select('user_id, role')
                         .eq('organization_id', organizationId)
-                        .in('role', ['representative', 'commercial_rep', 'visitador_medico']);
+                        .in('role', ['representative', 'supervisor', 'chief']);
                     
                     if (rolesData && rolesData.length > 0) {
-                        const userIds = rolesData.map((d: any) => d.user_id);
+                        const userIds = rolesData.map((d: any) => d.user_id).filter((id: string) => id !== user?.id);
                         const { data: profiles } = await supabase
                             .from('profiles')
                             .select('id, first_name, last_name')
                             .in('id', userIds);
                         
-                        currentTeam = rolesData.map((d: any) => {
-                            const p = profiles?.find((pr: any) => pr.id === d.user_id);
-                            return {
-                                user_id: d.user_id,
-                                name: p ? `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'Representante' : 'Representante',
-                                role: d.role
-                            };
-                        });
+                        currentTeam = rolesData
+                            .filter((d: any) => d.user_id !== user?.id)
+                            .map((d: any) => {
+                                const p = profiles?.find((pr: any) => pr.id === d.user_id);
+                                return {
+                                    user_id: d.user_id,
+                                    name: p ? `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'Representante' : 'Representante',
+                                    role: d.role
+                                };
+                            });
                         setTeamMembers(currentTeam);
                     }
                 }
