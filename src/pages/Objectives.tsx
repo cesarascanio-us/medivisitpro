@@ -196,6 +196,7 @@ export default function Objectives() {
                 const { error } = await supabase.from('objectives').insert(insertPayload);
                 if (error) throw error;
             }
+            } // close else
 
             toast({
                 title: editingId ? "Objetivo actualizado" : "Objetivo(s) creado(s)",
@@ -301,17 +302,19 @@ export default function Objectives() {
                 statusText="Enlace de Progreso Activo"
                 statusColor="bg-primary"
                 rightContent={
-                    <EliteButton
-                        onClick={() => {
-                            setEditingId(null);
-                            setFormData(initialFormState);
-                            setDialogOpen(true);
-                        }}
-                        className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95 whitespace-nowrap animate-pulse-subtle"
-                        icon={Plus}
-                    >
-                        {t.create}
-                    </EliteButton>
+                    canAssign ? (
+                        <EliteButton
+                            onClick={() => {
+                                setEditingId(null);
+                                setFormData(initialFormState);
+                                setDialogOpen(true);
+                            }}
+                            className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95 whitespace-nowrap animate-pulse-subtle"
+                            icon={Plus}
+                        >
+                            {t.create}
+                        </EliteButton>
+                    ) : undefined
                 }
             />
 
