@@ -110,32 +110,17 @@ export default function Objectives() {
                 .select('*');
 
             if (!canViewAllData) {
-                if (isSupervisor && zoneId) {
-                    // Supervisor sees their zone objectives? Or just their own and team?
-                    // Assuming RLS/Logic: Supervisor sees all in their scope.
-                    // For now, let's keep it simple: If canViewAllData (Master/Manager/Admin) they see all.
-                    // Otherwise, only see own.
-                    // WAIT: If I am a Manager assigning task, I need to see tasks I assigned to others.
-                    // The current RLS might limit this.
-                    // Let's assume Manager has canViewAllData = true usually (or isManager check).
-
-                    if (isLeader) {
-                        // Managers/Supervisors should see objectives of their team
-                        // Since we don't have a direct "assigned_by" column yet, we rely on RLS allowing reading profiles in same org.
-                        // But for now, let's revert to seeing *all* if they are managers, or just keep current logic
-                        // Current logic: query.eq('user_id', user?.id) blocks seeing others.
-
-                        // We need to REMOVE the user_id filter if they are leaders, allowing them to see all in org (handled by RLS policies hopefully)
-                        // If RLS is strict, we might need an 'assigned_by' or 'team' logic.
-                        // For this rapid implementation, we'll try removing the filter for leaders.
-                    } else {
-                        query = query.eq('user_id', user?.id);
-                    }
+                if (isLeader) {
+                    // Managers/Supervisors see all objectives in their org/zone (handled by RLS)
+                    // If we need to be specific for Supervisors, we could add zone_id filters here
+                    // but for now, we assume leaders see what RLS allows them to see.
                 } else {
-                    // Reps only see theirs
-                    if (!isLeader) {
-                        query = query.eq('user_id', user?.id);
+                    // Representatives see their own, global ones, and their zone's ones
+                    const orConditions = [`user_id.eq.${user?.id}`, `is_global.eq.true`];
+                    if (zoneId) {
+                        orConditions.push(`zone_id.eq.${zoneId}`);
                     }
+                    query = query.or(orConditions.join(','));
                 }
             }
 
