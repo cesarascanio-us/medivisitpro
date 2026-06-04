@@ -65,7 +65,7 @@ export default function RoutePlanner() {
 
     const canViewTeam = isSupervisor || isCoordinator || isManager || isMaster;
     const isViewingOtherRep = !!selectedRepId && selectedRepId !== user?.id;
-    const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
+    const isSupervisorPlanningOwnRoute = canViewTeam && !isViewingOtherRep;
     const viewingMember = teamMembers.find(m => m.user_id === selectedRepId);
 
     useEffect(() => {
@@ -166,7 +166,7 @@ export default function RoutePlanner() {
         try {
             setLoading(true);
 
-            const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
+            const isSupervisorPlanningOwnRoute = canViewTeam && !isViewingOtherRep;
 
             if (isSupervisorPlanningOwnRoute) {
                 // Fetch team members directly if not loaded, or use existing teamMembers
@@ -469,7 +469,7 @@ export default function RoutePlanner() {
                     )}
 
                     {/* ── Contact type selector ── */}
-                    {!isRepresentative && !isViewingOtherRep ? (
+                    {canViewTeam && !isViewingOtherRep ? (
                         <div className="grid grid-cols-1 gap-3">
                             <EliteButton
                                 variant="secondary"

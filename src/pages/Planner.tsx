@@ -389,7 +389,7 @@ export default function Planner() {
             return;
         }
         try {
-            const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
+            const isSupervisorPlanningOwnRoute = canViewTeam && !isViewingOtherRep;
 
             if (isSupervisorPlanningOwnRoute) {
                 const { data: routes } = await supabase
