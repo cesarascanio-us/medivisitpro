@@ -163,6 +163,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: can('planning.routes') || true },
           { name: "Agenda de Equipo", href: "/agenda", icon: Calendar, visible: can('planning.agenda_team') || true },
           { name: "Historial de Visitas", href: "/visits", icon: ClipboardList, visible: true },
+          { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
         ]
       },
       {
