@@ -196,8 +196,10 @@ export default function Objectives() {
             setAssignmentType("global"); // Reset
             setTargetZoneIds([]);
             loadObjectives();
-        } catch (error) {
-            toast({ title: "Error", description: "No se pudo crear el objetivo.", variant: "destructive" });
+        } catch (error: any) {
+            console.error("Supabase Error:", error);
+            const errMsg = error?.message || error?.details || JSON.stringify(error) || "No se pudo crear el objetivo.";
+            toast({ title: "Error 400", description: errMsg, variant: "destructive" });
         }
     };
 
