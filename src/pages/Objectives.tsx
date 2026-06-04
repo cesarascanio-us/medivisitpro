@@ -139,11 +139,6 @@ export default function Objectives() {
     const handleSubmit = async () => {
         if (!user || !formData.title) return;
 
-        if (canAssign && assignmentType === "zone" && !targetZoneId) {
-            toast({ title: "Error", description: "Debes seleccionar una zona para continuar.", variant: "destructive" });
-            return;
-        }
-
         try {
             const insertPayload: any = {
                 title: formData.title,
