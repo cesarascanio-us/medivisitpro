@@ -109,7 +109,8 @@ export default function RoutePlanner() {
             const { data, error } = await supabase
                 .from('user_roles_plain')
                 .select('user_id, role, zone_id')
-                .eq('organization_id', organizationId);
+                .eq('organization_id', organizationId)
+                .in('role', ['representative', 'commercial_rep', 'visitador_medico', 'rep_comercial', 'rep. comercial', 'rep_integral', 'supervisor', 'chief']);
 
             if (error || !data?.length) return;
 
@@ -174,7 +175,8 @@ export default function RoutePlanner() {
                     const { data: rolesData } = await supabase
                         .from('user_roles_plain')
                         .select('user_id, role')
-                        .eq('organization_id', organizationId);
+                        .eq('organization_id', organizationId)
+                        .in('role', ['representative', 'commercial_rep', 'visitador_medico', 'rep_comercial', 'rep. comercial', 'rep_integral', 'supervisor', 'chief']);
                     
                     if (rolesData && rolesData.length > 0) {
                         const userIds = rolesData.map((d: any) => d.user_id).filter((id: string) => id !== user?.id);
