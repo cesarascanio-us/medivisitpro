@@ -151,7 +151,7 @@ export default function RoutePlanner() {
             setHasActiveCycle(cycleExists);
 
             // Bypass cycle check for managers or when viewing another rep
-            if (cycleExists || !isRepresentative || isViewingOtherRep) {
+            if (cycleExists || canViewTeam || isViewingOtherRep) {
                 await loadContacts();
             } else {
                 setLoading(false);
