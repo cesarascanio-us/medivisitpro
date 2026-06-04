@@ -58,14 +58,14 @@ export default function RoutePlanner() {
     const [contacts, setContacts] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [selectedDay, setSelectedDay] = useState("Lunes");
-    const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
-    const [selectedType, setSelectedType] = useState(isSupervisorPlanningOwnRoute ? "team" : "doctor");
     const [hasActiveCycle, setHasActiveCycle] = useState<boolean | null>(null);
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
     const [selectedRepId, setSelectedRepId] = useState<string>('');
+    const [selectedType, setSelectedType] = useState(!isRepresentative ? "team" : "doctor");
 
     const canViewTeam = isSupervisor || isCoordinator || isManager || isMaster;
     const isViewingOtherRep = !!selectedRepId && selectedRepId !== user?.id;
+    const isSupervisorPlanningOwnRoute = !isRepresentative && !isViewingOtherRep;
     const viewingMember = teamMembers.find(m => m.user_id === selectedRepId);
 
     useEffect(() => {
