@@ -117,13 +117,13 @@ export default function RoutePlanner() {
             const userIds = data.map((d: any) => d.user_id);
             const { data: profiles } = await supabase
                 .from('profiles')
-                .select('user_id, first_name, last_name')
-                .in('user_id', userIds);
+                .select('id, first_name, last_name')
+                .in('id', userIds);
 
             const members: TeamMember[] = data
                 .filter((d: any) => d.user_id !== user?.id)
                 .map((d: any) => {
-                    const p = profiles?.find((pr: any) => pr.user_id === d.user_id);
+                    const p = profiles?.find((pr: any) => pr.id === d.user_id);
                     return {
                         user_id: d.user_id,
                         name: p ? `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'Usuario' : 'Usuario',
@@ -182,11 +182,11 @@ export default function RoutePlanner() {
                         const userIds = rolesData.map((d: any) => d.user_id);
                         const { data: profiles } = await supabase
                             .from('profiles')
-                            .select('user_id, first_name, last_name')
-                            .in('user_id', userIds);
+                            .select('id, first_name, last_name')
+                            .in('id', userIds);
                         
                         currentTeam = rolesData.map((d: any) => {
-                            const p = profiles?.find((pr: any) => pr.user_id === d.user_id);
+                            const p = profiles?.find((pr: any) => pr.id === d.user_id);
                             return {
                                 user_id: d.user_id,
                                 name: p ? `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'Representante' : 'Representante',
