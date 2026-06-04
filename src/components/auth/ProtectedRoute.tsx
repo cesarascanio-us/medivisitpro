@@ -19,7 +19,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-    const { user, loading, isMaster, role } = useAuth();
+    const { user, loading, isMaster, role, isFieldRep } = useAuth();
     const { organization, isLoading: orgLoading } = useOrganization();
     const navigate = useNavigate();
     const location = useLocation();
@@ -45,13 +45,16 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
             // Role Check
             // Role Check
             if (allowedRoles && user && !isMaster) {
-                if (!allowedRoles.includes(role)) {
+                const isRoleAllowed = allowedRoles.includes(role);
+                const isRepAllowed = allowedRoles.includes('representative') && isFieldRep;
+                
+                if (!isRoleAllowed && !isRepAllowed) {
                     console.warn(`User role ${role} not allowed in restricted route.`);
                     navigate('/dashboard', { replace: true });
                 }
             }
         }
-    }, [user, loading, organization, orgLoading, navigate, location.pathname, isMaster, role, allowedRoles]);
+    }, [user, loading, organization, orgLoading, navigate, location.pathname, isMaster, role, allowedRoles, isFieldRep]);
 
     if (loading || orgLoading) {
         return (
