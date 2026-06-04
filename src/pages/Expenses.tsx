@@ -522,7 +522,7 @@ export default function Expenses() {
                             <TableHead className="text-[10px] font-black uppercase tracking-widest py-6">Proveedor</TableHead>
                             <TableHead className="text-right text-[10px] font-black uppercase tracking-widest py-6">Importe (USD)</TableHead>
                             <TableHead className="text-center text-[10px] font-black uppercase tracking-widest py-6">Auditoría</TableHead>
-                            {isManager && <TableHead className="text-right text-[10px] font-black uppercase tracking-widest py-6 pr-8">Control</TableHead>}
+                            {(isManager || isSupervisor) && <TableHead className="text-right text-[10px] font-black uppercase tracking-widest py-6 pr-8">Control</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -566,7 +566,7 @@ export default function Expenses() {
                                         <TableCell className="text-center">
                                             {getStatusBadge(expense.status)}
                                         </TableCell>
-                                        {isManager && (
+                                        {(isManager || isSupervisor) && (
                                             <TableCell className="text-right pr-8 py-8">
                                                 {expense.status === 'pending' && (
                                                     <div className="flex justify-end gap-3">
