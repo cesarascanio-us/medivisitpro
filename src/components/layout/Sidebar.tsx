@@ -157,6 +157,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         visible: true,
         items: [
           { name: "Dashboard", href: "/dashboard", icon: Home, visible: true },
+          { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: true },
           { name: "Coaching de Campo", href: "/coaching", icon: ShieldCheck, visible: can('visits.coaching') || true },
           { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: can('planning.routes') || true },
           { name: "Agenda de Equipo", href: "/agenda", icon: Calendar, visible: can('planning.agenda_team') || true },
@@ -179,6 +180,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         visible: true,
         items: [
           { name: "Panel Operativo", href: "/dashboard", icon: Home, visible: true },
+          { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: true },
           { name: "Directorio", href: "/contacts", icon: Users, visible: true },
           { name: "Pedidos", href: "/transfer-orders", icon: ShoppingCart, visible: true },
           { name: "Cotizaciones", href: "/quotes", icon: FileText, visible: true },
@@ -191,6 +193,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         visible: true,
         items: [
           { name: "Dashboard", href: "/dashboard", icon: Home, visible: true },
+          { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: true },
           { name: "Plan Diario", href: "/planner", icon: Calendar, visible: true },
           { name: "Mis Visitas", href: "/visits", icon: ClipboardList, visible: true },
           { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
