@@ -8,7 +8,7 @@
 ======================================================================== */
 
 import { useState, useEffect } from "react";
-import { Plus, Target, TrendingUp, CheckCircle, AlertCircle } from "lucide-react";
+import { Plus, Target, TrendingUp, CheckCircle, AlertCircle, Edit, Trash2, MoreVertical } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -57,6 +57,7 @@ export default function Objectives() {
     const [loading, setLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("general");
+    const [editingId, setEditingId] = useState<string | null>(null);
 
     const [zones, setZones] = useState<{ id: string, name: string }[]>([]);
     const [assignmentType, setAssignmentType] = useState<"global" | "zone">("global");
@@ -72,7 +73,9 @@ export default function Objectives() {
         start_date: new Date().toISOString().split('T')[0],
         end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         priority: "normal"
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormState);
 
     const isLeader = isManager || isSupervisor || isCoordinator;
 
@@ -156,7 +159,18 @@ export default function Objectives() {
                 user_id: user.id
             };
 
-            if (canAssign) {
+            if (editingId) {
+                // UPDATE EXISTING OBJECTIVE
+                // We keep assignment type the same for simplicity unless changed
+                if (canAssign) {
+                    insertPayload.is_global = assignmentType === 'global';
+                    insertPayload.zone_id = assignmentType === 'zone' ? targetZoneIds[0] : null; // If editing, we just take the first zone if multiple were selected, or we shouldn't allow multi-zone editing easily. For now, take [0].
+                }
+                const { error } = await supabase.from('objectives').update(insertPayload).eq('id', editingId);
+                if (error) throw error;
+            } else {
+                // INSERT NEW OBJECTIVE(S)
+                if (canAssign) {
                 if (assignmentType === 'zone') {
                     if (targetZoneIds.length === 0) {
                         toast({ title: "Atención", description: "Debes seleccionar al menos una zona.", variant: "destructive" });
@@ -184,17 +198,56 @@ export default function Objectives() {
             }
 
             toast({
-                title: "Objetivo(s) creado(s)",
-                description: "Se guardaron los objetivos exitosamente."
+                title: editingId ? "Objetivo actualizado" : "Objetivo(s) creado(s)",
+                description: editingId ? "Se ha actualizado el objetivo correctamente." : "Se guardaron los objetivos exitosamente."
             });
             setDialogOpen(false);
             setAssignmentType("global"); // Reset
             setTargetZoneIds([]);
+            setEditingId(null);
+            setFormData(initialFormState);
             loadObjectives();
         } catch (error: any) {
             console.error("Supabase Error:", error);
             const errMsg = error?.message || error?.details || JSON.stringify(error) || "No se pudo crear el objetivo.";
             toast({ title: "Error 400", description: errMsg, variant: "destructive" });
+        }
+    };
+
+    const handleEdit = (obj: Objective) => {
+        setFormData({
+            title: obj.title,
+            description: obj.description || "",
+            objective_type: obj.objective_type,
+            category: obj.category,
+            target_value: obj.target_value,
+            unit: obj.unit,
+            start_date: obj.start_date,
+            end_date: obj.end_date,
+            priority: obj.priority
+        });
+        if ((obj as any).is_global) {
+            setAssignmentType("global");
+            setTargetZoneIds([]);
+        } else if ((obj as any).zone_id) {
+            setAssignmentType("zone");
+            setTargetZoneIds([(obj as any).zone_id]);
+        }
+        setEditingId(obj.id);
+        setActiveTab("general");
+        setDialogOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("¿Estás seguro de que deseas eliminar este objetivo?")) return;
+        try {
+            const { error } = await supabase.from('objectives').delete().eq('id', id);
+            if (error) throw error;
+            toast({ title: "Objetivo eliminado", description: "El objetivo ha sido borrado exitosamente." });
+            loadObjectives();
+        } catch (error) {
+            console.error("Error deleting objective:", error);
+            toast({ title: "Error", description: "No se pudo eliminar el objetivo.", variant: "destructive" });
         }
     };
 
@@ -249,7 +302,11 @@ export default function Objectives() {
                 statusColor="bg-primary"
                 rightContent={
                     <EliteButton
-                        onClick={() => setDialogOpen(true)}
+                        onClick={() => {
+                            setEditingId(null);
+                            setFormData(initialFormState);
+                            setDialogOpen(true);
+                        }}
                         className="bg-primary hover:bg-primary/90 text-white shadow-premium-md font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl transition-all hover:scale-105 active:scale-95 whitespace-nowrap animate-pulse-subtle"
                         icon={Plus}
                     >
@@ -297,8 +354,8 @@ export default function Objectives() {
                             <EliteCard key={obj.id} className="bg-card border border-border/40 shadow-premium-md rounded-elite-xl">
                                 <div className="p-6">
                                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center border border-border/30">
+                                        <div className="flex items-center gap-4 flex-1">
+                                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center border border-border/30 shrink-0">
                                                 {getStatusIcon(obj.status)}
                                             </div>
                                             <div>
@@ -314,11 +371,23 @@ export default function Objectives() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="text-left md:text-right shrink-0">
-                                            <p className="text-xl font-black text-foreground tracking-tighter tabular-nums leading-none">
-                                                {obj.category === 'sales' ? `$${obj.current_value.toLocaleString()}` : obj.current_value} / {obj.category === 'sales' ? `$${obj.target_value.toLocaleString()}` : obj.target_value}
-                                            </p>
-                                            <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-1.5">{Math.round(progress)}% completado</p>
+                                        <div className="text-left md:text-right shrink-0 flex items-center gap-4">
+                                            <div>
+                                                <p className="text-xl font-black text-foreground tracking-tighter tabular-nums leading-none">
+                                                    {obj.category === 'sales' ? `$${obj.current_value.toLocaleString()}` : obj.current_value} / {obj.category === 'sales' ? `$${obj.target_value.toLocaleString()}` : obj.target_value}
+                                                </p>
+                                                <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-1.5">{Math.round(progress)}% completado</p>
+                                            </div>
+                                            {canAssign && (
+                                                <div className="flex flex-col gap-2">
+                                                    <button onClick={() => handleEdit(obj)} className="text-muted-foreground hover:text-primary transition-colors p-1">
+                                                        <Edit className="w-4 h-4" />
+                                                    </button>
+                                                    <button onClick={() => handleDelete(obj.id)} className="text-muted-foreground hover:text-red-500 transition-colors p-1">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <Progress value={progress} className="h-2.5 bg-primary/5 rounded-full overflow-hidden" />
@@ -345,7 +414,7 @@ export default function Objectives() {
                             </div>
                             <div>
                                 <DialogTitle className="text-3xl font-black tracking-tight text-white mb-1">
-                                    Nuevo Objetivo
+                                    {editingId ? "Editar Objetivo" : "Nuevo Objetivo"}
                                 </DialogTitle>
                                 <p className="text-emerald-100/70 font-bold text-sm uppercase tracking-widest">
                                     Gestión de Metas y Desempeño 🎯
@@ -415,6 +484,11 @@ export default function Objectives() {
                                                             </div>
                                                         ))}
                                                     </div>
+                                                    {editingId && (
+                                                        <p className="text-[10px] text-muted-foreground font-bold mt-2">
+                                                            Nota: Al editar, solo se permite asignar a una sola zona.
+                                                        </p>
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <div className="flex flex-col justify-center">
@@ -536,9 +610,9 @@ export default function Objectives() {
                         </EliteButton>
                         <EliteButton
                             onClick={handleSubmit}
-                            className="h-12 px-10 bg-gradient-to-r from-emerald-600 to-teal-800 hover:from-emerald-700 hover:to-teal-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-2xl shadow-emerald-500/30 transition-all hover:scale-[1.02]"
+                            className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[11px] shadow-premium-md rounded-2xl"
                         >
-                            Crear Objetivo
+                            {editingId ? "Guardar Cambios" : "Crear Objetivo"}
                         </EliteButton>
                     </div>
                 </DialogContent>
