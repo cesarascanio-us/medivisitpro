@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
     define: {},
     server: {
       host: "::",
-      port: 8080,
+      port: 4173,
     },
     plugins: [
       react(),
@@ -81,6 +81,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
+      minify: false,
       rollupOptions: {
         onwarn(warning, warn) {
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
@@ -88,9 +89,7 @@ export default defineConfig(({ mode }) => {
           }
           warn(warning);
         },
-        output: {
-          // Eliminamos manualChunks para evitar errores de ReferenceError (circular dependencies en vendor)
-        }
+        output: {}
       }
     }
   };

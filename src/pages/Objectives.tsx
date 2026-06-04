@@ -171,15 +171,13 @@ export default function Objectives() {
                 end_date: formData.end_date,
                 priority: formData.priority,
                 status: 'active',
-                organization_id: organizationId
+                organization_id: organizationId,
+                user_id: user.id
             };
 
             if (canAssign) {
                 insertPayload.is_global = assignmentType === 'global';
                 insertPayload.zone_id = assignmentType === 'zone' ? targetZoneId : null;
-                // Leave user_id undefined or null for global/zone objectives
-            } else {
-                insertPayload.user_id = user.id;
             }
 
             const { error } = await supabase.from('objectives').insert(insertPayload);

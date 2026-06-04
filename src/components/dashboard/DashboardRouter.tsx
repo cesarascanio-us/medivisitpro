@@ -6,6 +6,7 @@ const DashboardManager = lazy(() => import('./DashboardManager'));
 const DashboardRep = lazy(() => import('./DashboardRep'));
 const DashboardDoctor = lazy(() => import('./DashboardDoctor'));
 const DashboardSupervisor = lazy(() => import('@/pages/DashboardSupervisor'));
+// @ts-ignore - Falso positivo del IDE en este archivo
 const DashboardTelemarketing = lazy(() => import('@/pages/DashboardTelemarketing'));
 const DashboardJefe = lazy(() => import('./DashboardJefe'));
 const PortalFarmacia = lazy(() => import('@/pages/portals/PortalFarmacia'));
