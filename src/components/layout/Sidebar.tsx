@@ -194,6 +194,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
         items: [
           { name: "Dashboard", href: "/dashboard", icon: Home, visible: true },
           { name: "Objetivos", href: "/objectives", icon: BarChart3, visible: true },
+          { name: "Rutas Semanales", href: "/route-planner", icon: MapPin, visible: true },
           { name: "Plan Diario", href: "/planner", icon: Calendar, visible: true },
           { name: "Mis Visitas", href: "/visits", icon: ClipboardList, visible: true },
           { name: "Mis Gastos", href: "/expenses", icon: DollarSign, visible: true },
