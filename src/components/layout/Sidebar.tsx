@@ -104,7 +104,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
 
   // Determinar grupo según rol del perfil
   const getRoleGroup = () => {
-    if (['master', 'admin', 'gerente', 'manager', 'jefe', 'chief'].includes(role)) return 'ejecutivo';
+    if (['master', 'admin'].includes(role)) return 'master';
+    if (['gerente', 'manager', 'jefe', 'chief'].includes(role)) return 'ejecutivo';
     if (['coordinador', 'coordinator', 'supervisor'].includes(role)) return 'supervision';
     if (role === 'telemarketing') return 'telemarketing';
     if (['rep_comercial', 'commercial_rep', 'visitador_medico', 'medical_visitor', 'rep_integral', 'integral_rep', 'representative'].includes(role)) return 'campo';
@@ -243,8 +244,22 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     ]
   };
 
+  const masterGroups = [
+    ...(NAV_GROUPS.ejecutivo || []),
+    ...(NAV_GROUPS.supervision || []).map(g => ({
+      ...g,
+      items: g.items.filter(i => i.name !== 'Dashboard' && i.name !== 'Objetivos')
+    })),
+    ...(NAV_GROUPS.campo || []).map(g => ({
+      ...g,
+      items: g.items.filter(i => !['Dashboard', 'Objetivos', 'Rutas Semanales', 'Plan Diario', 'Mis Visitas'].includes(i.name))
+    }))
+  ];
+
+  const baseGroups = roleGroup === 'master' ? masterGroups : (NAV_GROUPS[roleGroup] || []);
+
   const filteredNav = [
-    ...(NAV_GROUPS[roleGroup] || []),
+    ...baseGroups,
     // commonGroup
   ]
     .filter(group => group.visible)
