@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useOrganization } from "@/hooks/useOrganization";
@@ -59,7 +60,7 @@ export default function Objectives() {
 
     const [zones, setZones] = useState<{ id: string, name: string }[]>([]);
     const [assignmentType, setAssignmentType] = useState<"global" | "zone">("global");
-    const [targetZoneId, setTargetZoneId] = useState<string>("");
+    const [targetZoneIds, setTargetZoneIds] = useState<string[]>([]);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -161,21 +162,39 @@ export default function Objectives() {
             };
 
             if (canAssign) {
-                insertPayload.is_global = assignmentType === 'global';
-                insertPayload.zone_id = assignmentType === 'zone' ? targetZoneId : null;
+                if (assignmentType === 'zone') {
+                    if (targetZoneIds.length === 0) {
+                        toast({ title: "Atención", description: "Debes seleccionar al menos una zona.", variant: "destructive" });
+                        return;
+                    }
+                    // Insert multiple objectives (one per zone)
+                    const insertPromises = targetZoneIds.map(zoneId => {
+                        const payload = { ...insertPayload, is_global: false, zone_id: zoneId };
+                        return supabase.from('objectives').insert(payload);
+                    });
+                    
+                    const results = await Promise.all(insertPromises);
+                    const errors = results.filter(r => r.error);
+                    if (errors.length > 0) throw errors[0].error;
+                } else {
+                    // Global objective
+                    insertPayload.is_global = true;
+                    insertPayload.zone_id = null;
+                    const { error } = await supabase.from('objectives').insert(insertPayload);
+                    if (error) throw error;
+                }
+            } else {
+                const { error } = await supabase.from('objectives').insert(insertPayload);
+                if (error) throw error;
             }
 
-            const { error } = await supabase.from('objectives').insert(insertPayload);
-
-            if (error) throw error;
-
             toast({
-                title: "Objetivo creado",
-                description: "El objetivo ha sido creado exitosamente."
+                title: "Objetivo(s) creado(s)",
+                description: "Se guardaron los objetivos exitosamente."
             });
             setDialogOpen(false);
             setAssignmentType("global"); // Reset
-            setTargetZoneId("");
+            setTargetZoneIds([]);
             loadObjectives();
         } catch (error) {
             toast({ title: "Error", description: "No se pudo crear el objetivo.", variant: "destructive" });
@@ -371,19 +390,34 @@ export default function Objectives() {
                                             
                                             {assignmentType === "zone" ? (
                                                 <div className="space-y-2">
-                                                    <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Seleccionar Zona</Label>
-                                                    <Select value={targetZoneId} onValueChange={setTargetZoneId}>
-                                                        <SelectTrigger className="h-14 border-transparent rounded-2xl bg-muted font-bold shadow-sm">
-                                                            <SelectValue placeholder="Elegir zona..." />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="rounded-2xl border-none shadow-2xl">
-                                                            {zones.map((zone) => (
-                                                                <SelectItem key={zone.id} value={zone.id || "unknown"} className="font-bold py-3">
-                                                                    {zone.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
+                                                    <Label className="text-primary font-black text-[10px] uppercase tracking-[0.2em] ml-1">Seleccionar Zona(s)</Label>
+                                                    <div className="h-[120px] overflow-y-auto border-transparent rounded-2xl p-2 bg-muted shadow-sm space-y-1 custom-scrollbar">
+                                                        {zones.map((zone) => (
+                                                            <div 
+                                                                key={zone.id} 
+                                                                className="flex items-center space-x-3 p-3 hover:bg-background/80 rounded-xl cursor-pointer transition-colors"
+                                                                onClick={() => {
+                                                                    if (targetZoneIds.includes(zone.id)) {
+                                                                        setTargetZoneIds(targetZoneIds.filter(id => id !== zone.id));
+                                                                    } else {
+                                                                        setTargetZoneIds([...targetZoneIds, zone.id]);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Checkbox 
+                                                                    checked={targetZoneIds.includes(zone.id)} 
+                                                                    onCheckedChange={(checked) => {
+                                                                        if (checked) {
+                                                                            setTargetZoneIds([...targetZoneIds, zone.id]);
+                                                                        } else {
+                                                                            setTargetZoneIds(targetZoneIds.filter(id => id !== zone.id));
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <Label className="cursor-pointer font-bold text-sm text-foreground">{zone.name}</Label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <div className="flex flex-col justify-center">
