@@ -110,7 +110,7 @@ export default function RoutePlanner() {
                 .from('user_roles_plain')
                 .select('user_id, role, zone_id')
                 .eq('organization_id', organizationId)
-                .in('role', ['representative', 'supervisor', 'chief']);
+                .in('role', ['representative', 'commercial_rep', 'visitador_medico', 'rep_comercial', 'rep_integral', 'supervisor', 'chief']);
 
             if (error || !data?.length) return;
 
@@ -176,7 +176,7 @@ export default function RoutePlanner() {
                         .from('user_roles_plain')
                         .select('user_id, role')
                         .eq('organization_id', organizationId)
-                        .in('role', ['representative', 'supervisor', 'chief']);
+                        .in('role', ['representative', 'commercial_rep', 'visitador_medico', 'rep_comercial', 'rep_integral', 'supervisor', 'chief']);
                     
                     if (rolesData && rolesData.length > 0) {
                         const userIds = rolesData.map((d: any) => d.user_id).filter((id: string) => id !== user?.id);

@@ -221,7 +221,9 @@ export default function Planner() {
                 .from('user_roles_plain')
                 .select('user_id, role, zone_id')
                 .eq('organization_id', organizationId)
-                .in('role', isSupervisor && !isCoordinator ? ['representative'] : ['representative', 'supervisor', 'chief']);
+                .in('role', isSupervisor && !isCoordinator ? 
+                    ['representative', 'commercial_rep', 'visitador_medico', 'rep_comercial', 'rep_integral'] : 
+                    ['representative', 'commercial_rep', 'visitador_medico', 'rep_comercial', 'rep_integral', 'supervisor', 'chief']);
 
             if (selectedZoneId !== 'all') {
                 query = query.eq('zone_id', selectedZoneId);
@@ -243,11 +245,11 @@ export default function Planner() {
             const userIds = data.map((d: any) => d.user_id);
             const { data: profiles } = await supabase
                 .from('profiles')
-                .select('user_id, first_name, last_name')
-                .in('user_id', userIds);
+                .select('id, first_name, last_name')
+                .in('id', userIds);
 
             const members: TeamMember[] = data.map((d: any) => {
-                const profile = profiles?.find((p: any) => p.user_id === d.user_id);
+                const profile = profiles?.find((p: any) => p.id === d.user_id);
                 const name = profile
                     ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
                     : d.user_id.slice(0, 8);
