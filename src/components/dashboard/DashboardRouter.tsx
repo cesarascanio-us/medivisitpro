@@ -52,9 +52,9 @@ export default function DashboardRouter() {
   }
 
   // 5. Campo → DashboardRep (Comercial, Médico, Integral)
-  if (['rep_comercial', 'visitador_medico', 'rep_integral', 'representative'].includes(role)) {
-    const mode = role === 'rep_comercial' ? 'comercial' : 
-                 role === 'visitador_medico' ? 'medico' : 'integral';
+  if (['rep_comercial', 'commercial_rep', 'visitador_medico', 'medical_visitor', 'rep_integral', 'integral_rep', 'representative'].includes(role)) {
+    const mode = (role === 'rep_comercial' || role === 'commercial_rep') ? 'comercial' : 
+                 (role === 'visitador_medico' || role === 'medical_visitor') ? 'medico' : 'integral';
     return <DashboardRep mode={mode as any} />;
   }
 

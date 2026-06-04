@@ -433,10 +433,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isCoordinator = role === 'coordinador' || role === 'coordinator';
     const isSupervisor = role === 'supervisor';
     const isTelemarketing = role === 'telemarketing';
-    const isRepresentative = role === 'representative' || role === 'rep_comercial' || role === 'visitador_medico' || role === 'rep_integral';
+    const isRepresentative = ['rep_comercial', 'visitador_medico', 'rep_integral', 'representative', 'commercial_rep', 'medical_visitor', 'integral_rep'].includes(role);
 
     // New specialized checks
-    const isFieldRep = ['rep_comercial', 'visitador_medico', 'rep_integral', 'representative', 'commercial_rep', 'medical_visitor', 'integral_rep'].includes(role);
+    const isFieldRep = isRepresentative;
     const isExternalPortal = ['farmacia', 'medico', 'compras', 'pharmacy', 'doctor', 'buyer'].includes(role);
 
     const isDoctor = role === 'doctor' || role === 'medico';

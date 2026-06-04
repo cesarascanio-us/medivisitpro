@@ -107,7 +107,7 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
     if (['master', 'admin', 'gerente', 'manager', 'jefe', 'chief'].includes(role)) return 'ejecutivo';
     if (['coordinador', 'coordinator', 'supervisor'].includes(role)) return 'supervision';
     if (role === 'telemarketing') return 'telemarketing';
-    if (['rep_comercial', 'visitador_medico', 'rep_integral', 'representative'].includes(role)) return 'campo';
+    if (['rep_comercial', 'commercial_rep', 'visitador_medico', 'medical_visitor', 'rep_integral', 'integral_rep', 'representative'].includes(role)) return 'campo';
     if (['farmacia', 'medico', 'compras', 'pharmacist', 'doctor', 'buyer'].includes(role)) return 'externo';
     return 'ejecutivo'; // fallback
   };
