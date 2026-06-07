@@ -30,7 +30,7 @@ interface AdminDataFilterProps {
 }
 
 export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: AdminDataFilterProps) {
-    const { isMaster, isAdmin, isManager, isSupervisor, isRepresentative, zoneId, profile, userRegion, userState, loading: authLoading } = useAuth();
+    const { isMaster, isAdmin, isManager, isSupervisor, isRepresentative, zoneId, profile, userRegion, userState, loading: authLoading, canViewAllData } = useAuth();
     const [filters, setFilters] = useState<AdminFilterState>({ region: 'all', state: 'all', zoneId: 'all', userId: 'all' });
     const [zones, setZones] = useState<{ id: string; name: string; state: string | null }[]>([]);
     const [members, setMembers] = useState<{
@@ -67,8 +67,17 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
                     newFilters.region = userRegion;
                     shouldUpdate = true;
                 }
-                if (userState && filters.state !== userState) {
-                    newFilters.state = userState;
+                
+                let activeState = userState;
+                if (!activeState && zones.length > 0) {
+                    const uniqueStates = Array.from(new Set(zones.map(z => z.state).filter(Boolean)));
+                    if (uniqueStates.length === 1) {
+                        activeState = uniqueStates[0] as string;
+                    }
+                }
+
+                if (activeState && filters.state !== activeState) {
+                    newFilters.state = activeState;
                     shouldUpdate = true;
                 }
                 if (!filters.zoneId) {
@@ -88,7 +97,7 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
         };
 
         initFilters();
-    }, [isStrictSupervisor, isRepresentative, zoneId, userRegion, userState, profile, authLoading]);
+    }, [isStrictSupervisor, isRepresentative, zoneId, userRegion, userState, profile, authLoading, zones]);
 
     const loadMasterData = async () => {
         setLoading(true);
@@ -96,11 +105,16 @@ export function AdminDataFilter({ onFilterChange, moduleType = 'contacts' }: Adm
             const { data: zonesData } = await (supabase as any).from('zones').select('id, name, state');
             let availableZones = zonesData || [];
 
-            if (isManager && profile?.id && !isMaster && !isAdmin) {
+            if ((isManager || isRepresentative || isSupervisor) && profile?.id && !isMaster && !isAdmin) {
                 const { data: myZones } = await (supabase as any).from('user_zones').select('zone_id').eq('user_id', profile.id);
                 if (myZones && myZones.length > 0) {
                     const myZoneIds = myZones.map((z: any) => z.zone_id);
                     availableZones = availableZones.filter((z: any) => myZoneIds.includes(z.id));
+                } else if (userState) {
+                    availableZones = availableZones.filter((z: any) => z.state === userState);
+                } else if (userRegion) {
+                    const regionStates = getStatesInRegion(userRegion);
+                    availableZones = availableZones.filter((z: any) => z.state && regionStates.includes(z.state));
                 }
             }
 
