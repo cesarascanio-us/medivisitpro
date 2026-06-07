@@ -220,134 +220,52 @@ export default function DashboardRep({ mode = 'comercial' }: DashboardRepProps) 
         />
       </div>
 
-      {/* Accesos Rápidos */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-5 px-2">
-          <div className="icon-box-primary">
-            <Zap className="h-7 w-7" />
+      {/* Accesos Rápidos y Sincronización en la parte superior */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center gap-5 px-2">
+            <div className="icon-box-primary">
+              <Zap className="h-7 w-7" />
+            </div>
+            <h3 className="text-elite-title text-foreground font-display">Accesos Rápidos</h3>
           </div>
-          <h3 className="text-elite-title text-foreground font-display">Accesos Rápidos</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <EliteCard onClick={() => navigate('/products')} className="p-6">
-            <div className="flex items-center gap-6">
-              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
-                <Package className="h-7 w-7" />
-              </div>
-              <div>
-                <p className="text-lg font-black uppercase tracking-tight font-display">Inventario</p>
-                <p className="text-elite-xs text-muted-foreground">Banco de muestras y material</p>
-              </div>
-              <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
-            </div>
-          </EliteCard>
-          <EliteCard onClick={() => navigate('/sales-pipeline')} className="p-6">
-            <div className="flex items-center gap-6">
-              <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500">
-                <Clock className="h-7 w-7" />
-              </div>
-              <div>
-                <p className="text-lg font-black uppercase tracking-tight font-display">Pipeline</p>
-                <p className="text-elite-xs text-muted-foreground">Seguimiento de cierres</p>
-              </div>
-              <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
-            </div>
-          </EliteCard>
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 space-y-10">
-          <section>
-            <div className="flex items-center justify-between mb-8 px-2">
-              <div className="flex items-center gap-5">
-                <div className="icon-box-primary">
-                  <Calendar className="h-7 w-7" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <EliteCard onClick={() => navigate('/products')} className="p-6">
+              <div className="flex items-center gap-6">
+                <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                  <Package className="h-7 w-7" />
                 </div>
                 <div>
-                  <h2 className="text-elite-title text-foreground font-display">Tu Ruta de Hoy</h2>
-                  <p className="text-elite-sm text-muted-foreground">{pendingCount} visitas pendientes de ejecución</p>
+                  <p className="text-lg font-black uppercase tracking-tight font-display">Inventario</p>
+                  <p className="text-elite-xs text-muted-foreground">Banco de muestras y material</p>
                 </div>
+                <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
               </div>
-            </div>
-
-            <div className="grid gap-6">
-              {loading ? (
-                [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-card rounded-elite-lg border border-border animate-pulse shadow-sm"></div>)
-              ) : visits.length > 0 ? (
-                visits.map((visit, index) => {
-                  const isCompleted = visit.status === 'completed';
-                  return (
-                    <EliteCard 
-                      key={visit.id} 
-                      onClick={() => !isCompleted && navigate(`/visits?start=${visit.id}`)} 
-                      delay={index * 100}
-                      className={cn(isCompleted && "opacity-60 grayscale-[0.5]")}
-                    >
-                      <CardContent className="p-8">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                          <div className="flex items-center gap-6">
-                            <div className={cn(
-                              "h-16 w-16 rounded-2xl flex items-center justify-center border border-border shadow-inner transition-all duration-500",
-                              isCompleted ? "bg-emerald-500/10 text-emerald-500" : "bg-muted/20 text-muted-foreground group-hover:bg-primary group-hover:text-white"
-                            )}>
-                              {isCompleted ? <CheckCircle2 className="h-8 w-8" /> : <Navigation className="h-8 w-8" />}
-                            </div>
-                            <div className="space-y-1">
-                              <h4 className={cn(
-                                "text-xl font-black tracking-tight transition-colors uppercase font-display",
-                                isCompleted ? "text-muted-foreground line-through" : "text-foreground group-hover:text-primary"
-                              )}>
-                                {visit.contactName}
-                              </h4>
-                              <div className="flex items-center gap-3">
-                                <Badge className="badge-elite-info bg-muted/30 border-none">
-                                  {visit.scheduledTime}
-                                </Badge>
-                                <Badge className="badge-elite-info">
-                                  {visit.category || 'General'}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <p className="hidden md:block text-elite-xs text-muted-foreground max-w-[200px] truncate">{visit.address}</p>
-                            <Badge className={cn(
-                              "badge-elite px-6 py-2 rounded-full",
-                              isCompleted ? "badge-elite-success" : "badge-elite-warning"
-                            )}>
-                              {isCompleted ? 'Completada' : 'Pendiente'}
-                            </Badge>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </EliteCard>
-                  );
-                })
-              ) : (
-                <EliteCard className="border-dashed border-border/60 bg-muted/5">
-                  <div className="p-24 text-center">
-                    <div className="w-24 h-24 bg-card rounded-elite-lg shadow-premium-sm border border-border flex items-center justify-center mx-auto mb-8 text-muted-foreground/20">
-                      <Calendar className="h-12 w-12" />
-                    </div>
-                    <h3 className="text-elite-title text-foreground font-display mb-3">Sin visitas agendadas</h3>
-                    <p className="text-elite-sm text-muted-foreground">Tu agenda está despejada por el momento</p>
-                  </div>
-                </EliteCard>
-              )}
-            </div>
-          </section>
+            </EliteCard>
+            <EliteCard onClick={() => navigate('/sales-pipeline')} className="p-6">
+              <div className="flex items-center gap-6">
+                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500">
+                  <Clock className="h-7 w-7" />
+                </div>
+                <div>
+                  <p className="text-lg font-black uppercase tracking-tight font-display">Pipeline</p>
+                  <p className="text-elite-xs text-muted-foreground">Seguimiento de cierres</p>
+                </div>
+                <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
+              </div>
+            </EliteCard>
+          </div>
         </div>
 
-        <div className="space-y-10">
-          <EliteCard className="p-8 bg-primary/5 border-primary/20">
-             <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
-                  <RefreshCcw className="h-5 w-5" />
-                </div>
-                <p className="font-black uppercase tracking-widest text-[10px]">Estado de Sincronización</p>
-             </div>
-             <div className="space-y-4">
+        <div className="space-y-4">
+          <div className="flex items-center gap-5 px-2">
+            <div className="icon-box-primary">
+              <RefreshCcw className="h-7 w-7" />
+            </div>
+            <h3 className="text-elite-title text-foreground font-display">Sincronización</h3>
+          </div>
+          <EliteCard className="p-6 bg-primary/5 border-primary/20 h-[106px] flex flex-col justify-center">
+             <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-elite-sm text-muted-foreground">Base de Datos</span>
                   <Badge className="badge-elite-success">Online</Badge>
@@ -360,6 +278,87 @@ export default function DashboardRep({ mode = 'comercial' }: DashboardRepProps) 
           </EliteCard>
         </div>
       </div>
+
+      {/* Tu Ruta de Hoy */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between mb-8 px-2">
+          <div className="flex items-center gap-5">
+            <div className="icon-box-primary">
+              <Calendar className="h-7 w-7" />
+            </div>
+            <div>
+              <h2 className="text-elite-title text-foreground font-display">Tu Ruta de Hoy</h2>
+              <p className="text-elite-sm text-muted-foreground">{pendingCount} visitas pendientes de ejecución</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6">
+          {loading ? (
+            [1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-card rounded-elite-lg border border-border animate-pulse shadow-sm"></div>)
+          ) : visits.length > 0 ? (
+            visits.map((visit, index) => {
+              const isCompleted = visit.status === 'completed';
+              return (
+                <EliteCard 
+                  key={visit.id} 
+                  onClick={() => !isCompleted && navigate(`/visits?start=${visit.id}`)} 
+                  delay={index * 100}
+                  className={cn(isCompleted && "opacity-60 grayscale-[0.5]")}
+                >
+                  <CardContent className="p-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                      <div className="flex items-center gap-6">
+                        <div className={cn(
+                          "h-16 w-16 rounded-2xl flex items-center justify-center border border-border shadow-inner transition-all duration-500",
+                          isCompleted ? "bg-emerald-500/10 text-emerald-500" : "bg-muted/20 text-muted-foreground group-hover:bg-primary group-hover:text-white"
+                        )}>
+                          {isCompleted ? <CheckCircle2 className="h-8 w-8" /> : <Navigation className="h-8 w-8" />}
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className={cn(
+                            "text-xl font-black tracking-tight transition-colors uppercase font-display",
+                            isCompleted ? "text-muted-foreground line-through" : "text-foreground group-hover:text-primary"
+                          )}>
+                            {visit.contactName}
+                          </h4>
+                          <div className="flex items-center gap-3">
+                            <Badge className="badge-elite-info bg-muted/30 border-none">
+                              {visit.scheduledTime}
+                            </Badge>
+                            <Badge className="badge-elite-info">
+                              {visit.category || 'General'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <p className="hidden md:block text-elite-xs text-muted-foreground max-w-xl truncate">{visit.address}</p>
+                        <Badge className={cn(
+                          "badge-elite px-6 py-2 rounded-full",
+                          isCompleted ? "badge-elite-success" : "badge-elite-warning"
+                        )}>
+                          {isCompleted ? 'Completada' : 'Pendiente'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </EliteCard>
+              );
+            })
+          ) : (
+            <EliteCard className="border-dashed border-border/60 bg-muted/5">
+              <div className="p-24 text-center">
+                <div className="w-24 h-24 bg-card rounded-elite-lg shadow-premium-sm border border-border flex items-center justify-center mx-auto mb-8 text-muted-foreground/20">
+                  <Calendar className="h-12 w-12" />
+                </div>
+                <h3 className="text-elite-title text-foreground font-display mb-3">Sin visitas agendadas</h3>
+                <p className="text-elite-sm text-muted-foreground">Tu agenda está despejada por el momento</p>
+              </div>
+            </EliteCard>
+          )}
+        </div>
+      </section>
 
       <QuickScheduleWizard
         open={isWizardOpen}
