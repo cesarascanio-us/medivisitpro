@@ -29,13 +29,7 @@ import {
     AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 
-const DAYS_OF_WEEK = [
-    { id: "Lunes",     label: "Lun" },
-    { id: "Martes",    label: "Mar" },
-    { id: "Miércoles", label: "Mié" },
-    { id: "Jueves",    label: "Jue" },
-    { id: "Viernes",   label: "Vie" },
-];
+// DAYS_OF_WEEK is calculated dynamically inside the component to include calendar numbers.
 
 const CONTACT_TYPES = [
     { id: 'doctor',       icon: UserRound,   label: 'Médico' },
@@ -54,6 +48,64 @@ interface TeamMember {
 
 export default function RoutePlanner() {
     const { user, organizationId, isSupervisor, isCoordinator, isManager, isMaster, isRepresentative } = useAuth();
+    
+    // Helper to calculate current/upcoming week dates and week number dynamically based on the current local time
+    const weekData = React.useMemo(() => {
+        const current = new Date();
+        const day = current.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        
+        const targetDate = new Date(current);
+        // If Saturday or Sunday, move planning to the upcoming week
+        if (day === 6) {
+            targetDate.setDate(current.getDate() + 2);
+        } else if (day === 0) {
+            targetDate.setDate(current.getDate() + 1);
+        }
+        
+        const targetDay = targetDate.getDay();
+        const diffToMonday = 1 - targetDay;
+        const monday = new Date(targetDate);
+        monday.setDate(targetDate.getDate() + diffToMonday);
+
+        const getWeekNumber = (d: Date) => {
+            const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            const dayNum = date.getUTCDay() || 7;
+            date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+            return Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+        };
+
+        const weekNum = getWeekNumber(monday);
+
+        const formatShortDate = (d: Date) => {
+            return d.toLocaleDateString("es-ES", { day: "numeric", month: "short" }).replace(".", "");
+        };
+
+        const mondayFormatted = formatShortDate(monday);
+        const friday = new Date(monday);
+        friday.setDate(monday.getDate() + 4);
+        const fridayFormatted = formatShortDate(friday);
+
+        const labels = ["Lun", "Mar", "Mié", "Jue", "Vie"];
+        const ids = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
+        const days = ids.map((id, index) => {
+            const date = new Date(monday);
+            date.setDate(monday.getDate() + index);
+            return {
+                id,
+                label: labels[index],
+                dateNum: date.getDate(),
+            };
+        });
+
+        return {
+            weekNum,
+            dateRange: `${mondayFormatted} - ${fridayFormatted}`,
+            days
+        };
+    }, []);
+
     const [loading, setLoading] = useState(true);
     const [contacts, setContacts] = useState<any[]>([]);
     const [search, setSearch] = useState("");
@@ -330,8 +382,8 @@ export default function RoutePlanner() {
                 <EliteHeader
                     title="Planificador de Rutas Semanales"
                     subtitle={isViewingOtherRep
-                        ? `Viendo rutas de: ${viewingMember?.name || 'Representante'} (solo lectura)`
-                        : 'Asigna contactos a los días de tu semana de trabajo'}
+                        ? `Semana ${weekData.weekNum} (${weekData.dateRange}) — Viendo rutas de: ${viewingMember?.name || 'Representante'} (solo lectura)`
+                        : `Semana ${weekData.weekNum} (${weekData.dateRange}) — Asigna contactos a los días de tu semana de trabajo`}
                     icon={MapPin}
                     badgeText={isViewingOtherRep ? "Modo Supervisor" : "Asignación de Rutas"}
                     statusText={`${contacts.filter(c => c.routing_days).length} contactos asignados`}
@@ -391,7 +443,7 @@ export default function RoutePlanner() {
 
                     {/* ── Day tabs with counters ── */}
                     <div className="flex gap-2 p-2 bg-muted/30 rounded-2xl overflow-x-auto">
-                        {DAYS_OF_WEEK.map((day) => {
+                        {weekData.days.map((day) => {
                             const count = countForDay(day.id);
                             return (
                                 <Button
@@ -403,7 +455,9 @@ export default function RoutePlanner() {
                                     )}
                                     onClick={() => setSelectedDay(day.id)}
                                 >
-                                    <span className="text-xs font-black uppercase tracking-widest">{day.label}</span>
+                                    <span className="text-xs font-black uppercase tracking-widest">
+                                        {day.label} {day.dateNum}
+                                    </span>
                                     {count > 0 ? (
                                         <Badge className={cn(
                                             "text-[9px] px-1.5 py-0 h-4 font-black",
