@@ -191,8 +191,7 @@ export default function SampleBanks() {
                     responsible_user_id,
                     last_audit_date,
                     created_at,
-                    health_centers!inner ( id, name, state, zone_id, organization_id ),
-                    profiles:responsible_user_id ( first_name, last_name, email )
+                    health_centers!inner ( id, name, state, zone_id, organization_id )
                 `)
                 .eq('health_centers.organization_id', organizationId);
 
@@ -229,9 +228,25 @@ export default function SampleBanks() {
                 }
             }
 
-            const { data, error } = await query.order('name', { ascending: true });
+            const { data: banksData, error } = await query.order('name', { ascending: true });
             if (error) throw error;
-            setBanks(data || []);
+
+            // Fetch profiles to map responsible user info manually to bypass foreign key cache issue
+            const { data: profilesData } = await supabase
+                .from('profiles')
+                .select('user_id, first_name, last_name, email');
+
+            const profilesMap = (profilesData || []).reduce((acc: any, p: any) => {
+                acc[p.user_id] = p;
+                return acc;
+            }, {});
+
+            const mappedBanks = (banksData || []).map((bank: any) => ({
+                ...bank,
+                profiles: profilesMap[bank.responsible_user_id] || null
+            }));
+
+            setBanks(mappedBanks);
         } catch (error) {
             console.error("Error loading banks:", error);
             throw error;
@@ -433,12 +448,17 @@ export default function SampleBanks() {
                 .eq('organization_id', organizationId);
             const memberIds = orgProfiles?.map(p => p.user_id) || [];
 
+            // Fetch entrega_muestras without visits join to bypass foreign key cache issues
             let query = supabase
                 .from('entrega_muestras')
                 .select(`
-                    *,
-                    inventario_muestras (products (name), lote),
-                    visits (doctors (name))
+                    id,
+                    visit_id,
+                    stock_muestra_id,
+                    doctor_id,
+                    cantidad_entregada,
+                    fecha_entrega,
+                    user_id
                 `);
 
             if (memberIds.length > 0) {
@@ -447,7 +467,64 @@ export default function SampleBanks() {
 
             const { data, error } = await query.order('fecha_entrega', { ascending: false });
             if (error) throw error;
-            setEntregasVisitas(data || []);
+
+            // Fetch inventario_muestras manually to map product details
+            const { data: inventarioData } = await supabase
+                .from('inventario_muestras')
+                .select(`
+                    id,
+                    lote,
+                    products ( name )
+                `);
+
+            const invMap = (inventarioData || []).reduce((acc: any, item: any) => {
+                acc[item.id] = item;
+                return acc;
+            }, {});
+
+            // Fetch doctors
+            const { data: doctorsData } = await supabase
+                .from('doctors')
+                .select('id, name');
+
+            const docMap = (doctorsData || []).reduce((acc: any, item: any) => {
+                acc[item.id] = item;
+                return acc;
+            }, {});
+
+            // Fetch visits as fallback
+            const { data: visitsData } = await supabase
+                .from('visits')
+                .select(`
+                    id,
+                    doctor_id,
+                    doctors ( name )
+                `);
+
+            const visitMap = (visitsData || []).reduce((acc: any, item: any) => {
+                acc[item.id] = item;
+                return acc;
+            }, {});
+
+            const mappedVisitas = (entregasData || []).map((ev: any) => {
+                const doctorName = docMap[ev.doctor_id]?.name || 
+                                   visitMap[ev.visit_id]?.doctors?.name || 
+                                   'Médico Desconocido';
+
+                return {
+                    id: ev.id,
+                    fecha_entrega: ev.fecha_entrega,
+                    cantidad_entregada: ev.cantidad_entregada,
+                    inventario_muestras: invMap[ev.stock_muestra_id] || null,
+                    visits: {
+                        doctors: {
+                            name: doctorName
+                        }
+                    }
+                };
+            });
+
+            setEntregasVisitas(mappedVisitas);
         } catch (error) {
             console.error("Error loading visit sample deliveries:", error);
         }
