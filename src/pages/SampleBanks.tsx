@@ -465,7 +465,7 @@ export default function SampleBanks() {
                 query = query.in('user_id', memberIds);
             }
 
-            const { data, error } = await query.order('fecha_entrega', { ascending: false });
+            const { data: entregasData, error } = await query.order('fecha_entrega', { ascending: false });
             if (error) throw error;
 
             // Fetch inventario_muestras manually to map product details
@@ -492,14 +492,10 @@ export default function SampleBanks() {
                 return acc;
             }, {});
 
-            // Fetch visits as fallback
+            // Fetch visits without nested join (FK not in schema cache)
             const { data: visitsData } = await supabase
                 .from('visits')
-                .select(`
-                    id,
-                    doctor_id,
-                    doctors ( name )
-                `);
+                .select('id, doctor_id');
 
             const visitMap = (visitsData || []).reduce((acc: any, item: any) => {
                 acc[item.id] = item;
@@ -507,8 +503,9 @@ export default function SampleBanks() {
             }, {});
 
             const mappedVisitas = (entregasData || []).map((ev: any) => {
+                const visitDoctorId = visitMap[ev.visit_id]?.doctor_id;
                 const doctorName = docMap[ev.doctor_id]?.name || 
-                                   visitMap[ev.visit_id]?.doctors?.name || 
+                                   docMap[visitDoctorId]?.name || 
                                    'Médico Desconocido';
 
                 return {
