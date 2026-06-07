@@ -2,7 +2,7 @@
 
 > **Asistente de Visita Médica Offline-First** - Sistema integral de gestión para representantes médicos y equipos comerciales farmacéuticos.
 
-[![Vercel](https://vercelbadge.vercel.app/api/yourusername/medivisitpro)](https://medivisitpro-s2ro.vercel.app)
+[![Vercel](https://vercelbadge.vercel.app/api/yourusername/medivisitpro)](https://medivisitpro.vercel.app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb)](https://react.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-Powered-3ecf8e)](https://supabase.com/)

@@ -41,7 +41,7 @@ export function useOrganizationPlan() {
 
 
   const includedModules = useMemo(() => {
-    // @ts-ignore
+    // @ts-expect-error - plan property does not exist in standard organizations schema types
     const modules = orgPlan?.plan?.modules || [];
     return modules.filter((m: any) => m.is_included).map((m: any) => m.module_key) || [];
   }, [orgPlan]);
@@ -59,9 +59,9 @@ export function useOrganizationPlan() {
   }, [orgPlan]);
 
   return {
-    // @ts-ignore
+    // @ts-expect-error - plan property does not exist in standard organizations schema types
     plan: orgPlan?.plan,
-    // @ts-ignore
+    // @ts-expect-error - limits property does not exist in standard organizations schema types
     limits: orgPlan?.limits,
     includedModules,
     isExpired,
