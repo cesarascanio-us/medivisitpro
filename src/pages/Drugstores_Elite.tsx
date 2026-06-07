@@ -136,14 +136,13 @@ export default function DrugstoresElite() {
             const itemsToInsert = data.map((row: any) => ({
                 user_id: user?.id, 
                 organization_id: organizationId,
-                contact_type: 'drugstore',
                 name: row['Nombre'] || row['nombre'] || row['Name'] || '',
                 rif: row['RIF'] || row['rif'] || '',
                 address: row['Dirección'] || row['direccion'] || row['address'] || '',
                 city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
                 phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
                 potential: 'Medio',
-                status: 'Activo'
+                is_active: true
             })).filter(item => item.name);
             
             if (itemsToInsert.length > 0) {
