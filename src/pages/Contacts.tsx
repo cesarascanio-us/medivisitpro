@@ -114,15 +114,18 @@ export default function Contacts() {
             } else if (type === 'pharmacy') {
               pharmaciesToInsert.push({ ...baseData, potential: 'Medio' });
             } else if (type === 'health_center' || type === 'hospital' || type === 'clinica') {
-              hcToInsert.push({ ...baseData, potential: 'Medio' });
+              const { status, ...rest } = baseData;
+              hcToInsert.push({ ...rest, potential: 'Medio' });
             } else if (type === 'drugstore' || type === 'drogueria') {
-              drugstoresToInsert.push({ ...baseData, potential: 'Medio' });
+              const { status, ...rest } = baseData;
+              drugstoresToInsert.push({ ...rest, potential: 'Medio', is_active: true });
             } else if (type === 'commerce' || type === 'comercio') {
               commercesToInsert.push({ ...baseData, potential: 'Medio' });
             } else if (type === 'natural_store' || type === 'tienda_naturista') {
               naturalStoresToInsert.push({ ...baseData, potential: 'Medio' });
             } else {
-              genericContactsToInsert.push({ ...baseData, contact_type: type });
+              const { status, ...rest } = baseData;
+              genericContactsToInsert.push({ ...rest, contact_type: type });
             }
           });
 
