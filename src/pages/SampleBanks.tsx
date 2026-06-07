@@ -492,21 +492,8 @@ export default function SampleBanks() {
                 return acc;
             }, {});
 
-            // Fetch visits without nested join (FK not in schema cache)
-            const { data: visitsData } = await supabase
-                .from('visits')
-                .select('id, doctor_id');
-
-            const visitMap = (visitsData || []).reduce((acc: any, item: any) => {
-                acc[item.id] = item;
-                return acc;
-            }, {});
-
             const mappedVisitas = (entregasData || []).map((ev: any) => {
-                const visitDoctorId = visitMap[ev.visit_id]?.doctor_id;
-                const doctorName = docMap[ev.doctor_id]?.name || 
-                                   docMap[visitDoctorId]?.name || 
-                                   'Médico Desconocido';
+                const doctorName = docMap[ev.doctor_id]?.name || 'Médico Desconocido';
 
                 return {
                     id: ev.id,
