@@ -131,10 +131,10 @@ export default function RoutePlanner() {
         if (hasActiveCycle) loadContacts();
     }, [selectedRepId]);
 
-    const [visibleCount, setVisibleCount] = useState(5);
+    const [visibleCount, setVisibleCount] = useState(3);
 
     useEffect(() => {
-        setVisibleCount(5);
+        setVisibleCount(3);
     }, [search, selectedType, selectedDay]);
 
     // ─── Helpers ────────────────────────────────────────────────────────────────
