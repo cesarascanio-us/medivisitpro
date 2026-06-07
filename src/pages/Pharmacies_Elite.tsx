@@ -224,6 +224,19 @@ export default function PharmaciesElite() {
                             triggerText="Importar Datos"
                             expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
                         />
+                        <Button variant="outline" onClick={async () => {
+                            try {
+                                setLoading(true);
+                                await loadAllData();
+                                toast({ title: "Sincronización Completada", description: "Datos de farmacias actualizados." });
+                            } catch (e: any) {
+                                toast({ title: "Error de Sincronización", description: e.message, variant: "destructive" });
+                            } finally {
+                                setLoading(false);
+                            }
+                        }} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            <RefreshCw className={cn("mr-3 h-4 w-4 text-primary", loading && "animate-spin")} /> Sincronizar
+                        </Button>
                         <Button variant="destructive" onClick={() => {
                             if(window.confirm('¿Estás seguro de vaciar todas las farmacias? Esta acción no se puede deshacer.')) {
                                 handleEmptyAll();

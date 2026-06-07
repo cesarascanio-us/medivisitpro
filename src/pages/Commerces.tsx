@@ -11,7 +11,7 @@ import { useState, useMemo } from "react";
 import { 
   Plus, Search, Store, Download, Building2, Phone, Edit, 
   ShieldCheck, Star, Navigation, Activity, Calendar, MapPin, 
-  ClipboardCheck, Pencil, Upload, Mail
+  ClipboardCheck, Pencil, Upload, Mail, RefreshCw
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,9 @@ export default function Commerces() {
         adminFilters: adminFilters
     }), [searchTerm, adminFilters]);
 
-    const { contacts: commerces, loading, refresh: loadCommerces } = useContacts(contactOptions);
+    const { contacts: commerces, loading: contactsLoading, refresh: loadCommerces } = useContacts(contactOptions);
+    const [localLoading, setLocalLoading] = useState(false);
+    const loading = contactsLoading || localLoading;
     const { toast } = useToast();
     const { user } = useAuth();
     const { organization } = useOrganization();
@@ -87,10 +89,10 @@ export default function Commerces() {
             })).filter(item => item.name);
             
             if (itemsToInsert.length > 0) {
-                const { error } = await supabase.from('contacts').insert(itemsToInsert);
+                const { error } = await supabase.from('commerces').insert(itemsToInsert);
                 if (error) throw error;
                 toast({ title: "Importación Exitosa", description: `Se importaron ${itemsToInsert.length} comercios.` });
-                loadAllData();
+                loadCommerces();
             }
         } catch (error: any) { 
             console.error('Error:', error); 
@@ -100,19 +102,31 @@ export default function Commerces() {
 
     const handleEmptyAll = async () => {
         try {
-            setLoading(true);
+            setLocalLoading(true);
             const { error } = await supabase
-                .from('contacts')
+                .from('commerces')
                 .delete()
                 .eq('contact_type', 'commerce')
                 .eq('organization_id', organizationId);
             if (error) throw error;
             toast({ title: "Éxito", description: "Se han eliminado todos los comercios." });
-            loadAllData();
+            loadCommerces();
         } catch (error: any) {
             toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
         } finally {
-            setLoading(false);
+            setLocalLoading(false);
+        }
+    };
+
+    const handleSync = async () => {
+        try {
+            setLocalLoading(true);
+            await loadCommerces();
+            toast({ title: "Sincronización Completada", description: "Datos de comercios actualizados." });
+        } catch (error: any) {
+            toast({ title: "Error de Sincronización", description: error.message, variant: "destructive" });
+        } finally {
+            setLocalLoading(false);
         }
     };
 
@@ -142,6 +156,9 @@ export default function Commerces() {
                             triggerText="Importar"
                             expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
                         />
+                        <Button variant="outline" onClick={handleSync} className="h-14 px-8 rounded-2xl border-border/40 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+                            <RefreshCw className={cn("h-4 w-4 mr-3 text-primary", localLoading && "animate-spin")} /> Sincronizar
+                        </Button>
                         <Button variant="destructive" onClick={() => {
                             if(window.confirm('¿Estás seguro de vaciar todos los comercios? Esta acción no se puede deshacer.')) {
                                 handleEmptyAll();

@@ -32,6 +32,7 @@ import {
   Globe,
   ChevronLeft,
   ChevronDown,
+  Sprout,
   Database,
   Settings as SettingsIcon
 } from "lucide-react";
@@ -210,6 +211,8 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
           { name: texts.pharmacies_title, href: "/pharmacies", icon: Store, visible: can('commercial.pharmacies') || true },
           { name: "Droguerías Aliadas", href: "/drugstores", icon: FlaskConical, visible: can('commercial.stock') },
           { name: "Centros Médicos", href: "/health-centers", icon: Building2, visible: can('commercial.pharmacies') },
+          { name: "Tiendas Naturistas", href: "/natural-stores", icon: Sprout, visible: can('commercial.pharmacies') || true },
+          { name: "Comercios", href: "/commerces", icon: Store, visible: can('commercial.pharmacies') || true },
         ]
       },
       {

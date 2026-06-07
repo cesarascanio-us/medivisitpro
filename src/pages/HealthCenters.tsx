@@ -32,6 +32,7 @@ import { AdminDataFilter } from "@/components/admin/AdminDataFilter";
 import { useDemoData } from "@/contexts/MockDataProvider";
 import { InstructionCard } from "@/components/ui/InstructionCard";
 import { EliteKPICard, EliteHeader } from "@/components/layout/DesignSystem";
+import { ImportDialog } from "@/components/shared/ImportDialog";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -111,6 +112,61 @@ export default function HealthCenters() {
     } catch (error) { toast({ title: "Error de Registro", variant: "destructive" }); }
   };
 
+  const handleImport = async (data: Record<string, any>[]) => {
+    try {
+      const itemsToInsert = data.map((row: any) => ({
+        user_id: user?.id, 
+        organization_id: organizationId,
+        name: row['Nombre'] || row['nombre'] || row['Name'] || '',
+        facility_type: row['Tipo'] || row['tipo'] || row['FacilityType'] || 'Hospital',
+        address: row['Dirección'] || row['direccion'] || row['address'] || '',
+        city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
+        phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
+        potential: 'Medio',
+        status: 'Activo'
+      })).filter(item => item.name);
+      
+      if (itemsToInsert.length > 0) {
+        const { error } = await supabase.from('health_centers').insert(itemsToInsert);
+        if (error) throw error;
+        toast({ title: "Importación Exitosa", description: `Se importaron ${itemsToInsert.length} centros de salud.` });
+        loadHealthCenters();
+      }
+    } catch (error: any) { 
+      console.error('Error:', error); 
+      toast({ title: "Error", description: `Hubo un error importando los datos: ${error.message || 'Error desconocido'}`, variant: "destructive" });
+    }
+  };
+
+  const handleEmptyAll = async () => {
+    try {
+      setSyncing(true);
+      const { error } = await supabase
+        .from('health_centers')
+        .delete()
+        .eq('organization_id', organizationId);
+      if (error) throw error;
+      toast({ title: "Éxito", description: "Se han eliminado todos los centros de salud." });
+      loadHealthCenters();
+    } catch (error: any) {
+      toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const handleSync = async () => {
+    try {
+      setSyncing(true);
+      await loadHealthCenters();
+      toast({ title: "Sincronización Completada", description: "Datos de centros de salud actualizados." });
+    } catch (error: any) {
+      toast({ title: "Error de Sincronización", description: error.message, variant: "destructive" });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const getPotentialBadge = (potential: string | null) => {
     const styles: Record<string, string> = { 'Alto': "bg-indigo-500/10 text-indigo-400", 'Medio': "bg-amber-500/10 text-amber-400", 'Bajo': "bg-rose-500/10 text-rose-400" };
     return <Badge className={`${styles[potential || 'Medio']} border-none font-black text-[9px] tracking-widest uppercase`}>{potential || 'MEDIO'}</Badge>;
@@ -135,6 +191,23 @@ export default function HealthCenters() {
           <div className="flex items-center gap-4">
             <Button variant="outline" onClick={() => exportToCSV(filteredCenters, 'centros_salud')} className="h-14 px-8 rounded-2xl border-border/40 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
               <Download className="h-5 w-5 mr-3 text-primary" /> Exportar
+            </Button>
+            <ImportDialog
+              onImport={handleImport}
+              title="Importar Centros de Salud"
+              description="Selecciona un archivo para importar centros de salud."
+              triggerText="Importar"
+              expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
+            />
+            <Button variant="outline" onClick={handleSync} className="h-14 px-8 rounded-2xl border-border/40 bg-card text-foreground font-black text-[10px] uppercase tracking-widest shadow-premium-sm hover:shadow-premium-md transition-all">
+              <RefreshCw className={cn("h-4 w-4 mr-3 text-primary", syncing && "animate-spin")} /> Sincronizar
+            </Button>
+            <Button variant="destructive" onClick={() => {
+              if(window.confirm('¿Estás seguro de vaciar todos los centros de salud? Esta acción no se puede deshacer.')) {
+                handleEmptyAll();
+              }
+            }} className="rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner">
+              Vaciar Todo
             </Button>
             <Button onClick={() => setDialogOpen(true)} className="h-16 px-10 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-premium-md font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3">
               <Plus className="h-6 w-6" /> Nuevo Centro

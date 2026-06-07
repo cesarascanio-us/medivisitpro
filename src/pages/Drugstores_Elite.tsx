@@ -64,15 +64,18 @@ import { exportToCSV } from "@/utils/exportUtils";
 import { DrugstoreFormDialog } from "@/components/drugstores/DrugstoreFormDialog";
 import { DrugstoreInventoryDialog } from "@/components/drugstores/DrugstoreInventoryDialog";
 import { EliteHeader, EliteKPICard, EliteTabsList, EliteTabsTrigger, EliteTable } from "@/components/layout/DesignSystem";
+import { ImportDialog } from "@/components/shared/ImportDialog";
 
 export default function DrugstoresElite() {
     const [adminFilters, setAdminFilters] = useState<any>({});
     const [searchTerm, setSearchTerm] = useState("");
-    const { contacts: drugstores, loading, refresh: loadDrugstores } = useContacts({
+    const { contacts: drugstores, loading: contactsLoading, refresh: loadDrugstores } = useContacts({
         searchTerm,
         typeFilter: 'drugstore',
         adminFilters
     });
+    const [localLoading, setLocalLoading] = useState(false);
+    const loading = contactsLoading || localLoading;
 
     const { toast } = useToast();
     const { user, isMaster } = useAuth();
@@ -125,6 +128,63 @@ export default function DrugstoresElite() {
             loadDrugstores();
         } catch (error: any) {
             toast({ title: "Fallo de Sistema", description: error.message, variant: "destructive" });
+        }
+    };
+
+    const handleImport = async (data: Record<string, any>[]) => {
+        try {
+            const itemsToInsert = data.map((row: any) => ({
+                user_id: user?.id, 
+                organization_id: organizationId,
+                contact_type: 'drugstore',
+                name: row['Nombre'] || row['nombre'] || row['Name'] || '',
+                rif: row['RIF'] || row['rif'] || '',
+                address: row['Dirección'] || row['direccion'] || row['address'] || '',
+                city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
+                phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
+                potential: 'Medio',
+                status: 'Activo'
+            })).filter(item => item.name);
+            
+            if (itemsToInsert.length > 0) {
+                const { error } = await (supabase as any).from('drugstores').insert(itemsToInsert);
+                if (error) throw error;
+                toast({ title: "Importación Exitosa", description: `Se importaron ${itemsToInsert.length} droguerías.` });
+                loadDrugstores();
+            }
+        } catch (error: any) { 
+            console.error('Error:', error); 
+            toast({ title: "Error", description: `Hubo un error importando los datos: ${error.message || 'Error desconocido'}`, variant: "destructive" });
+        }
+    };
+
+    const handleEmptyAll = async () => {
+        try {
+            setLocalLoading(true);
+            const { error } = await (supabase as any)
+                .from('drugstores')
+                .delete()
+                .eq('contact_type', 'drugstore')
+                .eq('organization_id', organizationId);
+            if (error) throw error;
+            toast({ title: "Éxito", description: "Se han eliminado todas las droguerías." });
+            loadDrugstores();
+        } catch (error: any) {
+            toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
+        } finally {
+            setLocalLoading(false);
+        }
+    };
+
+    const handleSync = async () => {
+        try {
+            setLocalLoading(true);
+            await loadDrugstores();
+            toast({ title: "Sincronización Completada", description: "Datos de droguerías actualizados." });
+        } catch (error: any) {
+            toast({ title: "Error de Sincronización", description: error.message, variant: "destructive" });
+        } finally {
+            setLocalLoading(false);
         }
     };
 
@@ -196,6 +256,23 @@ export default function DrugstoresElite() {
                     <div className="flex items-center gap-4">
                         <Button variant="outline" onClick={() => exportToCSV(drugstores, 'droguerias')} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
                             <Download className="mr-3 h-4 w-4 text-primary" /> Exportar Inteligencia
+                        </Button>
+                        <ImportDialog
+                            onImport={handleImport}
+                            title="Importar Droguerías"
+                            description="Selecciona un archivo para importar droguerías."
+                            triggerText="Importar Datos"
+                            expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
+                        />
+                        <Button variant="outline" onClick={handleSync} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            <RefreshCw className={cn("mr-3 h-4 w-4 text-primary", localLoading && "animate-spin")} /> Sincronizar
+                        </Button>
+                        <Button variant="destructive" onClick={() => {
+                            if(window.confirm('¿Estás seguro de vaciar todas las droguerías? Esta acción no se puede deshacer.')) {
+                                handleEmptyAll();
+                            }
+                        }} className="rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner">
+                            Vaciar Todo
                         </Button>
                         {canManageDrugstores && (
                             <Button

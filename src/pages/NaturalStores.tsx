@@ -25,6 +25,7 @@ import {
     Upload,
     MapPin,
     Building2,
+    RefreshCw,
     Mail
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,7 +55,9 @@ export default function NaturalStores() {
         adminFilters: adminFilters
     }), [searchTerm, adminFilters]);
 
-    const { contacts: naturalStores, loading, refresh: loadNaturalStores } = useContacts(contactOptions);
+    const { contacts: naturalStores, loading: contactsLoading, refresh: loadNaturalStores } = useContacts(contactOptions);
+    const [localLoading, setLocalLoading] = useState(false);
+    const loading = contactsLoading || localLoading;
 
     const { toast } = useToast();
     const { user } = useAuth();
@@ -123,7 +126,7 @@ export default function NaturalStores() {
 
     const handleEmptyAll = async () => {
         try {
-            setLoading(true);
+            setLocalLoading(true);
             const { error } = await supabase
                 .from('natural_stores')
                 .delete()
@@ -135,7 +138,19 @@ export default function NaturalStores() {
         } catch (error: any) {
             toast({ title: "Error", description: `Error al vaciar: ${error.message}`, variant: "destructive" });
         } finally {
-            setLoading(false);
+            setLocalLoading(false);
+        }
+    };
+
+    const handleSync = async () => {
+        try {
+            setLocalLoading(true);
+            await loadNaturalStores();
+            toast({ title: "Sincronización Completada", description: "Datos de tiendas naturistas actualizados." });
+        } catch (error: any) {
+            toast({ title: "Error de Sincronización", description: error.message, variant: "destructive" });
+        } finally {
+            setLocalLoading(false);
         }
     };
 
@@ -172,6 +187,9 @@ export default function NaturalStores() {
                             triggerText="Importar Datos"
                             expectedColumns={[{ key: "Nombre", label: "Nombre", required: true }]}
                         />
+                        <Button variant="outline" onClick={handleSync} className="bg-muted/10 border-border/40 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-inner hover:bg-muted/20 transition-all">
+                            <RefreshCw className={cn("mr-3 h-4 w-4 text-primary", localLoading && "animate-spin")} /> Sincronizar
+                        </Button>
                         <Button variant="destructive" onClick={() => {
                             if(window.confirm('¿Estás seguro de vaciar todas las tiendas naturistas? Esta acción no se puede deshacer.')) {
                                 handleEmptyAll();

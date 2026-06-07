@@ -41,6 +41,8 @@ function usePageTitle() {
     '/transfer-orders':     'Transferencias',
     '/health-centers':      'Centros Médicos',
     '/drugstores':          'Droguerías',
+    '/natural-stores':      'Tiendas Naturistas',
+    '/commerces':           'Comercios',
     '/coverage-map':        'Mapa de Cobertura',
     '/sales-pipeline':      'Pipeline de Ventas',
     '/finance-monitor':     'Monitor Financiero',
