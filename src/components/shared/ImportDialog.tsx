@@ -28,7 +28,7 @@ export function ImportDialog({ onImport, expectedColumns, title, description, tr
           <Upload className="mr-2 h-4 w-4" /> {triggerText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] bg-card border-border/40 p-6">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto bg-card border-border/40 p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black uppercase">{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

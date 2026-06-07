@@ -122,8 +122,7 @@ export default function HealthCenters() {
         address: row['Dirección'] || row['direccion'] || row['address'] || '',
         city: row['Ciudad'] || row['ciudad'] || row['city'] || '',
         phone: row['Teléfono'] || row['telefono'] || row['phone'] || '',
-        potential: 'Medio',
-        status: 'Activo'
+        potential: 'Medio'
       })).filter(item => item.name);
       
       if (itemsToInsert.length > 0) {

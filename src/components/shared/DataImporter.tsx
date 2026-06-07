@@ -202,12 +202,12 @@ export const DataImporter: React.FC<DataImporterProps> = ({
               </Button>
             </div>
 
-            <div className="border rounded-lg overflow-hidden">
-              <Table>
+            <div className="border rounded-lg overflow-x-auto max-w-full">
+              <Table className="text-xs">
                 <TableHeader>
                   <TableRow>
                     {Object.keys(previewData[0]).map((key) => (
-                      <TableHead key={key} className="text-xs">{key}</TableHead>
+                      <TableHead key={key} className="text-xs whitespace-nowrap">{key}</TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
@@ -215,7 +215,7 @@ export const DataImporter: React.FC<DataImporterProps> = ({
                   {previewData.map((row, i) => (
                     <TableRow key={i}>
                       {Object.values(row).map((value, j) => (
-                        <TableCell key={j} className="text-xs">
+                        <TableCell key={j} className="text-xs max-w-[200px] truncate">
                           {String(value)}
                         </TableCell>
                       ))}
