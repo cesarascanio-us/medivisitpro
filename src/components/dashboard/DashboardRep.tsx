@@ -220,6 +220,42 @@ export default function DashboardRep({ mode = 'comercial' }: DashboardRepProps) 
         />
       </div>
 
+      {/* Accesos Rápidos */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-5 px-2">
+          <div className="icon-box-primary">
+            <Zap className="h-7 w-7" />
+          </div>
+          <h3 className="text-elite-title text-foreground font-display">Accesos Rápidos</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <EliteCard onClick={() => navigate('/products')} className="p-6">
+            <div className="flex items-center gap-6">
+              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                <Package className="h-7 w-7" />
+              </div>
+              <div>
+                <p className="text-lg font-black uppercase tracking-tight font-display">Inventario</p>
+                <p className="text-elite-xs text-muted-foreground">Banco de muestras y material</p>
+              </div>
+              <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
+            </div>
+          </EliteCard>
+          <EliteCard onClick={() => navigate('/sales-pipeline')} className="p-6">
+            <div className="flex items-center gap-6">
+              <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500">
+                <Clock className="h-7 w-7" />
+              </div>
+              <div>
+                <p className="text-lg font-black uppercase tracking-tight font-display">Pipeline</p>
+                <p className="text-elite-xs text-muted-foreground">Seguimiento de cierres</p>
+              </div>
+              <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
+            </div>
+          </EliteCard>
+        </div>
+      </section>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
           <section>
@@ -304,41 +340,6 @@ export default function DashboardRep({ mode = 'comercial' }: DashboardRepProps) 
         </div>
 
         <div className="space-y-10">
-          <section>
-            <div className="flex items-center gap-5 mb-8 px-2">
-              <div className="icon-box-primary">
-                <Zap className="h-7 w-7" />
-              </div>
-              <h3 className="text-elite-title text-foreground font-display">Accesos Rápidos</h3>
-            </div>
-            <div className="grid grid-cols-1 gap-6">
-              <EliteCard onClick={() => navigate('/products')} className="p-6">
-                <div className="flex items-center gap-6">
-                  <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
-                    <Package className="h-7 w-7" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-black uppercase tracking-tight font-display">Inventario</p>
-                    <p className="text-elite-xs text-muted-foreground">Banco de muestras y material</p>
-                  </div>
-                  <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
-                </div>
-              </EliteCard>
-              <EliteCard onClick={() => navigate('/sales-pipeline')} className="p-6">
-                <div className="flex items-center gap-6">
-                  <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500">
-                    <Clock className="h-7 w-7" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-black uppercase tracking-tight font-display">Pipeline</p>
-                    <p className="text-elite-xs text-muted-foreground">Seguimiento de cierres</p>
-                  </div>
-                  <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground/40" />
-                </div>
-              </EliteCard>
-            </div>
-          </section>
-
           <EliteCard className="p-8 bg-primary/5 border-primary/20">
              <div className="flex items-center gap-4 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
