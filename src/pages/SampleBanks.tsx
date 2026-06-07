@@ -181,6 +181,19 @@ export default function SampleBanks() {
     const loadBanks = async () => {
         if (!user || !organizationId) return;
         try {
+            const { data: orgProfiles } = await supabase
+                .from('profiles')
+                .select('user_id')
+                .eq('organization_id', organizationId);
+            const memberUserIds = orgProfiles?.map(p => p.user_id) || [];
+
+            // Determine if we need an inner join on health_centers due to active geographic filtering
+            const hasGeoFilter = (adminFilters.zoneId && adminFilters.zoneId !== 'all') ||
+                                 (adminFilters.state && adminFilters.state !== 'all') ||
+                                 (adminFilters.region && adminFilters.region !== 'all');
+
+            const healthCentersJoin = hasGeoFilter ? 'health_centers!inner' : 'health_centers';
+
             let query = supabase
                 .from('sample_banks')
                 .select(`
@@ -191,9 +204,9 @@ export default function SampleBanks() {
                     responsible_user_id,
                     last_audit_date,
                     created_at,
-                    health_centers!inner ( id, name, state, zone_id, organization_id )
+                    ${healthCentersJoin} ( id, name, state, zone_id, organization_id )
                 `)
-                .eq('health_centers.organization_id', organizationId);
+                .in('responsible_user_id', memberUserIds);
 
             if (!canViewAllData) {
                 if (isSupervisor && zoneId) {
@@ -638,7 +651,7 @@ export default function SampleBanks() {
             const payload = {
                 name: bankFormData.name,
                 service_name: bankFormData.service_name || null,
-                health_center_id: bankFormData.health_center_id || null,
+                health_center_id: (bankFormData.health_center_id && bankFormData.health_center_id !== "none") ? bankFormData.health_center_id : null,
                 responsible_user_id: bankFormData.responsible_user_id || user?.id || null
             };
 
@@ -1496,7 +1509,8 @@ export default function SampleBanks() {
                                 <SelectTrigger className="h-12 bg-muted/30 border-border rounded-xl">
                                     <SelectValue placeholder="Seleccione Hospital..." />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-xl">
+                                 <SelectContent className="rounded-xl">
+                                    <SelectItem value="none" className="font-bold text-xs text-muted-foreground">Ninguno (No Vincular)</SelectItem>
                                     {healthCenters.map(hc => (
                                         <SelectItem key={hc.id} value={hc.id} className="font-bold text-xs">{hc.name}</SelectItem>
                                     ))}
