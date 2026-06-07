@@ -131,6 +131,12 @@ export default function RoutePlanner() {
         if (hasActiveCycle) loadContacts();
     }, [selectedRepId]);
 
+    const [visibleCount, setVisibleCount] = useState(5);
+
+    useEffect(() => {
+        setVisibleCount(5);
+    }, [search, selectedType, selectedDay]);
+
     // ─── Helpers ────────────────────────────────────────────────────────────────
 
     /** Count contacts assigned to a specific day across all types */
@@ -607,85 +613,100 @@ export default function RoutePlanner() {
                                     No hay {CONTACT_TYPES.find(t => t.id === selectedType)?.label}s disponibles
                                 </p>
                             ) : (
-                                getFilteredContacts().map(contact => (
-                                    <div
-                                        key={contact.id}
-                                        className={cn(
-                                            "flex items-center justify-between p-3 rounded-xl border transition-all",
-                                            hasDay(contact)
-                                                ? "border-primary/30 bg-primary/5"
-                                                : "border-border/40 hover:bg-muted/30"
-                                        )}
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className={cn(
-                                                "w-2 h-2 rounded-full flex-shrink-0",
-                                                hasDay(contact) ? "bg-primary" : "bg-muted-foreground/30"
-                                            )} />
-                                            <div className="min-w-0">
-                                                <h4 className="font-semibold text-sm leading-tight truncate">{contact.name}</h4>
-                                                {(contact.specialty || contact.address) && (
-                                                    <p className="text-[10px] text-muted-foreground truncate">
-                                                        {contact.specialty || contact.address}
-                                                    </p>
-                                                )}
-                                                {contact.routing_days && (
-                                                    <p className="text-[9px] mt-0.5 text-primary font-black uppercase tracking-widest">
-                                                        📅 {contact.routing_days}
-                                                    </p>
-                                                )}
+                                <>
+                                    {getFilteredContacts().slice(0, visibleCount).map(contact => (
+                                        <div
+                                            key={contact.id}
+                                            className={cn(
+                                                "flex items-center justify-between p-3 rounded-xl border transition-all",
+                                                hasDay(contact)
+                                                    ? "border-primary/30 bg-primary/5"
+                                                    : "border-border/40 hover:bg-muted/30"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className={cn(
+                                                    "w-2 h-2 rounded-full flex-shrink-0",
+                                                    hasDay(contact) ? "bg-primary" : "bg-muted-foreground/30"
+                                                )} />
+                                                <div className="min-w-0">
+                                                    <h4 className="font-semibold text-sm leading-tight truncate">{contact.name}</h4>
+                                                    {(contact.specialty || contact.address) && (
+                                                        <p className="text-[10px] text-muted-foreground truncate">
+                                                            {contact.specialty || contact.address}
+                                                        </p>
+                                                    )}
+                                                    {contact.routing_days && (
+                                                        <p className="text-[9px] mt-0.5 text-primary font-black uppercase tracking-widest">
+                                                            📅 {contact.routing_days}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
+                                            {!isViewingOtherRep ? (
+                                                hasDay(contact) ? (
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="rounded-lg text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all flex-shrink-0"
+                                                            >
+                                                                <XCircle className="h-3 w-3 mr-1" /> Quitar
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>¿Quitar del {selectedDay}?</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    Se quitará <strong>{contact.name}</strong> del día {selectedDay}. Puedes volver a asignarlo en cualquier momento.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => assignToDay(contact)}>
+                                                                    Quitar
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                ) : (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-shrink-0"
+                                                        onClick={() => assignToDay(contact)}
+                                                    >
+                                                        <CheckCircle className="h-3 w-3 mr-1" /> Asignar
+                                                    </Button>
+                                                )
+                                            ) : (
+                                                hasDay(contact) ? (
+                                                    <Badge className="text-[9px] bg-primary/10 text-primary border-primary/20 font-black uppercase">
+                                                        ✓ Asignado
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge variant="outline" className="text-[9px] text-muted-foreground font-black uppercase">
+                                                        Sin asignar
+                                                    </Badge>
+                                                )
+                                            )}
                                         </div>
-                                        {!isViewingOtherRep ? (
-                                            hasDay(contact) ? (
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="rounded-lg text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all flex-shrink-0"
-                                                        >
-                                                            <XCircle className="h-3 w-3 mr-1" /> Quitar
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>¿Quitar del {selectedDay}?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                Se quitará <strong>{contact.name}</strong> del día {selectedDay}. Puedes volver a asignarlo en cualquier momento.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => assignToDay(contact)}>
-                                                                Quitar
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            ) : (
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-shrink-0"
-                                                    onClick={() => assignToDay(contact)}
-                                                >
-                                                    <CheckCircle className="h-3 w-3 mr-1" /> Asignar
-                                                </Button>
-                                            )
-                                        ) : (
-                                            hasDay(contact) ? (
-                                                <Badge className="text-[9px] bg-primary/10 text-primary border-primary/20 font-black uppercase">
-                                                    ✓ Asignado
-                                                </Badge>
-                                            ) : (
-                                                <Badge variant="outline" className="text-[9px] text-muted-foreground font-black uppercase">
-                                                    Sin asignar
-                                                </Badge>
-                                            )
-                                        )}
-                                    </div>
-                                ))
+                                    ))}
+
+                                    {getFilteredContacts().length > visibleCount && (
+                                        <div className="flex justify-center pt-4">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all px-6 py-2 shadow-sm"
+                                                onClick={() => setVisibleCount(prev => prev + 10)}
+                                            >
+                                                Ver más ({getFilteredContacts().length - visibleCount} restantes)
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </CardContent>
                     </Card>
