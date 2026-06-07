@@ -271,7 +271,7 @@ export async function processPendingSync(): Promise<{ success: number; failed: n
         }
     } finally {
         syncInProgress = false;
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
             localStorage.setItem('lastSyncTime', new Date().toISOString());
         }
     }
