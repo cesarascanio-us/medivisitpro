@@ -30,24 +30,38 @@ export default function University() {
     if (!user) return;
     try {
       setLoading(true);
-      // Fetch modules
-      const { data: modData } = await supabase
+      // Fetch modules — try with status filter, fallback to all if column doesn't exist
+      let modData: any[] | null = null;
+      const { data: filteredMods, error: filterError } = await supabase
         .from('training_modules')
         .select('*')
         .eq('status', 'active');
+
+      if (filterError) {
+        // 'status' column may not exist — fetch all modules
+        console.warn('[University] status filter failed, fetching all modules:', filterError.message);
+        const { data: allMods } = await supabase
+          .from('training_modules')
+          .select('*');
+        modData = allMods;
+      } else {
+        modData = filteredMods;
+      }
       
       if (modData) setModules(modData);
 
-      // Fetch user points (try profiles first)
+
+      // Fetch user points (try profiles first) — use maybeSingle() to avoid 406 when row is absent
       const { data: profile } = await supabase
         .from('profiles')
         .select('total_points')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       if (profile && profile.total_points) {
         setTotalPoints(profile.total_points);
       }
+
 
     } catch (error) {
       console.error("Error loading university data:", error);

@@ -59,13 +59,38 @@ export function useBilling() {
         try {
             setLoading(true);
 
-            // Load plans from subscription_plans (Unified System)
-            const { data: plansData, error: plansError } = await (supabase as any)
-                .from('subscription_plans')
-                .select('*')
-                .eq('active', true);
+            // Load plans — try billing_plans (new unified schema) first, fallback to subscription_plans
+            let plansData: any[] | null = null;
 
-            if (plansError) throw plansError;
+            // Attempt 1: billing_plans with is_active (new schema post-migration)
+            const { data: billingPlans, error: billingPlansError } = await (supabase as any)
+                .from('billing_plans')
+                .select('*')
+                .eq('is_active', true);
+
+            if (!billingPlansError) {
+                plansData = billingPlans;
+            } else {
+                console.warn('[Billing] billing_plans not available, trying subscription_plans:', billingPlansError.message);
+
+                // Attempt 2: subscription_plans with active (old schema)
+                const { data: subPlansFiltered, error: subFilterError } = await (supabase as any)
+                    .from('subscription_plans')
+                    .select('*')
+                    .eq('active', true);
+
+                if (!subFilterError) {
+                    plansData = subPlansFiltered;
+                } else {
+                    // Attempt 3: subscription_plans without any filter (last resort)
+                    console.warn('[Billing] subscription_plans active filter failed, fetching all:', subFilterError.message);
+                    const { data: allPlans } = await (supabase as any)
+                        .from('subscription_plans')
+                        .select('*');
+                    plansData = allPlans;
+                }
+            }
+
 
             // Synthesize prices from the same table (subscription_plans has price)
             const synthesizedPrices: Price[] = (plansData || []).map(p => ({

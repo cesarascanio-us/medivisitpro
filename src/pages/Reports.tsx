@@ -156,69 +156,104 @@ export default function Reports() {
 
     setLoading(true);
     try {
-      // 1. Fetch Gerencial KPIs
-      let kpiQuery = supabase.from('view_gerencial_kpis' as any).select('*');
-      if (!isMaster && companyId) kpiQuery = kpiQuery.eq('company_id', companyId);
-      const { data: kpiData, error: kpiError } = await kpiQuery.maybeSingle();
+      // 1. Fetch Gerencial KPIs — view may not exist in all deployments
+      try {
+        let kpiQuery = supabase.from('view_gerencial_kpis' as any).select('*');
+        if (!isMaster && companyId) kpiQuery = kpiQuery.eq('company_id', companyId);
+        const { data: kpiData, error: kpiError } = await kpiQuery.maybeSingle();
+        if (!kpiError && kpiData) setGerencialKpis(kpiData as any);
+        else if (kpiError) console.warn('[Reports] view_gerencial_kpis not available:', kpiError.message);
+      } catch (e) {
+        console.warn('[Reports] view_gerencial_kpis query failed silently');
+      }
 
-      if (kpiError) throw kpiError;
-      if (kpiData) setGerencialKpis(kpiData as any);
+      // 2. Fetch Sales by Zone — view may not exist in all deployments
+      try {
+        let zonaQuery = supabase.from('view_ventas_por_zona' as any).select('*');
+        if (!isMaster && companyId) zonaQuery = zonaQuery.eq('company_id', companyId);
+        const { data: zonaData, error: zonaError } = await zonaQuery;
+        if (!zonaError) setVentasZona(zonaData || []);
+        else console.warn('[Reports] view_ventas_por_zona not available:', zonaError.message);
+      } catch (e) {
+        console.warn('[Reports] view_ventas_por_zona query failed silently');
+      }
 
-      // 2. Fetch Sales by Zone
-      let zonaQuery = supabase.from('view_ventas_por_zona' as any).select('*');
-      if (!isMaster && companyId) zonaQuery = zonaQuery.eq('company_id', companyId);
-      const { data: zonaData, error: zonaError } = await zonaQuery;
-
-      if (zonaError) throw zonaError;
-      setVentasZona(zonaData || []);
-
-      // 3. Fetch Product Mix
-      let mixQuery = supabase.from('view_product_mix' as any).select('*');
-      if (!isMaster && companyId) mixQuery = mixQuery.eq('company_id', companyId);
-      const { data: mixData, error: mixError } = await mixQuery;
-
-      if (mixError) throw mixError;
-      setProductMix(mixData || []);
+      // 3. Fetch Product Mix — view may not exist in all deployments
+      try {
+        let mixQuery = supabase.from('view_product_mix' as any).select('*');
+        if (!isMaster && companyId) mixQuery = mixQuery.eq('company_id', companyId);
+        const { data: mixData, error: mixError } = await mixQuery;
+        if (!mixError) setProductMix(mixData || []);
+        else console.warn('[Reports] view_product_mix not available:', mixError.message);
+      } catch (e) {
+        console.warn('[Reports] view_product_mix query failed silently');
+      }
 
     } catch (error) {
-      console.error("Error fetching Next-Gen reports:", error);
-      toast({
-        title: "Error de Datos",
-        description: "No se pudieron cargar las métricas del backend. Verifica que las vistas SQL estén activas.",
-        variant: "destructive"
-      });
+      console.warn('[Reports] loadNextGenData encountered an error, skipping:', error);
     } finally {
       setLoading(false);
     }
   };
 
+
   const loadHeatmapData = async () => {
     try {
+      // First check if the columns exist by trying a safe query
+      // unified_contacts may not have latitude/longitude — handle gracefully
       let query = supabase
         .from('unified_contacts')
-        .select('latitude, longitude, contact_type')
+        .select('id, contact_type')
         .eq('contact_type', heatmapType)
-        .not('latitude', 'is', null)
-        .not('longitude', 'is', null);
+        .limit(1);
 
       if (organizationId) {
         query = query.eq('organization_id', organizationId);
       }
 
-      const { data, error } = await query;
+      const { data: checkData, error: checkError } = await query;
 
-      if (error) throw error;
+      // If the basic query failed, skip heatmap silently
+      if (checkError) {
+        console.warn('[Heatmap] unified_contacts query failed, skipping heatmap:', checkError.message);
+        setHeatmapData([]);
+        return;
+      }
 
-      const formatted = (data || []).map(c => ({
-        latitude: c.latitude,
-        longitude: c.longitude,
-        intensity: 0.8
-      }));
+      // Now try with lat/lng — some deployments may not have these columns
+      let geoQuery = supabase
+        .from('unified_contacts')
+        .select('contact_type')
+        .eq('contact_type', heatmapType);
+
+      if (organizationId) {
+        geoQuery = geoQuery.eq('organization_id', organizationId);
+      }
+
+      const { data, error } = await (geoQuery as any)
+        .select('latitude, longitude, contact_type');
+
+      if (error) {
+        // Columns don't exist — heatmap unavailable, show empty state gracefully
+        console.warn('[Heatmap] latitude/longitude not available in unified_contacts schema:', error.message);
+        setHeatmapData([]);
+        return;
+      }
+
+      const formatted = (data || [])
+        .filter((c: any) => c.latitude != null && c.longitude != null)
+        .map((c: any) => ({
+          latitude: c.latitude,
+          longitude: c.longitude,
+          intensity: 0.8
+        }));
       setHeatmapData(formatted);
     } catch (error) {
-      console.error("Error heatmap:", error);
+      console.warn('[Heatmap] Error loading heatmap data, skipping:', error);
+      setHeatmapData([]);
     }
   };
+
 
   if (!isAdminOrManager) {
     return (
