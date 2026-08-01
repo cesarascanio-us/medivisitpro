@@ -313,15 +313,15 @@ const AppContent = () => (
         
       } />
       <Route path="academy-admin" element={
-        <ModuleGuard allowedRoles={['master', 'admin', 'manager', 'gerente']}>
+        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'gerente']}>
           <AcademyAdmin />
-        </ModuleGuard>
+        </ProtectedRoute>
       } />
       {/* Alias: /admin/academy → AcademyAdmin (previously only accessible via /academy-admin) */}
       <Route path="admin/academy" element={
-        <ModuleGuard allowedRoles={['master', 'admin', 'manager', 'gerente']}>
+        <ProtectedRoute allowedRoles={['master', 'admin', 'manager', 'gerente']}>
           <AcademyAdmin />
-        </ModuleGuard>
+        </ProtectedRoute>
       } />
 
     <Route path="faq" element={
