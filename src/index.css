@@ -1,0 +1,466 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ DESIGN SYSTEM GLOBAL — SINGLE SOURCE OF TRUTH
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ ======================================================================== */
+
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/500.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/600.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/700.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYER BASE — VARIABLES SEMÁNTICAS (ELITE GLASSMORPHISM)
+   ═══════════════════════════════════════════════════════════════════════ */
+@layer base {
+
+  :root {
+    /* Fondos (Light Mode - Surgical White) */
+    --background:        210 40% 98%;     /* #F8FAFC */
+    --foreground:        222 47% 11%;     /* #0F172A */
+    
+    --card:              0 0% 100%;       /* #FFFFFF */
+    --card-foreground:   222 47% 11%;
+    --popover:           0 0% 100%;
+    --popover-foreground:222 47% 11%;
+
+    /* Acento principal (Cyan profesional) */
+    --primary:           200 98% 39%;     /* #0284C7 */
+    --primary-foreground:0 0% 100%;
+
+    /* Acento secundario */
+    --secondary:         215 16% 47%;     /* #64748B */
+    --secondary-foreground:0 0% 100%;
+
+    /* Muted */
+    --muted:             210 40% 96.1%;   /* #F1F5F9 */
+    --muted-foreground:  215 16% 47%;     /* #64748B */
+
+    /* Acento UI */
+    --accent:            210 40% 96.1%;
+    --accent-foreground: 222 47% 11%;
+
+    /* Semánticos */
+    --destructive:       0 84% 60%;
+    --destructive-foreground:0 0% 100%;
+    --warning:           38 92% 50%;
+    --warning-foreground:0 0% 100%;
+    --success:           142 71% 45%;
+    --success-foreground:0 0% 100%;
+
+    /* Bordes y UI Chrome */
+    --border:            214 32% 91%;     /* #E2E8F0 */
+    --input:             214 32% 91%;
+    --ring:              200 98% 39%;
+
+    /* Radios Elite */
+    --radius: 0.75rem;
+
+    /* Shadows Premium (Light) */
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    --shadow-card-hover: 0 8px 30px -4px rgba(0, 0, 0, 0.1);
+    --shadow-premium-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-premium-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+    --shadow-premium-lg: 0 10px 24px -4px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+    --shadow-premium-xl: 0 20px 40px -8px rgba(0, 0, 0, 0.10);
+
+    /* Glassmorphism (Light) */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-blur: 16px;
+
+    /* Typografía Elite */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Geist Sans', system-ui, sans-serif;
+
+    /* Chart Colors (Light) */
+    --chart-1: 200 98% 39%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 262 60% 55%;
+    --chart-5: 199 70% 48%;
+  }
+
+  .dark {
+    /* Fondos (Dark Mode - Space Navy) */
+    --background:        222 84% 5%;      /* #020617 */
+    --foreground:        210 40% 98%;     /* #F8FAFC */
+    
+    --card:              222 47% 11%;     /* #0F172A */
+    --card-foreground:   210 40% 98%;
+    --popover:           222 47% 11%;
+    --popover-foreground:210 40% 98%;
+
+    /* Acento principal (Cyan neón) */
+    --primary:           199 89% 48%;     /* #38BDF8 */
+    --primary-foreground:222 84% 5%;      /* #020617 */
+
+    /* Acento secundario */
+    --secondary:         217 24% 27%;     /* #334155 */
+    --secondary-foreground:210 40% 98%;
+
+    /* Muted */
+    --muted:             217 24% 27%;
+    --muted-foreground:  215 20.2% 65.1%; /* #94A3B8 */
+
+    /* Acento UI */
+    --accent:            217 24% 27%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Semánticos */
+    --destructive:       0 62.8% 30.6%;
+    --destructive-foreground:210 40% 98%;
+    --warning:           38 92% 50%;
+    --warning-foreground:222 84% 5%;
+    --success:           142 71% 45%;
+    --success-foreground:222 84% 5%;
+
+    /* Bordes y UI Chrome */
+    --border:            217 24% 27%;
+    --input:             217 24% 27%;
+    --ring:              199 89% 48%;
+
+    /* Shadows Premium (Dark - Glowing) */
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.2);
+    --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    --shadow-card-hover: 0 8px 30px -4px rgba(56, 189, 248, 0.15); /* Primary glow */
+    --shadow-premium-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-premium-md: 0 4px 12px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+    --shadow-premium-lg: 0 10px 24px -4px rgba(0, 0, 0, 0.4), 0 4px 10px -2px rgba(0, 0, 0, 0.2);
+    --shadow-premium-xl: 0 20px 40px -8px rgba(0, 0, 0, 0.5);
+
+    /* Glassmorphism (Dark) */
+    --glass-bg: rgba(15, 23, 42, 0.7);    /* #0F172A with opacity */
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-blur: 16px;
+
+    /* Chart Colors (Dark) */
+    --chart-1: 199 89% 48%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 262 60% 55%;
+    --chart-5: 199 70% 48%;
+  }
+
+  /* ────────────────────────────────────────────────────────────────────
+     GLOBAL RESETS
+     ──────────────────────────────────────────────────────────────────── */
+  html {
+    font-size: 13px;
+    @apply antialiased scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply min-h-screen overflow-x-hidden;
+  }
+
+  /* Typography System — Inter */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
+    font-family: var(--font-display);
+    @apply font-semibold tracking-tight text-foreground;
+  }
+
+  h1 {
+    @apply text-[clamp(1.15rem,3vw,1.5rem)] leading-tight font-semibold;
+  }
+
+  h2 {
+    @apply text-[clamp(1rem,2.5vw,1.25rem)] leading-snug font-semibold;
+  }
+
+  h3 {
+    @apply text-[clamp(0.9rem,2vw,1.05rem)] leading-snug font-medium;
+  }
+
+  h4 {
+    @apply text-[clamp(0.8rem,1.5vw,0.9rem)] font-medium;
+  }
+
+  /* Container fluid responsivo */
+  .container-responsive {
+    @apply w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+
+  .grid-responsive {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6;
+  }
+
+  .grid-kpi {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYER COMPONENTS — Clases Reutilizables (Light-First Corporate)
+   ═══════════════════════════════════════════════════════════════════════ */
+@layer components {
+
+  /* ─── Rounding Scale ─── */
+  .rounded-elite-sm {
+    @apply rounded-md;
+  }
+
+  .rounded-elite-md {
+    @apply rounded-lg;
+  }
+
+  .rounded-elite-lg {
+    @apply rounded-xl;
+  }
+
+  .rounded-elite-xl {
+    @apply rounded-2xl;
+  }
+
+  /* ─── Typography ─── */
+  .text-elite-xs {
+    @apply text-[0.625rem] font-semibold uppercase tracking-[0.08em];
+  }
+
+  .text-elite-sm {
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.06em];
+  }
+
+  .text-elite-md {
+    @apply text-xs font-medium uppercase tracking-[0.04em];
+  }
+
+  .text-elite-title {
+    @apply text-sm font-semibold;
+  }
+
+  /* ─── Premium Cards ─── */
+  .card-elite {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+
+  .card-elite:hover {
+    box-shadow: var(--shadow-card-hover);
+    border-color: hsl(var(--primary) / 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* ─── Sidebar Links ─── */
+  .sidebar-link {
+    @apply flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200;
+    @apply text-muted-foreground hover:bg-muted/50 hover:text-foreground;
+  }
+
+  .sidebar-link-active {
+    @apply bg-primary/10 text-primary font-semibold;
+    @apply hover:bg-primary/15;
+  }
+
+  /* ─── Glass ─── */
+  .glass-elite {
+    @apply backdrop-blur-[16px] shadow-premium-md;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* ─── Corporate Buttons ─── */
+  .btn-elite {
+    @apply h-10 px-5 rounded-lg font-display font-semibold text-sm tracking-wide flex items-center justify-center gap-2 select-none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-elite-primary {
+    @apply btn-elite text-primary-foreground shadow-premium-sm bg-primary;
+  }
+  
+  .btn-elite-primary:hover {
+    @apply opacity-90;
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.25), var(--shadow-premium-sm);
+    transform: translateY(-1px);
+  }
+
+  .btn-elite-primary:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  .btn-elite-secondary {
+    @apply btn-elite bg-card text-foreground shadow-sm;
+    border: 1px solid hsl(var(--border));
+  }
+
+  .btn-elite-secondary:hover {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-elite-secondary:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  .btn-elite-ghost {
+    @apply btn-elite bg-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground;
+  }
+
+  /* ─── Inputs ─── */
+  .input-elite {
+    @apply h-9 bg-card px-3 text-sm text-foreground;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .input-elite::placeholder {
+    color: hsl(var(--muted-foreground) / 0.45);
+  }
+
+  .input-elite:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+
+  /* ─── Status Badges ─── */
+  .badge-elite {
+    @apply font-semibold text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded border flex items-center gap-1.5;
+  }
+
+  .badge-elite-success {
+    @apply badge-elite bg-emerald-50/80 text-emerald-700 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/30;
+  }
+
+  .badge-elite-warning {
+    @apply badge-elite bg-amber-50/80 text-amber-700 border-amber-200/60 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/30;
+  }
+
+  .badge-elite-error {
+    @apply badge-elite bg-rose-50/80 text-rose-700 border-rose-200/60 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800/30;
+  }
+
+  .badge-elite-info {
+    @apply badge-elite bg-sky-50/80 text-sky-700 border-sky-200/60 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-800/30;
+  }
+
+  /* ─── Icon Containers ─── */
+  .icon-box-elite {
+    @apply w-9 h-9 rounded-lg flex items-center justify-center select-none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .icon-box-primary {
+    @apply icon-box-elite;
+    background-color: hsl(var(--primary) / 0.06);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.12);
+  }
+
+  .icon-box-primary:hover {
+    background-color: hsl(var(--primary) / 0.12);
+    border-color: hsl(var(--primary) / 0.25);
+    transform: scale(1.05);
+  }
+
+  .icon-box-success {
+    @apply icon-box-elite bg-emerald-50 text-emerald-600 border-emerald-100;
+  }
+  
+  .icon-box-success:hover {
+    background-color: hsl(158 68% 36% / 0.12);
+    border-color: hsl(158 68% 36% / 0.25);
+    transform: scale(1.05);
+  }
+
+  /* ─── Gradient (eliminado — fondo plano light) ─── */
+  .mesh-gradient-primary {
+    background-color: hsl(var(--primary));
+  }
+
+  /* ─── Glass card ─── */
+  .glass-card {
+    @apply backdrop-blur-md border shadow-premium-soft;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
+
+  /* ─── Premium Icon ─── */
+  .premium-icon {
+    @apply transition-all duration-200;
+  }
+
+  .premium-icon-active {
+    @apply text-primary;
+  }
+
+  .premium-icon-hover:hover {
+    @apply scale-110 transition-transform duration-200;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SCROLLBAR — Sutil y limpio
+   ═══════════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY CLASSES
+   ═══════════════════════════════════════════════════════════════════════ */
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+@layer utilities {
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}

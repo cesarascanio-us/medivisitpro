@@ -1,0 +1,569 @@
+/* ========================================================================
+ MASTER FRAMEWORK - EMPRESA CA
+ Copyright (c) 2026 César Ascanio. Todos los derechos reservados.
+
+ Nivel de Acceso: CONFIDENCIAL / PROPIEDAD EXCLUSIVA
+ Queda estrictamente prohibida la copia, modificación, distribución,
+ ingeniería inversa o uso no autorizado de este código fuente.
+ ======================================================================== */
+
+import { createContext, useContext, useEffect, useState, ReactNode, useMemo, useCallback } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+
+
+// Demo user - fixed context for trials
+const DEMO_EMAIL = 'demo.medivisitpro@gmail.com';
+const DEMO_ORG_ID = 'd3300000-0000-0000-0000-000000000001';
+
+// Role definitions (Dynamic, but providing autocomplete for core roles)
+// 12 Operational Roles + legacy aliases
+export type UserRole =
+    | 'master'
+    | 'admin'
+    | 'gerente'           // Master de su organización
+    | 'jefe'              // Jefe Regional
+    | 'coordinador'       // Planificación táctica
+    | 'supervisor'        // Supervisión en terreno
+    | 'telemarketing'     // Ventas internas
+    | 'rep_comercial'     // Representante Comercial (farmacias)
+    | 'visitador_medico'  // Visitador Médico (visitas científicas)
+    | 'rep_integral'      // Representante Integral (comercial + médico)
+    | 'farmacia'          // Portal Farmacia B2B externo
+    | 'medico'            // Portal Médico externo
+    | 'compras'           // Compras Institucional
+    // Legacy aliases (backward compatibility)
+    | 'manager'           // alias → gerente
+    | 'chief'             // alias → jefe
+    | 'coordinator'       // alias → coordinador
+    | 'commercial_rep'    // alias → rep_comercial
+    | 'medical_visitor'   // alias → visitador_medico
+    | 'integral_rep'      // alias → rep_integral
+    | 'pharmacy'          // alias → farmacia
+    | 'doctor'            // alias → medico
+    | 'buyer'             // alias → compras
+    | 'representative'    // legacy field rep
+    | 'pharmacist'        // legacy
+    | (string & {});
+
+export interface UserProfile {
+    id: string;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    role: UserRole;
+    organization_id: string | null;
+    company_id: string | null;
+    zone_id: string | null;
+    state: string | null;
+    region: string | null;
+    is_master: boolean;
+    org_role_id?: string | null;
+}
+
+interface AuthContextType {
+    user: User | null;
+    session: Session | null;
+    loading: boolean;
+    profile: UserProfile | null;
+    role: UserRole;
+    permissions: string[];
+    hasPermission: (code: string) => boolean;
+    signOut: () => Promise<void>;
+    // Derived state
+    isAuthenticated: boolean;
+    isDemo: boolean;
+    // Role checks — 12 operational roles
+    isMaster: boolean;
+    isOrgAdmin: boolean;
+    isAdmin: boolean;
+    isManager: boolean;      // gerente | manager (legacy)
+    isChief: boolean;        // jefe | chief (legacy)
+    isCoordinator: boolean;  // coordinador | coordinator (legacy)
+    isSupervisor: boolean;
+    isTelemarketing: boolean;
+    isRepresentative: boolean;
+    // New specialized role checks
+    isGerente: boolean;      // Exact gerente check
+    isJefe: boolean;         // Exact jefe check
+    isFieldRep: boolean;     // rep_comercial | visitador_medico | rep_integral
+    isExternalPortal: boolean; // farmacia | medico | compras
+    // Specialized checks (legacy + new)
+    isDoctor: boolean;
+    isPharmacist: boolean;
+    isServiceChief: boolean;
+    isSpecializedRole: boolean;
+    // Permissions
+    canManageUsers: boolean;
+    canViewUsers: boolean;
+    canViewAllData: boolean;
+    canManageCompany: boolean;
+    canApproveExpenses: boolean;
+    canApproveTransfers: boolean;
+    canAssignObjectives: boolean;
+    canManageZones: boolean;
+    canViewAnalytics: boolean;
+    canManageProducts: boolean;
+    canViewProducts: boolean;
+    canManageSamples: boolean;
+    canViewSupervision: boolean;
+    canManageBanks: boolean;
+    canAssignStock: boolean;
+    canViewMedicalInfo: boolean;
+    canManageService: boolean;
+    canViewVisitHistory: boolean;
+    // Audit Mode
+    isAuditMode: boolean;
+    isSystemAdmin: boolean; // True if original user is a Master
+    enterAuditMode: (orgId: string) => void;
+    exitAuditMode: () => void;
+    // SaaS Staff (Internal)
+    isSaaSAdmin: boolean;
+    isSaaSSupport: boolean;
+    isSaaSDev: boolean;
+    isSaaSStaff: boolean;
+    // Zone/Location
+    organizationName: string | null;
+    organizationId: string | null;
+    companyId: string | null;
+    zoneId: string | null;
+    userState: string | null;
+    userRegion: string | null;
+    // Feature Flags
+    canUseSales: boolean;
+    canUseWarehouse: boolean;
+    canUseTelemarketing: boolean;
+    canUseEvents: boolean;
+    features: Record<string, boolean>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+    const [user, setUser] = useState<User | null>(null);
+    const [session, setSession] = useState<Session | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [role, setRole] = useState<UserRole>('representative');
+    const [isOwner, setIsOwner] = useState(false);
+    const [permissions, setPermissions] = useState<string[]>([]);
+    const DEFAULT_FEATURES = useMemo(() => ({
+        sales_module: true,
+        samples_module: true,
+        pop_module: true,
+        work_processes: true,
+        inventory_module: true,
+        events_module: true,
+        warehouse_module: false,
+        telemarketing_module: false
+    }), []);
+
+    const [features, setFeatures] = useState<Record<string, boolean>>(DEFAULT_FEATURES);
+    const [organizationName, setOrganizationName] = useState<string | null>(null);
+
+    // Audit/God Mode State
+    const [auditOrgId, setAuditOrgId] = useState<string | null>(null);
+    const [originalRole, setOriginalRole] = useState<UserRole | null>(null);
+
+    const enterAuditMode = useCallback(async (orgId: string) => {
+        if (!orgId) return;
+        console.log("Entering Audit Mode for Org:", orgId);
+        setOriginalRole(role); // Save real role (master)
+        setAuditOrgId(orgId);
+
+        // Fetch organization features for Audit Mode
+        try {
+            const { data: orgData } = await supabase
+                .from('organizations')
+                .select('settings, name')
+                .eq('id', orgId)
+                .single();
+
+            if (orgData) {
+                const orgFeatures = (orgData as any).settings?.features || {};
+                setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                setOrganizationName((orgData as any).name);
+            }
+        } catch (error) {
+            console.error("Error loading features for Audit Mode:", error);
+        }
+
+        // Mock the profile to look like a Manager of that Org
+        if (profile) {
+            setProfile({
+                ...profile,
+                organization_id: orgId,
+                role: 'admin' // Simulate Organization Admin (God Mode)
+            });
+        }
+        setRole('admin'); // Switch context to Admin
+    }, [role, profile, DEFAULT_FEATURES]);
+
+    const exitAuditMode = useCallback(() => {
+        console.log("Exiting Audit Mode");
+        setAuditOrgId(null);
+        if (originalRole && user) {
+            // Reload original profile
+            loadUserRole(user.id, user.email || '');
+        }
+    }, [originalRole, user]);
+
+    const loadUserRole = useCallback(async (userId: string, email: string) => {
+        if (!email) return;
+
+        const lowerEmail = email.trim().toLowerCase();
+        const demoEmailLower = DEMO_EMAIL.trim().toLowerCase();
+        const isHardcodedDemo = lowerEmail === demoEmailLower;
+
+        // [DEMO FAIL-SAFE] Only for the public demo account
+        // Supports localStorage override for testing different roles
+        if (isHardcodedDemo) {
+            const overrideRole = (typeof window !== 'undefined' && localStorage.getItem('demo_role')) as UserRole | null;
+            const demoRole: UserRole = (overrideRole && ['master', 'manager', 'representative'].includes(overrideRole))
+                ? overrideRole as UserRole
+                : 'representative';
+            const demoIsMaster = demoRole === 'master';
+
+            console.log('AuthProvider: DEMO context triggered for', lowerEmail, '| role override:', demoRole);
+            const combinedProfile: UserProfile = {
+                id: userId,
+                email: email,
+                first_name: 'Demo',
+                last_name: 'User',
+                role: demoRole,
+                organization_id: DEMO_ORG_ID,
+                company_id: DEMO_ORG_ID, // In demo, both match
+                zone_id: null,
+                state: null,
+                region: null,
+                is_master: demoIsMaster
+            };
+
+            setProfile(combinedProfile);
+            setRole(demoRole);
+            setIsOwner(demoIsMaster);
+            setPermissions([]);
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // [AUTO-HEAL] Self-heal session cache in case of trigger/sync failures
+            const { error: healError } = await supabase.rpc('heal_session_cache');
+            if (healError) {
+                console.warn('[Auto-Heal] session cache failed:', healError.message);
+            }
+
+            console.log('Cargando perfil (Modo Normal) para:', email);
+
+            const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('*, company_id')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (profileError) {
+                console.error('Error cargando perfil:', profileError);
+            }
+
+            const { data: roleData, error: roleError } = await supabase
+                .from('user_roles_plain')
+                .select('role, organization_id, zone_id, state, region')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (roleError) {
+                console.error('Error cargando rol:', roleError);
+            }
+
+            console.log('Datos de rol obtenidos:', roleData);
+
+            // [INDUSTRIAL] Secure Zero-Trust Master Verification via Database RPC and Tenant 0
+            let isOwnerCheck = false;
+            try {
+                const { data: isOwnerResult, error: rpcError } = await (supabase.rpc as any)('is_master');
+                if (!rpcError && isOwnerResult) {
+                    isOwnerCheck = true;
+                }
+            } catch (e) {
+                console.error("is_master RPC error:", e);
+            }
+
+            // Fallback: verified from secure database role record on Tenant 0
+            if (!isOwnerCheck && (roleData as any)?.role === 'master') {
+                isOwnerCheck = true;
+            }
+
+            setIsOwner(isOwnerCheck);
+
+            let finalRole: UserRole = 'representative';
+            let finalOrgId: string | null = null;
+
+            if (roleData) {
+                finalRole = ((roleData as any).role as UserRole);
+                finalOrgId = (roleData as any).organization_id;
+            } else if (isOwnerCheck) {
+                finalRole = 'master';
+            }
+
+            if (!finalOrgId && profileData) {
+                finalOrgId = (profileData as any).organization_id;
+            }
+
+            // [STRICT] Tenant 0 Isolation for Global Master
+            const isTenantZero = finalOrgId === '00000000-0000-0000-0000-000000000000';
+
+            // If it's a verified master but role record is missing, force master
+            if (isOwnerCheck && finalRole !== 'master') {
+                finalRole = 'master';
+            }
+
+            // [ARCHITECTURAL REFINEMENT] Auto-migrate local 'master' strings to 'organization_admin'
+            // for UI/Logic consistency, even if the DB record hasn't been migrated yet.
+            if (finalRole === 'master' && !isOwnerCheck && !isTenantZero) {
+                console.warn('AuthProvider: Local Master detected, mapping to organization_admin');
+                finalRole = 'organization_admin';
+            }
+
+            const combinedProfile: UserProfile = {
+                id: userId,
+                email: email,
+                first_name: (profileData as any)?.first_name || '',
+                last_name: (profileData as any)?.last_name || '',
+                role: finalRole,
+                organization_id: finalOrgId,
+                company_id: (roleData as any)?.company_id || (profileData as any)?.company_id || null,
+                zone_id: (roleData as any)?.zone_id || null,
+                state: (roleData as any)?.state || null,
+                region: (roleData as any)?.region || null,
+                is_master: finalRole === 'master'
+            };
+
+            console.log('Perfil combinado final:', combinedProfile);
+            setProfile(combinedProfile);
+            setRole(finalRole);
+
+            // Load Permissions
+            const { data: permsData } = await supabase
+                .from('role_permissions')
+                .select('permission_code')
+                .eq('role_slug', finalRole);
+
+            setPermissions((permsData as any[])?.map(p => p.permission_code) || []);
+
+            // Load Organization Features and Name
+            if (finalOrgId) {
+                const { data: orgData, error: orgError } = await supabase
+                    .from('organizations')
+                    .select('name, settings')
+                    .eq('id', finalOrgId)
+                    .maybeSingle();
+
+                if (orgError) console.error('DEBUG: Organization error:', orgError);
+
+                if (orgData) {
+                    setOrganizationName((orgData as any).name);
+                    const orgFeatures = (orgData as any).settings?.features || {};
+                    setFeatures({ ...DEFAULT_FEATURES, ...orgFeatures });
+                }
+            } else {
+                setOrganizationName(null);
+                setFeatures(DEFAULT_FEATURES);
+            }
+        } catch (e) {
+            console.error('Error in loadUserRole:', e);
+            setRole('representative');
+        } finally {
+            setLoading(false);
+        }
+    }, [DEFAULT_FEATURES]);
+
+    useEffect(() => {
+
+        // 1. Get initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+            const currentUser = session?.user ?? null;
+            setUser(currentUser);
+            if (currentUser) {
+                loadUserRole(currentUser.id, currentUser.email || '');
+            } else {
+                setLoading(false);
+            }
+        });
+
+        // 2. Listen for changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log('[AuthProvider] Auth event:', event);
+            setSession((prev) => prev?.access_token === session?.access_token ? prev : session);
+            const currentUser = session?.user ?? null;
+            
+            setUser((prevUser) => {
+                // If user changed, reload role
+                if (currentUser?.id !== prevUser?.id) {
+                    if (currentUser) {
+                        loadUserRole(currentUser.id, currentUser.email || '');
+                    } else {
+                        setProfile(null);
+                        setRole('representative');
+                        setPermissions([]);
+                        setFeatures({});
+                        setLoading(false);
+                    }
+                    return currentUser;
+                }
+                // Return prevUser to avoid re-renders if identity hasn't logically changed
+                return prevUser;
+            });
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const signOut = useCallback(async () => {
+        await supabase.auth.signOut();
+        setProfile(null);
+        setRole('representative');
+        setPermissions([]);
+        setFeatures({});
+        setUser(null);
+        setSession(null);
+    }, []);
+
+    // --- Derived Permissions ---
+    // [STRICT] Resilience for System Owner / Tenant 0
+    const isTenantZero = profile?.organization_id === '00000000-0000-0000-0000-000000000000';
+
+    // isMaster is now STRICTLY for Global Administration (Tenant 0)
+    const isMaster = isOwner || (isTenantZero && (role === 'master' || (profile as any)?.originalRole === 'master'));
+
+    const isOrgAdmin = role === 'organization_admin' || (role === 'master' && !isMaster); // Fallback for transition
+    const isAdmin = role === 'admin' || isOrgAdmin;
+
+    // 12 Operational Roles — with backward compatibility
+    const isGerente = role === 'gerente' || role === 'manager';  // Gerente = Master de su org
+    const isManager = isGerente || role === 'store_manager' || isAdmin;
+    const isJefe = role === 'jefe' || role === 'chief';
+    const isChief = isManager || isJefe;
+    const isCoordinator = role === 'coordinador' || role === 'coordinator';
+    const isSupervisor = role === 'supervisor';
+    const isTelemarketing = role === 'telemarketing';
+    const isRepresentative = ['rep_comercial', 'visitador_medico', 'rep_integral', 'representative', 'commercial_rep', 'medical_visitor', 'integral_rep'].includes(role);
+
+    // New specialized checks
+    const isFieldRep = isRepresentative;
+    const isExternalPortal = ['farmacia', 'medico', 'compras', 'pharmacy', 'doctor', 'buyer'].includes(role);
+
+    const isDoctor = role === 'doctor' || role === 'medico';
+    const isPharmacist = role === 'pharmacist' || role === 'farmacia';
+    const isServiceChief = role === 'service_chief';
+    const isSpecializedRole = isDoctor || isPharmacist || isServiceChief || isExternalPortal;
+
+    // SaaS Staff Flags
+    const isSaaSAdmin = role === 'admin_saas';
+    const isSaaSSupport = role === 'soporte_saas';
+    const isSaaSDev = role === 'desarrollo_saas';
+    const isSaaSStaff = isMaster || isSaaSAdmin || isSaaSSupport || isSaaSDev;
+
+    // Hierarchy helpers for permission cascading
+    const isAtLeastSupervisor = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator || isSupervisor;
+    const isAtLeastCoordinator = isMaster || isSaaSStaff || isAdmin || isManager || isJefe || isCoordinator;
+    const isAtLeastJefe = isMaster || isSaaSStaff || isAdmin || isManager || isJefe;
+
+    const hasPermission = useCallback((code: string) => {
+        if (isMaster || isSaaSAdmin) return true;
+        if (permissions.includes('*')) return true;
+        return permissions.includes(code);
+    }, [isMaster, isSaaSAdmin, permissions]);
+
+    const value: AuthContextType = useMemo(() => ({
+        user,
+        session,
+        loading,
+        profile,
+        role,
+        permissions,
+        hasPermission,
+        signOut,
+        isAuthenticated: !!user,
+        // Masters and SaaS Staff are NEVER in demo mode for navigation purposes
+        isDemo: !isSaaSStaff && (
+            profile?.organization_id === 'd3300000-0000-0000-0000-000000000001' || 
+            user?.email?.toLowerCase() === 'demo.medivisitpro@gmail.com'
+        ),
+        isMaster,
+        isOrgAdmin,
+        isAdmin,
+        isManager,
+        isGerente,
+        isJefe,
+        isChief,
+        isCoordinator,
+        isSupervisor,
+        isTelemarketing,
+        isRepresentative,
+        isFieldRep,
+        isExternalPortal,
+        isDoctor,
+        isPharmacist,
+        isServiceChief,
+        isSpecializedRole,
+        isSaaSAdmin,
+        isSaaSSupport,
+        isSaaSDev,
+        isSaaSStaff,
+        canManageUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isGerente,
+        canViewUsers: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isManager || isAtLeastCoordinator,
+        canViewAllData: isSaaSStaff || isAdmin || isManager,
+        canManageCompany: isMaster || isSaaSAdmin || isOrgAdmin || role === 'admin' || isGerente,
+        canApproveExpenses: isMaster || isSaaSAdmin || isManager || isJefe || isSupervisor || isCoordinator,
+        canApproveTransfers: isMaster || isSaaSAdmin || isManager || isJefe,
+        canAssignObjectives: isMaster || isSaaSAdmin || isManager || isJefe || isCoordinator,
+        canManageZones: isMaster || isSaaSAdmin || role === 'admin' || isManager || isJefe,
+        canViewAnalytics: isSaaSStaff || isManager || isJefe || isCoordinator,
+        canManageProducts: isMaster || isSaaSAdmin || isManager,
+        canViewProducts: isSaaSStaff || isManager || isPharmacist || isDoctor || isFieldRep,
+        canManageSamples: isMaster || isSaaSAdmin || isManager || isJefe,
+        canViewSupervision: isMaster || hasPermission('samples.view_supervision'),
+        canManageBanks: isMaster || hasPermission('samples.manage_banks'),
+        canAssignStock: isMaster || hasPermission('samples.assign_stock'),
+        canViewMedicalInfo: isSaaSStaff || isAtLeastSupervisor || isDoctor,
+        canManageService: isMaster || isSaaSAdmin || isServiceChief || isManager,
+        canViewVisitHistory: isSaaSStaff || isAtLeastSupervisor || isDoctor || isPharmacist,
+        zoneId: profile?.zone_id || null,
+        organizationId: profile?.organization_id || null,
+        companyId: profile?.company_id || null,
+        userState: profile?.state || null,
+        userRegion: profile?.region || null,
+        // Feature Flags (Default logic)
+        canUseSales: isMaster || features.sales_module !== false, // Default ON
+        canUseWarehouse: isMaster || features.warehouse_module === true || role === 'store_manager', // Default OFF
+        canUseTelemarketing: isMaster || features.telemarketing_module === true || isTelemarketing, // Default OFF
+        canUseEvents: isMaster || features.events_module === true, // Default OFF
+
+        // Audit Mode
+        isAuditMode: !!auditOrgId,
+        isSystemAdmin: isSaaSStaff,
+        enterAuditMode,
+        exitAuditMode,
+        organizationName,
+        features,
+    }), [
+        user, session, loading, profile, role, permissions, hasPermission, signOut,
+        isSaaSStaff, isMaster, isSaaSAdmin, isOrgAdmin, isAdmin, isManager, isGerente,
+        isJefe, isChief, isCoordinator, isSupervisor, isAtLeastCoordinator, isAtLeastSupervisor,
+        isTelemarketing, isRepresentative, isFieldRep, isExternalPortal, isDoctor, isPharmacist,
+        isServiceChief, isSpecializedRole, isSaaSSupport, isSaaSDev, features, auditOrgId,
+        enterAuditMode, exitAuditMode, organizationName
+    ]);
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+}

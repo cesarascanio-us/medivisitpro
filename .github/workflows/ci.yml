@@ -1,0 +1,37 @@
+name: MediVisitPro Industrial CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate:
+    name: Type-Check, Lint, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: 1. TypeScript Strict Verification
+        run: npm run type-check
+
+      - name: 2. ESLint Quality Check
+        run: npm run lint -- --quiet
+
+      - name: 3. Vitest Automated Test Suite
+        run: npm run test
+
+      - name: 4. Vite Production Build
+        run: npm run build
