@@ -603,7 +603,9 @@ export default function AcademyAdmin() {
           lessonId={editingLessonId}
           moduleId={managingStructureModuleId}
           onBack={() => setEditingLessonId(null)}
-          onSaved={() => toast({ title: 'Lección guardada exitosamente' })}
+          onSaved={() => {
+            toast({ title: 'Lección guardada exitosamente' });
+          }}
         />
       </div>
     );

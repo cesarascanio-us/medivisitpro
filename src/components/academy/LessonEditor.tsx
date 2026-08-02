@@ -13,11 +13,16 @@ import { useToast } from '@/hooks/use-toast';
 interface LessonEditorProps {
   lessonId: string;
   moduleId: string;
-  onClose: () => void;
-  onSave: () => void;
+  onClose?: () => void;
+  onBack?: () => void;
+  onSave?: () => void;
+  onSaved?: () => void;
 }
 
-export default function LessonEditor({ lessonId, moduleId, onClose, onSave }: LessonEditorProps) {
+export default function LessonEditor({ lessonId, moduleId, onClose, onBack, onSave, onSaved }: LessonEditorProps) {
+  const handleExit = onBack || onClose || (() => {});
+  const handleSaveCallback = onSaved || onSave || (() => {});
+
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -92,8 +97,8 @@ export default function LessonEditor({ lessonId, moduleId, onClose, onSave }: Le
       }
 
       toast({ title: 'Lección guardada correctamente', variant: 'default' });
-      onSave();
-      onClose();
+      handleSaveCallback();
+      handleExit();
     } catch (err: any) {
       toast({ title: 'Error al guardar lección', description: err.message, variant: 'destructive' });
     } finally {
@@ -148,7 +153,7 @@ export default function LessonEditor({ lessonId, moduleId, onClose, onSave }: Le
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={onClose} className="h-9 w-9 p-0 rounded-xl">
+          <Button variant="ghost" size="sm" onClick={handleExit} className="h-9 w-9 p-0 rounded-xl">
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -362,7 +367,7 @@ export default function LessonEditor({ lessonId, moduleId, onClose, onSave }: Le
           <span>Máximo 60 minutos por curso</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={onClose} disabled={saving} className="rounded-xl">
+          <Button variant="outline" onClick={handleExit} disabled={saving} className="rounded-xl">
             Cancelar
           </Button>
           <Button
