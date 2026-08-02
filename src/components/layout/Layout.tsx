@@ -16,9 +16,11 @@ import { Rocket, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { lazyWithRetry } from '@/utils/lazyWithRetry';
 
-const StrategicOnboarding360 = lazy(() =>
-  import('../onboarding/StrategicOnboarding360').then(module => ({ default: module.StrategicOnboarding360 }))
+const StrategicOnboarding360 = lazyWithRetry(
+  () => import('../onboarding/StrategicOnboarding360').then(module => ({ default: module.StrategicOnboarding360 })),
+  'StrategicOnboarding360'
 );
 
 interface LayoutProps {

@@ -19,9 +19,32 @@ Date.now = function() {
   return now;
 };
 
+// Auto-recovery from stale chunks after production deployments
+window.addEventListener('vite:preloadError', (event) => {
+  console.warn('[Vite] Dynamic import chunk failed (stale version), reloading page to fetch latest assets...', event);
+  window.location.reload();
+});
+
+window.addEventListener('error', (event) => {
+  if (
+    event.message &&
+    (event.message.includes('Failed to fetch dynamically imported module') ||
+     event.message.includes('Expected a JavaScript-or-Wasm module script') ||
+     event.message.includes('Loading chunk') ||
+     event.message.includes('Loading CSS chunk'))
+  ) {
+    const lastReload = sessionStorage.getItem('chunk_reload_ts');
+    const now = Date.now();
+    if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+      sessionStorage.setItem('chunk_reload_ts', now.toString());
+      console.warn('[App] Outdated chunk detected, refreshing app to newest deployment...');
+      window.location.reload();
+    }
+  }
+});
+
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-
 
 createRoot(document.getElementById("root")!).render(<App />);
