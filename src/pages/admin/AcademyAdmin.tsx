@@ -58,8 +58,8 @@ interface TrainingModule {
   required_role?: string;
   target_roles?: string[];
   points_reward: number;
-  status: 'active' | 'draft' | 'archived';
-  course_type?: 'platform' | 'custom';
+  status: 'active' | 'published' | 'draft' | 'archived';
+  course_type?: 'platform' | 'custom' | 'product_line';
   duration_mins?: number;
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
   is_informative?: boolean;
@@ -124,8 +124,8 @@ export default function AcademyAdmin() {
     duration_mins: 30,
     difficulty: 'beginner' as 'beginner' | 'intermediate' | 'advanced',
     is_informative: false,
-    status: 'active' as 'active' | 'draft' | 'archived',
-    course_type: 'platform' as 'platform' | 'custom',
+    status: 'active' as 'active' | 'published' | 'draft' | 'archived',
+    course_type: 'platform' as 'platform' | 'custom' | 'product_line',
     target_roles: ['representative'],
     image_url: ''
   });
@@ -382,6 +382,30 @@ export default function AcademyAdmin() {
     } catch (error: any) {
       console.error('Error saving course:', error);
       toast({ title: 'Error al guardar curso', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleToggleCourseStatus = async (courseId: string, currentStatus: string) => {
+    const isCurrentlyActive = currentStatus === 'active' || currentStatus === 'published';
+    const newStatus = isCurrentlyActive ? 'draft' : 'active';
+    try {
+      const { error } = await supabase
+        .from('training_modules')
+        .update({ status: newStatus })
+        .eq('id', courseId);
+      if (error) throw error;
+      toast({
+        title: isCurrentlyActive ? 'Curso Ocultado' : 'Curso Publicado',
+        description: isCurrentlyActive
+          ? 'El curso ahora está en borrador y no es visible para representantes.'
+          : 'El curso ahora es visible públicamente en la Academia.'
+      });
+      // Optimistic update
+      setModules((prev) =>
+        prev.map((m) => (m.id === courseId ? { ...m, status: newStatus as any } : m))
+      );
+    } catch (error: any) {
+      toast({ title: 'Error al cambiar estado', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -722,7 +746,7 @@ export default function AcademyAdmin() {
                   className="border-border bg-card shadow-sm hover:shadow-lg transition-all rounded-3xl overflow-hidden flex flex-col group"
                 >
                   <div className="p-5 pb-3 border-b border-border/60 bg-muted/20 flex items-start justify-between gap-2">
-                    <div className="space-y-1">
+                    <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge className="bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-200 text-[10px] uppercase font-bold tracking-wider">
                           {mod.category}
@@ -732,15 +756,36 @@ export default function AcademyAdmin() {
                             ★ Oficial App
                           </Badge>
                         )}
+                        <Badge
+                          className={
+                            mod.status === 'active' || mod.status === 'published'
+                              ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-200 text-[10px] font-bold'
+                              : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 text-[10px] font-bold'
+                          }
+                        >
+                          {mod.status === 'active' || mod.status === 'published' ? '🟢 Visible' : '⚪ Oculto'}
+                        </Badge>
                       </div>
                       <h3 className="font-bold text-base text-foreground leading-snug line-clamp-2 mt-1">
                         {mod.title}
                       </h3>
                     </div>
 
-                    <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-2.5 py-1 rounded-xl text-xs font-black shadow-sm flex items-center gap-1 flex-shrink-0">
-                      <Award className="h-3.5 w-3.5 fill-white" />
-                      +{mod.points_reward} pts
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-2.5 py-1 rounded-xl text-xs font-black shadow-sm flex items-center gap-1 flex-shrink-0">
+                        <Award className="h-3.5 w-3.5 fill-white" />
+                        +{mod.points_reward} pts
+                      </div>
+                      <div className="flex items-center gap-1.5" title="Mostrar u Ocultar en la Academia">
+                        <span className="text-[10px] font-bold text-muted-foreground">
+                          {mod.status === 'active' || mod.status === 'published' ? 'Público' : 'Oculto'}
+                        </span>
+                        <Switch
+                          checked={mod.status === 'active' || mod.status === 'published'}
+                          onCheckedChange={() => handleToggleCourseStatus(mod.id, mod.status)}
+                          className="scale-75"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -762,11 +807,22 @@ export default function AcademyAdmin() {
 
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-[10px] text-muted-foreground">Dirigido a:</span>
-                      {(mod.target_roles || ['representative']).map((r) => (
-                        <span key={r} className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-muted text-foreground">
-                          {r === 'representative' ? 'Visitadores' : r === 'manager' ? 'Gerentes' : r}
-                        </span>
-                      ))}
+                      {(mod.target_roles || ['representative']).map((r) => {
+                        const roleLabels: Record<string, string> = {
+                          representative: '👤 Visitadores',
+                          supervisor: '🛡️ Supervisores',
+                          manager: '👔 Gerentes',
+                          admin: '⚙️ Admins',
+                          gerente: '👔 Gerentes',
+                          jefe: '🛡️ Jefes',
+                          master: '🔑 Master'
+                        };
+                        return (
+                          <span key={r} className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                            {roleLabels[r] || r}
+                          </span>
+                        );
+                      })}
                     </div>
 
                     <div className="pt-4 border-t border-border flex items-center justify-between gap-1.5">
@@ -1196,6 +1252,50 @@ export default function AcademyAdmin() {
                 placeholder="https://..."
                 className="rounded-xl"
               />
+            </div>
+
+            {/* TARGET ROLES – Controla quién ve este curso */}
+            <div className="p-4 rounded-2xl border border-border bg-muted/20 space-y-3">
+              <div>
+                <p className="text-xs font-bold text-foreground">🎯 Audiencia del Curso (Roles que pueden verlo)</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Selecciona los roles operativos que tendrán acceso a este curso. Los representantes <strong>solo</strong> ven cursos marcados para su rol.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: 'representative', label: '👤 Visitadores / Representantes' },
+                  { value: 'supervisor', label: '🛡️ Supervisores / Jefes' },
+                  { value: 'manager', label: '👔 Gerentes / Directores' },
+                  { value: 'admin', label: '⚙️ Administradores' }
+                ].map((roleOpt) => {
+                  const isChecked = (courseForm.target_roles || []).includes(roleOpt.value);
+                  return (
+                    <label
+                      key={roleOpt.value}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-xs font-medium ${
+                        isChecked
+                          ? 'bg-indigo-600/10 border-indigo-400 text-indigo-700 dark:text-indigo-300'
+                          : 'bg-background border-border text-muted-foreground hover:border-indigo-300'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          const current = courseForm.target_roles || [];
+                          const updated = isChecked
+                            ? current.filter((r) => r !== roleOpt.value)
+                            : [...current, roleOpt.value];
+                          setCourseForm({ ...courseForm, target_roles: updated.length > 0 ? updated : ['representative'] });
+                        }}
+                        className="rounded accent-indigo-600"
+                      />
+                      {roleOpt.label}
+                    </label>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="p-4 rounded-2xl border border-border bg-muted/20 space-y-3">

@@ -14,7 +14,9 @@ import {
   Search,
   Filter,
   ArrowRight,
-  Gift
+  Gift,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -47,7 +50,12 @@ interface TrainingModule {
 }
 
 export default function University() {
-  const { user } = useAuth();
+  const auth = useAuth();
+  const { user, isMaster, role, isAdmin, isManager, isSupervisor, isFieldRep, isRepresentative, isChief, isCoordinator, isGerente, isJefe } = auth;
+  const isAdminOrMaster = isMaster || isAdmin || role === 'admin' || role === 'master' || role === 'super_admin';
+  const isManagement = isAdminOrMaster || isManager || isGerente || role === 'gerente' || role === 'manager' || role === 'director';
+  const isSupervision = isManagement || isSupervisor || isChief || isJefe || isCoordinator || role === 'supervisor' || role === 'jefe';
+
   const { toast } = useToast();
 
   const [modules, setModules] = useState<TrainingModule[]>([]);
@@ -56,7 +64,9 @@ export default function University() {
   const [completedCourseIds, setCompletedCourseIds] = useState<Set<string>>(new Set());
   const [activeCourse, setActiveCourse] = useState<TrainingModule | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'mandatory' | 'platform' | 'products' | 'completed'>('all');
+  const [activeFilter, setActiveFilter] = useState<
+    'all' | 'mandatory' | 'platform' | 'products' | 'role_rep' | 'role_mgr' | 'published' | 'draft' | 'completed'
+  >('all');
 
   // Rewards catalog redemption modal
   const [rewards, setRewards] = useState<any[]>([]);
@@ -71,20 +81,77 @@ export default function University() {
     try {
       setLoading(true);
 
-      // 1. Fetch training modules
-      let modData: any[] | null = null;
-      const { data: filteredMods, error: filterError } = await supabase
+      // 1. Fetch training modules from DB
+      const { data: dbMods } = await supabase
         .from('training_modules')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (filteredMods && filteredMods.length > 0) {
-        modData = filteredMods;
-      } else {
-        modData = getDefaultSystemModules();
+      // Build unified list starting with COMPLETE_LMS_COURSES
+      const mergedList: TrainingModule[] = COMPLETE_LMS_COURSES.map((sysC, idx) => {
+        const foundInDb = dbMods?.find(
+          (m) =>
+            m.title?.trim().toLowerCase() === sysC.title?.trim().toLowerCase() ||
+            m.id === sysC.slug_id
+        );
+        if (foundInDb) {
+          return {
+            id: foundInDb.id,
+            title: foundInDb.title || sysC.title,
+            description: foundInDb.description || sysC.description,
+            category: foundInDb.category || sysC.category,
+            points_reward: foundInDb.points_reward || sysC.points_reward,
+            image_url: foundInDb.image_url || (sysC as any).image_url,
+            duration_mins: foundInDb.duration_mins || sysC.duration_mins,
+            difficulty: foundInDb.difficulty || sysC.difficulty,
+            status: (foundInDb.status as any) || 'published',
+            is_informative: foundInDb.is_informative ?? sysC.is_informative,
+            target_roles: foundInDb.target_roles || sysC.target_roles,
+            course_type: foundInDb.course_type || sysC.course_type
+          };
+        }
+        return {
+          id: sysC.slug_id || `sys_${idx}`,
+          title: sysC.title,
+          description: sysC.description,
+          category: sysC.category,
+          points_reward: sysC.points_reward,
+          image_url: (sysC as any).image_url,
+          duration_mins: sysC.duration_mins,
+          difficulty: sysC.difficulty,
+          status: 'published',
+          is_informative: sysC.is_informative,
+          target_roles: sysC.target_roles,
+          course_type: sysC.course_type
+        };
+      });
+
+      // Also append any custom modules in DB that were not in default seed
+      if (dbMods) {
+        dbMods.forEach((dbM) => {
+          const alreadyIn = mergedList.some(
+            (m) => m.id === dbM.id || m.title.trim().toLowerCase() === dbM.title?.trim().toLowerCase()
+          );
+          if (!alreadyIn) {
+            mergedList.push({
+              id: dbM.id,
+              title: dbM.title,
+              description: dbM.description,
+              category: dbM.category || 'Personalizado',
+              points_reward: dbM.points_reward || 100,
+              image_url: dbM.image_url,
+              duration_mins: dbM.duration_mins || 30,
+              difficulty: dbM.difficulty || 'intermediate',
+              status: (dbM.status as any) || 'published',
+              is_informative: dbM.is_informative,
+              target_roles: dbM.target_roles,
+              course_type: dbM.course_type || 'custom'
+            });
+          }
+        });
       }
 
-      if (modData) setModules(modData);
+      setModules(mergedList);
 
       // 2. Fetch user points from profile
       const { data: profile } = await supabase
@@ -127,6 +194,31 @@ export default function University() {
       setModules(getDefaultSystemModules());
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleCourseStatus = async (courseId: string, currentStatus?: string) => {
+    const isCurrentlyActive = currentStatus === 'active' || currentStatus === 'published';
+    const newStatus = isCurrentlyActive ? 'draft' : 'published';
+    try {
+      const { error } = await supabase
+        .from('training_modules')
+        .update({ status: newStatus })
+        .eq('id', courseId);
+
+      toast({
+        title: isCurrentlyActive ? 'Curso Ocultado' : 'Curso Publicado',
+        description: isCurrentlyActive
+          ? 'El curso ahora está en borrador y no es visible para representantes.'
+          : 'El curso ahora es visible públicamente en la Academia.'
+      });
+
+      // Optimistic update
+      setModules((prev) =>
+        prev.map((m) => (m.id === courseId ? { ...m, status: newStatus as any } : m))
+      );
+    } catch (e: any) {
+      toast({ title: 'Error al cambiar estado', description: e.message, variant: 'destructive' });
     }
   };
 
@@ -189,17 +281,108 @@ export default function University() {
     }
   };
 
+  const checkRoleAccess = (targetRoles?: string[], courseType?: string) => {
+    // 1. Master, Super Admin, and System Admins have unrestricted access to all courses
+    if (isAdminOrMaster) return true;
+
+    // 2. Product Line courses are relevant for all commercial and medical roles
+    if (courseType === 'product_line') return true;
+
+    // 3. Open/Universal courses
+    if (!targetRoles || targetRoles.length === 0 || targetRoles.includes('all') || targetRoles.includes('*')) {
+      return true;
+    }
+
+    const normalizedTargets = targetRoles.map((r) => r.toLowerCase().trim());
+    const userRoleStr = (role || 'representative').toLowerCase().trim();
+
+    // Field Representative aliases
+    const isRep =
+      isRepresentative ||
+      isFieldRep ||
+      ['representative', 'visitador_medico', 'medical_visitor', 'rep_comercial', 'commercial_rep', 'rep_integral', 'integral_rep', 'field_rep'].includes(userRoleStr);
+
+    // Supervision aliases
+    const isSup =
+      isSupervisor ||
+      isChief ||
+      isJefe ||
+      isCoordinator ||
+      ['supervisor', 'jefe', 'chief', 'coordinador', 'coordinator'].includes(userRoleStr);
+
+    // Management aliases
+    const isMgr =
+      isManager ||
+      isGerente ||
+      ['manager', 'gerente', 'director'].includes(userRoleStr);
+
+    // Representatives can ONLY see courses targeted to representatives (and NOT managerial/supervision/governance)
+    if (isRep && !isSup && !isMgr) {
+      const repAllowedRoles = ['representative', 'visitador_medico', 'rep_comercial', 'rep_integral', 'field_rep', 'rep'];
+      return normalizedTargets.some((t) => repAllowedRoles.includes(t));
+    }
+
+    // Supervisors can see supervisor and field representative courses
+    if (isSup && !isMgr) {
+      const supAllowedRoles = [
+        'supervisor',
+        'jefe',
+        'chief',
+        'coordinador',
+        'coordinator',
+        'representative',
+        'visitador_medico',
+        'rep_comercial',
+        'rep_integral'
+      ];
+      return normalizedTargets.some((t) => supAllowedRoles.includes(t));
+    }
+
+    // Managers / Gerentes can see management, supervision, and representative courses
+    if (isMgr) {
+      const mgrAllowedRoles = [
+        'manager',
+        'gerente',
+        'director',
+        'supervisor',
+        'jefe',
+        'representative',
+        'visitador_medico',
+        'rep_comercial',
+        'rep_integral'
+      ];
+      return normalizedTargets.some((t) => mgrAllowedRoles.includes(t));
+    }
+
+    return normalizedTargets.includes(userRoleStr);
+  };
+
   // Filter modules
   const filteredModules = modules.filter((mod) => {
+    // 1. Role-based access control (RBAC): Representatives cannot see manager/admin/supervisor courses
+    if (!checkRoleAccess(mod.target_roles, mod.course_type)) {
+      return false;
+    }
+
+    // 2. Publication status: non-admins only see published/active courses
+    const isVisibleStatus = isAdminOrMaster || mod.status === 'published' || mod.status === 'active' || !mod.status;
+    if (!isVisibleStatus) return false;
+
+    // 3. Search query match
     const matchesSearch =
       mod.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       mod.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
     if (!matchesSearch) return false;
 
+    // 4. Tab / Category Filters
     if (activeFilter === 'mandatory') return !mod.is_informative;
     if (activeFilter === 'platform') return mod.category === 'app_onboarding' || mod.category === 'leadership' || mod.category === 'administration' || mod.category === 'compliance';
     if (activeFilter === 'products') return mod.course_type === 'product_line' || mod.category.includes('Pediatría') || mod.category.includes('Respiratorio') || mod.category.includes('Gastroenterología') || mod.category.includes('Dermatología') || mod.category.includes('Magistral');
+    if (activeFilter === 'role_rep') return (mod.target_roles || []).some((r) => ['representative', 'visitador_medico', 'rep_comercial', 'rep_integral'].includes(r.toLowerCase()));
+    if (activeFilter === 'role_mgr') return (mod.target_roles || []).some((r) => ['manager', 'gerente', 'supervisor', 'jefe', 'admin', 'director'].includes(r.toLowerCase()));
+    if (activeFilter === 'published') return mod.status === 'published' || mod.status === 'active' || !mod.status;
+    if (activeFilter === 'draft') return mod.status === 'draft' || mod.status === 'archived';
     if (activeFilter === 'completed') return completedCourseIds.has(mod.id);
     return true;
   });
@@ -317,6 +500,18 @@ export default function University() {
                 { id: 'products', label: '🌿 Líneas de Productos' },
                 { id: 'platform', label: '📱 Uso de la App' },
                 { id: 'mandatory', label: '⚠️ Obligatorios' },
+                ...(isSupervision
+                  ? [
+                      { id: 'role_rep', label: '🎒 Para Visitadores' },
+                      { id: 'role_mgr', label: '👔 Gerencia & Supervisión' }
+                    ]
+                  : []),
+                ...(isAdminOrMaster
+                  ? [
+                      { id: 'published', label: '🟢 Publicados' },
+                      { id: 'draft', label: '⚪ Ocultos (Admin)' }
+                    ]
+                  : []),
                 { id: 'completed', label: '✅ Aprobados' }
               ].map((f) => (
                 <button
@@ -339,6 +534,7 @@ export default function University() {
             {filteredModules.map((mod) => {
               const isCompleted = completedCourseIds.has(mod.id);
               const isOfficialApp = mod.course_type === 'platform' || mod.category === 'app_onboarding';
+              const isPublished = mod.status === 'published' || mod.status === 'active' || !mod.status;
 
               return (
                 <Card
@@ -375,6 +571,18 @@ export default function University() {
                         <CheckCircle2 className="h-3.5 w-3.5" /> Aprobado
                       </div>
                     )}
+
+                    {/* Admin Status Toggle overlay */}
+                    {isManagement && (
+                      <div className="absolute bottom-3 left-3 bg-slate-950/80 backdrop-blur-md border border-white/10 text-white px-2.5 py-1 rounded-xl text-[10px] font-bold flex items-center gap-2 shadow-lg">
+                        <span>{isPublished ? '🟢 Visible' : '⚪ Oculto'}</span>
+                        <Switch
+                          checked={isPublished}
+                          onCheckedChange={() => handleToggleCourseStatus(mod.id, mod.status)}
+                          className="scale-75"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <CardContent className="p-5 flex flex-col flex-1 space-y-3">
@@ -382,6 +590,29 @@ export default function University() {
                       <Badge className="bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-[9px] uppercase font-black">
                         {mod.category}
                       </Badge>
+                      {/* Target Role Tag */}
+                      {mod.target_roles && mod.target_roles.length > 0 && !mod.target_roles.includes('all') && (
+                        <Badge variant="outline" className="text-[9px] font-bold border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300">
+                          {mod.target_roles.includes('representative') && !mod.target_roles.includes('manager')
+                            ? '👤 Visitadores'
+                            : mod.target_roles.includes('supervisor') && !mod.target_roles.includes('manager')
+                            ? '🛡️ Supervisores'
+                            : mod.target_roles.includes('manager') && !mod.target_roles.includes('representative')
+                            ? '👔 Gerencia'
+                            : '👥 Multirrol'}
+                        </Badge>
+                      )}
+                      {isManagement && (
+                        <Badge
+                          className={
+                            isPublished
+                              ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-200 text-[9px] font-bold'
+                              : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 text-[9px] font-bold'
+                          }
+                        >
+                          {isPublished ? '🟢 Visible' : '⚪ Oculto'}
+                        </Badge>
+                      )}
                       {isOfficialApp && (
                         <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[9px] uppercase font-black">
                           ★ Tutorial App
