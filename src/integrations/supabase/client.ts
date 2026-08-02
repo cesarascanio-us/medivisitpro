@@ -22,6 +22,149 @@ if (!SUPABASE_URL || !SUPABASE_URL.startsWith('https://')) {
   console.error("Supabase URL is invalid or missing protocol:", SUPABASE_URL);
 }
 
+// ─────────────────────────────────────────────────────────────────
+// AUTO-REFRESH & RETRY ENGINE
+// Intercepts 401/403 responses, refreshes the JWT, and retries once.
+// Includes mutex lock to prevent concurrent refresh storms.
+// Uses native fetch for the refresh call to avoid circular dependency.
+// ─────────────────────────────────────────────────────────────────
+
+let isRefreshing = false;
+let refreshPromise: Promise<{ access_token: string; refresh_token: string } | null> | null = null;
+
+/**
+ * Refresh the Supabase session using the native fetch API directly.
+ * This avoids the circular dependency of supabase.auth.refreshSession()
+ * going through resilientFetch → 401 → refreshSession → resilientFetch...
+ */
+async function attemptSessionRefresh(): Promise<{ access_token: string; refresh_token: string } | null> {
+  // Mutex: if already refreshing, piggyback on the existing promise
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
+  }
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      // Read the current session from localStorage
+      const stored = localStorage.getItem('sb-medivisit-auth-token');
+      if (!stored) {
+        console.warn('[AutoRefresh] No stored session found in localStorage');
+        return null;
+      }
+
+      const parsed = JSON.parse(stored);
+      const currentRefreshToken = parsed?.refresh_token;
+      if (!currentRefreshToken) {
+        console.warn('[AutoRefresh] No refresh_token in stored session');
+        return null;
+      }
+
+      // Call Supabase auth API directly with native fetch (bypasses resilientFetch)
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ refresh_token: currentRefreshToken }),
+      });
+
+      if (!res.ok) {
+        console.warn(`[AutoRefresh] Refresh token API returned ${res.status}`);
+        return null;
+      }
+
+      const data = await res.json();
+      if (!data.access_token) {
+        console.warn('[AutoRefresh] No access_token in refresh response');
+        return null;
+      }
+
+      // Persist the new session back to localStorage so Supabase SDK picks it up
+      const newSession = {
+        ...parsed,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token || currentRefreshToken,
+        expires_at: data.expires_at,
+        expires_in: data.expires_in,
+        token_type: data.token_type || 'bearer',
+        user: data.user || parsed.user,
+      };
+      localStorage.setItem('sb-medivisit-auth-token', JSON.stringify(newSession));
+
+      console.log('[AutoRefresh] ✅ Session refreshed. New token expires at:',
+        new Date((data.expires_at || 0) * 1000).toLocaleTimeString()
+      );
+
+      return { access_token: data.access_token, refresh_token: data.refresh_token || currentRefreshToken };
+    } catch (e) {
+      console.error('[AutoRefresh] Critical error during refresh:', e);
+      return null;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+/**
+ * Resilient fetch wrapper with automatic 401/403 retry.
+ * - On 401/403: refresh session → retry original request once
+ * - Circuit breaker: skips retry for auth endpoints (prevents loops)
+ * - Circuit breaker: skips retry if already retried (x-retry-after-refresh header)
+ */
+async function resilientFetch(url: RequestInfo | URL, options?: RequestInit): Promise<Response> {
+  const response = await fetch(url, options);
+
+  // Only intercept 401 or 403
+  if (response.status !== 401 && response.status !== 403) {
+    return response;
+  }
+
+  const urlStr = String(url);
+
+  // CIRCUIT BREAKER 1: Never retry auth endpoints (prevents infinite loops)
+  if (urlStr.includes('/auth/v1/')) {
+    if (import.meta.env.DEV) {
+      console.warn(`[AutoRefresh] Skipping retry for auth endpoint: ${urlStr.split('?')[0]}`);
+    }
+    return response;
+  }
+
+  // CIRCUIT BREAKER 2: Don't retry if this request was already a retry
+  if (options?.headers && (options.headers as Record<string, string>)['x-retry-after-refresh']) {
+    if (import.meta.env.DEV) {
+      console.error(`[AutoRefresh] Retry also failed with ${response.status} on ${urlStr.split('?')[0]}`);
+    }
+    return response;
+  }
+
+  // Attempt session refresh via native fetch
+  if (import.meta.env.DEV) {
+    console.log(`[AutoRefresh] Got ${response.status} on ${urlStr.split('?')[0]}, attempting session refresh...`);
+  }
+
+  const freshTokens = await attemptSessionRefresh();
+  if (!freshTokens) {
+    return response; // Refresh failed — return original error
+  }
+
+  // Rebuild headers with fresh access token
+  const retryHeaders = new Headers(options?.headers);
+  retryHeaders.set('Authorization', `Bearer ${freshTokens.access_token}`);
+  retryHeaders.set('apikey', SUPABASE_PUBLISHABLE_KEY);
+  retryHeaders.set('x-retry-after-refresh', '1'); // Mark as retry to prevent loops
+
+  if (import.meta.env.DEV) {
+    console.log(`[AutoRefresh] Retrying ${urlStr.split('?')[0]} with fresh token...`);
+  }
+
+  return fetch(url, { ...options, headers: retryHeaders });
+}
+
 // PERFORMANCE OPTIMIZATION: Configuración avanzada del cliente para latencia <300ms
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
@@ -34,15 +177,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
   },
   global: {
     headers: { 'x-application-name': 'MediVisitPro-Sentinel' },
-    fetch: async (url, options) => {
-      const response = await fetch(url, options);
-      // Solo en desarrollo: loguear errores 401 para diagnóstico
-      if (response.status === 401 && import.meta.env.DEV) {
-        const text = await response.clone().text();
-        console.error(`[Supabase] 401 Unauthorized on ${String(url)}`, text);
-      }
-      return response;
-    }
+    fetch: resilientFetch,
   },
   db: {
     schema: 'public',
