@@ -186,15 +186,21 @@ export default function University() {
 
     if (user?.id) {
       try {
+        await supabase.from('user_reward_redemptions').insert({
+          user_id: user.id,
+          reward_id: reward.id,
+          points_spent: reward.points_cost,
+          status: 'pending'
+        });
         await supabase.from('profiles').update({ total_points: newPts }).eq('id', user.id);
       } catch (e) {
-        console.warn('Error updating points:', e);
+        console.warn('Error recording redemption:', e);
       }
     }
 
     toast({
       title: '¡Canje Solicitado con Éxito! 🎉',
-      description: `Has canjeado "${reward.name}". Tu gerente recibirá la notificación para coordinar la entrega.`,
+      description: `Has canjeado "${reward.name}". Tu solicitud ha sido enviada para entrega.`,
       variant: 'default'
     });
   };
