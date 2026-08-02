@@ -28,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import CoursePlayer from '@/components/academy/CoursePlayer';
 import AcademyLeaderboard from '@/components/academy/AcademyLeaderboard';
+import { COMPLETE_LMS_COURSES } from '@/utils/lmsSeedData';
 
 interface TrainingModule {
   id: string;
@@ -129,47 +130,21 @@ export default function University() {
     }
   };
 
-  const getDefaultSystemModules = (): TrainingModule[] => [
-    {
-      id: 'sys_course_rep',
-      title: 'Mastery de Campo: Ejecución de Visita Médica y Muestras',
-      description: 'Capacitación obligatoria para Representantes: ruteo inteligente, registro presencial con Geo-Tagging, control de muestras y compromisos de prescripción.',
-      category: 'app_onboarding',
-      points_reward: 150,
-      duration_mins: 35,
-      difficulty: 'beginner',
+  const getDefaultSystemModules = (): TrainingModule[] => {
+    return COMPLETE_LMS_COURSES.map((c, idx) => ({
+      id: c.slug_id || `sys_${idx}`,
+      title: c.title,
+      description: c.description,
+      category: c.category,
+      points_reward: c.points_reward,
+      duration_mins: c.duration_mins,
+      difficulty: c.difficulty,
       status: 'published',
-      is_informative: false,
-      target_roles: ['representative'],
-      course_type: 'platform'
-    },
-    {
-      id: 'sys_course_mgr',
-      title: 'Supervisión Gerencial: Ciclos, Cobertura y Tablero de Control',
-      description: 'Capacitación obligatoria para Gerentes: ciclos promocionales, asignación de baremos, auditoría de rutas y detección de fugas de ventas en farmacias.',
-      category: 'management',
-      points_reward: 200,
-      duration_mins: 45,
-      difficulty: 'intermediate',
-      status: 'published',
-      is_informative: false,
-      target_roles: ['manager', 'gerente', 'admin'],
-      course_type: 'platform'
-    },
-    {
-      id: 'sys_course_admin',
-      title: 'Administración SaaS: Sentinel, Roles y Facturación',
-      description: 'Guía completa de configuración para Administradores: planes de suscripción, asignación de permisos organizacionales y auditoría global.',
-      category: 'compliance',
-      points_reward: 100,
-      duration_mins: 25,
-      difficulty: 'advanced',
-      status: 'published',
-      is_informative: true,
-      target_roles: ['admin', 'master'],
-      course_type: 'platform'
-    }
-  ];
+      is_informative: c.is_informative,
+      target_roles: c.target_roles,
+      course_type: c.course_type
+    }));
+  };
 
   const handleRedeemReward = async (reward: any) => {
     if (totalPoints < reward.points_cost) {

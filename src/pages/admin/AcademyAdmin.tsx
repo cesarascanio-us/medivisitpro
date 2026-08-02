@@ -48,6 +48,7 @@ import { useAuth } from '@/hooks/useAuth';
 import CourseBuilder from '@/components/academy/CourseBuilder';
 import LessonEditor from '@/components/academy/LessonEditor';
 import QuizBuilder from '@/components/academy/QuizBuilder';
+import { seedCompleteLmsDatabase, COMPLETE_LMS_COURSES } from '@/utils/lmsSeedData';
 
 interface TrainingModule {
   id: string;
@@ -149,6 +150,7 @@ export default function AcademyAdmin() {
   // Quiz Modal (Create / Edit Metadata)
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
+  const [seedingCourses, setSeedingCourses] = useState(false);
   const [quizForm, setQuizForm] = useState({
     module_id: '',
     title: 'Examen de Certificación Oficial',
@@ -229,47 +231,54 @@ export default function AcademyAdmin() {
     }
   };
 
-  const getDefaultSystemModules = (): TrainingModule[] => [
-    {
-      id: 'sys_course_rep',
-      title: 'Mastery de Campo: Ejecución de Visita Médica y Muestras',
-      description: 'Capacitación obligatoria para Representantes: ruteo inteligente, registro presencial con Geo-Tagging, control de muestras y compromisos de prescripción.',
-      category: 'app_onboarding',
-      points_reward: 150,
-      duration_mins: 35,
-      difficulty: 'beginner',
+  const getDefaultSystemModules = (): TrainingModule[] => {
+    return COMPLETE_LMS_COURSES.map((c, idx) => ({
+      id: c.slug_id || `sys_${idx}`,
+      title: c.title,
+      description: c.description,
+      category: c.category,
+      points_reward: c.points_reward,
+      duration_mins: c.duration_mins,
+      difficulty: c.difficulty,
       status: 'active',
-      is_informative: false,
-      target_roles: ['representative'],
-      course_type: 'platform'
-    },
-    {
-      id: 'sys_course_mgr',
-      title: 'Supervisión Gerencial: Ciclos, Cobertura y Tablero de Control',
-      description: 'Capacitación obligatoria para Gerentes: ciclos promocionales, asignación de baremos, auditoría de rutas y detección de fugas de ventas en farmacias.',
-      category: 'management',
-      points_reward: 200,
-      duration_mins: 45,
-      difficulty: 'intermediate',
-      status: 'active',
-      is_informative: false,
-      target_roles: ['manager', 'gerente', 'admin'],
-      course_type: 'platform'
-    },
-    {
-      id: 'sys_course_admin',
-      title: 'Administración SaaS: Sentinel, Roles y Facturación',
-      description: 'Guía completa de configuración para Administradores: planes de suscripción, asignación de permisos organizacionales y auditoría global.',
-      category: 'compliance',
-      points_reward: 100,
-      duration_mins: 25,
-      difficulty: 'advanced',
-      status: 'active',
-      is_informative: true,
-      target_roles: ['admin', 'master'],
-      course_type: 'platform'
+      is_informative: c.is_informative,
+      target_roles: c.target_roles,
+      course_type: c.course_type
+    }));
+  };
+
+  const handleSeedSystemCourses = async () => {
+    try {
+      setSeedingCourses(true);
+      toast({
+        title: 'Sincronizando con Supabase...',
+        description: 'Sembrando cursos por rol, lecciones detalladas, exámenes y catálogo de premios en la base de datos.'
+      });
+
+      const res = await seedCompleteLmsDatabase();
+      if (res.success) {
+        toast({
+          title: '¡Sincronización Exitosa!',
+          description: res.message
+        });
+        await fetchData();
+      } else {
+        toast({
+          title: 'Aviso de Sincronización',
+          description: res.message,
+          variant: 'destructive'
+        });
+      }
+    } catch (e: any) {
+      toast({
+        title: 'Error al sincronizar cursos',
+        description: e.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setSeedingCourses(false);
     }
-  ];
+  };
 
   // -------------------------------------------------------------
   // COURSE CRUD
@@ -388,32 +397,6 @@ export default function AcademyAdmin() {
     }
   };
 
-  const handleSeedSystemCourses = async () => {
-    try {
-      setLoading(true);
-      const defaults = getDefaultSystemModules();
-      for (const c of defaults) {
-        await supabase.from('training_modules').upsert({
-          title: c.title,
-          description: c.description,
-          category: c.category,
-          points_reward: c.points_reward,
-          duration_mins: c.duration_mins,
-          difficulty: c.difficulty,
-          status: 'active',
-          is_informative: c.is_informative,
-          course_type: 'platform',
-          target_roles: c.target_roles
-        });
-      }
-      toast({ title: 'Cursos base sembrados exitosamente' });
-      fetchData();
-    } catch (e: any) {
-      toast({ title: 'Error al sembrar cursos', description: e.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // -------------------------------------------------------------
   // REWARDS CRUD
@@ -655,9 +638,18 @@ export default function AcademyAdmin() {
           <Button
             variant="outline"
             onClick={handleSeedSystemCourses}
+            disabled={seedingCourses}
             className="rounded-2xl text-xs font-bold border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 flex-1 md:flex-initial"
           >
-            <Sparkles className="h-4 w-4 mr-1.5 text-amber-500" /> Sembrar Cursos Base
+            {seedingCourses ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-1.5 animate-spin text-indigo-600" /> Sincronizando...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-1.5 text-amber-500" /> Sincronizar Cursos & Exámenes
+              </>
+            )}
           </Button>
 
           <Button

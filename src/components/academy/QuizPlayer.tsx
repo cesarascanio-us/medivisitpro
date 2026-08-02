@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { COMPLETE_LMS_COURSES } from '@/utils/lmsSeedData';
 
 interface QuizPlayerProps {
   moduleId: string;
@@ -116,62 +117,34 @@ export default function QuizPlayer({
   };
 
   const loadFallbackQuestions = () => {
+    // Find matching course by slug_id or title
+    const foundCourse = COMPLETE_LMS_COURSES.find(
+      (c) =>
+        c.slug_id === moduleId ||
+        c.title.toLowerCase().includes(courseTitle.toLowerCase()) ||
+        courseTitle.toLowerCase().includes(c.title.toLowerCase())
+    ) || COMPLETE_LMS_COURSES[0];
+
+    const targetQuiz = foundCourse.quiz;
+
     setQuizData({
-      title: 'Evaluación de Certificación de Funcionalidades MediVisit Pro',
-      passing_score: 70,
-      max_attempts: 3,
-      time_limit_mins: 10
+      title: targetQuiz.title,
+      passing_score: targetQuiz.passing_score || 80,
+      max_attempts: targetQuiz.max_attempts || 3,
+      time_limit_mins: targetQuiz.time_limit_mins || 15
     });
-    setTimeLeft(600);
-    setQuestions([
-      {
-        id: 'q1',
-        question_text: '¿Cuál es la función del botón "Geo-Tagging" al momento de reportar una visita médica?',
-        question_type: 'multiple_choice',
-        options: [
-          { label: 'Verificar la ubicación GPS exacta del consultorio o farmacia', value: 'opt_0' },
-          { label: 'Cambiar la foto de perfil del usuario', value: 'opt_1' },
-          { label: 'Eliminar el contacto del directorio médico', value: 'opt_2' },
-          { label: 'Desactivar la conexión a internet', value: 'opt_3' }
-        ],
-        correct_answer: 'opt_0',
-        points: 25
-      },
-      {
-        id: 'q2',
-        question_text: '¿Cómo se registran las muestras médicas entregadas durante la visita?',
-        question_type: 'multiple_choice',
-        options: [
-          { label: 'En la sección "Muestras Entregadas", seleccionando lote y cantidad', value: 'opt_0' },
-          { label: 'Enviando un mensaje de texto al soporte técnico', value: 'opt_1' },
-          { label: 'Anotándolo en un cuaderno físico', value: 'opt_2' }
-        ],
-        correct_answer: 'opt_0',
-        points: 25
-      },
-      {
-        id: 'q3',
-        question_text: '¿El módulo de Rutas Semanales permite optimizar la secuencia de visitas para ahorrar tiempo de traslado?',
-        question_type: 'true_false',
-        options: [
-          { label: 'Verdadero (El algoritmo organiza las visitas por cercanía)', value: 'true' },
-          { label: 'Falso (Solo muestra una lista desordenada)', value: 'false' }
-        ],
-        correct_answer: 'true',
-        points: 25
-      },
-      {
-        id: 'q4',
-        question_text: '¿Los puntos ganados al aprobar este curso pueden canjearse en el Catálogo de Premios?',
-        question_type: 'true_false',
-        options: [
-          { label: 'Verdadero (Se acreditan automáticamente al saldo)', value: 'true' },
-          { label: 'Falso (Los puntos no tienen valor)', value: 'false' }
-        ],
-        correct_answer: 'true',
-        points: 25
-      }
-    ]);
+    setTimeLeft((targetQuiz.time_limit_mins || 15) * 60);
+
+    setQuestions(
+      targetQuiz.questions.map((q, idx) => ({
+        id: `q_${idx}`,
+        question_text: q.question_text,
+        question_type: q.question_type,
+        options: q.options,
+        correct_answer: q.correct_answer,
+        points: q.points
+      }))
+    );
   };
 
   const handleSelectAnswer = (qId: string, value: string) => {

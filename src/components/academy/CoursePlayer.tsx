@@ -28,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import QuizPlayer from './QuizPlayer';
+import { COMPLETE_LMS_COURSES } from '@/utils/lmsSeedData';
 
 interface Lesson {
   id: string;
@@ -147,90 +148,52 @@ export default function CoursePlayer({ module, onBack, onCourseCompleted }: Cour
   };
 
   const loadDefaultCurriculum = () => {
-    const isRepCourse = module.category === 'ventas' || module.title.toLowerCase().includes('visita') || module.title.toLowerCase().includes('sop');
-    const isManagerCourse = module.title.toLowerCase().includes('gerenc') || module.category === 'management';
+    const foundCourse = COMPLETE_LMS_COURSES.find(
+      (c) =>
+        c.slug_id === module.id ||
+        c.title.toLowerCase().includes(module.title.toLowerCase()) ||
+        module.title.toLowerCase().includes(c.title.toLowerCase())
+    ) || COMPLETE_LMS_COURSES[0];
 
-    const defaultSections: Section[] = [
-      {
-        id: 'sec_1',
-        title: 'Módulo 1: Fundamentos y Flujo Operativo',
+    const defaultSections: Section[] = foundCourse.sections.map((sec, sIdx) => ({
+      id: `sec_${sIdx}`,
+      title: sec.title,
+      lessons: sec.lessons.map((les, lIdx) => ({
+        id: `les_${sIdx}_${lIdx}`,
+        section_id: `sec_${sIdx}`,
+        title: les.title,
+        content_type: les.content_type,
+        content_body: les.content_body,
+        video_url: les.video_url,
+        duration_mins: les.duration_mins,
+        points_reward: les.points_reward,
+        is_required: les.is_required
+      }))
+    }));
+
+    if (foundCourse.quiz) {
+      defaultSections.push({
+        id: `sec_quiz`,
+        title: 'Evaluación y Certificación Oficial',
         lessons: [
           {
-            id: 'les_1_1',
-            section_id: 'sec_1',
-            title: '1.1 Visión General de la Plataforma y Objetivos de Campo',
-            content_type: 'text',
-            duration_mins: 8,
-            points_reward: 20,
-            is_required: true,
-            content_body: `### Bienvenido a la Academia MediVisit Pro 🎯
-
-Este módulo obligatorio te capacitará en el uso diario de la plataforma para maximizar tu impacto en visitas médicas y gestión de farmacias.
-
-#### Objetivos del Módulo:
-1. **Planificación y Ruteo Inteligente:** Cómo estructurar tu semana de trabajo para ahorrar hasta 40% de tiempo en desplazamientos.
-2. **Registro de Visitas con Geo-Tagging:** Validación en tiempo real del contacto presencial.
-3. **Manejo de Muestras y Material POP:** Control estricto de inventario por lote y fecha de vencimiento.
-4. **Auditoría de Farmacias y Fuga de Ventas:** Detectar si los médicos comprometidos están generando recetas efectivas en los puntos de venta cercanos.
-
----
-
-> 💡 **Tip Operativo:** Antes de salir a tu zona, verifica en el mapa interactivo si hay médicos en el mismo edificio o centro comercial para agrupar las visitas.`
-          },
-          {
-            id: 'les_1_2',
-            section_id: 'sec_1',
-            title: '1.2 Video Demostrativo: Cómo Ejecutar y Reportar una Visita',
-            content_type: 'video',
-            duration_mins: 12,
-            points_reward: 30,
-            is_required: true,
-            video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            content_body: `En este video tutorial aprenderás a:
-- Iniciar el reporte de visita tocando el nombre del médico.
-- Adjuntar comentarios clínicos y nivel de interés del prescriptor.
-- Registrar entrega de muestras con código de lote.
-- Obtener confirmación instantánea sincronizada en la nube.`
-          }
-        ]
-      },
-      {
-        id: 'sec_2',
-        title: 'Módulo 2: Optimización de Resultados y Auditoría',
-        lessons: [
-          {
-            id: 'les_2_1',
-            section_id: 'sec_2',
-            title: '2.1 Estrategia de Cierre y Compromisos de Prescripción',
-            content_type: 'text',
-            duration_mins: 10,
-            points_reward: 25,
-            is_required: true,
-            content_body: `### Técnicas de Cierre en la Visita Médica 🩺
-
-El registro en MediVisit Pro no es solo administrativo, es tu herramienta comercial clave.
-
-#### Pasos para registrar compromisos:
-- Identifica el producto clave acordado en la conversación.
-- Selecciona el estimado de recetas mensuales que el médico proyecta emitir.
-- Configura una fecha de seguimiento automática para la próxima visita de refuerzo.`
-          },
-          {
-            id: 'les_2_2',
-            section_id: 'sec_2',
-            title: '2.2 Examen de Certificación Final',
+            id: `les_quiz_final`,
+            section_id: `sec_quiz`,
+            title: foundCourse.quiz.title,
             content_type: 'quiz',
-            duration_mins: 15,
+            duration_mins: foundCourse.quiz.time_limit_mins,
             points_reward: module.points_reward || 100,
             is_required: true
           }
         ]
-      }
-    ];
+      });
+    }
 
     setSections(defaultSections);
-    setExpandedSections(new Set(['sec_1', 'sec_2']));
-    setActiveLessonId('les_1_1');
+    setExpandedSections(new Set(defaultSections.map((s) => s.id)));
+    if (defaultSections[0]?.lessons[0]) {
+      setActiveLessonId(defaultSections[0].lessons[0].id);
+    }
   };
 
   // Flattened list of all lessons in order
