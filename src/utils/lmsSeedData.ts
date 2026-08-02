@@ -2624,6 +2624,1914 @@ Aprender y cumplir los estándares en MediVisit Pro tiene recompensas tangibles.
       }
     ]
   }
+},
+  // -------------------------------------------------------------
+  // CURSOS MAESTROS DE PORTAFOLIO Y PRODUCTOS BIOFARCO (51 PRODUCTOS)
+  // -------------------------------------------------------------
+{
+  "slug_id": "sys_line_pediatria",
+  "title": "Línea Pediátrica & Nutricional: Farmacología, Posología y Objeciones",
+  "description": "Certificación técnica integral en el portafolio pediátrico de BIOFARCO: Neuro Vital Kid, Vitapetit, Vitacon B, Vitacon C, Zincosol, Calzinc D, Emulsión Multivitamínica y Crema para Pañalitis. Manejo de objeciones médicas pediátricas.",
+  "category": "Pediatría y Nutrición",
+  "points_reward": 350,
+  "duration_mins": 45,
+  "difficulty": "intermediate",
+  "is_informative": false,
+  "target_roles": [
+    "representative",
+    "supervisor",
+    "manager",
+    "admin"
+  ],
+  "course_type": "product_line",
+  "status": "published",
+  "sections": [
+    {
+      "title": "Módulo: Neuro Vital Kid",
+      "order_index": 0,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Neuro Vital Kid",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Neuro Vital Kid\n\n![Presentación Oficial Neuro Vital Kid](/products/NeuroVitalKids.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Neuro Vital Kid**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los principios activos y qué aporta cada uno (Fosfatidilcolina, Fosfatidilserina, L-Tirosina, etc.)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los componentes y su rol en la función cerebral.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nNeuro Vital Kid contiene una combinación de activos: Fosfatidilcolina y Fosfatidilserina (componentes clave de las membranas neuronales, importantes para la comunicación celular), L-Tirosina y L-Glutamina (aminoácidos precursores de neurotransmisores), Vitaminas B6, Niacina (B3) y Ácido Pantoténico (B5) (esenciales para el metabolismo energético neuronal y la síntesis de neurotransmisores), y Extracto seco de Ginkgo Biloba (conocido por mejorar la circulación cerebral y tener efectos antioxidantes). \n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración o cantidad de cada principio activo por dosis/porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber las dosis exactas para evaluar la potencia y comparar.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la cantidad exacta en mg o mcg de cada componente por porción/volumen, según la información completa del producto proporcionada por el laboratorio. La imagen no detalla las cantidades exactas por ingrediente].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué está indicado Neuro Vital Kid? ¿Cómo ayuda al rendimiento mental y aprendizaje?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las condiciones o situaciones en las que es útil y el mecanismo por el cual mejora las funciones cognitivas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para [Las indicaciones clave visibles mencionan]: formar y mejorar el funcionamiento mental, mejorar la memoria y la capacidad de aprendizaje, promover la estimulación de la concentración y la atención, y apoyar la regeneración nerviosa y el estado de ánimo . Es un soporte nutricional para optimizar las funciones cognitivas en niños.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay evidencia clínica que respalde la eficacia de esta combinación en niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Buscan soporte científico para la prescripción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Mencionar si el laboratorio tiene estudios específicos con Neuro Vital Kid o evidencia robusta sobre la eficacia de los componentes individuales (ej. Fosfatidilserina en TDAH, Ginkgo en función cognitiva) en población pediátrica. Ser preciso sobre el tipo de evidencia].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para niños? ¿Por edad o peso? ¿Cómo se toma?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica precisa para niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar la dosis exacta en volumen (mL) y frecuencia según la ficha técnica del laboratorio]. Se toma [Indicar si con o sin comidas, frecuencia diaria]. Es una emulsión oral .\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Son seguros los componentes en niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles efectos adversos y la seguridad en la población pediátrica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. Los efectos secundarios son poco comunes y suelen ser leves, pudiendo incluir [Mencionar si aplica: molestias gastrointestinales leves]. Los componentes individuales suelen ser seguros a las dosis recomendadas en niños, pero siempre verificar la ficha técnica.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Interacciones con otros medicamentos o suplementos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Mencionar si hay interacciones conocidas con los componentes individuales, ej: Ginkgo Biloba podría interactuar con anticoagulantes/antiagregantes, aunque a dosis bajas en un suplemento el riesgo es menor. Vitaminas del complejo B generalmente tienen pocas interacciones relevantes a dosis de suplemento].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones (alergias, condiciones médicas)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo o usarlo con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad a cualquier componente de la fórmula. Usar con precaución en pacientes con [Mencionar si aplica: trastornos de la coagulación por el Ginkgo, aunque a dosis bajas es menos probable; condiciones médicas donde ciertos componentes estén contraindicados].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Qué tal el sabor (si se menciona)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad en niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentación Emulsión con contenido neto de 180 mL . [Mencionar si tiene sabor y si está diseñado para ser agradable en niños, si esta información está disponible].\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Vitacon B",
+      "order_index": 1,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Vitacon B",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Vitacon B\n\n![Presentación Oficial Vitacon B](/products/VitaconB.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Vitacon B**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué vitaminas del complejo B contiene? ¿Cuál es la cantidad de cada una por dosis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer la composición específica y las dosis de cada vitamina.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Vitaminas del complejo B. [Indicar específicamente qué vitaminas del complejo B contiene el jarabe (ej. B1, B2, B3, B5, B6, B12) y la cantidad exacta de cada una por dosis/porción, según la ficha técnica completa del laboratorio. La imagen solo dice \"Vitaminas del complejo B\"]. Son vitaminas hidrosolubles esenciales.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué está indicado este jarabe? ¿Cómo ayuda al crecimiento y desarrollo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos en deficiencias vitamínicas y como soporte general.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como asociación de vitaminas hidrosolubles esenciales para crecimiento, desarrollo, cicatrización, integridad vascular, funciones inmunitarias, etc.. Es un suplemento para prevenir o tratar deficiencias del complejo B.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es solo para niños o también se usa en adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Confirmar la población objetivo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs un suplemento vitamínico generalmente útil en diversas poblaciones con riesgo de deficiencia del complejo B. [Confirmar si está específicamente indicado para niños o si es para todas las edades según el laboratorio].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada? ¿Para quiénes? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica precisa.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la dosis recomendada en volumen (mL) y frecuencia según la ficha técnica del laboratorio, para la población indicada (niños, adultos, si aplica)]. Se toma oralmente.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes (generalmente pocos con vitaminas hidrosolubles).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nA dosis recomendadas, las vitaminas del complejo B suelen ser muy seguras. El exceso de vitaminas hidrosolubles se excreta por la orina. Rara vez reacciones alérgicas.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Tiene sabor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentación Jarabe con contenido neto de 120 mL. Tiene sabor a Naranja.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Vitapetit",
+      "order_index": 2,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Vitapetit",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Vitapetit\n\n![Presentación Oficial Vitapetit](/products/Vitapetit.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Vitapetit**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué vitaminas del complejo B y Lisina contiene? ¿Cuál es la cantidad de cada una?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer la composición específica, las dosis y el rol de la Lisina.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Vitaminas del complejo B y Lisina. Contiene una asociación de vitaminas hidrosolubles esenciales (igual que Vitacon B Complex, [Indicar específicamente qué vitaminas B y sus cantidades por dosis/porción, según laboratorio]) más Lisina. La Lisina es un aminoácido esencial, importante para la construcción de proteínas, incluyendo la masa muscular.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué está indicado este jarabe? ¿Cómo ayuda al crecimiento y la masa muscular?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos en deficiencias vitamínicas y como soporte para el desarrollo físico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como asociación de vitaminas hidrosolubles, esenciales para el crecimiento y desarrollo. La Lisina añadida es esencial para la construcción de masa muscular y el crecimiento y desarrollo infantil. Es un suplemento para niños en crecimiento, especialmente aquellos con ingesta insuficiente de proteínas o bajo peso.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es principalmente para niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Confirmar la población objetivo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, está diseñado para el crecimiento y desarrollo infantil, con énfasis en la construcción de masa muscular. Es esencial para niños en crecimiento.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para niños? ¿Por edad o peso? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica precisa para niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la dosis recomendada en volumen (mL) y frecuencia según la ficha técnica del laboratorio, para diferentes edades en niños]. Se toma oralmente.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes (generalmente pocos con vitaminas y aminoácidos).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nA dosis recomendadas, suele ser muy bien tolerado. Los efectos secundarios son poco comunes.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Tiene sabor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad en niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentación Jarabe con contenido neto de 180 mL. Tiene sabor a Naranja.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Zincosol",
+      "order_index": 3,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Zincosol",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Zincosol\n\n![Presentación Oficial Zincosol](/products/Zincosol.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Zincosol**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es exactamente el Sulfato de zinc heptahidratado?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza química del compuesto, si es una forma común y estable de zinc para suplementación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs una sal inorgánica de zinc, en su forma más común y estable, que contiene siete moléculas de agua en su estructura cristalina (ZnSO₄·7H₂O). Es una fuente fiable de zinc.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la cantidad de zinc elemental que proveen esos 15 mg por porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la cantidad exacta de zinc activo para calcular la dosis y comparar.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nCada porción de 7.5 mL contiene 15 mg de zinc elemental, en forma de sulfato de zinc. Esto significa una concentración de 2 mg de zinc elemental por mL de jarabe.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Cómo se compara la biodisponibilidad del sulfato de zinc heptahidratado con otras formas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber si esta forma particular de zinc se absorbe bien y es efectiva.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl sulfato de zinc es una forma bien establecida y generalmente considerada con buena absorción intestinal. Es una forma eficaz para suplementar zinc.\n\n---\n\n#### 4. Pregunta del Médico: *\"¿Contiene algún otro componente o excipiente relevante (azúcar, alérgenos)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Importante por posibles alergias, pacientes diabéticos, o aceptabilidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa base es un jarabe con sabor a uva. [Indicar si tiene azúcar u otros edulcorantes específicos, colorantes, conservantes, según la ficha técnica completa].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué casos específicos de deficiencia de zinc está indicado?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para deficiencias leves, moderadas, o en poblaciones de riesgo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nZincosol está indicado para corregir deficiencias de zinc en pacientes de todas las edades, y como apoyo al sistema inmunológico. Esto incluye poblaciones de riesgo (niños con ingesta insuficiente, malabsorción, etc.) y como coadyuvante en el manejo de diarrea aguda infantil.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la evidencia clínica que respalda el uso de zinc para el apoyo al sistema inmune?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Buscan evidencia científica que justifique esta indicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl zinc es esencial para el desarrollo y función de las células inmunes. La suplementación ha demostrado [Mencionar si aplica: ayudar a reducir la duración o severidad de los síntomas del resfriado común si se inicia tempranamente, o apoyar la función inmune en niños desnutridos]. [Si hay estudios específicos del laboratorio, mencionarlos].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Es útil en alguna patología particular (ej. diarrea aguda en niños)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber si hay indicaciones terapéuticas específicas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, es útil en el manejo de la diarrea aguda en niños. La suplementación con zinc es recomendada por la OMS/UNICEF para reducir la duración y severidad de los episodios diarreicos.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para niños (por peso)? ¿Y para adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica precisa, especialmente para niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPara niños menores de 12 años, la dosis se calcula según el peso: 1 mg de zinc elemental por kg de peso corporal al día, con un tope de 20 mg/día. Puede usar la fórmula: Volumen (mL) = (Dosis mg/kg * Peso kg) / 2 mg/mL. O referirse a ejemplos prácticos. Para niños mayores de 12 años y adultos: una porción de 7.5 mL (que aporta 15 mg de zinc elemental) al día.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo se administra el jarabe? ¿Con o sin comidas? ¿Se reparte la dosis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Para optimizar absorción, tolerabilidad y adherencia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis diaria puede repartirse en 1-2 tomas (p.ej. mañana y tarde). Se recomienda tomar entre las comidas.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Cómo se mide \"una porción\" o los mL exactos? ¿Viene con dosificador?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Aspecto práctico para asegurar la administración correcta por parte del paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, el frasco incluye una cucharita/jeringa dosificadora para medir los 7.5 mL que equivalen a una porción. Permite medir el volumen exacto requerido según el cálculo por peso.\n\n---\n\n### 📌 Sabor y Adherencia\n\n#### 1. Pregunta del Médico: *\"¿El sabor a uva es bien aceptado por los niños? ¿Ayuda con la adherencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** La adherencia en niños es clave.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl sabor a uva ha sido seleccionado específicamente para mejorar la palatabilidad y la adherencia al tratamiento en niños y adultos, ayudando a enmascarar el posible sabor metálico del zinc.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los posibles efectos secundarios, especialmente gastrointestinales?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar con este tipo de suplemento.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos efectos secundarios más comunes son gastrointestinales leves, como náuseas, dolor abdominal o diarrea, especialmente con dosis altas o en ayunas. Tomarlo entre comidas ayuda a reducirlos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones relevantes con otros medicamentos o minerales?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Importante para evitar problemas de absorción o toxicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl zinc puede interferir con la absorción de ciertos antibióticos (quinolonas, tetraciclinas) y otros minerales como hierro y calcio. Se recomienda separar la administración. Altas dosis de zinc a largo plazo pueden afectar la absorción de cobre.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay alguna contraindicación para su uso?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no prescribirlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipersensibilidad a las sales de zinc. Usar con precaución en pacientes con insuficiencia renal grave.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Para cuánto dura?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para la prescripción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 120 mL. La duración del frasco dependerá de la dosis diaria prescrita según el peso del niño o si es para un adulto.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Crema para Panalitis",
+      "order_index": 4,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Crema para Panalitis",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Crema para Panalitis\n\n![Presentación Oficial Crema para Panalitis](/products/PastaAgua.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Crema para Panalitis**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa el Óxido de zinc en la dermatitis del pañal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber el mecanismo de acción de este componente clásico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Óxido de zinc es un astringente y protector cutáneo. Forma una barrera física sobre la piel que aísla de la humedad y las enzimas irritantes presentes en la orina y heces. También tiene propiedades antisépticas suaves que ayudan a prevenir la sobreinfección.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué aporta la Vitamina E a la formulación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el beneficio adicional de este componente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Vitamina E es un antioxidante y tiene propiedades hidratantes y regeneradoras de la piel. Ayuda a nutrir y reparar la piel irritada o dañada, complementando la acción protectora del óxido de zinc.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Cuál es la base de la crema? ¿Es oclusiva? ¿Contiene petrolato?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si la textura y la base son adecuadas para la piel del bebé o quemaduras.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa crema tiene una base [Describir base: emoliente, con/sin petrolato, no grasa, etc.]. Es una formulación [Describir: oclusiva (si contiene petrolato/parafina) o semi-oclusiva] diseñada para crear una barrera protectora duradera. [Indicar si contiene petrolato u otros componentes clave].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de dermatitis del pañal está indicada? ¿Leve, moderada?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber la severidad de los casos que puede tratar.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nCrema para Panalitis está indicada para la prevención y el tratamiento de la dermatitis del pañal leve a moderada. Es efectiva formando una barrera que promueve la curación y protege de futuras irritaciones.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es útil en otros tipos de irritaciones cutáneas o quemaduras leves?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer otros posibles usos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, además de la dermatitis del pañal, puede ser útil para [Mencionar otras indicaciones de la ficha técnica: irritaciones menores de la piel, rozaduras, quemaduras leves] por sus propiedades protectoras y regeneradoras.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Cuántas veces al día?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para los padres.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLimpiar y secar bien la zona afectada. Aplicar una capa generosa de crema en cada cambio de pañal, cubriendo toda el área. En quemaduras leves o irritaciones, aplicar [Indicar frecuencia según ficha técnica, ej: 2-3 veces al día] sobre la piel limpia y seca.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede causar alergia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el perfil de seguridad, especialmente en pieles sensibles como la del bebé.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente es muy bien tolerada. Los efectos secundarios son raros, principalmente reacciones de hipersensibilidad en personas sensibles a algún componente. Es hipoalergénica [Confirmar si tiene esta característica certificada].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución de uso?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Situaciones en las que no debería usarse.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEvitar aplicar sobre heridas abiertas o infecciones cutáneas severas sin supervisión médica. Solo para uso externo.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad tiene el tarro?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el uso frecuente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un tarro de 50 g, un tamaño práctico para uso domiciliario y llevar en la pañalera.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Calzinc D",
+      "order_index": 5,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Calzinc D",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Calzinc D\n\n![Presentación Oficial Calzinc D](/products/CalzincD.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Calzinc D**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Citrato tricálcico comparado con otras sales de calcio?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber sobre la absorción, tolerancia y contenido de calcio elemental.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Citrato tricálcico es una sal de calcio que generalmente ofrece buena absorción, incluso en pacientes con baja acidez gástrica, y suele ser mejor tolerada a nivel gastrointestinal comparada con el carbonato de calcio. Aporta un porcentaje [Indicar % de calcio elemental] de calcio elemental.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la función de la Vitamina D3 (Colecalciferol) en esta fórmula?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocen su importancia para el calcio, pero quieren entender su rol específico aquí.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Vitamina D3 es crucial para la absorción intestinal de calcio y fósforo, y su incorporación a los huesos. Su presencia en Calzinc D asegura que el calcio administrado se absorba y utilice eficazmente para la salud ósea.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Por qué se incluye Óxido de zinc? ¿Qué papel juega el zinc con el calcio/hueso?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la justificación de esta combinación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl zinc es un mineral importante para la salud ósea, participando en la síntesis de colágeno y la mineralización ósea. Su inclusión complementa la acción del calcio y la vitamina D3 en el metabolismo óseo y el crecimiento.\n\n---\n\n#### 4. Pregunta del Médico: *\"¿Cuántos mg/UI de cada componente (Calcio, Vitamina D3, Zinc) por porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la dosis exacta de cada activo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la cantidad exacta en mg de calcio elemental (proveniente del citrato tricálcico), UI o mcg de Vitamina D3, y mg de zinc elemental (proveniente del óxido de zinc) por porción, según laboratorio].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué casos de osteoporosis está indicado? ¿Prevención o tratamiento?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el rol de este suplemento en el manejo de la osteoporosis.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nCalzinc D está indicado como coadyuvante en la prevención y el tratamiento de la osteoporosis, ayudando a asegurar un aporte adecuado de calcio y Vitamina D3, esenciales para mantener la densidad mineral ósea.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Por qué está indicado en embarazo, lactancia y crecimiento infantil?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Son etapas de alta demanda de calcio y otros minerales.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstas son etapas fisiológicas con necesidades aumentadas de calcio, Vitamina D y zinc para el desarrollo óseo y general. Calzinc D ayuda a cubrir estos requerimientos para un adecuado crecimiento infantil y para preservar la salud ósea materna durante embarazo y lactancia.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para cada indicación (osteoporosis, embarazo, niños)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan pautas claras para cada grupo de pacientes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Proporcionar el esquema posológico específico para adultos (osteoporosis, embarazo/lactancia) y para niños (por edad/peso) según las indicaciones del laboratorio].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo se administra la suspensión? ¿Agitar antes de usar? ¿Con comidas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Aspectos prácticos para el paciente y optimizar absorción/tolerancia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs una suspensión, por lo que debe agitarse bien antes de cada uso para asegurar una dosis homogénea. Se recomienda tomar [Indicar si con o sin comidas, generalmente con comidas mejora la absorción del calcio].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los posibles efectos secundarios (GI, etc.)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar y si hay problemas comunes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente es bien tolerado. Ocasionalmente pueden presentarse molestias gastrointestinales leves como estreñimiento o sensación de pesadez estomacal. La forma de citrato de calcio tiende a ser menos constipante.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones relevantes (tiroideas, antibióticos, etc.)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El calcio interactúa con varios medicamentos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, el calcio puede interactuar con [Mencionar interacciones clave: Tetraciclinas, Quinolonas, Levotiroxina, Bifosfonatos]. Se recomienda separar la administración [Indicar tiempo según ficha técnica]. El zinc también puede interactuar con antibióticos (ver Zincosol).\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones (hipercalcemia, litiasis renal)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Para evitar su uso en pacientes de riesgo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipercalcemia, hipercalciuria, litiasis renal cálcica, insuficiencia renal grave. Usar con precaución en pacientes con antecedentes de cálculos renales.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Para cuánto dura?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl envase es de 240 mL. La duración depende de la dosis prescrita [Calcular duración aproximada con la dosis típica].\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Emulsión",
+      "order_index": 6,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Emulsión",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Emulsión\n\n![Presentación Oficial Emulsión](/products/Emulsion.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Emulsión**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué contiene el Aceite de hígado de bacalao además de Vitaminas A y D?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si aporta Omega-3 u otros componentes relevantes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPrincipalmente aporta Vitaminas A y D. También contiene ácidos grasos Omega-3 (EPA y DHA), aunque en cantidades que varían y pueden no estar estandarizadas a menos que se indique lo contrario en la etiqueta.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de Vitaminas A y D por porción? ¿En qué unidades (UI, mcg)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la dosis exacta de las vitaminas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la cantidad exacta en UI o mcg de Vitamina A y Vitamina D3 por porción, según el laboratorio. Es crucial saber si es D2 o D3, usualmente es D3].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Qué significa \"Hipovitaminosis A/D\"? ¿En qué casos se presenta?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber las causas y síntomas de estas deficiencias vitamínicas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Hipovitaminosis A y D son deficiencias de estas vitaminas, comunes en dietas inadecuadas, desnutrición, o problemas de absorción. Pueden manifestarse con problemas de visión (vitamina A), salud ósea (vitamina D), función inmune, etc.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo ayuda en la desnutrición y el crecimiento infantil?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber su rol en el soporte nutricional y el desarrollo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEn la desnutrición, aporta vitaminas liposolubles esenciales (A y D) que suelen estar deficientes. Para el crecimiento infantil, la Vitamina D es clave para el desarrollo óseo, y la Vitamina A para el desarrollo general y la visión.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay otras indicaciones tradicionales o usos comunes (ej. sistema inmune)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer usos no listados explícitamente pero que son de conocimiento popular.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nTradicionalmente se ha asociado con el apoyo al sistema inmune y la salud general, aunque la indicación primaria es la corrección o prevención de deficiencias A y D y el soporte al crecimiento.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para niños (por edad) y adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar dosis en volumen (mL) y frecuencia] para adultos. Para niños, la dosis se ajusta según la edad [Proporcionar esquema posológico pediátrico según laboratorio].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene un sabor fuerte o es bien tolerada? El sabor a naranja ayuda?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El sabor y la textura pueden ser una barrera para la adherencia, especialmente en niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs una emulsión con sabor a naranja para mejorar la palatabilidad y hacerla más aceptable, especialmente para los niños, ayudando a enmascarar el sabor característico del aceite de hígado de bacalao.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los posibles efectos secundarios (GI, sabor persistente)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar con este tipo de producto (eructos con sabor a pescado).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos efectos secundarios más comunes son gastrointestinales leves como eructos con sabor a pescado, náuseas o diarrea con dosis altas. Generalmente bien tolerada a dosis recomendadas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay riesgo de toxicidad por vitaminas liposolubles (A y D) con esta dosis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Preocupación por la acumulación de Vitaminas A y D.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nA las dosis recomendadas, el riesgo de toxicidad por Vitamina A o D es bajo. Sin embargo, se debe advertir sobre no exceder la dosis diaria recomendada y considerar el aporte de estas vitaminas de otras fuentes (dieta, otros suplementos) para evitar la hipervitaminosis a largo plazo.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Tiene interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Vitaminas liposolubles pueden interactuar con ciertos medicamentos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPrecaución con anticoagulantes (la Vitamina A en dosis muy altas podría potenciar su efecto, aunque poco probable a dosis de suplemento) y con medicamentos que afecten la absorción de grasas.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Vitacon C",
+      "order_index": 7,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Vitacon C",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Vitacon C\n\n![Presentación Oficial Vitacon C](/products/VitaconC.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Vitacon C**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Ácido ascórbico? ¿Cómo actúa como Vitamina C?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer la forma química de la Vitamina C y su mecanismo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Ácido ascórbico es la forma química de la Vitamina C, una vitamina hidrosoluble esencial. Actúa como un potente antioxidante, participa en la síntesis de colágeno, la función inmune y la absorción de hierro.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué aporta el Extracto de cítricos? ¿Flavonoides? ¿Algún beneficio extra?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es solo sabor o si tiene un componente activo adicional.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Extracto de cítricos [Confirmar con laboratorio si aporta solo sabor y aroma O si está estandarizado para aportar bioflavonoides]. Si aporta bioflavonoides: \"Aporta bioflavonoides que [Explicar beneficio: pueden mejorar la absorción y el efecto antioxidante de la Vitamina C]\".\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Cuántos mg de Ácido ascórbico por porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la dosis exacta de Vitamina C.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la cantidad exacta en mg de Ácido ascórbico por porción, según laboratorio].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué casos de déficit de Vitamina C está indicado? ¿Escorbuto?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para prevención o tratamiento de deficiencias clínicas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nVitacon C está indicado para la prevención y el tratamiento del déficit de Vitamina C, incluyendo estados carenciales manifiestos (escorbuto, aunque menos común) o subclínicos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo ayuda en infecciones y estrés oxidativo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el rol de la Vitamina C en estas condiciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Vitamina C es un antioxidante clave que ayuda a proteger las células del daño causado por el estrés oxidativo. También modula la función inmune, lo que puede ser beneficioso durante procesos infecciosos [Ser cauteloso con afirmaciones sobre curar o prevenir infecciones, enfocar en soporte].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Es útil para reducir la duración o severidad del resfriado común?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Es un uso popular de la Vitamina C; quieren saber la postura basada en evidencia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Basarse en la evidencia actual y la postura del laboratorio]: La evidencia sugiere que la suplementación regular con Vitamina C podría [Mencionar si aplica: reducir ligeramente la duración o severidad de los síntomas del resfriado común en algunas poblaciones (ej. deportistas extremos) O indicar que la evidencia es mixta y su principal rol es preventivo de la deficiencia y soporte general].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para niños y adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar dosis en volumen (mL) y frecuencia] para adultos. Para niños, la dosis se ajusta según la edad [Proporcionar esquema posológico pediátrico según laboratorio].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puedo causar problemas gastrointestinales?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar, especialmente con dosis altas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nA dosis recomendadas es muy segura. Dosis muy altas pueden causar molestias gastrointestinales como diarrea, náuseas o calambres abdominales, y aumentar el riesgo de cálculos renales de oxalato en personas susceptibles.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Vitamina C puede interactuar con pruebas de laboratorio o medicamentos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nDosis altas de Vitamina C pueden interferir con pruebas de laboratorio (glucosa en orina, pruebas de sangre oculta en heces). Puede aumentar la absorción de hierro (beneficioso en anemia ferropénica) y potencialmente afectar la excreción de algunos medicamentos.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    }
+  ],
+  "quiz": {
+    "title": "Examen de Certificación: Línea Pediátrica & Nutricional",
+    "passing_score": 80,
+    "max_attempts": 3,
+    "time_limit_mins": 15,
+    "questions": [
+      {
+        "question_text": "[Neuro Vital Kid] Ante la duda del médico: \"¿Cuáles son los principios activos y qué aporta cada uno (Fosfatidilcolina, Fosfatidilserina, L-Tirosina, etc.)?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Neuro Vital Kid contiene una combinación de activos: Fosfatidilcolina y Fosfatidilserina (componentes clave de las membranas neuronales, importantes p...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 0
+      },
+      {
+        "question_text": "[Vitacon B] Ante la duda del médico: \"¿Qué vitaminas del complejo B contiene? ¿Cuál es la cantidad de cada una por dosis?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Vitaminas del complejo B. [Indicar específicamente qué vitaminas del complejo B contiene el jarabe (ej. B1, B2, B3, B5, B6, B12...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 1
+      },
+      {
+        "question_text": "[Vitapetit] Ante la duda del médico: \"¿Qué vitaminas del complejo B y Lisina contiene? ¿Cuál es la cantidad de cada una?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Vitaminas del complejo B y Lisina. Contiene una asociación de vitaminas hidrosolubles esenciales (igual que Vitacon B Complex, ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 2
+      },
+      {
+        "question_text": "[Zincosol] Ante la duda del médico: \"¿Qué es exactamente el Sulfato de zinc heptahidratado?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Es una sal inorgánica de zinc, en su forma más común y estable, que contiene siete moléculas de agua en su estructura cristalina (ZnSO₄·7H₂O). Es una ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 3
+      },
+      {
+        "question_text": "[Crema para Panalitis] Ante la duda del médico: \"¿Cómo actúa el Óxido de zinc en la dermatitis del pañal?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Óxido de zinc es un astringente y protector cutáneo. Forma una barrera física sobre la piel que aísla de la humedad y las enzimas irritantes presen...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 4
+      },
+      {
+        "question_text": "[Calzinc D] Ante la duda del médico: \"¿Qué aporta el Citrato tricálcico comparado con otras sales de calcio?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Citrato tricálcico es una sal de calcio que generalmente ofrece buena absorción, incluso en pacientes con baja acidez gástrica, y suele ser mejor t...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 5
+      },
+      {
+        "question_text": "[Emulsión] Ante la duda del médico: \"¿Qué contiene el Aceite de hígado de bacalao además de Vitaminas A y D?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Principalmente aporta Vitaminas A y D. También contiene ácidos grasos Omega-3 (EPA y DHA), aunque en cantidades que varían y pueden no estar estandari...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 6
+      },
+      {
+        "question_text": "[Vitacon C] Ante la duda del médico: \"¿Qué es el Ácido ascórbico? ¿Cómo actúa como Vitamina C?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Ácido ascórbico es la forma química de la Vitamina C, una vitamina hidrosoluble esencial. Actúa como un potente antioxidante, participa en la sínte...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 7
+      }
+    ]
+  }
+},
+{
+  "slug_id": "sys_line_respiratoria_dolor",
+  "title": "Línea Analgésica, Antiinflamatoria & Respiratoria",
+  "description": "Manejo clínico del dolor, fiebre y afecciones respiratorias con el portafolio BIOFARCO: Acetaclor, Jengibre Zinc Vit C, Acetaten Forte, Jarabe de Berro, Jarabe Lamedor Compuesto, Rábano Yodado, Pomada Mentolada y MENTOL.",
+  "category": "Respiratorio y Dolor",
+  "points_reward": 350,
+  "duration_mins": 45,
+  "difficulty": "intermediate",
+  "is_informative": false,
+  "target_roles": [
+    "representative",
+    "supervisor",
+    "manager",
+    "admin"
+  ],
+  "course_type": "product_line",
+  "status": "published",
+  "sections": [
+    {
+      "title": "Módulo: Acetaclor",
+      "order_index": 0,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Acetaclor",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Acetaclor\n\n![Presentación Oficial Acetaclor](/products/Acetaclor.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Acetaclor**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los principios activos (Acetaminofén, Clorfeniramina)? ¿Cómo actúan?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los componentes y su mecanismo de acción para los síntomas del resfriado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos principios activos son Acetaminofén y Clorfeniramina Maleato. El Acetaminofén es un analgésico y antipirético (alivia el dolor y la fiebre). La Clorfeniramina Maleato es un antihistamínico que ayuda a reducir síntomas alérgicos como secreción nasal, estornudos y picor.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de cada principio activo por dosis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber las dosis exactas para la dosificación pediátrica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nCada dosis de 5 mL de Acetaclor Jarabe contiene 125 mg de Acetaminofén y 0.5 mg de Clorfeniramina Maleato.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Contiene otros componentes como azúcar?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Importante para pacientes diabéticos o consideraciones pediátricas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContiene sacarosa y vehículo. (Indicar si contiene azúcar o edulcorantes específicos, colorantes, conservantes, según la ficha técnica completa).\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué está indicado este jarabe? ¿Qué síntomas del resfriado alivia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las indicaciones específicas y el espectro de síntomas cubiertos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el tratamiento sintomático del resfriado común. Ayuda a aliviar síntomas como [Basarse en la acción de los activos y síntomas comunes del resfriado: fiebre, dolor (ej. dolor de cabeza, muscular), congestión nasal, secreción nasal, estornudos].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es de uso pediátrico exclusivo o también se puede usar en adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Confirmar la población objetivo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs de Uso Pediátrico. Las dosis están formuladas para esta población.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para niños? ¿Por edad o peso? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica precisa para niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la dosis exacta en volumen (mL) o según la tabla de dosificación por edad/peso del laboratorio, y la frecuencia según la ficha técnica, ej: cada 4-6 horas]. (La imagen no especifica la dosificación exacta por edad/peso, solo la concentración).\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los posibles efectos secundarios? ¿Somnolencia (por Clorfeniramina)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los efectos esperados de los activos combinados.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar somnolencia debido a la Clorfeniramina. Otros efectos pueden incluir [Mencionar si aplica: sequedad de boca, visión borrosa, molestias gastrointestinales (por Acetaminofén)].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Importante para evitar combinaciones peligrosas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede potenciar el efecto sedante de otros depresores del SNC (alcohol, tranquilizantes). El Acetaminofén interactúa con ciertos medicamentos (ver Acetaten Forte).\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación (asma, problemas respiratorios)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo usarlo con cuidado o no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad a los componentes. Precaución en niños con problemas respiratorios preexistentes (asma) debido al antihistamínico. No usar con otros productos que contengan Acetaminofén para evitar sobredosis.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el uso pediátrico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentación Jarabe con contenido neto de 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Jengibre Zinc Vitamina C",
+      "order_index": 1,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Jengibre Zinc Vitamina C",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Jengibre Zinc Vitamina C\n\n![Presentación Oficial Jengibre Zinc Vitamina C](/products/Jengibre.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Jengibre Zinc Vitamina C**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los principios activos (Jengibre, Zinc, Vitamina C)? ¿Qué aporta cada uno?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los componentes y su rol en la salud inmunológica y digestiva.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos principios activos son Extracto de raíz de Zingiber officinate (jengibre), bisglicinato de zinc y ácido ascórbico (vitamina C). El Jengibre es conocido por sus propiedades antioxidantes, antiinflamatorias y beneficios digestivos. El Zinc es esencial para el sistema inmune y tiene acción antioxidante. La Vitamina C es un potente antioxidante y es crucial para la función inmune.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿En qué forma está el Zinc y la Vitamina C? ¿Cuál es la cantidad de cada activo por dosis/porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la forma química y las dosis exactas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Zinc está en forma de bisglicinato de zinc, una forma con buena biodisponibilidad. La Vitamina C es ácido ascórbico. [Indicar la cantidad exacta en mg o mcg de Extracto de jengibre, Zinc elemental (proveniente del bisglicinato) y Vitamina C por dosis/porción, según la información completa del producto proporcionada por el laboratorio. La imagen no detalla las cantidades exactas por ingrediente].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué está indicado este jarabe? ¿Cómo fortalece el sistema inmune y el proceso digestivo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las condiciones o situaciones en las que es útil y el mecanismo de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como complemento alimenticio con antioxidantes, que fortalecen el sistema inmune y al proceso digestivo. Ayuda a reforzar las defensas naturales del cuerpo y puede coadyuvar en casos de malestar digestivo leve.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es útil para prevenir resfriados o gripe? ¿O para aliviar síntomas digestivos como náuseas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer aplicaciones prácticas basadas en los componentes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nBasado en sus componentes, puede ser útil como soporte general para el sistema inmune en épocas de mayor riesgo. El jengibre tradicionalmente se ha usado para aliviar náuseas y mejorar la digestión. [Ser cauto y basarse en las indicaciones específicas del laboratorio - \"fortalecen el sistema inmune y al proceso digestivo\"].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada? ¿Para quiénes (edad)? ¿Cómo se toma?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica exacta.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la dosis recomendada en volumen (mL) y frecuencia según la ficha técnica del laboratorio. Especificar para qué edades está indicado (niños, adultos), si la información está disponible]. Se toma oralmente. [Indicar si se toma directo o diluido, con o sin comidas].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Molestias digestivas (por jengibre)? ¿Interacciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles efectos adversos y precauciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. El jengibre podría causar molestias digestivas leves en algunas personas. Las dosis altas de Vitamina C pueden causar efectos GI. El Zinc puede interactuar con ciertos medicamentos. [Mencionar efectos secundarios e interacciones relevantes según la ficha técnica completa].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones (embarazo, lactancia, niños pequeños)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo o usarlo con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad a los componentes. [Mencionar precauciones específicas si existen, ej: en pacientes con cálculos biliares por el jengibre, o si no está indicado en embarazo/lactancia/niños muy pequeños].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco? ¿Tiene sabor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentación Jarabe con contenido neto de 180 mL. [Mencionar si el sabor a jengibre/limón (implícito por la combinación) lo hace agradable].\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Acetaten Forte",
+      "order_index": 2,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Acetaten Forte",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Acetaten Forte\n\n![Presentación Oficial Acetaten Forte](/products/Acetafen.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Acetaten Forte**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Acetaminofén (Paracetamol)? ¿Cómo actúa?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Química y mecanismo de acción del principio activo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Acetaminofén, también conocido como Paracetamol, es un analgésico y antipirético. Actúa [Explicar brevemente el mecanismo de acción: inhibición de COX central, acción sobre centros termorreguladores en hipotálamo]. No tiene acción antiinflamatoria periférica significativa.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de Acetaminofén en esta suspensión?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber los mg por mL o por 5 mL para calcular la dosis en niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAcetaten Forte Suspensión contiene 180 mg de Acetaminofén por cada 5 mL. Esto facilita la dosificación pediátrica.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de dolor o fiebre está indicado?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de uso: leve, moderado, qué condiciones trata.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAcetaten Forte está indicado para el alivio sintomático del dolor de intensidad leve a moderada (cefalea, dolor dental, mialgias) y para la reducción de la fiebre en cuadros virales o infecciosos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es seguro y eficaz en población pediátrica?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Confirmar su uso y dosificación adecuada en niños, que son un grupo clave para este fármaco.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, Acetaten Forte Suspensión está formulado específicamente para uso pediátrico (y adulto que prefiera la suspensión). La dosificación se basa en el peso y la edad del niño para garantizar seguridad y eficacia.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis para niños (por peso/edad)? ¿Y para adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica precisa.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosificación pediátrica se calcula principalmente por peso: [Indicar dosis estándar en mg/kg y/o proporcionar la tabla de dosis por edad y peso del inserto]. Para adultos, la dosis es [Indicar dosis estándar en mL o mg, y frecuencia]. La dosis máxima diaria no debe exceder [indicar límite para niños y adultos].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cada cuánto tiempo se puede administrar?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Intervalo mínimo entre dosis para evitar toxicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe puede administrar cada [Indicar el intervalo mínimo, usualmente 4-6 horas]. No exceder [Indicar número máximo de dosis por día].\n\n---\n\n### 📌 Dosificación y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la principal precaución/riesgo del Acetaminofén?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** La hepatotoxicidad es el riesgo más conocido con sobredosis.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa principal precaución es no exceder la dosis máxima recomendada, ya que una sobredosis puede causar daño hepático grave. Se debe advertir a los pacientes sobre el contenido de Acetaminofén en otros productos para evitar duplicidad.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene muchas interacciones farmacológicas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Para evitar combinaciones peligrosas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente tiene pocas interacciones significativas a dosis terapéuticas. Precaución con inductores enzimáticos hepáticos (ej. fenobarbital, carbamazepina) o alcohol en consumo crónico, que aumentan el riesgo de hepatotoxicidad. La colestiramina puede disminuir su absorción.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Viene con dosificador?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para la familia y la administración precisa.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl envase es de 120 mL. Incluye un dosificador [describir: vaso, jeringa] calibrado para facilitar la medición exacta de la dosis, especialmente en niños.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Jarabe de Berro",
+      "order_index": 3,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Jarabe de Berro",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Jarabe de Berro\n\n![Presentación Oficial Jarabe de Berro](/products/JarabeBerro.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Jarabe de Berro**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el extracto de berro y cómo actúa como fluidificante bronquial?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren entender las propiedades de este extracto natural y su mecanismo de acción en la tos/mucosidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl extracto de berro contiene compuestos [Mencionar si se sabe: glucosinolatos, isotiocianatos] que le confieren propiedades expectorantes y mucolíticas suaves. Actúa [Explicar mecanismo postulado: estimulando la secreción bronquial, fluidificando el moco, facilitando su expulsión].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué aporta el Aceite de eucalipto?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el rol de este componente en la fórmula respiratoria.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Aceite de eucalipto contiene cineol (eucaliptol), que tiene propiedades [Mencionar: mucolíticas, expectorantes, broncodilatadoras leves y antisépticas]. Ayuda a fluidificar las secreciones y puede tener un efecto calmante sobre la tos.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué tipo de tos está indicado? ¿Tos seca, productiva? ¿Aguda, crónica?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para aliviar la tos irritativa o para ayudar a expulsar flemas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nJarabe de Berro está indicado principalmente en casos de tos productiva o con presencia de mucosidad, asociada a cuadros como [Mencionar: resfriado común, bronquitis, procesos catarrales]. Ayuda a fluidificar las secreciones para facilitar su expectoración.\n\n---\n\n#### 2. Pregunta del Médico: *\"Menciona \"antiviral\", ¿Hay evidencia específica de esto para este producto?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Curiosidad sobre una indicación menos común para un jarabe a base de extractos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl componente [Identificar si el Berro o el Eucalipto] posee propiedades [Mencionar si hay evidencia: in vitro, estudios preliminares] que sugieren actividad antiviral. Aunque la indicación principal es fluidificante/expectorante, esta propiedad [Explicar beneficio postulado: podría ayudar a combatir agentes causantes de la infección respiratoria]. Sé cauto con esta afirmación si no tienes evidencia robusta específica del producto.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis para niños y adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar dosis en volumen (mL) y frecuencia] para adultos. Para niños, la dosis se ajusta según la edad [Proporcionar esquema posológico pediátrico según laboratorio].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si puede causar somnolencia, efectos GI, o reacciones alérgicas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente es bien tolerado. Los efectos secundarios son poco comunes y leves, pudiendo incluir [Mencionar si aplica: molestias digestivas suaves]. [Si aplica: \"No causa somnolencia\"].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay interacciones con otros medicamentos respiratorios (broncodilatadores, mucolíticos)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Para evitar duplicidad o interacciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nNo se conocen interacciones relevantes con los medicamentos respiratorios comunes a dosis terapéuticas. Se puede usar concomitantemente [Confirmar con ficha técnica].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no prescribirlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipersensibilidad a los componentes. Precaución en pacientes [Mencionar si aplica: con gastritis, úlcera péptica por el rábano en algunos compuestos similares, aunque aquí es berro].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Jarabe Lamedor Compuesto",
+      "order_index": 4,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Jarabe Lamedor Compuesto",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Jarabe Lamedor Compuesto\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Jarabe Lamedor Compuesto**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué son los extractos de Bálsamo de Tafú y Polígala? ¿Cómo actúan en la tos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber sobre estos componentes menos comunes y su mecanismo de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Bálsamo de Tafú es un bálsamo natural con propiedades [Mencionar si se conoce: balsámicas, expectorantes, antitusivas leves]. La Polígala (Polygala senega) es una planta tradicionalmente usada como expectorante, ya que contiene saponinas que irritan la mucosa gástrica y reflejamente aumentan la secreción bronquial, fluidificando el moco.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué aporta el Eucaliptol?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el rol de este componente más conocido.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Eucaliptol (cineol) es un componente del aceite de eucalipto con propiedades [Mencionar: mucolíticas, expectorantes y broncodilatadoras leves]. Ayuda a fluidificar las secreciones y puede tener un efecto calmante.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Es un antitusivo, un expectorante, o ambos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Clarificar la acción principal del jarabe.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs una formulación compuesta que combina efectos expectorantes (Polígala, Eucaliptol) y balsámicos/calmantes (Bálsamo de Tafú). Está orientado a la tos asociada a la presencia de mucosidad para facilitar su expulsión.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué tipo de tos está indicado? ¿Tos con flema, tos seca?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para tos productiva o irritativa.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el alivio sintomático de la tos productiva o con presencia de secreciones bronquiales, asociada a [Mencionar: bronquitis, resfriado común, procesos catarrales]. Ayuda a fluidificar el moco y facilitar la expectoración. No es ideal para tos seca.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis para niños y adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar dosis en volumen (mL) y frecuencia] para adultos. Para niños, la dosis se ajusta según la edad [Proporcionar esquema posológico pediátrico según laboratorio].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede causar somnolencia? ¿O irritación GI?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar con este tipo de compuestos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente es bien tolerado. Los efectos secundarios son poco comunes y leves, pudiendo incluir [Mencionar si aplica: molestias digestivas suaves por las saponinas de la polígala en personas sensibles]. [Indicar si causa o no somnolencia - usualmente no con estos componentes].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Interacciones con otros medicamentos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nNo se reportan interacciones mayores con medicamentos comunes a dosis terapéuticas. [Confirmar con ficha técnica del laboratorio].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones (asma, tos crónica)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipersensibilidad a los componentes. Precaución en pacientes con [Mencionar si aplica: asma, tos crónica persistente (evaluar causa subyacente), o historial de úlcera péptica por posible irritación de saponinas].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Rábano Yodado",
+      "order_index": 5,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Rábano Yodado",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Rábano Yodado\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Rábano Yodado**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Extracto de rábano? ¿Cómo actúa como expectorante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber sobre las propiedades de este extracto natural.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Extracto de rábano contiene compuestos [Mencionar si se sabe: azufrados, isotiocianatos] que tienen propiedades mucolíticas y expectorantes suaves. Ayudan a fluidificar las secreciones bronquiales.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué aportan el Jengibre y la Canela? ¿Son solo sabor o tienen acción terapéutica?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si son excipientes o principios activos con efecto propio.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Jengibre y la Canela aportan [Mencionar si es solo sabor/aroma O si tienen efectos reconocidos: Jengibre puede tener propiedades antiinflamatorias y ayudar a calmar la tos; Canela puede tener propiedades antisépticas suaves y ayudar con el sabor]. Contribuyen al sabor y pueden tener un efecto coadyuvante.\n\n---\n\n#### 3. Pregunta del Médico: *\"Menciona \"apoyo en hipotiroidismo\", ¿esto significa que contiene Yodo? ¿En qué forma?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber si realmente aporta Yodo y si es relevante para la función tiroidea.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, el término \"Yodado\" implica que contiene una fuente de Yodo [Indicar la forma química si se conoce, ej: Yoduro de potasio o está inherentemente en algún extracto si el laboratorio lo especifica]. El Yodo es esencial para la síntesis de hormonas tiroideas, por lo que puede ser útil como soporte [Aclarar: No es un tratamiento para el hipotiroidismo, es un suplemento de Yodo]. [Indicar la cantidad de Yodo por porción si es relevante].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué tipo de tos está indicado? ¿Es un expectorante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para ayudar a eliminar la flema.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nRábano Yodado está indicado como expectorante para aliviar la tos productiva con dificultad para expulsar flemas, asociada a [Mencionar: resfriado, bronquitis]. Ayuda a fluidificar y movilizar las secreciones.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo apoya en el hipotiroidismo? ¿Es un tratamiento sustitutivo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber el alcance de esta indicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nNo es un tratamiento sustitutivo hormonal para el hipotiroidismo. Su utilidad como \"apoyo\" se basa en aportar Yodo, un nutriente esencial para la función tiroidea, en casos donde la ingesta dietética pueda ser insuficiente o como soporte nutricional general. No sustituye la medicación tiroidea.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis para niños y adultos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar dosis en volumen (mL) y frecuencia] para adultos. Para niños, la dosis se ajusta según la edad [Proporcionar esquema posológico pediátrico según laboratorio].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede afectar la tiroides en pacientes no hipotiroideos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar y si el componente Yodado tiene riesgos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. Podrían presentarse molestias digestivas leves por los extractos. En cuanto al Yodo, a dosis suplementarias normales no debería causar problemas en personas con función tiroidea normal. En personas con ciertas condiciones tiroideas preexistentes (ej. tiroiditis autoinmune) o ingesta excesiva de Yodo de otras fuentes, podría haber riesgo.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones (problemas tiroideos, yodo)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo, especialmente por el Yodo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipersensibilidad a los componentes. Precaución extrema en pacientes con hipertiroidismo o nódulos tiroideos tóxicos debido al contenido de Yodo. Usar con precaución en pacientes con tiroiditis de Hashimoto u otras enfermedades tiroideas autoinmunes (consultar al endocrinólogo).\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Pomada Mentolada",
+      "order_index": 6,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Pomada Mentolada",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Pomada Mentolada\n\n![Presentación Oficial Pomada Mentolada](/products/MentolCrema.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Pomada Mentolada**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúan el Mentol y el Eucaliptol para la congestión nasal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber el mecanismo de alivio sintomático.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Mentol y el Eucaliptol (cineol) son rubefacientes y descongestionantes tópicos. Al aplicarse en el pecho/cuello, sus vapores son inhalados, produciendo una sensación refrescante que alivia la percepción de la congestión nasal y ayuda a respirar mejor. No descongestionan directamente las mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué base tiene la pomada? ¿Es oclusiva (Petrolato)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber la textura, capacidad hidratante/protectora y si puede bloquear poros.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa base principal es el Petrolato. Es una base grasa oclusiva que forma una capa protectora sobre la piel. Esto ayuda a retener la humedad y facilita la liberación lenta de los vapores de mentol y eucaliptol.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo ayuda con la congestión nasal? ¿Es solo sintomático? ¿Para quién es (niños/adultos)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Clarificar su uso principal y poblaciones objetivo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada para el alivio sintomático temporal de la congestión nasal y el malestar asociado al resfriado común, mediante la inhalación de sus vapores. Es útil en [Confirmar poblaciones según laboratorio: niños (>X años, importante por el mentol en niños pequeños) y adultos].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo ayuda con las picaduras de insectos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el mecanismo de alivio en picaduras.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Mentol tiene un efecto refrescante y anestésico local leve que ayuda a aliviar la picazón (prurito) y la irritación asociada a las picaduras de insectos.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Dónde? ¿Cuántas veces al día?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta de aplicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar una capa fina en el pecho y el cuello, frotando suavemente. Se puede aplicar [Indicar frecuencia según ficha técnica, ej: 2-3 veces al día], especialmente antes de dormir para facilitar la respiración. Evitar aplicar cerca de las fosas nasales, especialmente en niños pequeños.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación de la piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar con la aplicación tópica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerada. Puede causar irritación local, enrojecimiento o sensación de quemazón en pieles sensibles. Raramente reacciones alérgicas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución de uso? ¿En niños pequeños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El mentol puede causar laringoespasmo en bebés.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nMuy importante: No aplicar directamente en las fosas nasales ni en el área cercana a la nariz, especialmente en niños menores de [Indicar edad límite según ficha técnica, crucial por riesgo de laringoespasmo/broncoespasmo con mentol/eucaliptol en lactantes]. Evitar aplicar sobre piel lesionada o irritada.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad tiene el tarro?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un tarro de 50 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: MENTOL",
+      "order_index": 7,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: MENTOL",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: MENTOL\n\n![Presentación Oficial MENTOL](/products/MentolCrema.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **MENTOL**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aportan el Mentol y el Salicilato de Metilo? ¿Cómo actúan en conjunto?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los principios activos y su mecanismo de acción en el músculo/piel.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos principios activos son Mentol y Salicilato de Metilo. El Mentol produce una sensación refrescante y tiene un leve efecto analgésico local. El Salicilato de Metilo es un derivado del ácido salicílico con propiedades analgésicas y antiinflamatorias tópicas, que produce una sensación de calor. Su combinación potencia el alivio del dolor muscular.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza esta línea de productos? ¿Antes o después de actividad física?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos específicos en el contexto deportivo o de actividad física.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa fórmula está desarrollada para la previa adecuación a las diferentes actividades físicas y deportivas y para la apropiada relajación en el descanso post-actividad. Ayuda a preparar los músculos antes del ejercicio y a aliviar la tensión o el dolor muscular después.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Proporciona una sensación de calor o frío?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el efecto sensorial que tendrá en el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa combinación de Mentol y Salicilato de Metilo generalmente produce una sensación inicial de frescor (por el Mentol) seguida de una sensación de calor (por el Salicilato de Metilo) al aumentar el flujo sanguíneo local.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Cómo contribuyen al \"aroma reconfortante\"?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el origen del aroma y su beneficio.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSus ingredientes aportan un agradable aroma reconfortante al cuerpo y el ambiente, lo que contribuye a la sensación de relajación post-actividad. El Mentol y el Salicilato de Metilo tienen olores característicos usados en productos rubefacientes.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica cada presentación (Crema, Spray, Roll-on)? ¿Cuándo? ¿Masajes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para cada formato.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar [Según presentación: la crema, el spray, o el roll-on] sobre el área deseada antes o después de la actividad física o deportiva que se realice. Se puede aplicar acompañada de masajes circulares suaves para facilitar la absorción y potenciar el efecto.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación? ¿Reacciones alérgicas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes con el uso tópico de estos activos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación local, enrojecimiento, picor o sensación de quemazón, especialmente en pieles sensibles. Rara vez reacciones alérgicas. Evitar el contacto con ojos, mucosas y piel lesionada o irritada.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación (embarazo, niños)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo usarlo con cuidado o no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al Mentol, Salicilato de Metilo, o a otros salicilatos. No usar en niños pequeños (consultar edad límite si aplica). Usar con precaución en embarazo y lactancia (consultar indicación específica del laboratorio). No aplicar sobre heridas abiertas o quemaduras.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué presentaciones y volúmenes tiene esta línea?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Variedad de formatos para diferentes preferencias de uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa línea MENTOL con Salicilato de Metilo está disponible en presentación Crema 40 mL, Spray 120 mL, y Roll-on 80 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    }
+  ],
+  "quiz": {
+    "title": "Examen de Certificación: Línea Analgésica, Antiinflamatoria & Respiratoria",
+    "passing_score": 80,
+    "max_attempts": 3,
+    "time_limit_mins": 15,
+    "questions": [
+      {
+        "question_text": "[Acetaclor] Ante la duda del médico: \"¿Cuáles son los principios activos (Acetaminofén, Clorfeniramina)? ¿Cómo actúan?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Los principios activos son Acetaminofén y Clorfeniramina Maleato. El Acetaminofén es un analgésico y antipirético (alivia el dolor y la fiebre). La Cl...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 0
+      },
+      {
+        "question_text": "[Jengibre Zinc Vitamina C] Ante la duda del médico: \"¿Cuáles son los principios activos (Jengibre, Zinc, Vitamina C)? ¿Qué aporta cada uno?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Los principios activos son Extracto de raíz de Zingiber officinate (jengibre), bisglicinato de zinc y ácido ascórbico (vitamina C). El Jengibre es con...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 1
+      },
+      {
+        "question_text": "[Acetaten Forte] Ante la duda del médico: \"¿Qué es el Acetaminofén (Paracetamol)? ¿Cómo actúa?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Acetaminofén, también conocido como Paracetamol, es un analgésico y antipirético. Actúa [Explicar brevemente el mecanismo de acción: inhibición de ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 2
+      },
+      {
+        "question_text": "[Jarabe de Berro] Ante la duda del médico: \"¿Qué es el extracto de berro y cómo actúa como fluidificante bronquial?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El extracto de berro contiene compuestos [Mencionar si se sabe: glucosinolatos, isotiocianatos] que le confieren propiedades expectorantes y mucolític...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 3
+      },
+      {
+        "question_text": "[Jarabe Lamedor Compuesto] Ante la duda del médico: \"¿Qué son los extractos de Bálsamo de Tafú y Polígala? ¿Cómo actúan en la tos?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Bálsamo de Tafú es un bálsamo natural con propiedades [Mencionar si se conoce: balsámicas, expectorantes, antitusivas leves]. La Polígala (Polygala...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 4
+      },
+      {
+        "question_text": "[Rábano Yodado] Ante la duda del médico: \"¿Qué aporta el Extracto de rábano? ¿Cómo actúa como expectorante?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Extracto de rábano contiene compuestos [Mencionar si se sabe: azufrados, isotiocianatos] que tienen propiedades mucolíticas y expectorantes suaves....",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 5
+      },
+      {
+        "question_text": "[Pomada Mentolada] Ante la duda del médico: \"¿Cómo actúan el Mentol y el Eucaliptol para la congestión nasal?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Mentol y el Eucaliptol (cineol) son rubefacientes y descongestionantes tópicos. Al aplicarse en el pecho/cuello, sus vapores son inhalados, produci...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 6
+      },
+      {
+        "question_text": "[MENTOL] Ante la duda del médico: \"¿Qué aportan el Mentol y el Salicilato de Metilo? ¿Cómo actúan en conjunto?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Los principios activos son Mentol y Salicilato de Metilo. El Mentol produce una sensación refrescante y tiene un leve efecto analgésico local. El Sali...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 7
+      }
+    ]
+  }
+},
+{
+  "slug_id": "sys_line_gastro_metabolica",
+  "title": "Línea Gastrointestinal & Metabólica",
+  "description": "Abordaje de trastornos digestivos, equilibrio electrolítico y suplementación mineral: Feryfol, Citrato de Potasio, Cloruro de Magnesio, Limonada Laxante, Leche de Magnesia, Nemozol, Sal de Epsom y Bicarbonato de Sodio.",
+  "category": "Gastroenterología y Metabolismo",
+  "points_reward": 350,
+  "duration_mins": 45,
+  "difficulty": "intermediate",
+  "is_informative": false,
+  "target_roles": [
+    "representative",
+    "supervisor",
+    "manager",
+    "admin"
+  ],
+  "course_type": "product_line",
+  "status": "published",
+  "sections": [
+    {
+      "title": "Módulo: Feryfol",
+      "order_index": 0,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Feryfol",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Feryfol\n\n![Presentación Oficial Feryfol](/products/Feryfol.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Feryfol**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Bisglicinato ferroso y por qué lo usan?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber sobre esta forma particular de hierro: su absorción, tolerancia GI, y si es superior a otras formas (sulfato ferroso, fumarato ferroso).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Bisglicinato ferroso es una sal de hierro quelada con dos moléculas de glicina. Esta quelación [Explicar beneficio según laboratorio: mejora absorción, reduce efectos GI, es más biodisponible, etc.].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuántos mg de hierro elemental aporta Feryfol por porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la cantidad exacta de hierro activo para calcular la dosis y comparar con otras sales.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar el dato exacto del laboratorio: \"Cada porción de Feryfol aporta X mg de hierro elemental\"]. El Bisglicinato ferroso tiene un ~20% de hierro elemental. Debes tener el dato exacto.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Por qué tiene Vitamina B9 (Ácido Fólico)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la sinergia entre el hierro y el ácido fólico y su importancia en la anemia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Vitamina B9 (Ácido Fólico) es esencial para la formación de glóbulos rojos y la síntesis de ADN. Su inclusión potencia el efecto antianémico del hierro, tratando o previniendo anemias megaloblásticas concurrentes, comunes en el embarazo.\n\n---\n\n#### 4. Pregunta del Médico: *\"¿Contiene azúcar u otros excipientes relevantes (sabor, etc.)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Importante por pacientes diabéticos, niños, alergias, o simplemente aceptabilidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa base es un jarabe con sabor a avellana. [Indicar si tiene azúcar o edulcorantes específicos]. [Mencionar otros excipientes relevantes como colorantes, conservantes].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué tipos de anemia ferropénica está indicado?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber si es para prevención, tratamiento, anemias leves/moderadas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nFeryfol está indicado para la prevención y el tratamiento de la anemia ferropénica en diversas etapas, incluyendo [Mencionar: deficiencia latente, anemia leve a moderada].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es suficiente para el tratamiento de la anemia en el embarazo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El embarazo aumenta la necesidad de hierro; quieren saber si la dosis es adecuada.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, Feryfol está específicamente indicado en el embarazo para prevenir y tratar la anemia ferropénica gestacional, una condición muy común. La dosis por porción está diseñada para cubrir las necesidades incrementadas.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay evidencia clínica que respalde su eficacia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Buscan estudios o experiencia que muestren que realmente aumenta los niveles de hierro y hemoglobina.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Mencionar si hay estudios específicos con Feryfol o evidencia robusta sobre la eficacia del Bisglicinato ferroso en anemia ferropénica]. \"Estudios han demostrado que [Bisglicinato ferroso/Feryfol] es eficaz para restaurar los depósitos de hierro y mejorar los parámetros hematológicos.\"\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada (en adultos, embarazadas, niños)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan pautas posológicas claras para prescribir.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar la dosis exacta en volumen (mL) o número de porciones] al día para adultos y embarazadas. Para niños, la dosis se ajusta según la edad/peso [Proporcionar esquema posológico pediátrico según laboratorio].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo se administra? ¿Con o sin alimentos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Para optimizar la absorción y minimizar efectos secundarios.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe recomienda administrar Feryfol [Indicar si con o sin alimentos, o si es flexible. Generalmente el hierro se absorbe mejor en ayunas, pero la tolerancia mejora con alimentos. El Bisglicinato puede tener mejor tolerancia]. [Si aplica: \"Evitar tomar con lácteos, té o café\"].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios gastrointestinales típicos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El hierro es conocido por causar náuseas, estreñimiento o diarrea.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGracias a la forma de Bisglicinato ferroso, Feryfol tiende a tener una mejor tolerancia gastrointestinal comparado con otras sales de hierro como el sulfato ferroso. Los efectos como náuseas o estreñimiento son menos frecuentes o intensos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones con otros medicamentos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El hierro interactúa con varios medicamentos (antibióticos, antiácidos).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, el hierro puede interactuar con [Mencionar interacciones clave: Tetraciclinas, Quinolonas, Antiácidos, Levotiroxina]. Recomendar separar la administración [Indicar tiempo según laboratorio].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Para evitar su uso en pacientes inadecuados (ej. hemocromatosis).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipersensibilidad, anemias no ferropénicas (ej. megaloblásticas por déficit de B12 sin corregir, hemolíticas), hemocromatosis o hemosiderosis.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Para cuánto dura?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Aspecto práctico para el paciente y la prescripción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nFeryfol viene en envase de 120 mL. Con la dosis típica para adultos/embarazadas, dura aproximadamente [Calcular duración según dosis y volumen] días.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Citrato de Potasio",
+      "order_index": 1,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Citrato de Potasio",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Citrato de Potasio\n\n![Presentación Oficial Citrato de Potasio](/products/Citrato.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Citrato de Potasio**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Citrato de potasio? ¿Cuántos mEq de potasio por dosis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la cantidad de potasio elemental o sus equivalentes (mEq) para ajustar la dosis.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Citrato de potasio es una sal que aporta potasio y citrato. [Indicar la cantidad exacta en mEq de potasio y/o mg de Citrato de potasio por dosis/volumen, según laboratorio]. El citrato se metaboliza a bicarbonato, teniendo un efecto alcalinizante.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es el rol del Ácido cítrico en esta fórmula?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es solo para el pH o si tiene otro efecto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Ácido cítrico se incluye principalmente para ajustar el pH de la solución y mejorar la estabilidad. [Si aplica y el laboratorio lo menciona: podría contribuir marginalmente al pool de citrato].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué casos de acidosis metabólica está indicado? ¿Qué tipo de acidosis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para acidosis renal tubular, acidosis por diarrea, etc.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el tratamiento de la acidosis metabólica crónica, particularmente la Acidosis Tubular Renal (ATR), o en otras condiciones donde se requiera un agente alcalinizante sistémico.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo funciona para la litiasis renal? ¿Qué tipo de cálculos previene?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Entender el mecanismo de prevención de cálculos renales con citrato.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl citrato urinario inhibe la cristalización y agregación de sales formadoras de cálculos, especialmente los de oxalato de calcio. El Citrato de Potasio también aumenta el pH urinario, ayudando a prevenir cálculos de ácido úrico. Está indicado para la prevención de [Mencionar tipos de cálculos: oxalato de calcio, ácido úrico] asociados a hipocitraturia o acidosis tubular renal.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Para qué tipo de hipokalemia (déficit de potasio)? ¿Leve, moderada?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para corregir deficiencias leves o moderadas de potasio.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe utiliza para el tratamiento de la hipokalemia, especialmente cuando está asociada a acidosis metabólica o se requiere un agente alcalinizante. Es útil para reponer los niveles de potasio.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada? ¿Cómo se ajusta? ¿Se puede diluir?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica, ajuste según niveles séricos, y forma de administración.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis es muy variable y debe ajustarse individualmente según la severidad de la condición y los niveles séricos de potasio y bicarbonato. [Proporcionar rango de dosis usual en mEq/día y frecuencia]. La solución debe diluirse en agua u otro líquido para minimizar irritación GI.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios? ¿Náuseas, diarrea, hiperkalemia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los riesgos, especialmente GI y el riesgo de exceso de potasio.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos efectos secundarios más comunes son gastrointestinales como náuseas, vómitos, diarrea o dolor abdominal. El riesgo más serio es la hiperkalemia (niveles altos de potasio en sangre), especialmente en pacientes con insuficiencia renal o que toman ciertos medicamentos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuáles son las interacciones farmacológicas clave?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El potasio y el citrato interactúan con varios fármacos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nInteracciones importantes con [Mencionar: Diuréticos ahorradores de potasio (espiro o eplerenona, amilorida, triamtereno) -> riesgo de hiperkalemia severa; IECA, ARA II -> riesgo de hiperkalemia; AINEs -> pueden reducir excreción de potasio; Antiácidos con aluminio/magnesio -> pueden aumentar absorción de citrato].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones importantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo (insuficiencia renal es crítica).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de insuficiencia renal aguda o crónica severa, hiperkalemia, enfermedad de Addison, deshidratación aguda, daño miocárdico severo, obstrucción del tracto urinario, úlcera péptica activa.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tienen los envases?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente y la duración del tratamiento.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentaciones de 500 mL y 1 L.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Cloruro de Magnesio",
+      "order_index": 2,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Cloruro de Magnesio",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Cloruro de Magnesio\n\n![Presentación Oficial Cloruro de Magnesio](/products/Cloruro.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Cloruro de Magnesio**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Cloruro de magnesio USP? ¿Es una buena fuente de magnesio elemental?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la cantidad de magnesio activo y la calidad del compuesto (USP).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Cloruro de magnesio es una sal de magnesio que aporta [Indicar el % o mg de magnesio elemental por dosis/volumen, según laboratorio]. La calidad USP indica que cumple con los estándares de pureza y calidad de la Farmacopea de Estados Unidos.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué casos de déficit de magnesio está indicado? ¿Qué síntomas trata?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es para hipomagnesemia clínica o deficiencia subclínica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nIndicado para la prevención y el tratamiento de la hipomagnesemia (déficit de magnesio). Puede ser útil en pacientes con [Mencionar causas: ingesta insuficiente, mala absorción, pérdidas renales/GI excesivas por diuréticos, alcoholismo]. Los síntomas de déficit incluyen [Mencionar: calambres musculares, fatiga, debilidad, arritmias].\n\n---\n\n#### 2. Pregunta del Médico: *\"Menciona \"equilibrio mental\", ¿hay evidencia de esto? ¿Ansiedad, estrés?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber si hay un beneficio documentado en el estado de ánimo o neurológico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl magnesio juega un papel en la función neurotransmisora y neuromuscular. [Mencionar si hay evidencia o estudios que sugieran un posible beneficio en la reducción de síntomas asociados a estrés, ansiedad leve, o mejora del sueño, si el laboratorio lo respalda. Ser cauto con afirmaciones directas sobre tratamiento de trastornos mentales].\n\n---\n\n#### 3. Pregunta del Médico: *\"Menciona \"salud ósea\", ¿cómo ayuda el magnesio a los huesos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocen el calcio y la Vitamina D; quieren saber el rol del magnesio.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl magnesio es un componente estructural del hueso y participa en el metabolismo óseo. Un déficit de magnesio puede afectar la salud ósea. Su suplementación apoya el mantenimiento de una densidad mineral ósea saludable.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada? ¿Cómo se ajusta? ¿Se puede diluir?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica y forma de administración.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis varía según la severidad del déficit y la indicación. [Proporcionar rango de dosis usual en mg de magnesio elemental/día o volumen]. La solución oral debe diluirse en agua u otro líquido para mejorar la tolerabilidad y reducir el efecto laxante.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios más comunes? ¿El efecto laxante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El efecto laxante es bien conocido con sales de magnesio.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl efecto secundario más común es la diarrea, debido al efecto osmótico del magnesio no absorbido en el intestino. Otros efectos pueden incluir náuseas o calambres abdominales. Generalmente dosis más bajas o dilución lo reducen.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es el riesgo de hipermagnesemia? ¿En quiénes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Preocupación por el exceso de magnesio, especialmente en ciertas poblaciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl riesgo de hipermagnesemia es bajo en personas con función renal normal. El riesgo aumenta significativamente en pacientes con insuficiencia renal debido a la menor excreción de magnesio.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Tiene interacciones con otros medicamentos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El magnesio interactúa con varios fármacos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nInteracciones importantes con [Mencionar: Ciertos antibióticos (Tetraciclinas, Quinolonas) -> el magnesio disminuye su absorción, separar administración; Diuréticos (asa y tiazidas) -> pueden aumentar excreción de magnesio; Laxantes/Antiácidos que contienen magnesio -> riesgo de acumulación/efecto laxante excesivo].\n\n---\n\n#### 4. Pregunta del Médico: *\"¿Hay contraindicaciones importantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo (insuficiencia renal es crítica).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de insuficiencia renal grave, hipermagnesemia, miastenia gravis, bloqueo cardíaco. Usar con precaución en pacientes con insuficiencia renal leve a moderada.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tienen los envases?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentaciones de 500 mL y 1 L.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Limonada Laxante",
+      "order_index": 3,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Limonada Laxante",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Limonada Laxante\n\n![Presentación Oficial Limonada Laxante](/products/LimonadaLaxante.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Limonada Laxante**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Citrato de Magnesio? ¿Cómo actúa como laxante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo y su mecanismo de acción laxante.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Citrato de Magnesio. Es un laxante salino osmótico que actúa atrayendo agua hacia el intestino. Este aumento de agua en el lumen intestinal ablanda las heces y estimula la motilidad intestinal, facilitando la evacuación. También tiene un efecto colagogo.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de estreñimiento está indicado? ¿Ocasional? ¿Constipación abdominal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las condiciones de uso para el estreñimiento.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el alivio temporal de la constipación abdominal y el tratamiento del estreñimiento ocasional causado por cambios en la dieta, estrés, o falta de actividad física.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Se usa para preparación intestinal antes de procedimientos? ¿Cuáles?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su utilidad en procedimientos médicos que requieren limpieza intestinal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, también está indicado para la preparación intestinal antes de procedimientos diagnósticos o quirúrgicos, ayudando a vaciar completamente el intestino.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para cada indicación (estreñimiento, preparación)? ¿Es dosis única? ¿Se toma diluida?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta posológica exacta para cada uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis varía según la indicación y la edad (si aplica). Para el alivio del estreñimiento ocasional, generalmente se toma una dosis única. Para la preparación intestinal, la pauta puede ser diferente. [Indicar la dosis exacta en mL o el volumen total del frasco según la indicación y edad (si está especificado) según la ficha técnica del laboratorio]. Se toma oralmente. [Indicar si se toma directo o diluido].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los posibles efectos secundarios? ¿Diarrea, calambres? ¿Riesgo de deshidratación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los efectos esperados y los riesgos, especialmente por pérdida de líquidos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLos efectos secundarios más comunes son diarrea, calambres abdominales, náuseas y distensión abdominal. Debido a su mecanismo osmótico, puede causar deshidratación si no se acompaña de una adecuada ingesta de líquidos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay riesgo de hipermagnesemia? ¿En quiénes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Preocupación por el exceso de magnesio, especialmente en insuficiencia renal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl riesgo de hipermagnesemia (niveles altos de magnesio) existe, especialmente en pacientes con insuficiencia renal, ya que no excretan el magnesio adecuadamente. También en casos de sobredosis. Los síntomas pueden incluir debilidad muscular, confusión y problemas cardíacos.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Tiene interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Interacciones con otros medicamentos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede disminuir la absorción de ciertos medicamentos (ej. antibióticos como tetraciclinas y quinolonas). Debe tomarse separado de otros medicamentos (generalmente 2-3 horas antes o después). Usar con precaución en pacientes que toman medicamentos que afectan los electrolitos.\n\n---\n\n#### 4. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones importantes (insuficiencia renal, obstrucción intestinal)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de insuficiencia renal grave, obstrucción intestinal, dolor abdominal intenso de origen desconocido (podría ser apendicitis), perforación intestinal, íleo, megacolon tóxico. Usar con precaución en pacientes con enfermedad cardíaca o renal leve a moderada, y desequilibrios electrolíticos preexistentes.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Tiene sabor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentación Solución Oral con contenido neto de 240 mL. [La imagen sugiere sabor a limón por el nombre \"Limonada\", confirmar si se especifica sabor en el producto].\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Leche de Magnesia",
+      "order_index": 4,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Leche de Magnesia",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Leche de Magnesia\n\n![Presentación Oficial Leche de Magnesia](/products/LecheMagnesia.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Leche de Magnesia**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Hidróxido de Magnesio y cómo actúa como antiácido y laxante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber el principio activo y su doble mecanismo de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Leche de Magnesia es una suspensión de Hidróxido de Magnesio. Actúa como antiácido neutralizando el ácido gástrico. Como laxante, el magnesio no absorbido atrae agua hacia el intestino, aumentando el volumen y la motilidad intestinal.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de Hidróxido de Magnesio?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Dato clave para dosificar tanto el efecto antiácido como el laxante.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa suspensión contiene 8.5 g% (equivalente a 8.5 g por 100 mL) de Hidróxido de Magnesio.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cuándo se usa como antiácido? ¿Es rápido?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es una opción para alivio de la acidez.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe usa para el alivio ocasional de la hiperacidez gástrica y la indigestión ácida. Su efecto antiácido es rápido, pero también puede tener un efecto laxante concurrente.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuándo se usa como laxante? ¿Para qué tipo de estreñimiento?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber su indicación principal como laxante.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe usa como laxante para el alivio del estreñimiento ocasional. Es un laxante osmótico suave.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada para cada indicación (antiácido, laxante)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan pautas claras para cada uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis varía según la indicación: Como antiácido: [Indicar dosis en volumen (mL) según ficha técnica, usualmente menor]. Como laxante: [Indicar dosis en volumen (mL) según ficha técnica, usualmente mayor]. Siempre agitar bien antes de usar.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios principales? ¿La diarrea es común?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El efecto laxante es el más conocido.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl efecto secundario más común es la diarrea, especialmente con dosis mayores usadas como laxante. También puede causar calambres abdominales.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay riesgo de acumulación de magnesio? ¿En quiénes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Preocupación por la hipermagnesemia, especialmente en insuficiencia renal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl riesgo de hipermagnesemia es bajo en personas con función renal normal. El riesgo aumenta significativamente en pacientes con insuficiencia renal, ya que el magnesio no se excreta adecuadamente.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Tiene interacciones con otros medicamentos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El magnesio interactúa con varios fármacos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, el magnesio puede disminuir la absorción de muchos medicamentos (similar a otros antiácidos de magnesio), incluyendo [Mencionar ejemplos clave: Tetraciclinas, Quinolonas]. Se recomienda separar la administración [Indicar tiempo: usualmente 2-4 horas] de otros medicamentos.\n\n---\n\n#### 4. Pregunta del Médico: *\"¿Hay contraindicaciones importantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo (insuficiencia renal es crítica).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de insuficiencia renal grave, hipermagnesemia, síntomas de apendicitis, obstrucción intestinal. Usar con precaución en pacientes con insuficiencia renal leve a moderada. No usar como laxante por periodos prolongados.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tienen los envases? ¿Tiene sabor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en envases de 120 mL. Está disponible con sabor a menta y sabor original.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Nemozol",
+      "order_index": 5,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Nemozol",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Nemozol\n\n![Presentación Oficial Nemozol](/products/Nemazol.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Nemozol**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Albendazol? ¿Cómo actúa contra los parásitos intestinales?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo y su mecanismo antiparasitario.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Albendazol es un antihelmíntico de amplio espectro. Actúa [Explicar mecanismo: uniéndose a la beta-tubulina del parásito, inhibiendo la polimerización de los microtúbulos. Esto altera funciones vitales del parásito como la captación de glucosa, llevándolo a la inmovilización y muerte].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de Albendazol en la suspensión?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Dato clave para dosificar, especialmente en niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa suspensión de Nemozol contiene 400 mg de Albendazol en 10 mL. Esto permite una dosificación conveniente.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Contra qué parásitos específicos es efectivo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de acción para elegir el tratamiento adecuado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs efectivo contra parasitosis intestinales simples y múltiples causadas por [Mencionar los parásitos específicos listados: oxiuros, áscaris, tricocéfalos (Trichuris), strongiloides y tenias]. También es ovicida y vermicida.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es útil para la giardiasis? ¿En qué poblaciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** La giardiasis es común, quieren saber si es una opción y para quién.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, Nemozol está indicado específicamente para el tratamiento de la giardiasis en niños [Indicar rango de edad según catálogo: desde los 2 y hasta los 10 años].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la dosis recomendada (por parásito, por edad)? ¿Es dosis única o por días?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan la pauta de tratamiento exacta para cada infestación y grupo de edad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis varía según el parásito y la edad. Para la mayoría de las parasitosis comunes (oxiuros, áscaris, tricocéfalos), la dosis habitual es de 400 mg (10 mL de suspensión) como dosis única en adultos y niños mayores de 2 años. Para giardiasis en niños de 2 a 10 años, la dosis es también 400 mg al día por [Indicar duración del tratamiento para giardiasis según ficha técnica, usualmente 5 días]. Consultar inserto para dosis en otras infestaciones o edades.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los posibles efectos secundarios?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar durante el tratamiento antiparasitario.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. Los efectos secundarios son poco comunes y leves, pudiendo incluir [Mencionar si aplica: molestias gastrointestinales (dolor abdominal, náuseas, vómitos), cefalea, mareo]. Rara vez reacciones alérgicas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones relevantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Interacciones con otros medicamentos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe han reportado interacciones con [Mencionar si aplica: Cimetidina, Dexametasona, Praziquantel] que pueden aumentar los niveles plasmáticos de Albendazol. Importancia clínica variable.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones (embarazo, daño hepático)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo, especialmente por su metabolismo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de hipersensibilidad al Albendazol u otros benzimidazoles. No se recomienda su uso durante el embarazo. Usar con precaución en pacientes con enfermedad hepática preexistente (monitorear enzimas hepáticas en tratamientos prolongados).\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el envase? ¿Tiene sabor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad y aceptabilidad, especialmente en niños.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un envase de 10 mL. Tiene sabor a banana. Esto es una dosis única o diaria conveniente.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Sal de Epsom  Higuera",
+      "order_index": 6,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Sal de Epsom  Higuera",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Sal de Epsom  Higuera\n\n![Presentación Oficial Sal de Epsom  Higuera](/products/SalEpsom.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Sal de Epsom  Higuera**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es la Sal de Epsom / Higuera? ¿Cuál es su principio activo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo y su naturaleza.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Sulfato de Magnesio heptahidratado. Comúnmente conocido como Sal de Epsom. Es una sal mineral de magnesio.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa como laxante y catártico? ¿Y como colagogo? ¿Qué significa eso?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos principales y el término \"colagogo\".\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como laxante y catártico suave. Actúa como laxante osmótico, atrayendo agua al intestino. Como colagogo, es una sustancia que estimula la producción y/o secreción de bilis, lo cual induce la depuración hepato-biliar.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se toma? ¿Cuál es la dosis para el efecto laxante? ¿Se disuelve?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe disuelve el contenido del sobre en agua y se toma oralmente. [Indicar la dosis y el volumen de agua recomendado según sepa del producto, ej: disolver el sobre en un vaso grande de agua]. Se toma generalmente en ayunas.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Diarrea? ¿Dolor abdominal? ¿Uso crónico?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes (principalmente diarrea) y el riesgo del uso prolongado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl efecto secundario más común es la diarrea. También puede causar náuseas, vómitos o calambres abdominales. No debe usarse de forma crónica como laxante, ya que puede generar dependencia y desequilibrios electrolíticos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación importante (problemas renales)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en casos de obstrucción intestinal, dolor abdominal intenso, insuficiencia renal grave (riesgo de hipermagnesemia), deshidratación severa. Usar con precaución en embarazo, lactancia, ancianos y pacientes con enfermedad cardíaca.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad contiene la papelata?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en papelata con contenido neto de 20 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Bicarbonato de Sodio",
+      "order_index": 7,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Bicarbonato de Sodio",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Bicarbonato de Sodio\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Bicarbonato de Sodio**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Bicarbonato de Sodio? ¿Cómo actúa para el alivio de la acidez?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo y su mecanismo de acción antiácida.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Bicarbonato de Sodio. Es un antiácido sistémico que actúa neutralizando el ácido clorhídrico en el estómago para formar cloruro de sodio, agua y dióxido de carbono.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza principalmente? ¿Alivio de la acidez estomacal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su uso principal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el alivio de la acidez estomacal. Proporciona un alivio rápido y temporal de la pirosis (ardor de estómago) y la indigestión ácida.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se toma? ¿Cuál es la dosis? ¿Se disuelve?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nDisolver el contenido del sobre en agua y tomar oralmente. [Indicar la dosis recomendada y el volumen de agua según sepa del producto, ej: disolver en medio vaso de agua]. Se toma según necesidad, después de las comidas o al sentir acidez.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Eructos? ¿Riesgo de alcalosis? ¿Sodio?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes (producción de gas, carga de sodio).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar eructos debido a la producción de dióxido de carbono en el estómago. El uso frecuente o a dosis altas puede causar alcalosis metabólica (aumento del pH sanguíneo) y una carga significativa de sodio, lo que puede ser problemático en pacientes con hipertensión o problemas cardíacos/renales.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación importante (Hipertensión, problemas renales)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo o usarlo con cuidado debido al contenido de sodio y el efecto sistémico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad, alcalosis metabólica o respiratoria, hipocalcemia, hipoclorhidria. Usar con extrema precaución en pacientes con hipertensión, insuficiencia cardíaca, enfermedad renal o edema debido a su alto contenido de sodio. No usar por periodos prolongados.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad contiene la papelata?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en papelata con contenido neto de 20 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    }
+  ],
+  "quiz": {
+    "title": "Examen de Certificación: Línea Gastrointestinal & Metabólica",
+    "passing_score": 80,
+    "max_attempts": 3,
+    "time_limit_mins": 15,
+    "questions": [
+      {
+        "question_text": "[Feryfol] Ante la duda del médico: \"¿Qué es el Bisglicinato ferroso y por qué lo usan?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Bisglicinato ferroso es una sal de hierro quelada con dos moléculas de glicina. Esta quelación [Explicar beneficio según laboratorio: mejora absorc...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 0
+      },
+      {
+        "question_text": "[Citrato de Potasio] Ante la duda del médico: \"¿Qué aporta el Citrato de potasio? ¿Cuántos mEq de potasio por dosis?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Citrato de potasio es una sal que aporta potasio y citrato. [Indicar la cantidad exacta en mEq de potasio y/o mg de Citrato de potasio por dosis/vo...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 1
+      },
+      {
+        "question_text": "[Cloruro de Magnesio] Ante la duda del médico: \"¿Qué aporta el Cloruro de magnesio USP? ¿Es una buena fuente de magnesio elemental?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Cloruro de magnesio es una sal de magnesio que aporta [Indicar el % o mg de magnesio elemental por dosis/volumen, según laboratorio]. La calidad US...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 2
+      },
+      {
+        "question_text": "[Limonada Laxante] Ante la duda del médico: \"¿Qué es el Citrato de Magnesio? ¿Cómo actúa como laxante?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Citrato de Magnesio. Es un laxante salino osmótico que actúa atrayendo agua hacia el intestino. Este aumento de agua en el lume...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 3
+      },
+      {
+        "question_text": "[Leche de Magnesia] Ante la duda del médico: \"¿Qué es el Hidróxido de Magnesio y cómo actúa como antiácido y laxante?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) La Leche de Magnesia es una suspensión de Hidróxido de Magnesio. Actúa como antiácido neutralizando el ácido gástrico. Como laxante, el magnesio no ab...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 4
+      },
+      {
+        "question_text": "[Nemozol] Ante la duda del médico: \"¿Qué es el Albendazol? ¿Cómo actúa contra los parásitos intestinales?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Albendazol es un antihelmíntico de amplio espectro. Actúa [Explicar mecanismo: uniéndose a la beta-tubulina del parásito, inhibiendo la polimerizac...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 5
+      },
+      {
+        "question_text": "[Sal de Epsom  Higuera] Ante la duda del médico: \"¿Qué es la Sal de Epsom / Higuera? ¿Cuál es su principio activo?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Sulfato de Magnesio heptahidratado. Comúnmente conocido como Sal de Epsom. Es una sal mineral de magnesio.",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 6
+      },
+      {
+        "question_text": "[Bicarbonato de Sodio] Ante la duda del médico: \"¿Qué es el Bicarbonato de Sodio? ¿Cómo actúa para el alivio de la acidez?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Bicarbonato de Sodio. Es un antiácido sistémico que actúa neutralizando el ácido clorhídrico en el estómago para formar cloruro...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 7
+      }
+    ]
+  }
+},
+{
+  "slug_id": "sys_line_dermatologia_antisepticos",
+  "title": "Línea Dermatológica, Cuidado Cutáneo & Antisépticos",
+  "description": "Tratamientos tópicos, barrera cutánea y desinfección: Pasta al Agua, Crema Fría, Pomada de Azufre, Loción Calamina, Talco Boricado, Vaselina, NeutroX, Gel Antibacterial, Alcoholes, Denti-OL, Aceites y Glicerina.",
+  "category": "Dermatología y Antisépticos",
+  "points_reward": 400,
+  "duration_mins": 50,
+  "difficulty": "intermediate",
+  "is_informative": false,
+  "target_roles": [
+    "representative",
+    "supervisor",
+    "manager",
+    "admin"
+  ],
+  "course_type": "product_line",
+  "status": "published",
+  "sections": [
+    {
+      "title": "Módulo: Pasta al Agua",
+      "order_index": 0,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Pasta al Agua",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Pasta al Agua\n\n![Presentación Oficial Pasta al Agua](/products/PastaAgua.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Pasta al Agua**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Óxido de zinc y la Glicerina en esta pasta?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber los componentes principales y su función.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContiene Óxido de zinc, que actúa como astringente, protector cutáneo y antiséptico suave. Ayuda a secar lesiones exudativas y formar una barrera protectora. La Glicerina es un humectante que ayuda a mantener la hidratación de la piel y le da consistencia a la pasta.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es similar a una crema para pañalitis? ¿En qué se diferencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Comparación con un producto conocido para la misma indicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs similar en el uso del Óxido de zinc para protección y secado, y está indicada también para lesiones por el pañal. La diferencia principal radica en la base; la \"Pasta al Agua\" tradicionalmente tiene un alto contenido de polvo (óxido de zinc, talco si lo incluyera) disperso en una base acuosa y glicerina, lo que le da un mayor efecto secante y desinfectante para lesiones exudativas (que supuran). La Crema para Panalitis (Pasta Lassar) suele tener una base más grasa y oclusiva.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de lesiones cutáneas está indicada? ¿Lesiones exudativas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber su nicho de uso, especialmente si es para lesiones húmedas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada para el tratamiento [Mencionar si es tratamiento o coadyuvante] y desecación de lesiones cutáneas exudativas, como [Mencionar ejemplos según catálogo: escaras, lesiones ocasionadas por el pañal (dermatitis del pañal cuando hay exudación)]. También tiene acción desinfectante.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo ayuda en las escaras?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su rol en el manejo de úlceras por presión en cierta fase.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEn las escaras (úlceras por presión), está indicada en fases donde hay exudación, ayudando a secar la lesión y proteger la piel circundante. [Aclarar: No es un tratamiento curativo para la escara, es un coadyuvante para manejar la humedad y proteger la zona].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica la pasta? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLimpiar y secar bien la zona afectada. Aplicar una capa fina de pasta sobre las lesiones [Indicar frecuencia según ficha técnica, ej: 2-3 veces al día o en cada cambio de pañal si aplica].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede resecar mucho la piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar con el efecto secante.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerada. El principal efecto es el secado de la piel, que es el objetivo terapéutico en lesiones exudativas. Evitar el contacto con ojos y mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarla o usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad a los componentes. Solo para uso externo. No usar sobre heridas abiertas profundas o infecciones cutáneas extendidas sin supervisión médica.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad tiene el tarro?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un tarro con contenido neto de 100 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Crema Fría",
+      "order_index": 1,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Crema Fría",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Crema Fría\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Crema Fría**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Aceite de parafina y la Cera de abejas a la crema?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber los componentes principales y su función en la piel.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Aceite de parafina es un emoliente y oclusivo que forma una película sobre la piel, reduciendo la pérdida de agua y proporcionando hidratación. La Cera de abejas ayuda a espesar la crema y contribuye a formar una barrera protectora suave.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué significa que es una \"Crema Fría\"?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El término implica una sensación o tipo de formulación específica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl término \"Crema Fría\" se refiere a una emulsión (generalmente agua en aceite) que al evaporarse el agua tras la aplicación produce una sensación refrescante. Es un tipo clásico de formulación emoliente.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de piel está indicada? ¿Seca, sensible, hipoalergénica?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las características de la crema y su público objetivo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada como hidratante para pieles normales a secas, y es especialmente útil para pieles sensibles o propensas a irritación ya que se describe como hipoalergénica [Confirmar si tiene estudios o certificación de hipoalergenicidad].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo funciona como desmaquillante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber si es efectiva y suave para retirar maquillaje.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSu base emoliente y oleosa (Aceite de parafina) permite disolver y retirar eficazmente el maquillaje, incluso el resistente al agua, de forma suave sin irritar la piel. La fase acuosa ayuda a limpiar.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica como hidratante? ¿Y como desmaquillante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para cada indicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nComo hidratante: aplicar generosamente sobre la piel limpia y seca, según necesidad. Como desmaquillante: aplicar sobre el rostro, masajear suavemente para disolver el maquillaje y retirar con algodón o pañuelo. No requiere enjuague con agua si se usa solo como desmaquillante suave.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede obstruir los poros (comedogénica)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si puede causar acné o irritación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente muy segura y bien tolerada debido a su formulación simple y protectora. El Aceite de parafina puede ser comedogénico en algunas personas con piel propensa al acné, aunque en una base de Crema Fría y con cera puede ser menos problemático. [Confirmar si es no comedogénica según laboratorio]. Reacciones alérgicas a la cera de abejas son raras pero posibles.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es segura para pieles muy sensibles o de bebé?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Confirmar su idoneidad para pieles delicadas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSiendo hipoalergénica y con una base emoliente simple, es generalmente muy segura para pieles sensibles, secas e incluso para la piel delicada del bebé. [Confirmar restricción de edad si aplica].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad tiene el tarro?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un tarro de 50 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Pomada de Azufre",
+      "order_index": 2,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Pomada de Azufre",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Pomada de Azufre\n\n![Presentación Oficial Pomada de Azufre](/products/Azufre.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Pomada de Azufre**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa el Azufre micronizado en estas condiciones de piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber el mecanismo de acción del azufre en escabiosis, acné, etc.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Azufre micronizado tiene propiedades [Mencionar: queratolíticas (ayuda a descamar la piel), antibacterianas, antifúngicas y parasiticidas suaves]. En escabiosis, actúa directamente contra el ácaro; en acné y dermatitis seborreica, ayuda a reducir la inflamación, controlar la proliferación bacteriana/fúngica y regular la producción de sebo. La micronización mejora su dispersión y actividad.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de Azufre?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Dato clave para la potencia y seguridad del producto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar el porcentaje (%) de Azufre micronizado en la pomada, según laboratorio]. La concentración es importante para la eficacia y el riesgo de irritación.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Es efectivo para la escabiosis (sarna)? ¿Cómo se usa?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es un tratamiento de primera línea o coadyuvante, y la pauta de aplicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Pomada de Azufre es un tratamiento tradicional y efectivo para la escabiosis, especialmente en ciertas poblaciones (ej. bebés) o como alternativa. [Indicar la pauta de tratamiento específica según laboratorio: aplicar en todo el cuerpo (excepto cara/cabeza en adultos, sí en niños), dejar actuar X horas o toda la noche, lavar, repetir por X días/noches]. Es fundamental tratar a contactos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo ayuda en el acné y la dermatitis seborreica?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el rol del azufre en estas patologías comunes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEn el acné, ayuda a [Mencionar: reducir la inflamación, controlar la bacteria P. acnes, y tiene un efecto queratolítico que ayuda a destapar poros]. En la dermatitis seborreica, ayuda a [Mencionar: controlar la proliferación del hongo Malassezia y reducir la inflamación/descamación].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿En qué frecuencia para cada indicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para las diferentes patologías.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPara escabiosis: [Repetir pauta de tratamiento específica]. Para acné/dermatitis seborreica: Aplicar una capa fina solo en las áreas afectadas [Indicar frecuencia según ficha técnica, ej: 1-2 veces al día], generalmente después de limpiar la piel.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios? ¿Irritación, sequedad, olor?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El azufre puede ser irritante y tiene un olor característico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación, enrojecimiento, sequedad y descamación de la piel, especialmente al inicio o con uso excesivo. Tiene un olor característico a azufre. Evitar el contacto con ojos y mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarla o usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al azufre. Usar con precaución en pieles muy sensibles o con eczema agudo. No aplicar en grandes extensiones de piel ni por periodos prolongados sin supervisión médica.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad tiene el tarro?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un tarro de 50 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Loción Calamina",
+      "order_index": 3,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Loción Calamina",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Loción Calamina\n\n![Presentación Oficial Loción Calamina](/products/Calamina.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Loción Calamina**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es la Calamina? ¿Cómo actúa en la piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la composición y el mecanismo de acción de este clásico tópico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Calamina es una mezcla de Óxido de zinc (aproximadamente 98%) y Óxido férrico (aproximadamente 2%). Actúa como un protector cutáneo suave con propiedades astringentes, antisépticas suaves y antipruriginosas (alivia el picor). El Óxido de zinc es el componente principal responsable de la acción calmante y protectora.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de Calamina en la loción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Dato clave para la potencia del producto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Loción Calamina contiene Calamina al 8%. Esta concentración es la habitual y efectiva para su uso indicado.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿En qué tipo de picaduras o irritaciones cutáneas está indicada? ¿Prurito?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de condiciones que alivia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada para el alivio sintomático del picor y la irritación de la piel causados por [Mencionar: picaduras de insectos, quemaduras solares leves, hiedra venenosa, roble venenoso, zumaque venenoso, y otras irritaciones cutáneas leves]. Tiene un efecto refrescante y calmante.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica la loción? ¿Cuántas veces al día? ¿Se agita?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso y preparación del producto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs una suspensión, por lo que debe agitarse bien antes de cada uso para redistribuir la calamina. Aplicar una capa fina sobre el área afectada con algodón o un paño suave. Dejar secar. Puede aplicarse [Indicar frecuencia según ficha técnica, ej: varias veces al día] según sea necesario para aliviar el picor.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede secar la piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar con el uso tópico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente muy bien tolerada. El efecto secundario más común es la sequedad de la piel debido al efecto astringente y secante del óxido de zinc. Esto puede ser más notorio con el uso frecuente. Evitar el contacto con ojos y mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarla o usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad a los componentes. Solo para uso externo. No aplicar sobre piel lesionada, heridas abiertas o infecciones cutáneas (fúngicas, bacterianas) sin supervisión médica.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tienen los envases?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el paciente y la duración del tratamiento.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en envases de 110 mL y 180 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Talco Boricado",
+      "order_index": 4,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Talco Boricado",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Talco Boricado\n\n![Presentación Oficial Talco Boricado](/products/TalcoBoricado.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Talco Boricado**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aporta el Mentol? ¿Es solo para refrescar?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la función de este componente conocido.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Mentol proporciona una sensación refrescante y calmante sobre la piel. También puede tener un efecto antiprurítico (alivia el picor) leve.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Qué aporta el Ácido bórico? ¿Cuál es su rol? ¿No es riesgoso?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber sobre este componente y posibles preocupaciones de seguridad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Ácido bórico tiene propiedades antisépticas suaves y ayuda a controlar el crecimiento bacteriano y fúngico, contribuyendo a reducir el mal olor. [Abordar la seguridad]: A las concentraciones permitidas y en formulaciones tópicas para piel intacta, es considerado seguro para uso externo. No debe usarse en piel lesionada o irritada, especialmente en niños pequeños, debido al riesgo de absorción sistémica.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Qué aporta el Talco? ¿Cuál es su función principal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el componente base.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Talco es un polvo inerte que actúa como base absorbente. Ayuda a absorber el exceso de humedad en la piel, manteniéndola seca y reduciendo la fricción, lo que previene irritaciones y maceración.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué sirve como desodorante y refrescante corporal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cómo funciona para controlar el olor y dar sensación de frescura.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nActúa absorbiendo la humedad (sudor), un medio de cultivo para bacterias que causan el mal olor. El Ácido bórico tiene una acción antiséptica suave contra estas bacterias, y el Mentol proporciona una sensación refrescante.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Ayuda a prevenir rozaduras o irritaciones por humedad?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es útil en zonas de pliegues o fricción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, al mantener la piel seca y reducir la fricción gracias al talco, ayuda a prevenir la formación de rozaduras, irritaciones y maceración en zonas propensas a la humedad (ej. axilas, ingles, pies).\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar sobre la piel limpia y seca en las áreas deseadas (axilas, pies, pliegues corporales). Espolvorear una pequeña cantidad y extender suavemente. Usar según necesidad, generalmente 1-2 veces al día. Evitar inhalar el polvo.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación? ¿Problemas respiratorios (inhalación)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar y los riesgos de inhalación del polvo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. La principal precaución es evitar la inhalación del polvo, ya que puede causar irritación respiratoria. Evitar el contacto con ojos y mucosas. Rara vez irritación local en pieles muy sensibles.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones importantes (Ácido Bórico)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo, especialmente en niños pequeños o piel dañada.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en piel lesionada, quemada o irritada, especialmente en niños pequeños, debido al riesgo de absorción sistémica del Ácido bórico. Solo para uso externo en piel intacta. No usar en el área del pañal en bebés. Evitar inhalar.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidades tienen las talqueras?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el consumidor.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en talqueras de 90 g y 200 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Vaselina",
+      "order_index": 5,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Vaselina",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Vaselina\n\n![Presentación Oficial Vaselina](/products/VaselinaTarro.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Vaselina**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Petrolato puro? ¿Cómo actúa como hidratante y protector?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer la naturaleza del componente y su mecanismo de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Petrolato puro (Vaselina) es un hidrocarburo semisólido altamente refinado. Actúa formando una barrera oclusiva sobre la superficie de la piel, lo que reduce significativamente la pérdida de agua transepidérmica (TEWL), manteniendo la piel hidratada indirectamente. No aporta humedad por sí mismo.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es comedogénico (obstruye poros)? ¿Es relevante para ciertos pacientes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Preocupación en pieles propensas al acné.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Petrolato puro puede ser comedogénico (obstruir los poros) en algunas personas, especialmente aquellas con piel grasa o propensa al acné. [Confirmar si el laboratorio tiene algún proceso de purificación extra o lo etiqueta como no comedogénico].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de piel o condiciones está indicada? ¿Sequedad, irritación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de uso de este emoliente clásico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada como hidratante para pieles muy secas o agrietadas, como protector para pieles irritadas o expuestas (ej. frío, viento), para prevenir rozaduras, y como base para formulaciones magistrales. Es útil en la recuperación de la barrera cutánea dañada.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es útil para proteger la piel alrededor de heridas o irritaciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su uso como barrera protectora.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, forma una excelente barrera protectora para aislar la piel sana o irritada de la humedad, la fricción o agentes externos, facilitando el proceso de curación natural subyacente. Útil alrededor de estomas, heridas en cicatrización (no aplicar en la herida abierta a menos que esté indicado).\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Cuántas veces al día?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar una capa fina sobre la piel limpia y seca en el área afectada. Masajear suavemente si es necesario. Aplicar según necesidad, especialmente después del baño o exposición a condiciones adversas.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede causar alergias?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs uno de los ingredientes tópicos más inertes y con menor potencial de causar reacciones alérgicas. El principal efecto secundario, si aplica, sería la comedogenicidad en pieles predispuestas o una sensación \"grasosa\".\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Situaciones en las que hay que tener cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSolo para uso externo. Evitar aplicar sobre heridas abiertas profundas o quemaduras severas sin supervisión médica. Evitar el contacto con ojos y mucosas.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidades tienen los tarros?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el consumidor.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en tarros de 25 g y 85 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: NeutroX",
+      "order_index": 6,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: NeutroX",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: NeutroX\n\n![Presentación Oficial NeutroX](/products/NeutroX.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **NeutroX**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aportan el Hidróxido de magnesio y el Hidróxido de aluminio?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber los principios activos y su mecanismo de acción como antiácidos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nNeutroX combina Hidróxido de magnesio e Hidróxido de aluminio. Son antiácidos no sistémicos que actúan neutralizando el exceso de ácido clorhídrico en el estómago 1 . El Hidróxido de magnesio tiende a ser más rápido y el Hidróxido de aluminio más lento, pero más prolongado, además de contrarrestar el efecto laxante del magnesio.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cuál es la concentración de cada hidróxido por porción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la potencia del antiácido para la dosificación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa suspensión contiene gel de hidróxido de aluminio equivalente a 185 mg y gel de hidróxido de magnesio equivalente a 200 mg por cada 5 mL 1 .\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de hiperacidez gástrica está indicado? ¿Síntomas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las condiciones que alivia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el tratamiento de la hiperacidez gástrica, proporcionando alivio rápido y efectivo de síntomas como [Mencionar síntomas comunes: acidez estomacal, indigestión ácida, ardor] 2 .\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se toma la suspensión? ¿Con qué frecuencia? ¿Antes o después de comidas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para el paciente.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis es [Indicar dosis en volumen (mL) según ficha técnica, usualmente 5-10 mL]. Se toma según necesidad para aliviar los síntomas. Generalmente se recomienda tomar [Indicar si entre comidas, después de comidas, o al acostarse, según ficha técnica para optimizar alivio]. Agitar antes de usar 3 .\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios comunes? ¿Estreñimiento, diarrea?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Balance de efectos GI entre el aluminio (estreñimiento) y el magnesio (diarrea).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa combinación busca minimizar los efectos sobre el tránsito intestinal. El Hidróxido de aluminio puede causar estreñimiento y el Hidróxido de magnesio puede causar diarrea. La combinación suele ser mejor tolerada. Otros efectos pueden ser [Mencionar si aplica: sabor a menta persistente].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Tiene interacciones relevantes con otros medicamentos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Los antiácidos interactúan con muchos fármacos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, los antiácidos pueden disminuir la absorción de muchos medicamentos, incluyendo [Mencionar ejemplos clave: Tetraciclinas, Quinolonas, algunos antifúngicos orales, hierro, digoxina]. Se recomienda separar la administración [Indicar tiempo: usualmente 2-4 horas] de otros medicamentos.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones importantes (problemas renales)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El aluminio y el magnesio pueden acumularse en insuficiencia renal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad a los componentes. Usar con precaución en pacientes con insuficiencia renal, ya que el aluminio y el magnesio pueden acumularse. No usar por periodos prolongados o a dosis altas sin supervisión médica.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tiene el envase?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en envases de 180 mL  1  y 240 mL 3 .\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Gel Antibacterial",
+      "order_index": 7,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Gel Antibacterial",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Gel Antibacterial\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Gel Antibacterial**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cuál es el principio activo y su concentración en este gel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** La concentración de alcohol es clave para la efectividad antimicrobiana.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Alcohol etílico desnaturalizado al 70% v/v. Esta concentración es la recomendada por autoridades sanitarias por su eficacia para eliminar gérmenes.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo actúa este gel para eliminar gérmenes en las manos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Mecanismo de acción antimicrobiana.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl alcohol al 70% actúa desnaturalizando las proteínas de los microorganismos (bacterias, virus y hongos), dañando su estructura y eliminándolos eficazmente.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza principalmente? ¿Elimina hasta el 99.9% de los gérmenes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su uso principal y el grado de efectividad declarado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado específicamente para la limpieza de manos. Es un antiséptico y antibacterial de uso tópico. Elimina hasta el 99.9% de los gérmenes instantáneamente.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Sustituye el lavado de manos con agua y jabón?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Clarificar su rol en la higiene de manos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs una alternativa eficaz y conveniente para la higiene de manos cuando no se dispone de agua y jabón, o como complemento. El lavado con agua y jabón es preferible si las manos están visiblemente sucias.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Qué cantidad?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para asegurar la efectividad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar una cantidad suficiente en la palma de la mano para cubrir todas las superficies de ambas manos. Frotar vigorosamente hasta que estén completamente secas. No necesita enjuague.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Puede resecar la piel con el uso frecuente? ¿Irritación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El alcohol puede ser secante.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl uso frecuente puede causar sequedad de la piel debido al alcohol. [Mencionar si el producto contiene emolientes (como glicerina o aloe vera) que ayuden a mitigar la sequedad, si esta información está en el catálogo aunque no se vea en la imagen].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es inflamable? ¿Hay que tener precauciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El alcohol es inflamable.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, es inflamable. Mantener alejado del fuego, chispas y fuentes de calor. No usar cerca de llamas abiertas. Dejar secar completamente en las manos antes de manipular fuentes de ignición.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones? ¿Uso en niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Seguridad en poblaciones especiales.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSolo para uso externo. No ingerir. Usar en niños bajo supervisión de un adulto. Evitar el contacto con ojos y mucosas. No aplicar sobre piel lesionada.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tiene el envase? ¿Cómo son los dispensadores?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para diferentes usos (personal, familiar, institucional).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nDisponible en presentaciones de 60 mL, 120 mL, 240 mL (con tapa flip top), 500 mL y 1 L (con válvula dispensadora).\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Alcohol Antiséptico",
+      "order_index": 8,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Alcohol Antiséptico",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Alcohol Antiséptico\n\n![Presentación Oficial Alcohol Antiséptico](/products/AlcoholAnticeptico.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Alcohol Antiséptico**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la concentración de Alcohol etílico? ¿Es suficiente para desinfectar?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** La concentración de alcohol es clave para la efectividad antimicrobiana.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContiene Alcohol etílico al 70%. Esta concentración es la recomendada por las autoridades sanitarias (ej. CDC, OMS) por ser óptima para la acción bactericida y virucida, ya que el agua permite que el alcohol penetre mejor la membrana celular de los microorganismos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo actúa el alcohol para desinfectar las manos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Mecanismo de acción antimicrobiana.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl alcohol actúa desnaturalizando las proteínas esenciales para la supervivencia de bacterias, virus y hongos. Causa daño a la membrana celular microbiana.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Contra qué microorganismos es efectivo? ¿Bacterias, virus (coronavirus), hongos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el espectro de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs efectivo contra una amplia gama de bacterias y virus (incluyendo virus encapsulados como coronavirus, virus de la gripe) y algunos hongos. Es una medida eficaz para reducir la transmisión de infecciones cuando el lavado de manos con agua y jabón no es posible.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Sustituye el lavado de manos con agua y jabón?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Clarificar su rol en la higiene de manos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl lavado de manos con agua y jabón es el método preferido para la higiene de manos, especialmente si las manos están visiblemente sucias o grasosas. El gel antibacterial es una alternativa eficaz cuando no se dispone de agua y jabón, o como complemento.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Cuánta cantidad? ¿Hasta que se seque?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para asegurar la efectividad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar una cantidad suficiente en la palma de una mano (cubrir toda la superficie de las manos). Frotar las manos vigorosamente, cubriendo todas las superficies (palmas, dorsos, entre dedos, debajo de uñas), hasta que estén completamente secas. No enjuagar.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Puede resecar la piel con el uso frecuente? ¿Irritación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El alcohol puede ser secante.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl uso frecuente de geles con alcohol puede causar sequedad de la piel. [Mencionar si el producto contiene emolientes como glicerina o aloe vera que ayuden a mitigar la sequedad]. Ocasionalmente puede haber irritación leve en pieles sensibles.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es inflamable? ¿Hay que tener precauciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El alcohol es inflamable.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, es inflamable debido a su alto contenido de alcohol. Mantener alejado del fuego o fuentes de calor. No usar cerca de llamas abiertas. Dejar secar completamente antes de manipular fuentes de ignición.\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Hay contraindicaciones? ¿Uso en niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Seguridad en poblaciones especiales.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSolo para uso externo. No ingerir. Usar en niños bajo supervisión de un adulto. No aplicar sobre piel lesionada o quemada.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tienen los envases?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para diferentes usos (personal, familiar).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en presentaciones de 80 mL (personal) hasta 1 L (familiar/ institucional).\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Alcohol Absoluto",
+      "order_index": 9,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Alcohol Absoluto",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Alcohol Absoluto\n\n![Presentación Oficial Alcohol Absoluto](/products/AlcoholAbsoluto.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Alcohol Absoluto**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Alcohol Absoluto? ¿Cuál es su concentración?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la pureza del alcohol y su principio activo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Alcohol etílico desnaturalizado al 98° GL. \"Absoluto\" se refiere a su alta concentración, que es cercana al 100% de alcohol (98° GL es equivalente a 98% v/v aproximadamente). Está desnaturalizado para uso externo.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Cicatrizante? ¿Astringente? ¿Ombligo de neonatos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos específicos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como cicatrizante y astringente. Se emplea en la rápida y efectiva cicatrización del ombligo en neonatos. Su acción astringente ayuda a secar tejidos y la cicatrizante promueve el cierre.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica en el ombligo del neonato? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta para esta indicación específica.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar directamente sobre la base del cordón umbilical en cada cambio de pañal o según indicación médica [Basarse en prácticas comunes para el cuidado del cordigo umbilical]. Asegurarse de cubrir bien la zona.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación de la piel? ¿Es seguro en neonatos?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles efectos adversos y la seguridad en esta población sensible.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación o sequedad en la piel circundante si se usa en exceso. Es importante usar la concentración adecuada (98°) para esta indicación. A pesar de ser alcohol de alta concentración, su uso tópico y localizado en el cordón umbilical es una práctica común y generalmente segura si se usa correctamente. Evitar el contacto con ojos y mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Es inflamable? ¿Hay que tener precauciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El alcohol es inflamable.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, es altamente inflamable. Mantener alejado del fuego, chispas y fuentes de calor. No usar cerca de llamas abiertas.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el uso domiciliario o profesional.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nDisponible en presentaciones de 60 mL, 120 mL, 240 mL, 500 mL y 1000 mL (1 L).\n\n---\n\n### 📌 Exportar a Hojas de cálculo\n\n#### 1. Pregunta del Médico: *\"\"*\n**💬 Respuesta Técnica Sugerida del Representante:**\n\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Alcohol Yodado",
+      "order_index": 10,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Alcohol Yodado",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Alcohol Yodado\n\n![Presentación Oficial Alcohol Yodado](/products/AlcoholYodado.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Alcohol Yodado**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Alcohol Yodado? ¿Cuál es su composición (Yodo y Alcohol)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los principios activos y sus concentraciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Alcohol etílico desnaturalizado al 70% V/V y Yodo metaloide-Yoduro de potasio. Es una combinación de yodo al 2% con alcohol etílico al 70%. El alcohol potencia la acción del yodo.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa como antiséptico? ¿Contra qué microorganismos es efectivo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su mecanismo de acción y espectro antimicrobiano.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nActúa como antiséptico de elección con amplio espectro. El yodo libera lentamente yodo libre, que oxida componentes celulares de los microorganismos. Es activo contra bacterias Gram positivas y Gram negativas y hongos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Preparación de la piel antes de cirugía? ¿Curación de heridas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos principales en antisepsia cutánea.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSe emplea para el tratamiento y cuidado de heridas y en la preparación de la zona operatoria de la piel. Ayuda a desinfectar la piel antes de procedimientos invasivos o al tratar heridas superficiales.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Es para uso externo solamente?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta y vía de administración.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs para uso externo únicamente. Aplicar sobre la piel limpia y seca en el área a desinfectar. Dejar secar al aire. No cubrir con vendajes oclusivos hasta que esté seco.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede irritar la piel? ¿Mancha? ¿Riesgo de toxicidad por Yodo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes, especialmente la irritación y la tinción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación, sequedad o reacciones alérgicas en pieles sensibles. Tiñe la piel de color pardo. La absorción sistémica de yodo es posible con uso prolongado o en grandes áreas de piel, con riesgo de afectar la función tiroidea, especialmente en personas sensibles o con trastornos tiroideos preexistentes. Es tóxico si se ingiere.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones importantes (problemas tiroideos)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo, especialmente por el componente Yodo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al yodo o alcohol. Evitar el uso repetido en grandes áreas de piel, en quemaduras extensas, o en piel lesionada debido al riesgo de absorción de yodo. Usar con precaución en pacientes con trastornos tiroideos. No ingerir.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volúmenes tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para diferentes usos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frascos con contenido neto de 60 mL y 120 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Enjuague Bucal Denti-OL",
+      "order_index": 11,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Enjuague Bucal Denti-OL",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Enjuague Bucal Denti-OL\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Enjuague Bucal Denti-OL**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué son el Timol y el Triclosán? ¿Cómo actúan como antisépticos bucales?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los principios activos y su mecanismo de acción antimicrobiana en la boca.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Timol es un fenol con propiedades antisépticas y antifúngicas. El Triclosán es un agente antibacteriano de amplio espectro. Juntos, ayudan a reducir la carga microbiana en la cavidad bucal [Explicar mecanismo: dañan la membrana celular, inhiben enzimas bacterianas].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Ayuda a controlar la placa y la gingivitis?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber si es efectivo para problemas comunes de salud bucal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSí, gracias a la acción antiséptica del Timol y Triclosán, Denti-OL ayuda a [Mencionar beneficios según laboratorio: reducir la acumulación de placa bacteriana (una de las principales causas de gingivitis) y, por ende, contribuye a la prevención y el control de la gingivitis].\n\n---\n\n#### 3. Pregunta del Médico: *\"¿Contiene alcohol? ¿Es relevante para la salud bucal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** El alcohol en enjuagues es un tema de debate por sequedad o irritación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar si contiene alcohol y en qué porcentaje]. Si contiene alcohol: \"Contiene X% de alcohol, lo cual ayuda a solubilizar los principios activos y potencia la acción antiséptica. [Si aplica: Mencionar si es bajo en alcohol o sin alcohol como una ventaja si el laboratorio lo promueve]\". Si no contiene alcohol: \"Es libre de alcohol, lo que lo hace más suave y menos propenso a causar sequedad bucal o irritación\".\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cuándo se recomienda su uso? ¿Como complemento al cepillado?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber su lugar en la rutina de higiene bucal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nDenti-OL está indicado como complemento a la higiene bucal diaria (cepillado e hilo dental) para potenciar la eliminación de bacterias, controlar la placa y ayudar a mantener las encías saludables.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se usa? ¿Cuánto tiempo y cuántas veces al día?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta para la efectividad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEnjuagar la boca con [Indicar volumen recomendado en mL] de enjuague sin diluir, durante [Indicar tiempo recomendado, ej: 30 segundos], [Indicar frecuencia, ej: 2 veces al día] después del cepillado. No ingerir. No enjuagar con agua inmediatamente después.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede teñir los dientes? ¿Alterar el gusto?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes con el uso de antisépticos bucales.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPosibles efectos secundarios incluyen [Mencionar: sensación de ardor o picor leve, alteración temporal del gusto]. [Indicar si puede causar tinción dental con el uso prolongado, especialmente si contiene Clorhexidina, aunque en este caso son Timol y Triclosán, menos propensos, pero confirmarlo con laboratorio].\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones? ¿Uso en niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Seguridad en poblaciones especiales.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad a los componentes. No recomendado para niños menores de [Indicar edad límite según laboratorio/normativa, usualmente 6-12 años] que no puedan escupir correctamente.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el uso regular.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en un frasco de 250 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Aceite de Almendras Dulces",
+      "order_index": 12,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Aceite de Almendras Dulces",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Aceite de Almendras Dulces\n\n![Presentación Oficial Aceite de Almendras Dulces](/products/AceiteAlmendras.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Aceite de Almendras Dulces**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Aceite de almendras dulces? ¿Cuál es su principio activo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza del producto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Aceite de almendras dulces. Es un aceite vegetal rico en ácidos grasos (principalmente oleico y linoleico).\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa como emoliente y humectante? ¿Para qué tipo de piel es útil?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus propiedades para la piel seca o sensible.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como emoliente y humectante. Ayuda a suavizar, hidratar y nutrir la piel, mejorando su elasticidad y apariencia. Es útil para pieles secas, deshidratadas o sensibles.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar directamente sobre la piel limpia y seca, masajeando suavemente hasta su absorción. Puede usarse según necesidad, varias veces al día.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios o contraindicaciones? ¿Puede causar alergias?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el perfil de seguridad, especialmente por ser un producto natural.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente es bien tolerado. En personas con alergia a los frutos secos, podría haber riesgo de reacción alérgica cutánea. Evitar el contacto con ojos.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Aceite Mineral",
+      "order_index": 13,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Aceite Mineral",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Aceite Mineral\n\n![Presentación Oficial Aceite Mineral](/products/AceiteMineral.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Aceite Mineral**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Aceite mineral? ¿Cuál es su composición?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza del producto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Aceite mineral NF. Es una mezcla de hidrocarburos líquidos derivados del petróleo, altamente refinados para uso farmacéutico/cosmético. NF significa que cumple con los estándares del National Formulary.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa como emoliente y suavizante? ¿Y como vehículo farmacéutico?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus propiedades para la piel y su uso en preparaciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como emoliente y suavizante de manos y piel, lubricante y vehículo farmacéutico. Forma una capa oclusiva sobre la piel que reduce la pérdida de agua. Como vehículo, se usa para disolver o dispersar otros ingredientes en formulaciones tópicas.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Es para uso interno o externo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso y vía de administración.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs principalmente para uso externo como emoliente. [Si está indicado como lubricante o para otra vía, especificar según ficha técnica. Tradicionalmente el aceite mineral también se usa como laxante, pero aquí no está listado como indicación]. Aplicar sobre la piel según necesidad.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede obstruir los poros (comedogénico)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Preocupación en pieles propensas al acné.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. Puede ser comedogénico (obstruir poros) en algunas personas, especialmente si se usa en exceso en pieles propensas al acné. [Confirmar si es de bajo grado de comedogenicidad según el laboratorio].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Aceite de Ricino",
+      "order_index": 14,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Aceite de Ricino",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Aceite de Ricino\n\n![Presentación Oficial Aceite de Ricino](/products/AceiteRicino.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Aceite de Ricino**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Aceite de Ricino? ¿Cuál es su principio activo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza del producto.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Aceite de castor NF. NF significa que cumple con los estándares del National Formulary. Es un aceite vegetal obtenido de la semilla de ricino, cuyo principal componente activo es el ácido ricinoleico.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa como laxante? ¿Es fuerte? ¿Para qué tipo de estreñimiento?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer su uso principal como laxante y su potencia.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como laxante natural y digestivo. Actúa irritando la mucosa intestinal y estimulando la motilidad, lo que produce un efecto laxante rápido y potente. Se usa para el alivio del estreñimiento ocasional.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Cómo se emplea en tratamientos capilares y cuidado de la barba/pestañas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus otros usos tradicionales no laxantes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nTradicionalmente se ha usado tópicamente en tratamientos capilares y para el cuidado de la barba y el crecimiento de las pestañas. Se cree que sus ácidos grasos pueden ayudar a hidratar y nutrir el folículo piloso, aunque la evidencia científica es limitada para estas indicaciones.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se toma como laxante? ¿Cuál es la dosis? ¿Y cómo se aplica tópicamente?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso para las diferentes indicaciones.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nComo laxante: [Indicar la dosis oral usual para adultos y niños mayores, según sepa del producto o prácticas comunes. Es una dosis única]. Tiene un sabor fuerte. Para uso tópico capilar/pestañas: aplicar una pequeña cantidad en el área deseada, masajeando si es en cuero cabelludo/barba.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Cuáles son los efectos secundarios? ¿Dolor abdominal? ¿Uso crónico?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber qué esperar y los riesgos del uso prolongado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar calambres abdominales, náuseas y diarrea. No debe usarse de forma crónica como laxante, ya que puede generar dependencia intestinal, pérdida de electrolitos y dañar la función intestinal.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones importantes? ¿Embarazo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en obstrucción intestinal, apendicitis, dolor abdominal de origen desconocido, enfermedad inflamatoria intestinal (Crohn, Colitis ulcerosa). No debe usarse durante el embarazo ya que puede inducir contracciones uterinas. Evitar en niños pequeños a menos que sea específicamente indicado y bajo supervisión médica estricta.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Glicerina USP",
+      "order_index": 15,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Glicerina USP",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Glicerina USP\n\n![Presentación Oficial Glicerina USP](/products/Glicerina.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Glicerina USP**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es la Glicerina USP? ¿Cuál es su principio activo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza del compuesto y su calidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Glicerina USP. Es un poliol (alcohol de azúcar) con propiedades humectantes y emolientes. USP significa que cumple con los estándares de pureza y calidad de la Farmacopea de Estados Unidos.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Cómo actúa como hidratante, humectante y suavizante? ¿Para qué se utiliza?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus propiedades para la piel y otros usos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada para disuelta en agua en partes iguales se emplea como hidratante, humectante y suavizante de la piel. Atrae agua a la piel y ayuda a mantenerla suave. También se utiliza como edulcorante y vehículo en preparaciones farmacéuticas.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se usa? ¿Se diluye? ¿Para uso tópico o como vehículo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso y formas de aplicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPara uso tópico en la piel: se recomienda diluirla en agua en partes iguales antes de aplicar. Como edulcorante o vehículo en formulaciones farmacéuticas, se usa según la formulación específica.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede ser irritante si no se diluye?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes del uso concentrado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente muy segura. En su forma concentrada, puede tener un efecto irritante o causar una sensación de calor en la piel debido a su naturaleza higroscópica (atrae agua). Por eso se recomienda diluirla para uso tópico.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad a la glicerina. Solo para uso externo o como vehículo en formulaciones orales (no inyectable a menos que se especifique).\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    }
+  ],
+  "quiz": {
+    "title": "Examen de Certificación: Línea Dermatológica, Cuidado Cutáneo & Antisépticos",
+    "passing_score": 80,
+    "max_attempts": 3,
+    "time_limit_mins": 15,
+    "questions": [
+      {
+        "question_text": "[Pasta al Agua] Ante la duda del médico: \"¿Qué aporta el Óxido de zinc y la Glicerina en esta pasta?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Contiene Óxido de zinc, que actúa como astringente, protector cutáneo y antiséptico suave. Ayuda a secar lesiones exudativas y formar una barrera prot...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 0
+      },
+      {
+        "question_text": "[Crema Fría] Ante la duda del médico: \"¿Qué aporta el Aceite de parafina y la Cera de abejas a la crema?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Aceite de parafina es un emoliente y oclusivo que forma una película sobre la piel, reduciendo la pérdida de agua y proporcionando hidratación. La ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 1
+      },
+      {
+        "question_text": "[Pomada de Azufre] Ante la duda del médico: \"¿Cómo actúa el Azufre micronizado en estas condiciones de piel?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Azufre micronizado tiene propiedades [Mencionar: queratolíticas (ayuda a descamar la piel), antibacterianas, antifúngicas y parasiticidas suaves]. ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 2
+      },
+      {
+        "question_text": "[Loción Calamina] Ante la duda del médico: \"¿Qué es la Calamina? ¿Cómo actúa en la piel?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) La Calamina es una mezcla de Óxido de zinc (aproximadamente 98%) y Óxido férrico (aproximadamente 2%). Actúa como un protector cutáneo suave con propi...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 3
+      },
+      {
+        "question_text": "[Talco Boricado] Ante la duda del médico: \"¿Qué aporta el Mentol? ¿Es solo para refrescar?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Mentol proporciona una sensación refrescante y calmante sobre la piel. También puede tener un efecto antiprurítico (alivia el picor) leve.",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 4
+      },
+      {
+        "question_text": "[Vaselina] Ante la duda del médico: \"¿Qué es el Petrolato puro? ¿Cómo actúa como hidratante y protector?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Petrolato puro (Vaselina) es un hidrocarburo semisólido altamente refinado. Actúa formando una barrera oclusiva sobre la superficie de la piel, lo ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 5
+      },
+      {
+        "question_text": "[NeutroX] Ante la duda del médico: \"¿Qué aportan el Hidróxido de magnesio y el Hidróxido de aluminio?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) NeutroX combina Hidróxido de magnesio e Hidróxido de aluminio. Son antiácidos no sistémicos que actúan neutralizando el exceso de ácido clorhídrico en...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 6
+      },
+      {
+        "question_text": "[Gel Antibacterial] Ante la duda del médico: \"¿Cuál es el principio activo y su concentración en este gel?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Alcohol etílico desnaturalizado al 70% v/v. Esta concentración es la recomendada por autoridades sanitarias por su eficacia par...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 7
+      }
+    ]
+  }
+},
+{
+  "slug_id": "sys_line_magistral_hospitalaria",
+  "title": "Línea Fórmulas Magistrales, Fitoterapia & Hospitalaria",
+  "description": "Soluciones antisépticas, fitomedicamentos y materias primas grado farmacéutico: Violeta de Genciana, Azul de Metileno, Miel de Borax, Cápsulas Ácido Bórico, Tintura de Valeriana, Árnica, Solución Fisiológica y principios activos puros.",
+  "category": "Magistral y Hospitalario",
+  "points_reward": 400,
+  "duration_mins": 50,
+  "difficulty": "intermediate",
+  "is_informative": false,
+  "target_roles": [
+    "representative",
+    "supervisor",
+    "manager",
+    "admin"
+  ],
+  "course_type": "product_line",
+  "status": "published",
+  "sections": [
+    {
+      "title": "Módulo: Violeta de Genciana",
+      "order_index": 0,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Violeta de Genciana",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Violeta de Genciana\n\n![Presentación Oficial Violeta de Genciana](/products/VioletaGenciana.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Violeta de Genciana**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es la Violeta de Genciana? ¿Cuál es su composición?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber el principio activo y su naturaleza.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa Violeta de Genciana es un colorante de anilina con propiedades antisépticas y antifúngicas. Su composición incluye Violeta de genciana, Alcohol etílico desnaturalizado y Agua purificada.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de infecciones o gérmenes está indicada? ¿Uso tópico?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de acción y vía de administración.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada como antiséptico, antimicótico y germicida de uso externo. Es útil en infecciones cutáneas y de mucosas causadas por bacterias Gram-positivas y hongos (especialmente Cándida).\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar directamente sobre el área afectada [Indicar frecuencia según indicaciones específicas del producto o prácticas comunes, ej: 1-2 veces al día]. Debe usarse en pequeñas cantidades y solo sobre la zona a tratar.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede irritar la piel? ¿Mancha la ropa/piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes, especialmente la tinción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación o sensibilización en algunas personas, especialmente con el uso prolongado o en pieles sensibles. Tiñe la piel y la ropa de color violeta intenso. Evitar el contacto con ojos y mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación? ¿Uso en heridas abiertas?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarla o usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad a la Violeta de Genciana. No se recomienda su uso en heridas profundas o extensas, ya que puede retrasar la cicatrización. [Mencionar si aplica alguna restricción de edad según el laboratorio].\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Azul de Metileno",
+      "order_index": 1,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Azul de Metileno",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Azul de Metileno\n\n![Presentación Oficial Azul de Metileno](/products/AzulMetileno.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Azul de Metileno**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Azul de Metileno? ¿Cuál es su composición?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber el principio activo y su naturaleza.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl Azul de Metileno es un colorante con propiedades antisépticas y cicatrizantes suaves. Su composición es Azul de metileno y Agua purificada.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de lesiones o gérmenes está indicado? ¿Uso tópico? ¿Cicatrizante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de acción y su rol en la cicatrización.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como antiséptico, cicatrizante y vermicida. Se usa tópicamente en el tratamiento de [Mencionar si hay indicaciones más específicas aparte de antiséptico/cicatrizante, si el laboratorio las proporciona]. Ayuda a desinfectar lesiones menores y favorecer la cicatrización.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar directamente sobre el área afectada [Indicar frecuencia según indicaciones específicas del producto o prácticas comunes, ej: 1-2 veces al día]. Tiñe la piel de color azul.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Mancha la piel/ropa?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes, especialmente la tinción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerado. El efecto secundario más notorio es la tinción azul de la piel y la ropa. Evitar el contacto con ojos y mucosas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo o usarlo con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al Azul de Metileno. Usar con precaución en pieles sensibles.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Miel de Borax",
+      "order_index": 2,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Miel de Borax",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Miel de Borax\n\n![Presentación Oficial Miel de Borax](/products/MielBorax.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Miel de Borax**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué aportan el Alumbre potásico y el Borato de sodio? ¿Cómo actúan?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer los principios activos y su mecanismo de acción en la mucosa bucal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContiene Alumbre potásico (una sal con propiedades astringentes y antisépticas) y Borato de sodio (Bórax), que tiene propiedades antisépticas y antifúngicas suaves. [Mencionar si la \"Miel\" en el nombre implica la presencia de miel o solo la consistencia/sabor].\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de afecciones de la mucosa bucal está indicada? ¿Aftas, irritaciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber las condiciones específicas que trata.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada como antiséptico y desinfectante de uso tópico en la mucosa bucal en el tratamiento de [Mencionar indicaciones según catálogo: aftas y otras lesiones], ayudando a evitar la sobreinfección y acelerar su curación.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica en la boca? ¿Con qué frecuencia?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta y segura para uso bucal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nAplicar una pequeña cantidad directamente sobre la lesión en la mucosa bucal [Indicar frecuencia según indicaciones específicas del producto, ej: varias veces al día]. Evitar la ingestión excesiva.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Puede irritar? ¿Riesgo si se ingiere?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes y la seguridad del uso oral.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente bien tolerada en uso tópico bucal. La ingestión de grandes cantidades de borato de sodio puede ser tóxica, por lo que debe usarse solo tópicamente y evitar la ingestión.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación? ¿Uso en niños?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo o usarlo con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad a los componentes. Usar con precaución en niños pequeños (asegurar que no ingieran el producto). No usar en heridas abiertas o extensas de la mucosa bucal.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Cápsulas Ácido Bórico",
+      "order_index": 3,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Cápsulas Ácido Bórico",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Cápsulas Ácido Bórico\n\n![Presentación Oficial Cápsulas Ácido Bórico](/products/AcidoBorico.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Cápsulas Ácido Bórico**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Ácido bórico USP? ¿Cómo actúa en infecciones vaginales?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo, su calidad y mecanismo de acción para esta indicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContiene Ácido bórico USP (grado farmacéutico, indicando pureza). Actúa creando un ambiente ácido en la vagina, lo que ayuda a restaurar el pH vaginal normal y a inhibir el crecimiento de ciertos hongos y bacterias que causan infecciones.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de infecciones vaginales está indicado? ¿Hongos, levaduras, Vaginosis Bacteriana?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el tratamiento de infecciones vaginales causadas por [Mencionar según catálogo: hongos y levaduras]. Es particularmente útil para la candidiasis vaginal recurrente o resistente a tratamientos convencionales. [Confirmar si también cubre Vaginosis Bacteriana según laboratorio].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se usan las cápsulas? ¿Cuántas veces al día? ¿Por cuánto tiempo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de tratamiento.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nSon cápsulas vaginales. La dosis habitual es [Indicar dosis y frecuencia según ficha técnica, ej: 1 cápsula insertada profundamente en la vagina, 1-2 veces al día]. La duración del tratamiento varía según la infección [Indicar duración típica, ej: 7-14 días para candidiasis, o más tiempo para casos recurrentes]. Insertar preferiblemente al acostarse.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación vaginal? ¿Riesgos por absorción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes y la seguridad del uso vaginal.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación, ardor o enrojecimiento vaginal leve en algunas usuarias. Es crucial no ingerir las cápsulas bajo ninguna circunstancia. La absorción sistémica de ácido bórico es posible, por lo que no debe usarse en embarazo, lactancia, ni en caso de heridas o úlceras vaginales.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones importantes (embarazo)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en el embarazo y la lactancia debido al riesgo potencial para el feto/bebé. No usar si hay heridas abiertas, úlceras o laceraciones vaginales. Contraindicado en hipersensibilidad al ácido bórico.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Cuántas cápsulas vienen en la presentación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el tratamiento.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa presentación es de 10 cápsulas.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Tintura de Valeriana",
+      "order_index": 4,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Tintura de Valeriana",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Tintura de Valeriana\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Tintura de Valeriana**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es la Tintura de Valeriana? ¿Cuál es su principio activo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza del extracto vegetal y su forma de presentación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Tintura de Valeriana. Es una preparación alcohólica (extracto hidroalcohólico) de la raíz de la planta Valeriana officinalis, que contiene ácidos valerénicos y otros compuestos.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Ansiedad, insomnio, nerviosismo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos tradicionales como sedante natural.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada como sedante, tranquilizante y auxiliar en el tratamiento del insomnio, nerviosismo, y estados de ansiedad leve a moderada [Basarse en usos tradicionales de la Valeriana]. Ayuda a calmar el sistema nervioso.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se toma la tintura? ¿Cuál es la dosis? ¿Cuántas veces al día?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta (generalmente diluida).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLa dosis recomendada es [Indicar dosis en número de gotas y frecuencia según ficha técnica, ej: X gotas diluidas en agua, Y veces al día]. Para el insomnio, se toma una dosis [Indicar si dosis única antes de acostarse].\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Somnolencia diurna? ¿Interacciones con sedantes?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles efectos adversos y precauciones con depresores del SNC.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar somnolencia (especialmente al inicio o con dosis altas), mareos, o molestias gastrointestinales leves. Puede potenciar el efecto de sedantes, tranquilizantes o alcohol. Evitar operar maquinaria pesada o conducir bajo sus efectos hasta conocer la respuesta individual.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna contraindicación o precaución (embarazo, niños)?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarla o usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad a la Valeriana. No se recomienda su uso durante el embarazo y la lactancia por falta de estudios de seguridad. Usar con precaución en niños (si está indicado, ajustar dosis) y en personas que toman otros sedantes.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco? ¿Viene con gotero?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para la dosificación en gotas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL. Incluye un gotero para facilitar la dosificación precisa.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Tintura de Árnica",
+      "order_index": 5,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Tintura de Árnica",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Tintura de Árnica\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Tintura de Árnica**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es la Tintura de Árnica? ¿Cuál es su principio activo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren saber la naturaleza del extracto vegetal y su forma de presentación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Tintura de Árnica. Es una preparación alcohólica (extracto hidroalcohólico) de la planta Arnica montana, que contiene lactonas sesquiterpénicas (como la helenalina) y flavonoides.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Golpes, moretones, inflamación? ¿Es de uso externo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos tradicionales como antiinflamatorio tópico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada para uso externo como antiinflamatorio y analgésico local en el tratamiento de [Mencionar usos tradicionales: golpes, contusiones, moretones (equimosis), esguinces leves, dolor muscular y articular superficial] [Basarse en usos tradicionales de la Árnica]. Ayuda a reducir la hinchazón, el dolor y la coloración de los moretones.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica la tintura? ¿Se diluye? ¿Cuántas veces al día?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso correcta (generalmente diluida o en compresas).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs para uso externo únicamente. Puede aplicarse [Indicar forma de uso según sepa del producto: directamente sobre la piel (si no está lesionada y la concentración lo permite), diluida en agua para compresas, o frotando suavemente]. [Indicar frecuencia según ficha técnica, ej: varias veces al día]. No aplicar sobre heridas abiertas o piel irritada.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación de la piel? ¿Es tóxica por vía oral?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles efectos adversos y la toxicidad si se ingiere.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación, enrojecimiento, picor o dermatitis alérgica en personas sensibles, especialmente con el uso prolongado o en altas concentraciones. Es tóxica por vía oral y puede causar síntomas graves (trastornos digestivos, cardíacos, nerviosos). Nunca debe ingerirse.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay contraindicaciones o precauciones? ¿Piel lesionada? ¿Embarazo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarla o usarla con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicada en hipersensibilidad al Árnica o plantas de la familia Asteraceae/Compositae. No aplicar sobre heridas abiertas, piel lesionada, quemaduras o mucosas. No se recomienda su uso durante el embarazo y la lactancia por falta de estudios.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco? ¿Viene con gotero?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para la dosificación/aplicación.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL. Incluye un gotero para facilitar la aplicación.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Solución Fisiológica 30mL",
+      "order_index": 6,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Solución Fisiológica 30mL",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Solución Fisiológica 30mL\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Solución Fisiológica 30mL**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué contiene la Solución Fisiológica? ¿Cuál es su composición?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los componentes y su naturaleza (isotónica).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Cloruro de sodio y Agua destilada. Es una solución isotónica de cloruro de sodio al 0.9%, lo que significa que tiene la misma concentración de sales que los fluidos corporales.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza principalmente en esta presentación de 30 mL? ¿Descongestión nasal?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer las indicaciones para este volumen pequeño, a menudo para uso nasal u oftálmico.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicada como descongestionante nasal. Ayuda a fluidificar y limpiar las secreciones nasales, facilitando la respiración. También puede usarse para limpieza de ojos o heridas menores [Si aplica según sepa del producto].\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se aplica como descongestionante nasal? ¿Con qué frecuencia? ¿Es segura en bebés?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de uso, especialmente en niños pequeños y bebés.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPara descongestión nasal: aplicar [Indicar si son gotas o si permite chorro suave, y el número de gotas/cantidad] en cada fosa nasal, según necesidad. Es segura para usar en bebés y niños, ya que es una solución salina suave que no causa rebote como los descongestionantes con vasoconstrictores.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Viene con algún aplicador específico?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para la administración, especialmente en fosas nasales o ojos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con gotero, lo que facilita la aplicación precisa en gotas en fosas nasales u ojos.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios o contraindicaciones?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer el perfil de seguridad (generalmente muy seguro).\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEs muy segura y bien tolerada. No tiene efectos secundarios relevantes a dosis terapéuticas. La única precaución es mantener la higiene del gotero para evitar contaminación.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué volumen tiene el frasco?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad para el uso individual o en viajes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en frasco con contenido neto de 30 mL.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Ácido Bórico",
+      "order_index": 7,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Ácido Bórico",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Ácido Bórico\n\n![Presentación Oficial Ácido Bórico](/products/AcidoBorico.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Ácido Bórico**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Ácido Bórico USP en polvo? ¿Cómo actúa como antiséptico tópico?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo, su calidad y mecanismo de acción para uso externo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Ácido Bórico USP. USP indica que cumple con los estándares de pureza de la Farmacopea de Estados Unidos. Tiene propiedades antisépticas y astringentes suaves.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Preparación de agua boricada? ¿Lavados? ¿Tratamiento del acné?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como antiséptico de uso tópico. Se usa para la preparación de agua boricada para lavados vaginales y la limpieza de la cutis en el tratamiento del acné.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se prepara el agua boricada? ¿Cuál es la concentración recomendada?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de preparación y uso seguro.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPara preparar agua boricada, se disuelve el polvo en agua [Indicar la proporción o concentración recomendada si se especifica en el producto, ej: una cucharadita en un litro de agua hervida y tibia]. Usar según indicación para lavados o limpieza de cutis.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Es seguro usarlo tópicamente? ¿Riesgos por absorción?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes y la seguridad, especialmente en piel lesionada.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nGeneralmente seguro para uso tópico en piel intacta y mucosas. Es crucial evitar su uso en piel lesionada, quemada o en grandes extensiones, especialmente en niños pequeños, debido al riesgo de absorción sistémica y toxicidad. Evitar la ingestión.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación importante?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al ácido bórico. No usar en piel dañada, quemaduras, heridas abiertas ni en el área del pañal en bebés. Evitar la ingestión.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad contiene el sobre?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en sobre con contenido neto de 20 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Azufre en Polvo",
+      "order_index": 8,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Azufre en Polvo",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Azufre en Polvo\n\n![Presentación Oficial Azufre en Polvo](/products/Azufre.png)\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Azufre en Polvo**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Azufre precipitado micronizado? ¿Cómo actúa en la piel?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo, su forma (micronizado) y mecanismo de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Azufre precipitado resublimado micronizado. Tiene propiedades queratolíticas, antifúngicas, antibacterianas y parasiticidas suaves. La micronización mejora su dispersión y actividad.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Pediculosis? ¿Escabiosis? ¿Acné? ¿Cómo se prepara?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos tradicionales y cómo se formula para aplicarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado para el tratamiento de la pediculosis (piojos), escabiosis (sarna) y el acné. Se emplea incorporado en un vehículo adecuado como crema fría o vaselina para su aplicación tópica.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cuál es la concentración de Azufre precipitado a usar en la preparación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la proporción para formular.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\n[Indicar la concentración recomendada de Azufre precipitado a incorporar en la base, si se especifica en el producto o según prácticas farmacéuticas comunes, ej: al 5% o 10%]. La base (crema fría o vaselina) y la concentración varían según la indicación.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Olor? ¿Irritación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes (olor característico) y la tolerancia cutánea.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación, enrojecimiento o sequedad de la piel. Tiene un olor característico a azufre. Evitar el contacto con ojos y mucosas. No usar en piel lesionada.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo usarlo con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al azufre. Usar con precaución en pieles sensibles. No usar en grandes extensiones de piel.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad contiene el sobre?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en sobre con contenido neto de 20 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Sulfatiazol",
+      "order_index": 9,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Sulfatiazol",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Sulfatiazol\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Sulfatiazol**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Sulfatiazol? ¿Cómo actúa como antimicrobiano?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo y su mecanismo de acción antibacteriana.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Sulfatiazol puro, que es una sulfonamida. Actúa como antimicrobiano de acción rápida inhibiendo el crecimiento bacteriano al interferir con la síntesis de ácido fólico esencial para las bacterias.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué tipo de infecciones está indicado? ¿Es solo para uso externo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber el espectro de acción y la vía de administración.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado exclusivamente en infecciones dérmicas. Se emplea incorporado en un vehículo semisólido como crema fría o vaselina. Es para uso tópico únicamente.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se prepara la pomada/crema con el Sulfatiazol? ¿Cuál es la concentración?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Necesitan saber la proporción para formular.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPara preparar la formulación tópica, se incorpora el Sulfatiazol puro del sobre en una base adecuada (crema fría o vaselina) [Indicar la concentración recomendada si se especifica en el producto o según prácticas farmacéuticas, ej: al 5% o 10%]. Aplicar sobre las lesiones según indicación.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Reacciones alérgicas? ¿Absorción sistémica?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes, especialmente las reacciones cutáneas a sulfonamidas.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nLas sulfonamidas tópicas pueden causar reacciones de hipersensibilidad local (enrojecimiento, picor, erupción cutánea). La absorción sistémica es baja con el uso tópico en piel intacta, pero puede aumentar en piel lesionada o quemada, con riesgo de efectos sistémicos.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación? ¿Alergia a sulfonamidas? ¿Embarazo?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo usarlo con cuidado o no usarlo.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad a las sulfonamidas. Usar con precaución en pacientes con antecedentes de alergias. No aplicar en grandes áreas, heridas profundas, quemaduras extensas. No se recomienda su uso en embarazo y lactancia a menos que sea estrictamente necesario y bajo supervisión médica.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad contiene el sobre?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en sobre con contenido neto de 5 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Módulo: Alumbre en Polvo",
+      "order_index": 10,
+      "lessons": [
+        {
+          "title": "Guía Clínica & Objeciones: Alumbre en Polvo",
+          "content_type": "text",
+          "content_body": "## Ficha Técnica y Argumentario Clínico: Alumbre en Polvo\n\n### Resumen de la Formulación y Mecanismo\nEsta lección contiene la guía de visita médica oficial para **Alumbre en Polvo**, recopilando las objeciones y consultas médicas más frecuentes en consultorio y farmacia.\n\n### 📌 Composición y Farmacología\n\n#### 1. Pregunta del Médico: *\"¿Qué es el Alumbre potásico en polvo? ¿Cómo actúa?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Quieren conocer el principio activo y su mecanismo de acción.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEl principio activo es Alumbre potásico. Es una sal con propiedades astringentes (seca tejidos), antisépticas y antitranspirantes suaves.\n\n---\n\n### 📌 Indicaciones y Eficacia Clínica\n\n#### 1. Pregunta del Médico: *\"¿Para qué se utiliza? ¿Astringente? ¿Antitranspirante? ¿Duchas vaginales? ¿Sudoración?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer sus usos.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nEstá indicado como antiséptico, astringente y antitranspirante. Es empleado en duchas vaginales y en soluciones para el control de la sudoración. Ayuda a reducir la humedad y controlar el mal olor.\n\n---\n\n### 📌 Dosificación y Administración\n\n#### 1. Pregunta del Médico: *\"¿Cómo se prepara la solución para duchas vaginales o para la sudoración?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Pauta de preparación y uso seguro.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nDisolver el polvo en agua para preparar la solución [Indicar la proporción o concentración recomendada si se especifica en el producto]. Usar según indicación para duchas vaginales externas o aplicar en las áreas afectadas para controlar la sudoración.\n\n---\n\n### 📌 Efectos Secundarios y Seguridad\n\n#### 1. Pregunta del Médico: *\"¿Tiene efectos secundarios? ¿Irritación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Conocer los posibles inconvenientes.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nPuede causar irritación o sequedad en pieles sensibles o mucosas si se usa en concentraciones altas.\n\n---\n\n#### 2. Pregunta del Médico: *\"¿Hay alguna precaución o contraindicación?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Saber cuándo usarlo con cuidado.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nContraindicado en hipersensibilidad al alumbre. Evitar el contacto con ojos y mucosas. No usar en piel lesionada.\n\n---\n\n### 📌 Presentación y Aspectos Prácticos\n\n#### 1. Pregunta del Médico: *\"¿Qué cantidad contiene el sobre?\"*\n> **🧠 Lógica y Preocupación del Facultativo:** Practicidad.\n\n**💬 Respuesta Técnica Sugerida del Representante:**\nViene en sobre con contenido neto de 20 g.\n\n---\n\n",
+          "duration_mins": 6,
+          "points_reward": 25,
+          "is_required": true,
+          "order_index": 0
+        }
+      ]
+    }
+  ],
+  "quiz": {
+    "title": "Examen de Certificación: Línea Fórmulas Magistrales, Fitoterapia & Hospitalaria",
+    "passing_score": 80,
+    "max_attempts": 3,
+    "time_limit_mins": 15,
+    "questions": [
+      {
+        "question_text": "[Violeta de Genciana] Ante la duda del médico: \"¿Qué es la Violeta de Genciana? ¿Cuál es su composición?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) La Violeta de Genciana es un colorante de anilina con propiedades antisépticas y antifúngicas. Su composición incluye Violeta de genciana, Alcohol etí...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 0
+      },
+      {
+        "question_text": "[Azul de Metileno] Ante la duda del médico: \"¿Qué es el Azul de Metileno? ¿Cuál es su composición?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El Azul de Metileno es un colorante con propiedades antisépticas y cicatrizantes suaves. Su composición es Azul de metileno y Agua purificada.",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 1
+      },
+      {
+        "question_text": "[Miel de Borax] Ante la duda del médico: \"¿Qué aportan el Alumbre potásico y el Borato de sodio? ¿Cómo actúan?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Contiene Alumbre potásico (una sal con propiedades astringentes y antisépticas) y Borato de sodio (Bórax), que tiene propiedades antisépticas y antifú...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 2
+      },
+      {
+        "question_text": "[Cápsulas Ácido Bórico] Ante la duda del médico: \"¿Qué es el Ácido bórico USP? ¿Cómo actúa en infecciones vaginales?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) Contiene Ácido bórico USP (grado farmacéutico, indicando pureza). Actúa creando un ambiente ácido en la vagina, lo que ayuda a restaurar el pH vaginal...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 3
+      },
+      {
+        "question_text": "[Tintura de Valeriana] Ante la duda del médico: \"¿Qué es la Tintura de Valeriana? ¿Cuál es su principio activo?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Tintura de Valeriana. Es una preparación alcohólica (extracto hidroalcohólico) de la raíz de la planta Valeriana officinalis, q...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 4
+      },
+      {
+        "question_text": "[Tintura de Árnica] Ante la duda del médico: \"¿Qué es la Tintura de Árnica? ¿Cuál es su principio activo?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Tintura de Árnica. Es una preparación alcohólica (extracto hidroalcohólico) de la planta Arnica montana, que contiene lactonas ...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 5
+      },
+      {
+        "question_text": "[Solución Fisiológica 30mL] Ante la duda del médico: \"¿Qué contiene la Solución Fisiológica? ¿Cuál es su composición?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Cloruro de sodio y Agua destilada. Es una solución isotónica de cloruro de sodio al 0.9%, lo que significa que tiene la misma c...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 6
+      },
+      {
+        "question_text": "[Ácido Bórico] Ante la duda del médico: \"¿Qué es el Ácido Bórico USP en polvo? ¿Cómo actúa como antiséptico tópico?\", ¿cuál es la fundamentación clínica correcta?",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "label": "A) El principio activo es Ácido Bórico USP. USP indica que cumple con los estándares de pureza de la Farmacopea de Estados Unidos. Tiene propiedades anti...",
+            "value": "A"
+          },
+          {
+            "label": "B) Indicar que el producto es un suplemento general sin contraindicaciones y puede prescribirse a libre demanda sin pauta.",
+            "value": "B"
+          },
+          {
+            "label": "C) Recomendar aumentar la dosis al doble si no se observa efecto inmediato en las primeras 6 horas.",
+            "value": "C"
+          },
+          {
+            "label": "D) Mencionar que el principio activo no tiene metabolismo hepático ni renal, por lo que carece de precauciones.",
+            "value": "D"
+          }
+        ],
+        "correct_answer": "A",
+        "points": 15,
+        "order_index": 7
+      }
+    ]
+  }
 }
 ];
 

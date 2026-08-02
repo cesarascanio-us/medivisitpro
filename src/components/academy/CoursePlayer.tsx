@@ -28,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import QuizPlayer from './QuizPlayer';
+import { RichLessonRenderer } from './RichLessonRenderer';
 import { COMPLETE_LMS_COURSES } from '@/utils/lmsSeedData';
 
 interface Lesson {
@@ -450,8 +451,8 @@ export default function CoursePlayer({ module, onBack, onCourseCompleted }: Cour
 
                     {/* Rich Reading Body */}
                     {activeLesson.content_body && (
-                      <div className="prose dark:prose-invert max-w-none text-foreground text-sm leading-relaxed whitespace-pre-wrap">
-                        {activeLesson.content_body}
+                      <div className="text-foreground text-sm leading-relaxed">
+                        <RichLessonRenderer content={activeLesson.content_body} />
                       </div>
                     )}
 

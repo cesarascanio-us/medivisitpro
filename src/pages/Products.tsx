@@ -30,6 +30,7 @@ import { exportToCSV } from "@/utils/exportUtils";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 import { EliteHeader, EliteKPICard } from "@/components/layout/DesignSystem";
 import { cn } from "@/lib/utils";
+import { getProductImageUrl } from "@/utils/productImages";
 
 import { useDemoData } from "@/contexts/MockDataProvider";
 
@@ -408,12 +409,14 @@ export default function Products() {
 }
 
 function ProductCard({ product, loadProducts, isFavorite, toggleFavorite }: any) {
+  const displayImage = getProductImageUrl(product.name, product.image_url);
+
   return (
     <Card className="border-border/40 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden hover:shadow-premium-md hover:border-primary/20 transition-all duration-500 group">
       <CardContent className="p-4">
-        <div className="relative mb-4 rounded-[1.5rem] overflow-hidden bg-muted/10 border border-border/40 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
-          {product.image_url ? (
-            <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+        <div className="relative mb-4 rounded-[1.5rem] overflow-hidden bg-muted/10 border border-border/40 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500 p-2">
+          {displayImage ? (
+            <img src={displayImage} alt={product.name} className="w-full h-full object-contain drop-shadow-md" />
           ) : (
             <Package className="h-10 w-10 text-muted-foreground/20" />
           )}
@@ -450,12 +453,14 @@ function ProductCard({ product, loadProducts, isFavorite, toggleFavorite }: any)
 }
 
 function ProductListItem({ product, loadProducts }: any) {
+  const displayImage = getProductImageUrl(product.name, product.image_url);
+
   return (
     <Card className="border-border/40 shadow-premium-sm bg-card rounded-[2rem] overflow-hidden hover:shadow-premium-md transition-all duration-500 group">
       <CardContent className="p-6">
         <div className="flex flex-col lg:flex-row gap-6 items-center">
-          <div className="w-16 h-16 rounded-2xl bg-muted/10 border border-border/40 flex items-center justify-center shrink-0">
-            {product.image_url ? <img src={product.image_url} alt={product.name} className="w-full h-full object-cover rounded-2xl" /> : <Package className="h-8 w-8 text-muted-foreground/20" />}
+          <div className="w-16 h-16 rounded-2xl bg-muted/10 border border-border/40 flex items-center justify-center shrink-0 p-1">
+            {displayImage ? <img src={displayImage} alt={product.name} className="w-full h-full object-contain rounded-2xl drop-shadow-sm" /> : <Package className="h-8 w-8 text-muted-foreground/20" />}
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3">

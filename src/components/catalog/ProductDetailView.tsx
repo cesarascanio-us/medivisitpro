@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ClinicalShowcase, ProductAsset } from "./ClinicalShowcase";
 import { CommercialCalculator } from "./CommercialCalculator";
 import { StaffTrainer } from "./StaffTrainer";
+import { getProductImageUrl } from "@/utils/productImages";
 
 // Placeholder interface until we find the real one
 export interface CommercialOffer {
@@ -106,8 +107,9 @@ export function ProductDetailView({ productId, visitType = 'default', onBack }: 
     }
 
     // Prepare product image as primary asset if available
-    const productAssets: ProductAsset[] = assets.length > 0 ? assets : product.image_url ? [
-        { id: 'main', type: 'image' as const, url: product.image_url, title: product.name, description: 'Imagen principal del producto' }
+    const resolvedImageUrl = getProductImageUrl(product.name, product.image_url);
+    const productAssets: ProductAsset[] = assets.length > 0 ? assets : resolvedImageUrl ? [
+        { id: 'main', type: 'image' as const, url: resolvedImageUrl, title: product.name, description: 'Presentación oficial de empaque' }
     ] : [];
 
     // Determine if product is pediatric

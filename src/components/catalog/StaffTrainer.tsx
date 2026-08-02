@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 
 import faqDataRaw from "@/data/faq_detailed.json";
+import { getProductImageUrl } from "@/utils/productImages";
 
 interface FAQItem {
   Id_QyA: number;
@@ -19,15 +20,25 @@ interface FAQItem {
 
 const faqData = faqDataRaw as FAQItem[];
 
+function normalizeStr(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 export function StaffTrainer({ productName }: { productName?: string }) {
     const { toast } = useToast();
 
+    const productImage = useMemo(() => getProductImageUrl(productName), [productName]);
+
     const productFaqs = useMemo(() => {
         if (!productName) return [];
-        const nameLower = productName.toLowerCase();
+        const normTarget = normalizeStr(productName);
         return faqData.filter(faq => {
-            const faqName = faq["Nombre del Producto"].trim().toLowerCase();
-            return faqName.includes(nameLower) || nameLower.includes(faqName);
+            const normFaq = normalizeStr(faq["Nombre del Producto"]);
+            return normFaq.includes(normTarget) || normTarget.includes(normFaq);
         });
     }, [productName]);
 
@@ -81,13 +92,18 @@ export function StaffTrainer({ productName }: { productName?: string }) {
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
                     
-                    <div className="p-6 border-b border-white/5 relative z-10">
+                    <div className="p-6 border-b border-white/5 relative z-10 flex items-center justify-between">
                         <h3 className="flex items-center gap-3 text-amber-400 font-extrabold uppercase tracking-widest text-lg">
                             <div className="p-2 bg-amber-500/20 rounded-xl shadow-inner border border-amber-500/20">
                                 <Lightbulb className="h-5 w-5" />
                             </div>
                             Argumentario Dinámico
                         </h3>
+                        {productImage && (
+                            <div className="h-12 w-12 rounded-xl bg-white/10 p-1 flex items-center justify-center border border-white/10">
+                                <img src={productImage} alt={productName} className="h-full w-full object-contain" />
+                            </div>
+                        )}
                     </div>
                     <div className="p-6 relative z-10">
                         <Accordion type="single" collapsible className="w-full space-y-4">
