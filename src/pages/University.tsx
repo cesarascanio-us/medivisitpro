@@ -56,7 +56,7 @@ export default function University() {
   const [completedCourseIds, setCompletedCourseIds] = useState<Set<string>>(new Set());
   const [activeCourse, setActiveCourse] = useState<TrainingModule | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'mandatory' | 'platform' | 'completed'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'mandatory' | 'platform' | 'products' | 'completed'>('all');
 
   // Rewards catalog redemption modal
   const [rewards, setRewards] = useState<any[]>([]);
@@ -198,7 +198,8 @@ export default function University() {
     if (!matchesSearch) return false;
 
     if (activeFilter === 'mandatory') return !mod.is_informative;
-    if (activeFilter === 'platform') return mod.course_type === 'platform' || mod.category === 'app_onboarding';
+    if (activeFilter === 'platform') return mod.category === 'app_onboarding' || mod.category === 'leadership' || mod.category === 'administration' || mod.category === 'compliance';
+    if (activeFilter === 'products') return mod.course_type === 'product_line' || mod.category.includes('Pediatría') || mod.category.includes('Respiratorio') || mod.category.includes('Gastroenterología') || mod.category.includes('Dermatología') || mod.category.includes('Magistral');
     if (activeFilter === 'completed') return completedCourseIds.has(mod.id);
     return true;
   });
@@ -313,9 +314,10 @@ export default function University() {
             <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
               {[
                 { id: 'all', label: 'Todos' },
-                { id: 'platform', label: 'Uso de la App' },
-                { id: 'mandatory', label: 'Obligatorios' },
-                { id: 'completed', label: 'Aprobados' }
+                { id: 'products', label: '🌿 Líneas de Productos' },
+                { id: 'platform', label: '📱 Uso de la App' },
+                { id: 'mandatory', label: '⚠️ Obligatorios' },
+                { id: 'completed', label: '✅ Aprobados' }
               ].map((f) => (
                 <button
                   key={f.id}
